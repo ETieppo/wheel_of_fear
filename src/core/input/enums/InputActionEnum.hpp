@@ -1,0 +1,28 @@
+#pragma once
+
+#include <cstddef>
+
+namespace wheel_of_fear {
+
+enum class InputActionEnum {
+    move_up,
+    move_down,
+    move_left,
+    move_right,
+    run,
+    interact,
+    hold_breath,
+    throw_lure,
+    throw_grenade,
+    toggle_tracker,
+    switch_light_mode,
+    hug,
+    confirm,
+    back,
+    restart,
+    toggle_mute,
+};
+
+inline constexpr std::size_t input_action_count = 16;
+
+}
