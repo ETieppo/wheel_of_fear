@@ -1,0 +1,17 @@
+#pragma once
+
+#include <string_view>
+
+#include "mods/director/enums/DemoModeEnum.hpp"
+
+namespace wheel_of_fear {
+
+class DemoModeParser final {
+public:
+    DemoModeParser() = delete;
+
+    static DemoModeEnum parse(std::string_view name);
+    static DemoModeEnum fromEnvironment();
+};
+
+}

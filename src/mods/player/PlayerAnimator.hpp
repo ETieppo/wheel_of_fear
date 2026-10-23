@@ -1,0 +1,23 @@
+#pragma once
+
+#include <cstddef>
+
+#include "mods/art/SpriteSheetProps.hpp"
+#include "mods/player/dtos/PlayerPoseDto.hpp"
+#include "mods/player/enums/PlayerActivityEnum.hpp"
+
+namespace wheel_of_fear {
+
+class PlayerAnimator final {
+public:
+    PlayerAnimator() = delete;
+
+    static PlayerPoseDto currentPose(const SpriteSheetProps& sprites, PlayerActivityEnum activity, bool is_moving, float stride_distance, float real_seconds);
+
+private:
+    static constexpr float stride_length = 30;
+
+    static PlayerPoseDto pick(const SpriteFrames& bodies, const SpriteFrames& glows, std::size_t frame);
+};
+
+}
