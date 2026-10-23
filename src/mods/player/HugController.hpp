@@ -5,10 +5,13 @@
 #include "mods/player/enums/PlayerActivityEnum.hpp"
 
 namespace wheel_of_fear {
-
-class HugController {
-public:
-    PlayerActivityEnum update(GameContextDto& context, Entity& body, Vec2 facing, PlayerActivityEnum current_activity);
-};
-
-}
+  class HugController {
+    public:
+      PlayerActivityEnum update(
+        GameContextDto    &context,
+        Entity            &body,
+        Vec2               facing,
+        PlayerActivityEnum current_activity
+      );
+  };
+} // namespace wheel_of_fear

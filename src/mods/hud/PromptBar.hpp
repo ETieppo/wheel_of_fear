@@ -7,16 +7,17 @@
 #include "core/render/Renderer.hpp"
 
 namespace wheel_of_fear {
+  class PromptBar {
+    public:
+      void clear();
+      void show(
+        std::optional<InputActionEnum> key,
+        std::string                    text
+      );
+      void draw(Renderer &renderer) const;
 
-class PromptBar {
-public:
-    void clear();
-    void show(std::optional<InputActionEnum> key, std::string text);
-    void draw(Renderer& renderer) const;
-
-private:
-    std::string text_;
-    std::optional<InputActionEnum> key_;
-};
-
-}
+    private:
+      std::string                    text_;
+      std::optional<InputActionEnum> key_;
+  };
+} // namespace wheel_of_fear

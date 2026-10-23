@@ -3,9 +3,10 @@
 #include <cstddef>
 
 namespace wheel_of_fear {
+  enum class TypefaceEnum {
+    body,
+    display
+  };
 
-enum class TypefaceEnum { body, display };
-
-inline constexpr std::size_t typeface_count = 2;
-
-}
+  inline constexpr std::size_t typeface_count = 2;
+} // namespace wheel_of_fear

@@ -5,14 +5,17 @@
 #include "core/render/Renderer.hpp"
 
 namespace wheel_of_fear {
+  class Generators;
 
-class Generators;
+  class ObjectivesPanel final {
+    public:
+      ObjectivesPanel() = delete;
 
-class ObjectivesPanel final {
-public:
-    ObjectivesPanel() = delete;
-
-    static void draw(Renderer& renderer, std::uint32_t phase, const Generators& generators);
-};
-
-}
+      static
+      void draw(
+        Renderer         &renderer,
+        std::uint32_t     phase,
+        const Generators &generators
+      );
+  };
+} // namespace wheel_of_fear

@@ -7,28 +7,39 @@
 #include "mods/lighting/Lighting.hpp"
 
 namespace wheel_of_fear {
+  class LureBeacon {
+    public:
+      explicit LureBeacon(Vec2 position)
+          : position_(position) {
+      }
 
-class LureBeacon {
-public:
-    explicit LureBeacon(Vec2 position) : position_(position) {}
+      Vec2 position() const {
+        return position_;
+      }
 
-    Vec2 position() const { return position_; }
-    bool isExpired() const { return remaining_seconds_ <= 0; }
-    void update(GameContextDto& context);
-    void emitLight(Lighting& lighting) const;
-    void draw(Renderer& renderer, const SpriteSheetProps& sprites) const;
+      bool isExpired() const {
+        return remaining_seconds_ <= 0;
+      }
 
-private:
-    static constexpr float lifetime_seconds = 10;
-    static constexpr float pulse_seconds = 0.75F;
-    static constexpr float noise_radius = 520;
+      void update(GameContextDto &context);
+      void emitLight(Lighting &lighting) const;
+      void draw(
+        Renderer               &renderer,
+        const SpriteSheetProps &sprites
+      ) const;
 
-    float blink() const { return pulse_age_seconds_ < 0.15F ? 1.0F : 0.2F; }
+    private:
+      static constexpr float lifetime_seconds = 10;
+      static constexpr float pulse_seconds    = 0.75F;
+      static constexpr float noise_radius     = 520;
 
-    Vec2 position_;
-    float remaining_seconds_ = lifetime_seconds;
-    float pulse_timer_ = 0;
-    float pulse_age_seconds_ = 10;
-};
+      float blink() const {
+        return pulse_age_seconds_ < 0.15F ? 1.0F : 0.2F;
+      }
 
-}
+      Vec2  position_;
+      float remaining_seconds_ = lifetime_seconds;
+      float pulse_timer_       = 0;
+      float pulse_age_seconds_ = 10;
+  };
+} // namespace wheel_of_fear

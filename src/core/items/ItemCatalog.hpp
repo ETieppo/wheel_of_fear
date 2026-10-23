@@ -7,15 +7,17 @@
 #include "core/items/ThrowableItem.hpp"
 
 namespace wheel_of_fear {
+  class ItemCatalog final {
+    public:
+      ItemCatalog() = delete;
 
-class ItemCatalog final {
-public:
-    ItemCatalog() = delete;
-
-    static const Item& of(ItemEnum kind);
-    static const ThrowableItem& throwable(ItemEnum kind);
-    static std::span<const ItemEnum> generatorParts();
-    static std::span<const ItemEnum> throwables();
-};
-
-}
+      static
+      const Item &of(ItemEnum kind);
+      static
+      const ThrowableItem &throwable(ItemEnum kind);
+      static
+      std::span<const ItemEnum> generatorParts();
+      static
+      std::span<const ItemEnum> throwables();
+  };
+} // namespace wheel_of_fear

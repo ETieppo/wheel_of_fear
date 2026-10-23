@@ -4,29 +4,30 @@
 #include "mods/world/DoorwayProps.hpp"
 
 namespace wheel_of_fear {
+  class World;
+  class Renderer;
+  struct SpriteSheetProps;
 
-class World;
-class Renderer;
-struct SpriteSheetProps;
+  class WorldPainter {
+    public:
+      WorldPainter(
+        const World    &world,
+        GameContextDto &context
+      );
 
-class WorldPainter {
-public:
-    WorldPainter(const World& world, GameContextDto& context);
+      void paint() const;
 
-    void paint() const;
+    private:
+      void paintFloorLiquids() const;
+      void paintScorchMarks() const;
+      void paintVents() const;
+      void paintDoorway(const DoorwayProps &doorway) const;
+      void paintScenery() const;
+      void paintLockers() const;
 
-private:
-    void paintFloorLiquids() const;
-    void paintScorchMarks() const;
-    void paintVents() const;
-    void paintDoorway(const DoorwayProps& doorway) const;
-    void paintScenery() const;
-    void paintLockers() const;
-
-    const World& world_;
-    Renderer& renderer_;
-    const SpriteSheetProps& sprites_;
-    float real_seconds_;
-};
-
-}
+      const World            &world_;
+      Renderer               &renderer_;
+      const SpriteSheetProps &sprites_;
+      float                   real_seconds_;
+  };
+} // namespace wheel_of_fear

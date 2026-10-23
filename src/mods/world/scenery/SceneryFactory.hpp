@@ -7,12 +7,14 @@
 #include "mods/world/scenery/Scenery.hpp"
 
 namespace wheel_of_fear {
+  class SceneryFactory final {
+    public:
+      SceneryFactory() = delete;
 
-class SceneryFactory final {
-public:
-    SceneryFactory() = delete;
-
-    static std::unique_ptr<Scenery> create(SceneryKindEnum kind, const SceneryPlacementDto& placement);
-};
-
-}
+      static
+      std::unique_ptr<Scenery> create(
+        SceneryKindEnum            kind,
+        const SceneryPlacementDto &placement
+      );
+  };
+} // namespace wheel_of_fear

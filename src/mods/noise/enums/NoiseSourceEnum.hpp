@@ -1,8 +1,7 @@
 #pragma once
 
 namespace wheel_of_fear {
-
-enum class NoiseSourceEnum {
+  enum class NoiseSourceEnum {
     footstep,
     running,
     repairing,
@@ -18,6 +17,5 @@ enum class NoiseSourceEnum {
     mob_incident,
     reinforcement_call,
     shepherd_call,
-};
-
-}
+  };
+} // namespace wheel_of_fear

@@ -6,21 +6,26 @@
 #include "mods/lighting/Lighting.hpp"
 
 namespace wheel_of_fear {
+  class Distraction {
+    public:
+      Distraction(
+        DistractionKindEnum kind,
+        Vec2                position
+      );
 
-class Distraction {
-public:
-    Distraction(DistractionKindEnum kind, Vec2 position);
+      bool isFinished() const;
 
-    bool isFinished() const;
-    void advance(float delta_seconds) { elapsed_seconds_ += delta_seconds; }
-    void emitFlash(Lighting& lighting) const;
+      void advance(float delta_seconds) {
+        elapsed_seconds_ += delta_seconds;
+      }
 
-private:
-    float flashStrength() const;
+      void emitFlash(Lighting &lighting) const;
 
-    DistractionTraitsProps traits_;
-    Vec2 position_;
-    float elapsed_seconds_ = 0;
-};
+    private:
+      float flashStrength() const;
 
-}
+      DistractionTraitsProps traits_;
+      Vec2                   position_;
+      float                  elapsed_seconds_ = 0;
+  };
+} // namespace wheel_of_fear

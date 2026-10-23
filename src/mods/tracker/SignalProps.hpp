@@ -9,14 +9,12 @@
 #include "mods/tracker/enums/SignalKindEnum.hpp"
 
 namespace wheel_of_fear {
-
-struct SignalProps {
-    SignalKindEnum kind = SignalKindEnum::unidentified;
-    Vec2 position{};
-    char label = '?';
-    Color color = Color::white();
-    std::optional<ItemEnum> item;
-    std::uint32_t identity = 0;
-};
-
-}
+  struct SignalProps {
+      SignalKindEnum          kind = SignalKindEnum::unidentified;
+      Vec2                    position {};
+      char                    label = '?';
+      Color                   color = Color::white();
+      std::optional<ItemEnum> item;
+      std::uint32_t           identity = 0;
+  };
+} // namespace wheel_of_fear

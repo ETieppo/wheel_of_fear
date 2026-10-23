@@ -3,8 +3,7 @@
 #include <cstddef>
 
 namespace wheel_of_fear {
-
-enum class InputActionEnum {
+  enum class InputActionEnum {
     move_up,
     move_down,
     move_left,
@@ -21,8 +20,7 @@ enum class InputActionEnum {
     back,
     restart,
     toggle_mute,
-};
+  };
 
-inline constexpr std::size_t input_action_count = 16;
-
-}
+  inline constexpr std::size_t input_action_count = 16;
+} // namespace wheel_of_fear

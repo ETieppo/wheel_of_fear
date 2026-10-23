@@ -9,12 +9,21 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-
-void LureBeaconProjectile::land(GameContextDto& context, Vec2 landing) {
-    context.noise.emit(landing, impact_noise_radius, NoiseSourceEnum::throwable_impact);
-    context.sound_player.playAt(SoundEnum::decoy_impact, 0.8F, context.player.position(), landing, context.world.random().range(0.9F, 1.1F));
+  void LureBeaconProjectile::land(
+    GameContextDto &context,
+    Vec2            landing
+  ) {
+    context.noise.emit(
+      landing, impact_noise_radius, NoiseSourceEnum::throwable_impact
+    );
+    context.sound_player.playAt(
+      SoundEnum::decoy_impact,
+      0.8F,
+      context.player.position(),
+      landing,
+      context.world.random().range(0.9F, 1.1F)
+    );
     context.effects.emitSparks(context.world, landing, 5, Palette::neon_lime);
     context.throwables.deployBeacon(landing);
-}
-
-}
+  }
+} // namespace wheel_of_fear

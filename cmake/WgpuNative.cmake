@@ -45,3 +45,13 @@ if(APPLE)
 elseif(UNIX)
     target_link_libraries(wgpu_native INTERFACE dl pthread m)
 endif()
+
+set(WGPU_NATIVE_SHARED_LIBRARY ${wgpu_native_release_SOURCE_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}wgpu_native${CMAKE_SHARED_LIBRARY_SUFFIX})
+if(NOT WIN32 AND EXISTS ${WGPU_NATIVE_SHARED_LIBRARY})
+    add_library(wgpu_native_shared SHARED IMPORTED GLOBAL)
+    set_target_properties(wgpu_native_shared PROPERTIES
+        IMPORTED_LOCATION ${WGPU_NATIVE_SHARED_LIBRARY}
+        IMPORTED_NO_SONAME TRUE
+    )
+    target_include_directories(wgpu_native_shared INTERFACE ${wgpu_native_release_SOURCE_DIR}/include)
+endif()

@@ -3,14 +3,17 @@
 #include "core/render/Renderer.hpp"
 
 namespace wheel_of_fear {
+  class Player;
 
-class Player;
+  class VitalsPanel final {
+    public:
+      VitalsPanel() = delete;
 
-class VitalsPanel final {
-public:
-    VitalsPanel() = delete;
-
-    static void draw(Renderer& renderer, const Player& player, float real_seconds);
-};
-
-}
+      static
+      void draw(
+        Renderer     &renderer,
+        const Player &player,
+        float         real_seconds
+      );
+  };
+} // namespace wheel_of_fear

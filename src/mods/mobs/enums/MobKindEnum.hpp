@@ -3,10 +3,17 @@
 #include <array>
 
 namespace wheel_of_fear {
+  enum class MobKindEnum {
+    crawler,
+    bloater,
+    melter,
+    shepherd,
+    shade,
+    mimic,
+    moth
+  };
 
-enum class MobKindEnum { crawler, bloater, melter, shepherd, shade, mimic, moth };
-
-inline constexpr std::array<MobKindEnum, 7> all_mob_kinds{
+  inline constexpr std::array<MobKindEnum, 7> all_mob_kinds {
     MobKindEnum::crawler,
     MobKindEnum::bloater,
     MobKindEnum::melter,
@@ -14,6 +21,5 @@ inline constexpr std::array<MobKindEnum, 7> all_mob_kinds{
     MobKindEnum::shade,
     MobKindEnum::mimic,
     MobKindEnum::moth,
-};
-
-}
+  };
+} // namespace wheel_of_fear

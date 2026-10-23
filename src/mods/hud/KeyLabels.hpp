@@ -5,12 +5,11 @@
 #include "core/input/enums/InputActionEnum.hpp"
 
 namespace wheel_of_fear {
+  class KeyLabels final {
+    public:
+      KeyLabels() = delete;
 
-class KeyLabels final {
-public:
-    KeyLabels() = delete;
-
-    static std::string_view labelFor(InputActionEnum action);
-};
-
-}
+      static
+      std::string_view labelFor(InputActionEnum action);
+  };
+} // namespace wheel_of_fear

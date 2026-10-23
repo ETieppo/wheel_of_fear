@@ -1,8 +1,7 @@
 #pragma once
 
 namespace wheel_of_fear {
-
-enum class DemoModeEnum {
+  enum class DemoModeEnum {
     none,
     play,
     deep,
@@ -19,6 +18,5 @@ enum class DemoModeEnum {
     lure,
     doors,
     walk,
-};
-
-}
+  };
+} // namespace wheel_of_fear

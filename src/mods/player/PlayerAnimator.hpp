@@ -7,17 +7,27 @@
 #include "mods/player/enums/PlayerActivityEnum.hpp"
 
 namespace wheel_of_fear {
+  class PlayerAnimator final {
+    public:
+      PlayerAnimator() = delete;
 
-class PlayerAnimator final {
-public:
-    PlayerAnimator() = delete;
+      static
+      PlayerPoseDto currentPose(
+        const SpriteSheetProps &sprites,
+        PlayerActivityEnum      activity,
+        bool                    is_moving,
+        float                   stride_distance,
+        float                   real_seconds
+      );
 
-    static PlayerPoseDto currentPose(const SpriteSheetProps& sprites, PlayerActivityEnum activity, bool is_moving, float stride_distance, float real_seconds);
+    private:
+      static constexpr float stride_length = 30;
 
-private:
-    static constexpr float stride_length = 30;
-
-    static PlayerPoseDto pick(const SpriteFrames& bodies, const SpriteFrames& glows, std::size_t frame);
-};
-
-}
+      static
+      PlayerPoseDto pick(
+        const SpriteFrames &bodies,
+        const SpriteFrames &glows,
+        std::size_t         frame
+      );
+  };
+} // namespace wheel_of_fear

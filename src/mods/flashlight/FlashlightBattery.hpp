@@ -3,26 +3,41 @@
 #include "core/math/RandomGenerator.hpp"
 
 namespace wheel_of_fear {
+  class FlashlightBattery {
+    public:
+      static constexpr float low_threshold = 0.18F;
 
-class FlashlightBattery {
-public:
-    static constexpr float low_threshold = 0.18F;
+      float level() const {
+        return level_;
+      }
 
-    float level() const { return level_; }
-    bool isCharging() const { return is_charging_; }
-    bool isEmpty() const { return level_ <= 0; }
+      bool isCharging() const {
+        return is_charging_;
+      }
 
-    void refill();
-    void drain(float delta_seconds, float seconds_to_drain);
-    bool updateCharging(bool can_charge, float delta_seconds);
-    bool flickersOff(RandomGenerator& random, float delta_seconds);
+      bool isEmpty() const {
+        return level_ <= 0;
+      }
 
-private:
-    static constexpr float recharge_seconds = 6;
+      void refill();
+      void drain(
+        float delta_seconds,
+        float seconds_to_drain
+      );
+      bool updateCharging(
+        bool  can_charge,
+        float delta_seconds
+      );
+      bool flickersOff(
+        RandomGenerator &random,
+        float            delta_seconds
+      );
 
-    float level_ = 1;
-    bool is_charging_ = false;
-    float flicker_timer_ = 0;
-};
+    private:
+      static constexpr float recharge_seconds = 6;
 
-}
+      float level_         = 1;
+      bool  is_charging_   = false;
+      float flicker_timer_ = 0;
+  };
+} // namespace wheel_of_fear

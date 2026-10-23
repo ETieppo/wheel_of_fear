@@ -5,21 +5,48 @@
 #include <span>
 
 namespace wheel_of_fear {
+  class Canvas {
+    public:
+      Canvas(
+        std::span<std::uint8_t> pixels,
+        std::uint32_t           size
+      )
+          : pixels_(pixels)
+          , size_(size) {
+      }
 
-class Canvas {
-public:
-    Canvas(std::span<std::uint8_t> pixels, std::uint32_t size) : pixels_(pixels), size_(size) {}
+      void set(
+        int x,
+        int y,
+        std::array<
+          std::uint8_t,
+          4
+        > rgba
+      );
+      std::array<
+        std::uint8_t,
+        4
+      >
+      get(
+        int x,
+        int y
+      ) const;
 
-    void set(int x, int y, std::array<std::uint8_t, 4> rgba);
-    std::array<std::uint8_t, 4> get(int x, int y) const;
-    std::span<std::uint8_t> pixels() const { return pixels_; }
-    std::uint32_t size() const { return size_; }
+      std::span<std::uint8_t> pixels() const {
+        return pixels_;
+      }
 
-private:
-    bool contains(int x, int y) const;
+      std::uint32_t size() const {
+        return size_;
+      }
 
-    std::span<std::uint8_t> pixels_;
-    std::uint32_t size_;
-};
+    private:
+      bool contains(
+        int x,
+        int y
+      ) const;
 
-}
+      std::span<std::uint8_t> pixels_;
+      std::uint32_t           size_;
+  };
+} // namespace wheel_of_fear

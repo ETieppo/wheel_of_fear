@@ -3,8 +3,7 @@
 #include <cstddef>
 
 namespace wheel_of_fear {
-
-enum class SoundEnum {
+  enum class SoundEnum {
     footstep,
     crawler_skitter,
     crawler_chitter,
@@ -53,8 +52,7 @@ enum class SoundEnum {
     lure_beep,
     battery_charge,
     ui_glitch,
-};
+  };
 
-inline constexpr std::size_t sound_count = 48;
-
-}
+  inline constexpr std::size_t sound_count = 48;
+} // namespace wheel_of_fear

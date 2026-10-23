@@ -8,13 +8,16 @@
 #include "mods/mobs/enums/MobKindEnum.hpp"
 
 namespace wheel_of_fear {
+  class MobCatalog final {
+    public:
+      MobCatalog() = delete;
 
-class MobCatalog final {
-public:
-    MobCatalog() = delete;
-
-    static const MobTraitsProps& traitsOf(MobKindEnum kind);
-    static std::unique_ptr<Mob> create(MobKindEnum kind, Vec2 position);
-};
-
-}
+      static
+      const MobTraitsProps &traitsOf(MobKindEnum kind);
+      static
+      std::unique_ptr<Mob> create(
+        MobKindEnum kind,
+        Vec2        position
+      );
+  };
+} // namespace wheel_of_fear

@@ -3,15 +3,13 @@
 #include <chrono>
 
 namespace wheel_of_fear {
+  class FrameTimer {
+    public:
+      FrameTimer();
 
-class FrameTimer {
-public:
-    FrameTimer();
+      float lap();
 
-    float lap();
-
-private:
-    std::chrono::steady_clock::time_point last_lap_;
-};
-
-}
+    private:
+      std::chrono::steady_clock::time_point last_lap_;
+  };
+} // namespace wheel_of_fear

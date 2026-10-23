@@ -8,16 +8,20 @@
 #include "core/audio/DecodedAudioProps.hpp"
 
 namespace wheel_of_fear {
+  class OggOpusDecoder final {
+    public:
+      OggOpusDecoder() = delete;
 
-class OggOpusDecoder final {
-public:
-    OggOpusDecoder() = delete;
+      static
+      DecodedAudioProps decodeFile(const std::filesystem::path &path);
+      static
+      DecodedAudioProps decode(std::span<const std::uint8_t> bytes);
 
-    static DecodedAudioProps decodeFile(const std::filesystem::path& path);
-    static DecodedAudioProps decode(std::span<const std::uint8_t> bytes);
-
-private:
-    static std::vector<std::vector<std::uint8_t>> extractPackets(std::span<const std::uint8_t> bytes, std::int64_t& final_granule_position);
-};
-
-}
+    private:
+      static
+      std::vector<std::vector<std::uint8_t>> extractPackets(
+        std::span<const std::uint8_t> bytes,
+        std::int64_t                 &final_granule_position
+      );
+  };
+} // namespace wheel_of_fear
