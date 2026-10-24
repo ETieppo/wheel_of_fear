@@ -2,12 +2,12 @@
 
 #include <optional>
 
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   struct FlashlightGripDto {
-      Vec2                holder_position {};
-      Vec2                aim_direction {};
-      std::optional<Vec2> repair_target;
+      Vec2Props                holder_position {};
+      Vec2Props                aim_direction {};
+      std::optional<Vec2Props> repair_target;
   };
 } // namespace wheel_of_fear

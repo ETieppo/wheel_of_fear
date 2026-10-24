@@ -5,16 +5,16 @@
 #include <vector>
 
 namespace wheel_of_fear {
-  class Game;
+  class GameApplication;
   class Window;
 
   struct GameModuleApiProps {
-      Game* (*create)(Window &window);
-      void (*destroy)(Game* game);
-      bool (*runFrame)(Game &game);
-      std::vector<std::byte> (*saveSnapshot)(const Game &game);
+      GameApplication* (*create)(Window &window);
+      void (*destroy)(GameApplication* game);
+      bool (*runFrame)(GameApplication &game);
+      std::vector<std::byte> (*saveSnapshot)(const GameApplication &game);
       void (*restoreSnapshot)(
-        Game                      &game,
+        GameApplication                      &game,
         std::span<const std::byte> snapshot
       );
   };

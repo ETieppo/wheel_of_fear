@@ -15,7 +15,8 @@ namespace wheel_of_fear {
 
       virtual ~Particle() = default;
 
-      Vec2 position() const {
+      [[nodiscard]]
+      Vec2Props position() const {
         return state_.position;
       }
 
@@ -28,16 +29,20 @@ namespace wheel_of_fear {
       ) const = 0;
 
     protected:
+      [[nodiscard]]
       virtual float drag() const = 0;
 
+      [[nodiscard]]
       virtual bool fallsWithGravity() const {
         return false;
       }
 
+      [[nodiscard]]
       const ParticleProps &state() const {
         return state_;
       }
 
+      [[nodiscard]]
       float life() const {
         return state_.remaining_seconds / state_.lifetime_seconds;
       }

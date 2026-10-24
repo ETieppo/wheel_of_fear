@@ -7,8 +7,8 @@
 #include "game/GameRunner.hpp"
 
 int main(
-  int,
-  char**
+  [[maybe_unused]] int    argument_count,
+  [[maybe_unused]] char** arguments
 ) {
   try {
     wheel_of_fear::Window window("Wheel of Fear", 1440, 810);

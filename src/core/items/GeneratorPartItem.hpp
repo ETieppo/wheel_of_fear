@@ -5,6 +5,7 @@
 namespace wheel_of_fear {
   class GeneratorPartItem: public Item {
     public:
+      [[nodiscard]]
       bool isGeneratorPart() const override {
         return true;
       }
@@ -15,7 +16,7 @@ namespace wheel_of_fear {
       GeneratorPartItem(
         ItemEnum         kind,
         std::string_view display_name,
-        Color            color
+        ColorProps       color
       )
           : Item(
               kind,

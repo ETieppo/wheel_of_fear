@@ -4,15 +4,15 @@
 #include "mods/world/DoorwayProps.hpp"
 
 namespace wheel_of_fear {
-  class World;
+  class WorldSystem;
   class Renderer;
   struct SpriteSheetProps;
 
   class WorldPainter {
     public:
       WorldPainter(
-        const World    &world,
-        GameContextDto &context
+        const WorldSystem &world,
+        GameContextDto    &context
       );
 
       void paint() const;
@@ -27,7 +27,7 @@ namespace wheel_of_fear {
       void paintScenery() const;
       void paintLockers() const;
 
-      const World            &world_;
+      const WorldSystem      &world_;
       Renderer               &renderer_;
       const SpriteSheetProps &sprites_;
       float                   real_seconds_;

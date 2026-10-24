@@ -19,7 +19,7 @@ namespace wheel_of_fear {
       );
     SDL_WindowFlags flags =
       SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
-#if defined(__APPLE__)
+#ifdef __APPLE__
     flags |= SDL_WINDOW_METAL;
 #endif
     const std::string title_text(title);
@@ -28,7 +28,7 @@ namespace wheel_of_fear {
       throw std::runtime_error(
         std::string("SDL_CreateWindow failed: ") + SDL_GetError()
       );
-#if defined(__APPLE__)
+#ifdef __APPLE__
     metal_view_ = SDL_Metal_CreateView(window_);
     if(metal_view_ == nullptr)
       throw std::runtime_error(
@@ -49,24 +49,30 @@ namespace wheel_of_fear {
     return SDL_Metal_GetLayer(metal_view_);
   }
 
-  Vec2 Window::logicalSize() const {
-    int width  = 0;
-    int height = 0;
-    SDL_GetWindowSize(window_, &width, &height);
-    return Vec2::of(static_cast<float>(width), static_cast<float>(height));
-  }
-
   std::uint32_t Window::pixelWidth() const {
     int width  = 0;
     int height = 0;
+
     SDL_GetWindowSizeInPixels(window_, &width, &height);
+
     return static_cast<std::uint32_t>(width);
   }
 
   std::uint32_t Window::pixelHeight() const {
     int width  = 0;
     int height = 0;
+
     SDL_GetWindowSizeInPixels(window_, &width, &height);
+
     return static_cast<std::uint32_t>(height);
+  }
+
+  Vec2Props Window::logicalSize() const {
+    int width  = 0;
+    int height = 0;
+
+    SDL_GetWindowSize(window_, &width, &height);
+
+    return Vec2Props::of(static_cast<float>(width), static_cast<float>(height));
   }
 } // namespace wheel_of_fear

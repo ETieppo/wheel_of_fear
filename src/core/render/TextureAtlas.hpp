@@ -12,17 +12,20 @@ namespace wheel_of_fear {
       TextureAtlas();
 
       Canvas canvas() {
-        return Canvas(pixels_, size_);
+        return {pixels_, size_};
       }
 
+      [[nodiscard]]
       std::span<const std::uint8_t> pixels() const {
         return pixels_;
       }
 
+      [[nodiscard]]
       std::uint32_t size() const {
         return size_;
       }
 
+      [[nodiscard]]
       bool needsUpload() const {
         return needs_upload_;
       }

@@ -1,0 +1,29 @@
+#pragma once
+
+#include "mods/world/scenery/Scenery.hpp"
+
+namespace wheel_of_fear {
+  class CrateScenery final: public Scenery {
+    public:
+      using Scenery::Scenery;
+
+      [[nodiscard]]
+      std::optional<DistractionKindEnum> bumpDistraction() const override {
+        return DistractionKindEnum::metal_clang;
+      }
+
+    protected:
+      [[nodiscard]]
+      const AtlasRegionProps &sprite(
+        const SpriteSheetProps &sprites
+      ) const override {
+        return sprites.crate;
+      }
+
+      void reactToBump(
+        RandomGenerator &random
+      ) override {
+        tilt(random.range(-0.35F, 0.35F));
+      }
+  };
+} // namespace wheel_of_fear

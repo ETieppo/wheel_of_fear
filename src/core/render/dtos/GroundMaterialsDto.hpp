@@ -27,7 +27,7 @@ namespace wheel_of_fear {
           &wall_color,
           &wall_normal,
           &face_color,
-          &face_normal
+          &face_normal,
         };
       }
   };

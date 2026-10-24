@@ -3,36 +3,40 @@
 #include <cstdint>
 #include <vector>
 
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 #include "mods/world/TileCoordinateProps.hpp"
-#include "mods/world/TileMap.hpp"
+#include "mods/world/TileMapModel.hpp"
 
 namespace wheel_of_fear {
   class DistanceField {
     public:
       static constexpr std::uint16_t unreachable_distance = 0xFFFF;
 
+      [[nodiscard]]
       bool isFreshFor(
-        const TileMap      &map,
+        const TileMapModel &map,
         TileCoordinateProps target_tile
       ) const;
       void compute(
-        const TileMap &map,
-        Vec2           target
+        const TileMapModel &map,
+        Vec2Props           target
       );
+      [[nodiscard]]
       std::uint16_t distanceAt(
-        const TileMap &map,
-        Vec2           point
+        const TileMapModel &map,
+        Vec2Props           point
       ) const;
-      Vec2 directionAt(
-        const TileMap &map,
-        Vec2           point
+      [[nodiscard]]
+      Vec2Props directionAt(
+        const TileMapModel &map,
+        Vec2Props           point
       ) const;
 
       void invalidate() {
         map_version_ = 0;
       }
 
+      [[nodiscard]]
       float lastUsedSeconds() const {
         return last_used_seconds_;
       }
@@ -46,7 +50,7 @@ namespace wheel_of_fear {
     private:
       std::vector<std::uint16_t> distances_;
       std::vector<std::uint32_t> queue_;
-      TileCoordinateProps        target_tile_ {-1, -1};
+      TileCoordinateProps        target_tile_ {.x = -1, .y = -1};
       std::uint64_t              map_version_       = 0;
       float                      last_used_seconds_ = 0;
   };

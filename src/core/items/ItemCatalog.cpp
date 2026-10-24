@@ -8,20 +8,27 @@
 
 namespace wheel_of_fear {
   namespace {
-    const GearItem        gear_item;
-    const FuseItem        fuse_item;
-    const ValveItem       valve_item;
-    const LureBeaconItem  lure_beacon_item;
-    const NeonGrenadeItem neon_grenade_item;
+    struct ItemInstancesProps {
+        GearItem        gear;
+        FuseItem        fuse;
+        ValveItem       valve;
+        LureBeaconItem  lure_beacon;
+        NeonGrenadeItem neon_grenade;
+    };
+
+    const ItemInstancesProps &itemInstances() {
+      static const ItemInstancesProps instances;
+      return instances;
+    }
 
     constexpr std::array<ItemEnum, 3> generator_part_kinds {
       ItemEnum::gear,
       ItemEnum::fuse,
-      ItemEnum::valve
+      ItemEnum::valve,
     };
     constexpr std::array<ItemEnum, 2> throwable_kinds {
       ItemEnum::lure_beacon,
-      ItemEnum::neon_grenade
+      ItemEnum::neon_grenade,
     };
   } // namespace
 
@@ -29,20 +36,22 @@ namespace wheel_of_fear {
     ItemEnum kind
   ) {
     switch(kind) {
-      case ItemEnum::gear:         return gear_item;
-      case ItemEnum::fuse:         return fuse_item;
-      case ItemEnum::valve:        return valve_item;
-      case ItemEnum::lure_beacon:  return lure_beacon_item;
-      case ItemEnum::neon_grenade: return neon_grenade_item;
+      case ItemEnum::gear:         return itemInstances().gear;
+      case ItemEnum::fuse:         return itemInstances().fuse;
+      case ItemEnum::valve:        return itemInstances().valve;
+      case ItemEnum::lure_beacon:  return itemInstances().lure_beacon;
+      case ItemEnum::neon_grenade: return itemInstances().neon_grenade;
     }
-    return gear_item;
+
+    return itemInstances().gear;
   }
 
   const ThrowableItem &ItemCatalog::throwable(
     ItemEnum kind
   ) {
-    if(kind == ItemEnum::neon_grenade) return neon_grenade_item;
-    return lure_beacon_item;
+    if(kind == ItemEnum::neon_grenade) return itemInstances().neon_grenade;
+
+    return itemInstances().lure_beacon;
   }
 
   std::span<const ItemEnum> ItemCatalog::generatorParts() {

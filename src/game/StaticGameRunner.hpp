@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/Game.hpp"
+#include "game/GameApplication.hpp"
 #include "game/GameRunner.hpp"
 
 namespace wheel_of_fear {
@@ -13,6 +13,6 @@ namespace wheel_of_fear {
       bool runFrame() override;
 
     private:
-      Game game_;
+      GameApplication game_;
   };
 } // namespace wheel_of_fear

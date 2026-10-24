@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
 namespace wheel_of_fear {
-  enum class InputActionEnum {
+  enum class InputActionEnum : std::uint8_t {
     move_up,
     move_down,
     move_left,

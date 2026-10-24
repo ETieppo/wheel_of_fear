@@ -2,17 +2,17 @@
 
 #include <cstddef>
 
-#include "core/math/Color.hpp"
+#include "core/math/ColorProps.hpp"
 #include "mods/world/RoomProps.hpp"
 #include "mods/world/enums/SceneryKindEnum.hpp"
 
 namespace wheel_of_fear {
-  class World;
+  class WorldSystem;
 
   class WorldFurnisher {
     public:
       explicit WorldFurnisher(
-        World &world
+        WorldSystem &world
       )
           : world_(world) {
       }
@@ -20,7 +20,7 @@ namespace wheel_of_fear {
       void furnishRoom(
         const RoomProps &room,
         std::size_t      room_index,
-        Color            color
+        ColorProps       color
       );
       void placeLockers(
         const RoomProps &room,
@@ -32,13 +32,38 @@ namespace wheel_of_fear {
       );
 
     private:
+      void furnishServerFarm(
+        const RoomProps &room,
+        std::size_t      room_index,
+        ColorProps       color
+      );
+      void furnishStorage(
+        const RoomProps &room,
+        std::size_t      room_index,
+        ColorProps       color
+      );
+      void furnishOffices(
+        const RoomProps &room,
+        std::size_t      room_index,
+        ColorProps       color
+      );
+      void furnishPumpStation(
+        const RoomProps &room,
+        std::size_t      room_index,
+        ColorProps       color
+      );
+      void furnishHall(
+        const RoomProps &room,
+        std::size_t      room_index,
+        ColorProps       color
+      );
       bool tryReserveScenery(
         const RoomProps &room,
         std::size_t      room_index,
         int              x,
         int              y,
         SceneryKindEnum  kind,
-        Color            color
+        ColorProps       color
       );
       int interiorX(
         const RoomProps &room
@@ -52,6 +77,6 @@ namespace wheel_of_fear {
         int              y
       );
 
-      World &world_;
+      WorldSystem &world_;
   };
 } // namespace wheel_of_fear

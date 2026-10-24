@@ -42,22 +42,26 @@ namespace wheel_of_fear {
     const auto entry_point = reinterpret_cast<GameModuleApiEntryPoint>(
       library.function(game_module_api_symbol)
     );
+
     const GameModuleApiProps* api = entry_point();
     if(api == nullptr) throw std::runtime_error("game module returned no api");
+
     return *api;
   }
 
-  Game* HotReloadGameRunner::startGame(
+  GameApplication* HotReloadGameRunner::startGame(
     const GameModuleApiProps  &api,
     std::span<const std::byte> snapshot
   ) const {
-    Game* game = api.create(window_);
+    GameApplication* game = api.create(window_);
+
     try {
       api.restoreSnapshot(*game, snapshot);
     } catch(...) {
       api.destroy(game);
       throw;
     }
+
     return game;
   }
 
@@ -65,6 +69,7 @@ namespace wheel_of_fear {
     const auto started_at = std::chrono::steady_clock::now();
     std::unique_ptr<SharedLibrary> next_library;
     const GameModuleApiProps*      next_api = nullptr;
+
     try {
       next_library = watcher_.loadLatest();
       next_api     = &resolveApi(*next_library);
@@ -72,21 +77,28 @@ namespace wheel_of_fear {
       SDL_Log("error(hot_reload): %s", error.what());
       return;
     }
+
     const std::vector<std::byte> snapshot = api_->saveSnapshot(*game_);
+
     api_->destroy(game_);
     game_ = nullptr;
+
     try {
       game_ = startGame(*next_api, snapshot);
     } catch(const std::exception &error) {
       SDL_Log("error(hot_reload): %s, keeping previous module", error.what());
       game_ = startGame(*api_, snapshot);
+
       return;
     }
-    library_           = std::move(next_library);
-    api_               = next_api;
+
+    library_ = std::move(next_library);
+    api_     = next_api;
+
     const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
       std::chrono::steady_clock::now() - started_at
     );
+
     SDL_Log(
       "info(hot_reload): game module reloaded in %lld ms",
       static_cast<long long>(elapsed.count())

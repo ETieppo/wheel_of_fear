@@ -6,5 +6,10 @@ Checks: >
   readability-*,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
-  -readability-identifier-length
+  -readability-identifier-length,
+  -readability-braces-around-statements
+CheckOptions:
+  bugprone-signed-bitwise.IgnorePositiveIntegerLiterals: true
+  bugprone-easily-swappable-parameters.MinimumLength: 3
+  readability-function-cognitive-complexity.IgnoreMacros: true
 WarningsAsErrors: ''

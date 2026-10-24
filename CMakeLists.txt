@@ -61,7 +61,10 @@ file(GLOB_RECURSE WHEEL_OF_FEAR_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/mods/*.cpp
 )
-list(APPEND WHEEL_OF_FEAR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/game/Game.cpp)
+list(APPEND WHEEL_OF_FEAR_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/game/GameApplication.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/game/GameSimulation.cpp
+)
 
 add_library(wheel_of_fear_engine OBJECT ${WHEEL_OF_FEAR_SOURCES})
 target_include_directories(wheel_of_fear_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -126,6 +129,7 @@ wheel_of_fear_enable_warnings(wheel_of_fear)
 file(GLOB_RECURSE WHEEL_OF_FEAR_TEST_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp)
 add_executable(wheel_of_fear_tests ${WHEEL_OF_FEAR_TEST_SOURCES})
 target_link_libraries(wheel_of_fear_tests PRIVATE wheel_of_fear_engine doctest_header)
+target_include_directories(wheel_of_fear_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 enable_testing()
 add_test(NAME wheel_of_fear_tests COMMAND wheel_of_fear_tests)

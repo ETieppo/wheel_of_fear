@@ -23,6 +23,7 @@ namespace wheel_of_fear {
           4
         > rgba
       );
+      [[nodiscard]]
       std::array<
         std::uint8_t,
         4
@@ -32,15 +33,18 @@ namespace wheel_of_fear {
         int y
       ) const;
 
+      [[nodiscard]]
       std::span<std::uint8_t> pixels() const {
         return pixels_;
       }
 
+      [[nodiscard]]
       std::uint32_t size() const {
         return size_;
       }
 
     private:
+      [[nodiscard]]
       bool contains(
         int x,
         int y

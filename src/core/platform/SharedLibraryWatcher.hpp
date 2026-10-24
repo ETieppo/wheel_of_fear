@@ -21,17 +21,19 @@ namespace wheel_of_fear {
         const SharedLibraryWatcher &
       ) = delete;
 
+      [[nodiscard]]
       bool                           hasUpdate() const;
       std::unique_ptr<SharedLibrary> loadLatest();
 
     private:
+      [[nodiscard]]
       std::filesystem::file_time_type readStampTime() const;
       std::filesystem::path           nextCopyPath();
 
       std::filesystem::path           library_path_;
       std::filesystem::path           stamp_path_;
       std::filesystem::path           copies_directory_;
-      std::filesystem::file_time_type loaded_stamp_time_ {};
+      std::filesystem::file_time_type loaded_stamp_time_;
       std::uint32_t                   generation_ = 0;
   };
 } // namespace wheel_of_fear

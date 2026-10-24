@@ -9,7 +9,7 @@
 #include "core/assets/AssetLocator.hpp"
 #include "core/assets/SoundCatalog.hpp"
 #include "core/audio/OggOpusDecoder.hpp"
-#include "core/math/Scalar.hpp"
+#include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
   SoundPlayer::SoundPlayer() {
@@ -34,13 +34,16 @@ namespace wheel_of_fear {
         }
       }
     }
+
     for(
       std::size_t layer_index = 0; layer_index < music_layer_count;
       ++layer_index
     ) {
-      std::vector<float>     stereo;
+      std::vector<float> stereo;
+
       const std::string_view file =
         SoundCatalog::musicFor(static_cast<MusicLayerEnum>(layer_index));
+
       try {
         const DecodedAudioProps decoded =
           OggOpusDecoder::decodeFile(AssetLocator::assetPath(file));
@@ -53,6 +56,7 @@ namespace wheel_of_fear {
           error.what()
         );
       }
+
       music_layers_.emplace_back(
         std::make_shared<const std::vector<float>>(std::move(stereo))
       );
@@ -65,12 +69,16 @@ namespace wheel_of_fear {
   ) {
     const std::size_t  frame_count = samples.size() / channels;
     std::vector<float> mono(frame_count);
+
     for(std::size_t frame = 0; frame < frame_count; ++frame) {
       float sum = 0;
+
       for(std::uint32_t channel = 0; channel < channels; ++channel)
-        sum += samples[frame * channels + channel];
+        sum += samples[(frame * channels) + channel];
+
       mono[frame] = sum / static_cast<float>(channels);
     }
+
     return mono;
   }
 
@@ -79,17 +87,21 @@ namespace wheel_of_fear {
     std::uint32_t             channels
   ) {
     if(channels == AudioMixer::channel_count) return samples;
+
     const std::size_t  frame_count = samples.size() / channels;
     std::vector<float> stereo(frame_count * AudioMixer::channel_count);
+
     for(std::size_t frame = 0; frame < frame_count; ++frame) {
-      const float value     = samples[frame * channels];
-      stereo[frame * 2]     = value;
-      stereo[frame * 2 + 1] = value;
+      const float value = samples[frame * channels];
+
+      stereo[frame * 2]       = value;
+      stereo[(frame * 2) + 1] = value;
     }
+
     return stereo;
   }
 
-  MusicLayer &SoundPlayer::layer(
+  MusicLayerTrack &SoundPlayer::layer(
     MusicLayerEnum which
   ) {
     return music_layers_[static_cast<std::size_t>(which)];
@@ -117,7 +129,7 @@ namespace wheel_of_fear {
   void SoundPlayer::updateMusic(
     float delta_seconds
   ) {
-    for(MusicLayer &music_layer : music_layers_)
+    for(MusicLayerTrack &music_layer : music_layers_)
       music_layer.update(mixer_, delta_seconds, music_volume_ * master_volume_);
   }
 
@@ -137,14 +149,18 @@ namespace wheel_of_fear {
     float     pitch
   ) {
     if(volume < 0.01F) return no_voice;
-    return startVoice(sound, volume, pan, pitch);
+
+    return startVoice(
+      sound,
+      VoicePlaybackProps {.volume = volume, .pan = pan, .pitch = pitch}
+    );
   }
 
   void SoundPlayer::playAt(
     SoundEnum sound,
     float     volume,
-    Vec2      listener,
-    Vec2      source,
+    Vec2Props listener,
+    Vec2Props source,
     float     pitch
   ) {
     playAtTracked(sound, volume, listener, source, pitch);
@@ -153,8 +169,8 @@ namespace wheel_of_fear {
   VoiceId SoundPlayer::playAtTracked(
     SoundEnum sound,
     float     volume,
-    Vec2      listener,
-    Vec2      source,
+    Vec2Props listener,
+    Vec2Props source,
     float     pitch
   ) {
     return playTracked(
@@ -166,19 +182,23 @@ namespace wheel_of_fear {
   }
 
   float SoundPlayer::spatialGain(
-    Vec2 listener,
-    Vec2 source
+    Vec2Props listener,
+    Vec2Props source
   ) {
-    const float falloff =
-      Scalar::clamp(1.0F - listener.distance(source) / hearing_distance, 0, 1);
+    const float falloff = ScalarMath::clamp(
+      1.0F - (listener.distance(source) / hearing_distance),
+      0,
+      1
+    );
+
     return falloff * falloff;
   }
 
   float SoundPlayer::spatialPan(
-    Vec2 listener,
-    Vec2 source
+    Vec2Props listener,
+    Vec2Props source
   ) {
-    return Scalar::clamp((source.x - listener.x) / stereo_width, -1, 1);
+    return ScalarMath::clamp((source.x - listener.x) / stereo_width, -1, 1);
   }
 
   void SoundPlayer::stop(
@@ -194,36 +214,47 @@ namespace wheel_of_fear {
   }
 
   VoiceId SoundPlayer::startVoice(
-    SoundEnum sound,
-    float     volume,
-    float     pan,
-    float     pitch
+    SoundEnum                 sound,
+    const VoicePlaybackProps &playback
   ) {
     const auto &variants = sound_bank_[static_cast<std::size_t>(sound)];
+
     if(variants.empty() || mixer_.activeVoiceCount() >= max_voices)
       return no_voice;
+
     const std::vector<float> &source = variants[random_.index(variants.size())];
     if(source.empty()) return no_voice;
-    const float step = pitch;
-    const auto  frame_count =
+
+    const float step = playback.pitch;
+
+    const auto frame_count =
       static_cast<std::size_t>(static_cast<float>(source.size()) / step);
+
     const float left_gain =
-      std::sqrt(Scalar::clamp(0.5F - pan * 0.5F, 0, 1)) * Scalar::sqrt2;
+      std::sqrt(ScalarMath::clamp(0.5F - (playback.pan * 0.5F), 0, 1)) *
+      ScalarMath::sqrt2;
+
     const float right_gain =
-      std::sqrt(Scalar::clamp(0.5F + pan * 0.5F, 0, 1)) * Scalar::sqrt2;
+      std::sqrt(ScalarMath::clamp(0.5F + (playback.pan * 0.5F), 0, 1)) *
+      ScalarMath::sqrt2;
+
     auto samples = std::make_shared<std::vector<float>>(
       frame_count * AudioMixer::channel_count
     );
+
     for(std::size_t frame = 0; frame < frame_count; ++frame) {
-      const float position  = static_cast<float>(frame) * step;
-      const auto  index     = static_cast<std::size_t>(position);
-      const float fraction  = position - static_cast<float>(index);
-      const float current   = source[std::min(index, source.size() - 1)];
-      const float next      = source[std::min(index + 1, source.size() - 1)];
-      const float value     = current + (next - current) * fraction;
-      (*samples)[frame * 2] = value * left_gain;
-      (*samples)[frame * 2 + 1] = value * right_gain;
+      const float position = static_cast<float>(frame) * step;
+      const auto  index    = static_cast<std::size_t>(position);
+      const float fraction = position - static_cast<float>(index);
+      const float current  = source[std::min(index, source.size() - 1)];
+      const float next     = source[std::min(index + 1, source.size() - 1)];
+      const float value    = current + ((next - current) * fraction);
+
+      (*samples)[frame * 2]       = value * left_gain;
+      (*samples)[(frame * 2) + 1] = value * right_gain;
     }
-    return mixer_.play(std::move(samples), volume * master_volume_, false);
+
+    return mixer_
+      .play(std::move(samples), playback.volume * master_volume_, false);
   }
 } // namespace wheel_of_fear

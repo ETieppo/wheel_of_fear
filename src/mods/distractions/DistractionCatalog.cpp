@@ -9,51 +9,52 @@ namespace wheel_of_fear {
     switch(kind) {
       case DistractionKindEnum::metal_clang:
         return DistractionTraitsProps {
-          SoundEnum::metal_clang,
-          1.0F,
-          1,
-          230,
-          std::nullopt
+          .sound        = SoundEnum::metal_clang,
+          .volume       = 1.0F,
+          .pitch        = 1,
+          .noise_radius = 230,
+          .flash_color  = std::nullopt,
         };
       case DistractionKindEnum::pipe_rattle:
         return DistractionTraitsProps {
-          SoundEnum::metal_clang,
-          0.7F,
-          0.6F,
-          170,
-          std::nullopt
+          .sound        = SoundEnum::metal_clang,
+          .volume       = 0.7F,
+          .pitch        = 0.6F,
+          .noise_radius = 170,
+          .flash_color  = std::nullopt,
         };
       case DistractionKindEnum::mob_fight:
         return DistractionTraitsProps {
-          SoundEnum::distant_scream,
-          0.9F,
-          1,
-          260,
-          std::nullopt
+          .sound        = SoundEnum::distant_scream,
+          .volume       = 0.9F,
+          .pitch        = 1,
+          .noise_radius = 260,
+          .flash_color  = std::nullopt,
         };
       case DistractionKindEnum::glass_shatter:
         return DistractionTraitsProps {
-          SoundEnum::glass_shatter,
-          0.9F,
-          1,
-          200,
-          Palette::neon_cyan,
-          60,
-          0.25F,
-          8
+          .sound         = SoundEnum::glass_shatter,
+          .volume        = 0.9F,
+          .pitch         = 1,
+          .noise_radius  = 200,
+          .flash_color   = Palette::neon_cyan,
+          .flash_radius  = 60,
+          .flash_seconds = 0.25F,
+          .spark_count   = 8,
         };
       case DistractionKindEnum::power_surge:
         return DistractionTraitsProps {
-          SoundEnum::electric_buzz,
-          1.0F,
-          1,
-          220,
-          Color::hex(0xe8f4ff),
-          150,
-          0.6F,
-          20
+          .sound         = SoundEnum::electric_buzz,
+          .volume        = 1.0F,
+          .pitch         = 1,
+          .noise_radius  = 220,
+          .flash_color   = ColorProps::hex(0xe8f4ff),
+          .flash_radius  = 150,
+          .flash_seconds = 0.6F,
+          .spark_count   = 20,
         };
     }
+
     return DistractionTraitsProps {};
   }
 } // namespace wheel_of_fear

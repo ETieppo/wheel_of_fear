@@ -6,8 +6,8 @@ namespace wheel_of_fear {
   class LureBeaconProjectile final: public Projectile {
     public:
       LureBeaconProjectile(
-        Vec2 start,
-        Vec2 target
+        Vec2Props start,
+        Vec2Props target
       )
           : Projectile(
               ItemEnum::lure_beacon,
@@ -18,10 +18,11 @@ namespace wheel_of_fear {
 
       void land(
         GameContextDto &context,
-        Vec2            landing
+        Vec2Props       landing
       ) override;
 
     protected:
+      [[nodiscard]]
       const AtlasRegionProps &sprite(
         const SpriteSheetProps &sprites
       ) const override {

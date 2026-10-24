@@ -16,7 +16,8 @@ namespace wheel_of_fear {
         std::filesystem::path(base_path) / bundled_name;
       if(std::filesystem::is_directory(bundled)) return bundled;
     }
-    return std::filesystem::path(development_directory);
+
+    return {development_directory};
   }
 
   std::filesystem::path AssetLocator::assetPath(
@@ -24,6 +25,7 @@ namespace wheel_of_fear {
   ) {
     static const std::filesystem::path directory =
       resolveDirectory("assets", WHEEL_OF_FEAR_ASSET_DIRECTORY);
+
     return directory / relative_path;
   }
 
@@ -32,6 +34,7 @@ namespace wheel_of_fear {
   ) {
     static const std::filesystem::path directory =
       resolveDirectory("shaders", WHEEL_OF_FEAR_SHADER_DIRECTORY);
+
     return directory / file_name;
   }
 
@@ -39,23 +42,27 @@ namespace wheel_of_fear {
     const std::filesystem::path &path
   ) {
     std::ifstream stream(path, std::ios::binary);
+
     if(!stream)
       throw std::runtime_error("unable to open asset " + path.string());
-    return std::vector<std::uint8_t>(
+
+    return {
       std::istreambuf_iterator<char>(stream),
       std::istreambuf_iterator<char>()
-    );
+    };
   }
 
   std::string AssetLocator::readText(
     const std::filesystem::path &path
   ) {
     std::ifstream stream(path, std::ios::binary);
+
     if(!stream)
       throw std::runtime_error("unable to open asset " + path.string());
-    return std::string(
+
+    return {
       std::istreambuf_iterator<char>(stream),
       std::istreambuf_iterator<char>()
-    );
+    };
   }
 } // namespace wheel_of_fear

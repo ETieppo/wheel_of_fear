@@ -16,6 +16,7 @@ namespace wheel_of_fear {
     TextureAtlas &atlas
   ) {
     std::uint32_t cursor_y = RenderConfig::font_region_top;
+
     try {
       cursor_y = FontBaker::bake(
         AssetLocator::assetPath(FontCatalog::body_font),
@@ -26,6 +27,7 @@ namespace wheel_of_fear {
     } catch(const std::exception &error) {
       SDL_Log("body font unavailable: %s", error.what());
     }
+
     try {
       FontBaker::bake(
         AssetLocator::assetPath(FontCatalog::display_font),
@@ -36,6 +38,7 @@ namespace wheel_of_fear {
     } catch(const std::exception &error) {
       SDL_Log("display font unavailable: %s", error.what());
     }
+
     atlas.markDirty();
   }
 
@@ -66,10 +69,12 @@ namespace wheel_of_fear {
     const float scale  = size / pixelSize(typeface);
     float       width  = 0;
     std::size_t cursor = 0;
+
     while(cursor < text.size())
       width +=
         glyphFor(typeface, Utf8Decoder::nextCodepoint(text, cursor)).advance *
         scale;
+
     return width;
   }
 } // namespace wheel_of_fear

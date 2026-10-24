@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class LightFilterEnum {
+  enum class LightFilterEnum : std::uint8_t {
     any_light,
-    ultraviolet_only
+    ultraviolet_only,
   };
 } // namespace wheel_of_fear

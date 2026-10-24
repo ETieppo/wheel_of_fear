@@ -1,16 +1,17 @@
 #pragma once
 
+#include <cstdint>
 #include <string_view>
 
 namespace wheel_of_fear {
-  enum class MobIntentEnum {
+  enum class MobIntentEnum : std::uint8_t {
     patrolling,
     investigating,
     chasing,
     searching,
     retreating,
     lurking,
-    calling
+    calling,
   };
 
   constexpr std::string_view nameOf(
@@ -25,6 +26,7 @@ namespace wheel_of_fear {
       case MobIntentEnum::lurking:       return "lurking";
       case MobIntentEnum::calling:       return "calling";
     }
+
     return "";
   }
 } // namespace wheel_of_fear

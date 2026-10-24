@@ -3,47 +3,51 @@
 #include <SDL3/SDL_log.h>
 
 #include "core/platform/ModuleExport.hpp"
-#include "game/Game.hpp"
+#include "game/GameApplication.hpp"
 #include "game/GameModuleApiProps.hpp"
 
 namespace wheel_of_fear {
   namespace {
-    Game* createGame(
+    GameApplication* createGame(
       Window &window
     ) {
-      return new Game(window);
+      return new GameApplication(window);
     }
 
     void destroyGame(
-      Game* game
+      GameApplication* game
     ) {
       delete game;
     }
 
     bool runGameFrame(
-      Game &game
+      GameApplication &game
     ) {
       return game.runFrame();
     }
 
     std::vector<std::byte> saveGameSnapshot(
-      const Game &game
+      const GameApplication &game
     ) {
       const GameSnapshotProps snapshot = game.snapshot();
       std::vector<std::byte>  bytes(sizeof(GameSnapshotProps));
+
       std::memcpy(bytes.data(), &snapshot, sizeof(GameSnapshotProps));
+
       return bytes;
     }
 
     void restoreGameSnapshot(
-      Game                      &game,
+      GameApplication           &game,
       std::span<const std::byte> bytes
     ) {
       if(bytes.size() != sizeof(GameSnapshotProps)) {
         SDL_Log("info(hot_reload): snapshot layout changed, starting fresh");
         return;
       }
+
       GameSnapshotProps snapshot;
+
       std::memcpy(&snapshot, bytes.data(), sizeof(GameSnapshotProps));
       game.resume(snapshot);
     }

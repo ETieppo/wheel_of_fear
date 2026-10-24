@@ -44,9 +44,11 @@ namespace wheel_of_fear {
           reset();
           handle_ = std::exchange(other.handle_, nullptr);
         }
+
         return *this;
       }
 
+      [[nodiscard]]
       Handle get() const {
         return handle_;
       }

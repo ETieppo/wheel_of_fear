@@ -1,11 +1,11 @@
-struct Light {
+struct GpuLightProps {
     position_radius: vec4<f32>,
     direction_cone: vec4<f32>,
     color: vec4<f32>,
     animation: vec4<f32>,
 };
 
-struct PostProcess {
+struct PostProcessProps {
     view_origin: vec2<f32>,
     view_size: vec2<f32>,
     screen_size: vec2<f32>,
@@ -17,19 +17,19 @@ struct PostProcess {
     map_info: vec4<f32>,
     target_info: vec4<f32>,
     viewer: vec4<f32>,
-    lights: array<Light, 32>,
+    lights: array<GpuLightProps, 32>,
 };
 
-struct VertexOutput {
+struct VertexOutputProps {
     @builtin(position) position: vec4<f32>,
 };
-@vertex fn vs(@builtin(vertex_index) vertex_index: u32) -> VertexOutput {
+@vertex fn vs(@builtin(vertex_index) vertex_index: u32) -> VertexOutputProps {
     var points = array<vec2<f32>, 3>(
         vec2<f32>(-1.0, -1.0),
         vec2<f32>(3.0, -1.0),
         vec2<f32>(-1.0, 3.0)
     );
-    var output: VertexOutput;
+    var output: VertexOutputProps;
     output.position = vec4<f32>(points[vertex_index], 0.0, 1.0);
     return output;
 }
@@ -38,7 +38,7 @@ fn hash2(point: vec2<f32>) -> f32 {
     return fract(sin(dot(point, vec2<f32>(127.1, 311.7))) * 43758.5453);
 }
 
-@group(0) @binding(0) var<uniform> post: PostProcess;
+@group(0) @binding(0) var<uniform> post: PostProcessProps;
 @group(0) @binding(1) var lit_scene: texture_2d<f32>;
 @group(0) @binding(2) var bloom: texture_2d<f32>;
 @group(0) @binding(3) var lit_sampler: sampler;
@@ -63,7 +63,7 @@ fn toneMap(color: vec3<f32>) -> vec3<f32> {
     return pow(mapped, vec3<f32>(0.82));
 }
 
-@fragment fn fs(input: VertexOutput) -> @location(0) vec4<f32> {
+@fragment fn fs(input: VertexOutputProps) -> @location(0) vec4<f32> {
     let scale = min(post.screen_size.x / post.target_info.x, post.screen_size.y / post.target_info.y);
     let offset = (post.screen_size - post.target_info.xy * scale) * 0.5;
     let coordinate = (input.position.xy - offset) / (post.target_info.xy * scale);

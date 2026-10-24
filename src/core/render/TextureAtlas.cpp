@@ -14,6 +14,7 @@ namespace wheel_of_fear {
           0
         ) {
     Canvas atlas_canvas = canvas();
+
     for(int y = 0; y < 4; ++y)
       for(int x = 0; x < 4; ++x) atlas_canvas.set(x, y, {255, 255, 255, 255});
   }

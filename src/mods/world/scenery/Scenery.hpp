@@ -3,14 +3,14 @@
 #include <cstddef>
 #include <optional>
 
-#include "core/math/Color.hpp"
+#include "core/math/ColorProps.hpp"
 #include "core/math/RandomGenerator.hpp"
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 #include "core/render/AtlasRegionProps.hpp"
 #include "core/render/Renderer.hpp"
 #include "mods/art/SpriteSheetProps.hpp"
 #include "mods/distractions/enums/DistractionKindEnum.hpp"
-#include "mods/lighting/Lighting.hpp"
+#include "mods/lighting/LightingSystem.hpp"
 #include "mods/world/dtos/SceneryPlacementDto.hpp"
 #include "mods/world/dtos/SceneryViewDto.hpp"
 
@@ -22,14 +22,17 @@ namespace wheel_of_fear {
       );
       virtual ~Scenery() = default;
 
-      Vec2 position() const {
+      [[nodiscard]]
+      Vec2Props position() const {
         return position_;
       }
 
+      [[nodiscard]]
       std::size_t roomIndex() const {
         return room_index_;
       }
 
+      [[nodiscard]]
       bool isBroken() const {
         return is_broken_;
       }
@@ -41,6 +44,7 @@ namespace wheel_of_fear {
         RandomGenerator &random
       );
 
+      [[nodiscard]]
       virtual std::optional<DistractionKindEnum> bumpDistraction() const = 0;
       virtual void                               draw(
         Renderer               &renderer,
@@ -49,35 +53,40 @@ namespace wheel_of_fear {
       ) const;
 
       virtual void emitLight(
-        Lighting &,
-        const SceneryViewDto &
+        [[maybe_unused]] LightingSystem       &lighting,
+        [[maybe_unused]] const SceneryViewDto &view
       ) const {
       }
 
     protected:
+      [[nodiscard]]
       virtual const AtlasRegionProps &sprite(
         const SpriteSheetProps &sprites
       ) const = 0;
 
+      [[nodiscard]]
       virtual const AtlasRegionProps* glowSprite(
-        const SpriteSheetProps &
+        [[maybe_unused]] const SpriteSheetProps &sprites
       ) const {
         return nullptr;
       }
 
       virtual void reactToBump(
-        RandomGenerator &
+        [[maybe_unused]] RandomGenerator &random
       ) {
       }
 
-      Color color() const {
+      [[nodiscard]]
+      ColorProps color() const {
         return color_;
       }
 
+      [[nodiscard]]
       bool isMirrored() const {
         return mirrored_;
       }
 
+      [[nodiscard]]
       float flickerSeed() const {
         return flicker_seed_;
       }
@@ -95,10 +104,10 @@ namespace wheel_of_fear {
     private:
       static constexpr float wobble_duration_seconds = 0.8F;
 
-      Vec2        position_;
+      Vec2Props   position_;
       bool        mirrored_;
       std::size_t room_index_;
-      Color       color_;
+      ColorProps  color_;
       float       flicker_seed_;
       bool        is_broken_      = false;
       float       wobble_seconds_ = 0;

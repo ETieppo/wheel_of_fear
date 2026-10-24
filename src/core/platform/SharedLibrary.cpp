@@ -23,10 +23,12 @@ namespace wheel_of_fear {
     const std::string &name
   ) const {
     const SDL_FunctionPointer pointer = SDL_LoadFunction(handle_, name.c_str());
+
     if(pointer == nullptr)
       throw std::runtime_error(
         "missing library function " + name + ": " + SDL_GetError()
       );
+
     return pointer;
   }
 } // namespace wheel_of_fear

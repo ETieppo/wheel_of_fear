@@ -9,7 +9,7 @@ namespace wheel_of_fear {
           : ThrowableItem(
               ItemEnum::lure_beacon,
               "LURE BEACON",
-              Color::hex(0x7dff4a),
+              ColorProps::hex(0x7dff4a),
               4,
               1.1F
             ) {

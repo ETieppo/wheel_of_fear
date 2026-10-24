@@ -1,11 +1,11 @@
-struct Quad {
+struct QuadProps {
     position_size: vec4<f32>,
     texture_region: vec4<f32>,
     color: vec4<f32>,
     parameters: vec4<f32>,
 };
 
-struct View {
+struct QuadViewProps {
     origin: vec2<f32>,
     size: vec2<f32>,
     atlas_size: vec2<f32>,
@@ -13,12 +13,12 @@ struct View {
     padding: f32,
 };
 
-@group(0) @binding(0) var<uniform> view: View;
-@group(0) @binding(1) var<storage, read> quads: array<Quad>;
+@group(0) @binding(0) var<uniform> view: QuadViewProps;
+@group(0) @binding(1) var<storage, read> quads: array<QuadProps>;
 @group(0) @binding(2) var atlas_sampler: sampler;
 @group(0) @binding(3) var atlas: texture_2d<f32>;
 
-struct VertexOutput {
+struct VertexOutputProps {
     @builtin(position) position: vec4<f32>,
     @location(0) texture_coordinate: vec2<f32>,
     @location(1) local: vec2<f32>,
@@ -27,7 +27,7 @@ struct VertexOutput {
     @location(4) world: vec2<f32>,
 };
 
-@vertex fn vs(@builtin(vertex_index) vertex_index: u32) -> VertexOutput {
+@vertex fn vs(@builtin(vertex_index) vertex_index: u32) -> VertexOutputProps {
     let quad = quads[vertex_index / 6u];
     var corners = array<vec2<f32>, 6>(
         vec2<f32>(-0.5, -0.5),
@@ -44,7 +44,7 @@ struct VertexOutput {
     let scaled = corner * quad.position_size.zw;
     let rotated = vec2<f32>(scaled.x * cosine - scaled.y * sine, scaled.x * sine + scaled.y * cosine) + quad.position_size.xy;
     let normalized_device = (rotated - view.origin) / view.size * 2.0 - vec2<f32>(1.0, 1.0);
-    var output: VertexOutput;
+    var output: VertexOutputProps;
     output.position = vec4<f32>(normalized_device.x, -normalized_device.y, 0.0, 1.0);
     output.texture_coordinate = quad.texture_region.xy + (quad.texture_region.zw - quad.texture_region.xy) * (corner + vec2<f32>(0.5, 0.5));
     output.local = corner * 2.0;
@@ -73,7 +73,7 @@ fn premultiplied(color: vec4<f32>) -> vec4<f32> {
     return vec4<f32>(color.rgb * color.a, color.a);
 }
 
-@fragment fn fs(input: VertexOutput) -> @location(0) vec4<f32> {
+@fragment fn fs(input: VertexOutputProps) -> @location(0) vec4<f32> {
     let texel = textureSample(atlas, atlas_sampler, input.texture_coordinate);
     let kind = input.parameters.y;
     let radial = length(input.local);

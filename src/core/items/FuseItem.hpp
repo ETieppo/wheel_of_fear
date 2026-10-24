@@ -9,7 +9,7 @@ namespace wheel_of_fear {
           : GeneratorPartItem(
               ItemEnum::fuse,
               "FUSE",
-              Color::hex(0x18f0ff)
+              ColorProps::hex(0x18f0ff)
             ) {
       }
   };

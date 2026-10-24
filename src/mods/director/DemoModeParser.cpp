@@ -26,16 +26,19 @@ namespace wheel_of_fear {
        {"lure", DemoModeEnum::lure},
        {"doors", DemoModeEnum::doors},
        {"walk", DemoModeEnum::walk},
-       }
+       },
     };
+
     for(const auto &[mode_name, mode] : modes)
       if(mode_name == name) return mode;
+
     return DemoModeEnum::none;
   }
 
   DemoModeEnum DemoModeParser::fromEnvironment() {
     const char* value = std::getenv("ENGRENAGEM_DEMO");
     if(value == nullptr) return DemoModeEnum::none;
+
     return parse(value);
   }
 } // namespace wheel_of_fear

@@ -22,35 +22,42 @@ namespace wheel_of_fear {
           , queue_(queue) {
       }
 
+      [[nodiscard]]
       GpuBuffer createUniformBuffer(
         std::string_view label,
         std::size_t      size
       ) const;
+      [[nodiscard]]
       GpuBuffer createStorageBuffer(
         std::string_view label,
         std::size_t      size
       ) const;
+      [[nodiscard]]
       GpuOwnedTextureProps createRenderTarget(
         std::string_view  label,
         std::uint32_t     width,
         std::uint32_t     height,
         WGPUTextureFormat format
       ) const;
+      [[nodiscard]]
       GpuOwnedTextureProps createSampledTexture(
         std::string_view label,
         std::uint32_t    width,
         std::uint32_t    height,
         std::uint32_t    mip_level_count
       ) const;
+      [[nodiscard]]
       GpuOwnedTextureProps uploadMipmappedTexture(
         std::string_view         label,
         const DecodedImageProps &image
       ) const;
+      [[nodiscard]]
       GpuSampler createSampler(
         std::string_view label,
         WGPUAddressMode  address_mode,
         std::uint16_t    max_anisotropy
       ) const;
+      [[nodiscard]]
       GpuBindGroupLayout createBindGroupLayout(
         std::string_view                          label,
         std::span<const WGPUBindGroupLayoutEntry> entries

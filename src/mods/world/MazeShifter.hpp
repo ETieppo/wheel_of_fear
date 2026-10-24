@@ -7,28 +7,29 @@
 #include <vector>
 
 #include "core/math/RandomGenerator.hpp"
-#include "core/math/Vec2.hpp"
-#include "mods/world/TileMap.hpp"
+#include "core/math/Vec2Props.hpp"
+#include "mods/world/TileMapModel.hpp"
 
 namespace wheel_of_fear {
   class MazeShifter {
     public:
-      void reset();
-      void animateDoorways(
-        TileMap              &map,
-        float                 delta_seconds,
-        std::span<const Vec2> occupants
+      void        reset();
+      static void animateDoorways(
+        TileMapModel              &map,
+        float                      delta_seconds,
+        std::span<const Vec2Props> occupants
       );
       bool advance(
-        TileMap                   &map,
+        TileMapModel              &map,
         RandomGenerator           &random,
         std::uint32_t              phase,
         float                      delta_seconds,
-        Vec2                       view_center,
+        Vec2Props                  view_center,
         std::optional<std::size_t> focus_room,
-        std::span<const Vec2>      occupants
+        std::span<const Vec2Props> occupants
       );
 
+      [[nodiscard]]
       float timerSeconds() const {
         return timer_seconds_;
       }
@@ -39,32 +40,32 @@ namespace wheel_of_fear {
         timer_seconds_ = seconds;
       }
 
+      [[nodiscard]]
       const std::array<
         std::optional<std::size_t>,
         2
-      > &
-      movedDoorwayIndices() const {
+      > &movedDoorwayIndices() const {
         return moved_doorway_indices_;
       }
 
       static bool isInsideView(
-        Vec2 point,
-        Vec2 view_center
+        Vec2Props point,
+        Vec2Props view_center
       );
 
     private:
       static constexpr float first_shift_delay_seconds = 20;
 
       static std::vector<std::size_t> collectCandidates(
-        const TileMap        &map,
-        std::size_t           focus_room,
-        Vec2                  view_center,
-        std::span<const Vec2> occupants,
-        bool                  wants_open
+        const TileMapModel        &map,
+        std::size_t                focus_room,
+        Vec2Props                  view_center,
+        std::span<const Vec2Props> occupants,
+        bool                       wants_open
       );
       static bool isOccupied(
-        const DoorwayProps   &doorway,
-        std::span<const Vec2> occupants
+        const DoorwayProps        &doorway,
+        std::span<const Vec2Props> occupants
       );
 
       float timer_seconds_ = first_shift_delay_seconds;

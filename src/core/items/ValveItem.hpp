@@ -9,7 +9,7 @@ namespace wheel_of_fear {
           : GeneratorPartItem(
               ItemEnum::valve,
               "VALVE",
-              Color::hex(0xff5a3a)
+              ColorProps::hex(0xff5a3a)
             ) {
       }
   };

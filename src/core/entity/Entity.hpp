@@ -3,28 +3,30 @@
 #include <cstddef>
 
 #include "core/entity/Collider.hpp"
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   class Entity {
     public:
       Entity() = default;
       Entity(
-        Vec2  position,
-        float collision_half_size
+        Vec2Props position,
+        float     collision_half_size
       );
       virtual ~Entity() = default;
 
-      Vec2 position() const {
+      [[nodiscard]]
+      Vec2Props position() const {
         return position_;
       }
 
       void setPosition(
-        Vec2 position
+        Vec2Props position
       ) {
         position_ = position;
       }
 
+      [[nodiscard]]
       float heading() const {
         return heading_;
       }
@@ -35,14 +37,17 @@ namespace wheel_of_fear {
         heading_ = heading;
       }
 
+      [[nodiscard]]
       float collisionHalfSize() const {
         return collision_half_size_;
       }
 
+      [[nodiscard]]
       float animationSeconds() const {
         return animation_seconds_;
       }
 
+      [[nodiscard]]
       bool isAlive() const {
         return is_alive_;
       }
@@ -53,6 +58,7 @@ namespace wheel_of_fear {
         is_alive_ = is_alive;
       }
 
+      [[nodiscard]]
       bool isMoving() const {
         return is_moving_;
       }
@@ -64,17 +70,20 @@ namespace wheel_of_fear {
       }
 
       void respawnAt(
-        Vec2 position
+        Vec2Props position
       );
       void advanceAnimation(
         float delta_seconds
       );
-      Vec2  facing() const;
+      [[nodiscard]]
+      Vec2Props facing() const;
+      [[nodiscard]]
       float distanceTo(
-        Vec2 point
+        Vec2Props point
       ) const;
-      Vec2 directionTo(
-        Vec2 point
+      [[nodiscard]]
+      Vec2Props directionTo(
+        Vec2Props point
       ) const;
       void turnToward(
         float angle,
@@ -82,27 +91,29 @@ namespace wheel_of_fear {
         float turn_rate
       );
       void faceToward(
-        Vec2 point
+        Vec2Props point
       );
       void slide(
         const Collider &collider,
-        Vec2            displacement
+        Vec2Props       displacement
       );
+      [[nodiscard]]
       std::size_t animationFrame(
         float       frames_per_second,
         std::size_t frame_count
       ) const;
+      [[nodiscard]]
       bool isFacing(
-        Vec2  point,
-        float minimum_cosine
+        Vec2Props point,
+        float     minimum_cosine
       ) const;
 
     private:
-      Vec2  position_ {};
-      float heading_             = 0;
-      float collision_half_size_ = 4;
-      float animation_seconds_   = 0;
-      bool  is_alive_            = true;
-      bool  is_moving_           = false;
+      Vec2Props position_ {};
+      float     heading_             = 0;
+      float     collision_half_size_ = 4;
+      float     animation_seconds_   = 0;
+      bool      is_alive_            = true;
+      bool      is_moving_           = false;
   };
 } // namespace wheel_of_fear

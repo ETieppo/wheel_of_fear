@@ -9,7 +9,7 @@ namespace wheel_of_fear {
           : ThrowableItem(
               ItemEnum::neon_grenade,
               "NEON GRENADE",
-              Color::hex(0xff2bd6),
+              ColorProps::hex(0xff2bd6),
               3,
               0.85F
             ) {

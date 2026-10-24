@@ -20,22 +20,27 @@ namespace wheel_of_fear {
         const GpuContext &
       ) = delete;
 
+      [[nodiscard]]
       WGPUDevice device() const {
         return device_.get();
       }
 
+      [[nodiscard]]
       WGPUQueue queue() const {
         return queue_.get();
       }
 
+      [[nodiscard]]
       WGPUTextureFormat surfaceFormat() const {
         return surface_format_;
       }
 
+      [[nodiscard]]
       std::uint32_t surfaceWidth() const {
         return surface_width_;
       }
 
+      [[nodiscard]]
       std::uint32_t surfaceHeight() const {
         return surface_height_;
       }

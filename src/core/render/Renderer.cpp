@@ -21,35 +21,43 @@ namespace wheel_of_fear {
   std::optional<GroundMaterialsDto> Renderer::takeGroundMaterials() {
     std::optional<GroundMaterialsDto> materials =
       std::move(pending_ground_materials_);
+
     pending_ground_materials_.reset();
+
     return materials;
   }
 
   void Renderer::beginFrame(
-    Vec2  camera,
-    float time
+    Vec2Props camera,
+    float     time
   ) {
     frame_.reset();
-    frame_.post.time        = time;
+    frame_.post.time = time;
+
     frame_.post.view_origin = {
-      camera.x - static_cast<float>(RenderConfig::view_width) / 2,
-      camera.y - static_cast<float>(RenderConfig::view_height) / 2
+      camera.x - (static_cast<float>(RenderConfig::view_width) / 2),
+      camera.y - (static_cast<float>(RenderConfig::view_height) / 2),
     };
+
     frame_.post.view_size = {
       static_cast<float>(RenderConfig::view_width),
-      static_cast<float>(RenderConfig::view_height)
+      static_cast<float>(RenderConfig::view_height),
     };
   }
 
-  Vec2 Renderer::viewOrigin() const {
-    return Vec2::of(frame_.post.view_origin[0], frame_.post.view_origin[1]);
+  Vec2Props Renderer::viewOrigin() const {
+    return Vec2Props::of(
+      frame_.post.view_origin[0],
+      frame_.post.view_origin[1]
+    );
   }
 
   bool Renderer::isVisible(
-    Vec2  point,
-    float margin
+    Vec2Props point,
+    float     margin
   ) const {
-    const Vec2 origin = viewOrigin();
+    const Vec2Props origin = viewOrigin();
+
     return point.x >
            origin.x -
            margin &&
@@ -67,24 +75,25 @@ namespace wheel_of_fear {
   }
 
   QuadProps Renderer::makeQuad(
-    Vec2 center,
-    Vec2 size,
+    Vec2Props center,
+    Vec2Props size,
     std::array<
       float,
       4
     >            region,
-    Color        color,
+    ColorProps   color,
     QuadKindEnum kind,
     float        rotation,
     float        parameter
   ) {
     return QuadProps {
-      {center.x, center.y,                                  size.x, size.y},
-      region,
-      color.toArray(),
-      {rotation,
-       static_cast<float>(static_cast<std::uint8_t>(kind)),
-       parameter,                                                   0     },
+      .position_size  = {center.x, center.y, size.x, size.y},
+      .texture_region = region,
+      .color          = color.toArray(),
+      .parameters     = {
+                         rotation, static_cast<float>(static_cast<std::uint8_t>(kind)),
+                         parameter, 0,
+                         },
     };
   }
 
@@ -101,7 +110,7 @@ namespace wheel_of_fear {
 
   void Renderer::drawSprite(
     const AtlasRegionProps &region,
-    Vec2                    center,
+    Vec2Props               center,
     const SpriteDrawDto    &options
   ) {
     drawSpriteSized(
@@ -114,11 +123,12 @@ namespace wheel_of_fear {
 
   void Renderer::drawSpriteSized(
     const AtlasRegionProps &region,
-    Vec2                    center,
-    Vec2                    size,
+    Vec2Props               center,
+    Vec2Props               size,
     const SpriteDrawDto    &options
   ) {
     const auto coordinates = regionCoordinates(region, options.mirrored);
+
     frame_.world.push(makeQuad(
       center,
       size,
@@ -128,6 +138,7 @@ namespace wheel_of_fear {
       options.rotation,
       options.petrify
     ));
+
     if(options.glow > 0)
       frame_.glow.push(makeQuad(
         center,
@@ -142,8 +153,8 @@ namespace wheel_of_fear {
 
   void Renderer::drawGlowSprite(
     const AtlasRegionProps &region,
-    Vec2                    center,
-    Color                   color,
+    Vec2Props               center,
+    ColorProps              color,
     const SpriteDrawDto    &options
   ) {
     frame_.glow.push(makeQuad(
@@ -158,14 +169,14 @@ namespace wheel_of_fear {
   }
 
   void Renderer::drawGlowDisc(
-    Vec2  center,
-    float radius,
-    Color color,
-    float softness
+    Vec2Props  center,
+    float      radius,
+    ColorProps color,
+    float      softness
   ) {
     frame_.glow.push(makeQuad(
       center,
-      Vec2::of(radius * 2, radius * 2),
+      Vec2Props::of(radius * 2, radius * 2),
       blank_region,
       color,
       QuadKindEnum::soft_disc,
@@ -175,14 +186,14 @@ namespace wheel_of_fear {
   }
 
   void Renderer::drawShadowDisc(
-    Vec2  center,
-    float radius,
-    Color color,
-    float softness
+    Vec2Props  center,
+    float      radius,
+    ColorProps color,
+    float      softness
   ) {
     frame_.world.push(makeQuad(
       center,
-      Vec2::of(radius * 2, radius * 2),
+      Vec2Props::of(radius * 2, radius * 2),
       blank_region,
       color,
       QuadKindEnum::soft_disc,
@@ -192,9 +203,9 @@ namespace wheel_of_fear {
   }
 
   void Renderer::drawGlowRectangle(
-    Vec2  center,
-    Vec2  size,
-    Color color
+    Vec2Props  center,
+    Vec2Props  size,
+    ColorProps color
   ) {
     frame_.glow.push(
       makeQuad(center, size, blank_region, color, QuadKindEnum::solid, 0, 0)
@@ -202,16 +213,18 @@ namespace wheel_of_fear {
   }
 
   void Renderer::drawGlowBeam(
-    Vec2  origin,
-    float angle,
-    float length,
-    float width,
-    Color color
+    Vec2Props  origin,
+    float      angle,
+    float      length,
+    float      width,
+    ColorProps color
   ) {
-    const Vec2 center = origin.add(Vec2::fromAngle(angle).scale(length / 2));
+    const Vec2Props center =
+      origin.add(Vec2Props::fromAngle(angle).scale(length / 2));
+
     frame_.glow.push(makeQuad(
       center,
-      Vec2::of(length, width),
+      Vec2Props::of(length, width),
       blank_region,
       color,
       QuadKindEnum::light_beam,
@@ -224,6 +237,7 @@ namespace wheel_of_fear {
     const GpuLightProps &light
   ) {
     if(frame_.light_count >= RenderConfig::max_gpu_lights) return;
+
     frame_.lights[frame_.light_count] = light;
     frame_.light_count += 1;
   }
@@ -238,33 +252,32 @@ namespace wheel_of_fear {
       static_cast<float>(width),
       static_cast<float>(height),
       RenderConfig::tile_size,
-      0
+      0,
     };
     if(frame_.map_version == version) return;
-    std::fill(
-      frame_.map_texels.begin(),
-      frame_.map_texels.end(),
-      std::uint8_t {0}
-    );
+
+    std::ranges::fill(frame_.map_texels, std::uint8_t {0});
+
     for(std::uint32_t y = 0; y < height; ++y) {
       for(std::uint32_t x = 0; x < width; ++x) {
         frame_.map_texels
-          [(static_cast<std::size_t>(y) * RenderConfig::max_map_size + x) * 4] =
-          walls[static_cast<std::size_t>(y) * width + x] != 0 ? 255 : 0;
+          [((static_cast<std::size_t>(y) * RenderConfig::max_map_size) + x) *
+           4] = walls[(static_cast<std::size_t>(y) * width) + x] != 0 ? 255 : 0;
       }
     }
+
     frame_.map_version = version;
   }
 
   void Renderer::setViewer(
-    Vec2 position,
-    bool is_enabled
+    Vec2Props position,
+    bool      is_enabled
   ) {
     frame_.post.viewer = {position.x, position.y, is_enabled ? 1.0F : 0.0F, 0};
   }
 
   void Renderer::setPostProcess(
-    Color ambient,
+    ColorProps ambient,
     std::array<
       float,
       4
@@ -280,15 +293,15 @@ namespace wheel_of_fear {
   }
 
   void Renderer::drawUiRectangle(
-    float x,
-    float y,
-    float width,
-    float height,
-    Color color
+    float      x,
+    float      y,
+    float      width,
+    float      height,
+    ColorProps color
   ) {
     frame_.ui.push(makeQuad(
-      Vec2::of(x + width / 2, y + height / 2),
-      Vec2::of(width, height),
+      Vec2Props::of(x + (width / 2), y + (height / 2)),
+      Vec2Props::of(width, height),
       blank_region,
       color,
       QuadKindEnum::solid,
@@ -299,9 +312,9 @@ namespace wheel_of_fear {
 
   void Renderer::drawUiShape(
     QuadKindEnum kind,
-    Vec2         center,
-    Vec2         size,
-    Color        color,
+    Vec2Props    center,
+    Vec2Props    size,
+    ColorProps   color,
     float        rotation,
     float        parameter
   ) {
@@ -312,14 +325,15 @@ namespace wheel_of_fear {
 
   void Renderer::drawUiSprite(
     const AtlasRegionProps &region,
-    Vec2                    center,
+    Vec2Props               center,
     float                   size,
-    Color                   color
+    ColorProps              color
   ) {
     const float aspect = region.height / std::max(region.width, 1.0F);
+
     frame_.ui.push(makeQuad(
       center,
-      Vec2::of(size, size * aspect),
+      Vec2Props::of(size, size * aspect),
       region.textureCoordinates(),
       color,
       QuadKindEnum::sprite,
@@ -340,7 +354,7 @@ namespace wheel_of_fear {
     float            x,
     float            y,
     float            size,
-    Color            color,
+    ColorProps       color,
     TextAlignEnum    alignment
   ) {
     drawTypefaceText(TypefaceEnum::body, text, x, y, size, color, alignment);
@@ -351,7 +365,7 @@ namespace wheel_of_fear {
     float            x,
     float            y,
     float            size,
-    Color            color,
+    ColorProps       color,
     TextAlignEnum    alignment
   ) {
     drawTypefaceText(
@@ -360,9 +374,10 @@ namespace wheel_of_fear {
       x + 2,
       y + 3,
       size,
-      Color::black().withAlpha(color.a * 0.7F),
+      ColorProps::black().withAlpha(color.a * 0.7F),
       alignment
     );
+
     drawTypefaceText(TypefaceEnum::display, text, x, y, size, color, alignment);
   }
 
@@ -372,28 +387,34 @@ namespace wheel_of_fear {
     float            x,
     float            y,
     float            size,
-    Color            color,
+    ColorProps       color,
     TextAlignEnum    alignment
   ) {
     const float scale = size / typefaces_.pixelSize(typeface);
     float       pen_x = x;
+
     if(alignment == TextAlignEnum::center)
-      pen_x = x - typefaces_.measure(typeface, text, size) / 2;
+      pen_x = x - (typefaces_.measure(typeface, text, size) / 2);
+
     if(alignment == TextAlignEnum::right)
       pen_x = x - typefaces_.measure(typeface, text, size);
-    const float baseline = y + size * 0.8F;
+
+    const float baseline = y + (size * 0.8F);
     std::size_t cursor   = 0;
+
     while(cursor < text.size()) {
       const GlyphProps &glyph =
         typefaces_.glyphFor(typeface, Utf8Decoder::nextCodepoint(text, cursor));
+
       if(glyph.region.width > 0) {
         const float width  = glyph.region.width * scale;
         const float height = glyph.region.height * scale;
-        const float left   = pen_x + glyph.bearing_x * scale;
-        const float top    = baseline - glyph.bearing_y * scale;
+        const float left   = pen_x + (glyph.bearing_x * scale);
+        const float top    = baseline - (glyph.bearing_y * scale);
+
         frame_.ui.push(makeQuad(
-          Vec2::of(left + width / 2, top + height / 2),
-          Vec2::of(width, height),
+          Vec2Props::of(left + (width / 2), top + (height / 2)),
+          Vec2Props::of(width, height),
           glyph.region.textureCoordinates(),
           color,
           QuadKindEnum::glyph,
@@ -401,6 +422,7 @@ namespace wheel_of_fear {
           0
         ));
       }
+
       pen_x += glyph.advance * scale;
     }
   }

@@ -31,6 +31,7 @@ namespace wheel_of_fear {
       std::uint32_t                  first_phase    = 1;
       float                          spawn_weight   = 0;
 
+      [[nodiscard]]
       constexpr bool canSee() const {
         return sight_factor > 0;
       }

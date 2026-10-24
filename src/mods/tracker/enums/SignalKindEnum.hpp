@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class SignalKindEnum {
+  enum class SignalKindEnum : std::uint8_t {
     generator,
     fabricator,
     exit,
-    unidentified
+    unidentified,
   };
 } // namespace wheel_of_fear

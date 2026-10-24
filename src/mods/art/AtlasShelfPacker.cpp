@@ -13,17 +13,21 @@ namespace wheel_of_fear {
       cursor_y_ += row_height_ + padding;
       row_height_ = 0;
     }
+
     if(cursor_y_ + height + padding > height_limit_)
       throw std::runtime_error("sprite atlas is full");
+
     const AtlasRegionProps region {
-      static_cast<float>(cursor_x_),
-      static_cast<float>(cursor_y_),
-      static_cast<float>(width),
-      static_cast<float>(height),
-      1
+      .x               = static_cast<float>(cursor_x_),
+      .y               = static_cast<float>(cursor_y_),
+      .width           = static_cast<float>(width),
+      .height          = static_cast<float>(height),
+      .pixels_per_unit = 1,
     };
+
     cursor_x_ += width + padding;
     row_height_ = std::max(row_height_, height);
+
     return region;
   }
 } // namespace wheel_of_fear

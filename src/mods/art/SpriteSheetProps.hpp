@@ -66,6 +66,7 @@ namespace wheel_of_fear {
       std::array<AtlasRegionProps, 3>          neon_signs {};
       std::array<AtlasRegionProps, item_count> item_icons {};
 
+      [[nodiscard]]
       const AtlasRegionProps &itemIcon(
         ItemEnum item
       ) const {

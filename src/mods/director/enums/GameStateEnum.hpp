@@ -1,12 +1,14 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class GameStateEnum {
+  enum class GameStateEnum : std::uint8_t {
     title,
     phase_intro,
     playing,
     paused,
     game_over,
-    phase_cleared
+    phase_cleared,
   };
 } // namespace wheel_of_fear

@@ -1,12 +1,13 @@
 #pragma once
 
+#include <cstdint>
 #include <string_view>
 
 namespace wheel_of_fear {
-  enum class MothStanceEnum {
+  enum class MothStanceEnum : std::uint8_t {
     waiting,
     following,
-    departing
+    departing,
   };
 
   constexpr std::string_view nameOf(
@@ -17,6 +18,7 @@ namespace wheel_of_fear {
       case MothStanceEnum::following: return "following";
       case MothStanceEnum::departing: return "departing";
     }
+
     return "";
   }
 } // namespace wheel_of_fear

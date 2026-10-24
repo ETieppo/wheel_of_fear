@@ -6,8 +6,8 @@
 #include <span>
 #include <string_view>
 
-#include "core/math/Color.hpp"
-#include "core/math/Vec2.hpp"
+#include "core/math/ColorProps.hpp"
+#include "core/math/Vec2Props.hpp"
 #include "core/render/AtlasRegionProps.hpp"
 #include "core/render/FrameProps.hpp"
 #include "core/render/GpuLightProps.hpp"
@@ -27,6 +27,7 @@ namespace wheel_of_fear {
         return atlas_;
       }
 
+      [[nodiscard]]
       const FrameProps &frame() const {
         return frame_;
       }
@@ -44,55 +45,57 @@ namespace wheel_of_fear {
       std::optional<GroundMaterialsDto> takeGroundMaterials();
 
       void beginFrame(
-        Vec2  camera,
-        float time
+        Vec2Props camera,
+        float     time
       );
-      Vec2 viewOrigin() const;
+      [[nodiscard]]
+      Vec2Props viewOrigin() const;
+      [[nodiscard]]
       bool isVisible(
-        Vec2  point,
-        float margin
+        Vec2Props point,
+        float     margin
       ) const;
 
       void drawSprite(
         const AtlasRegionProps &region,
-        Vec2                    center,
+        Vec2Props               center,
         const SpriteDrawDto    &options = {}
       );
       void drawSpriteSized(
         const AtlasRegionProps &region,
-        Vec2                    center,
-        Vec2                    size,
+        Vec2Props               center,
+        Vec2Props               size,
         const SpriteDrawDto    &options
       );
       void drawGlowSprite(
         const AtlasRegionProps &region,
-        Vec2                    center,
-        Color                   color,
+        Vec2Props               center,
+        ColorProps              color,
         const SpriteDrawDto    &options = {}
       );
       void drawGlowDisc(
-        Vec2  center,
-        float radius,
-        Color color,
-        float softness
+        Vec2Props  center,
+        float      radius,
+        ColorProps color,
+        float      softness
       );
       void drawShadowDisc(
-        Vec2  center,
-        float radius,
-        Color color,
-        float softness
+        Vec2Props  center,
+        float      radius,
+        ColorProps color,
+        float      softness
       );
       void drawGlowRectangle(
-        Vec2  center,
-        Vec2  size,
-        Color color
+        Vec2Props  center,
+        Vec2Props  size,
+        ColorProps color
       );
       void drawGlowBeam(
-        Vec2  origin,
-        float angle,
-        float length,
-        float width,
-        Color color
+        Vec2Props  origin,
+        float      angle,
+        float      length,
+        float      width,
+        ColorProps color
       );
       void addLight(
         const GpuLightProps &light
@@ -104,11 +107,11 @@ namespace wheel_of_fear {
         std::uint64_t                 version
       );
       void setViewer(
-        Vec2 position,
-        bool is_enabled
+        Vec2Props position,
+        bool      is_enabled
       );
       void setPostProcess(
-        Color ambient,
+        ColorProps ambient,
         std::array<
           float,
           4
@@ -120,26 +123,27 @@ namespace wheel_of_fear {
       );
 
       void drawUiRectangle(
-        float x,
-        float y,
-        float width,
-        float height,
-        Color color
+        float      x,
+        float      y,
+        float      width,
+        float      height,
+        ColorProps color
       );
       void drawUiShape(
         QuadKindEnum kind,
-        Vec2         center,
-        Vec2         size,
-        Color        color,
+        Vec2Props    center,
+        Vec2Props    size,
+        ColorProps   color,
         float        rotation,
         float        parameter
       );
       void drawUiSprite(
         const AtlasRegionProps &region,
-        Vec2                    center,
+        Vec2Props               center,
         float                   size,
-        Color                   color
+        ColorProps              color
       );
+      [[nodiscard]]
       float measureText(
         std::string_view text,
         float            size
@@ -149,7 +153,7 @@ namespace wheel_of_fear {
         float            x,
         float            y,
         float            size,
-        Color            color,
+        ColorProps       color,
         TextAlignEnum    alignment
       );
       void drawDisplayText(
@@ -157,19 +161,19 @@ namespace wheel_of_fear {
         float            x,
         float            y,
         float            size,
-        Color            color,
+        ColorProps       color,
         TextAlignEnum    alignment
       );
 
     private:
       static QuadProps makeQuad(
-        Vec2 center,
-        Vec2 size,
+        Vec2Props center,
+        Vec2Props size,
         std::array<
           float,
           4
         >            region,
-        Color        color,
+        ColorProps   color,
         QuadKindEnum kind,
         float        rotation,
         float        parameter
@@ -188,7 +192,7 @@ namespace wheel_of_fear {
         float            x,
         float            y,
         float            size,
-        Color            color,
+        ColorProps       color,
         TextAlignEnum    alignment
       );
 

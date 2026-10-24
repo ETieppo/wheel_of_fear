@@ -1,15 +1,27 @@
 #include "mods/world/RoomPowerGrid.hpp"
-#include "core/math/Scalar.hpp"
-#include "core/render/RenderConfig.hpp"
+
 #include <algorithm>
 #include <cmath>
+#include <utility>
+
+#include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
   void RoomPowerGrid::addRoom(
-    Color color,
-    float conduit_offset
+    ColorProps   color,
+    RoomLedStrip strip,
+    float        conduit_offset
   ) {
-    rooms_.push_back(RoomPowerProps {color, false, 0, conduit_offset});
+    rooms_.push_back(
+      RoomPowerProps {
+        .color          = color,
+        .is_powered     = false,
+        .lit_amount     = 0,
+        .conduit_offset = conduit_offset,
+      }
+    );
+
+    strips_.push_back(std::move(strip));
   }
 
   void RoomPowerGrid::power(
@@ -17,6 +29,7 @@ namespace wheel_of_fear {
     bool        is_powered
   ) {
     if(room_index >= rooms_.size()) return;
+
     rooms_[room_index].is_powered = is_powered;
   }
 
@@ -38,32 +51,17 @@ namespace wheel_of_fear {
     return room_index < rooms_.size() ? rooms_[room_index].lit_amount : 0.0F;
   }
 
-  float RoomPowerGrid::perimeterOf(
-    const RoomProps &room
+  float RoomPowerGrid::distanceFromConduit(
+    const RoomPowerProps &power,
+    float                 perimeter,
+    float                 distance_along
   ) {
-    return 2 *
-           (static_cast<float>(room.width) + static_cast<float>(room.height)) *
-           RenderConfig::tile_size;
-  }
+    const float wrapped = ScalarMath::floorModulo(
+      distance_along - power.conduit_offset + (perimeter * 1.5F),
+      perimeter
+    );
 
-  Vec2 RoomPowerGrid::perimeterPoint(
-    const RoomProps &room,
-    float            distance_along
-  ) {
-    const Vec2  minimum = room.worldMinimum().add(Vec2::of(1.5F, 1.5F));
-    const Vec2  maximum = room.worldMaximum().sub(Vec2::of(1.5F, 1.5F));
-    const float width   = maximum.x - minimum.x;
-    const float height  = maximum.y - minimum.y;
-    const float total   = 2 * (width + height);
-    float       remaining =
-      Scalar::floorModulo(distance_along / perimeterOf(room) * total, total);
-    if(remaining < width) return Vec2::of(minimum.x + remaining, minimum.y);
-    remaining -= width;
-    if(remaining < height) return Vec2::of(maximum.x, minimum.y + remaining);
-    remaining -= height;
-    if(remaining < width) return Vec2::of(maximum.x - remaining, maximum.y);
-    remaining -= width;
-    return Vec2::of(minimum.x, maximum.y - remaining);
+    return (perimeter * 0.5F) - std::abs(wrapped - (perimeter * 0.5F));
   }
 
   bool RoomPowerGrid::isStripLitAt(
@@ -71,15 +69,10 @@ namespace wheel_of_fear {
     float                 perimeter,
     float                 distance_along
   ) {
-    const float offset = std::abs(
-      Scalar::floorModulo(
-        distance_along - power.conduit_offset + perimeter * 1.5F,
-        perimeter
-      ) -
-      perimeter *
-      0.5F
-    );
-    return perimeter * 0.5F - offset <= power.lit_amount * perimeter * 0.5F;
+    return distanceFromConduit(power, perimeter, distance_along) <=
+           power.lit_amount *
+           perimeter *
+           0.5F;
   }
 
   void RoomPowerGrid::advance(
@@ -88,41 +81,44 @@ namespace wheel_of_fear {
     for(RoomPowerProps &power : rooms_) {
       const float rate = power.is_powered ? 1 / strip_power_up_seconds
                                           : -1 / strip_power_down_seconds;
+
       power.lit_amount =
-        Scalar::clamp(power.lit_amount + rate * delta_seconds, 0, 1);
+        ScalarMath::clamp(power.lit_amount + (rate * delta_seconds), 0, 1);
     }
   }
 
-  Vec2 RoomPowerGrid::conduitPoint(
-    const RoomProps &room,
-    std::size_t      room_index
+  Vec2Props RoomPowerGrid::conduitPoint(
+    std::size_t room_index
   ) const {
-    return perimeterPoint(room, rooms_[room_index].conduit_offset);
+    return strips_[room_index].pointAt(rooms_[room_index].conduit_offset);
   }
 
   void RoomPowerGrid::emitLights(
-    const TileMap &map,
-    Lighting      &lighting
+    LightingSystem &lighting
   ) const {
     for(std::size_t room_index = 0; room_index < rooms_.size(); ++room_index) {
       const RoomPowerProps &power = rooms_[room_index];
       if(power.lit_amount <= 0) continue;
-      const RoomProps &room      = map.rooms()[room_index];
-      const float      perimeter = perimeterOf(room);
-      const Vec2       center    = room.center();
+
+      const RoomLedStrip &strip     = strips_[room_index];
+      const float         perimeter = strip.length();
+
       for(std::size_t anchor = 0; anchor < strip_light_count; ++anchor) {
-        const float distance_along = power.conduit_offset +
-                                     perimeter *
-                                     (static_cast<float>(anchor) + 0.5F) /
-                                     static_cast<float>(strip_light_count);
+        const float distance_along =
+          power.conduit_offset + (perimeter *
+                                  (static_cast<float>(anchor) + 0.5F) /
+                                  static_cast<float>(strip_light_count));
         if(!isStripLitAt(power, perimeter, distance_along)) continue;
-        const Vec2 edge = perimeterPoint(room, distance_along);
+
         LightProps light;
+
         light.position =
-          edge.add(center.sub(edge).normalized().scale(strip_light_inset));
+          strip.pointAt(distance_along)
+            .add(strip.inwardAt(distance_along).scale(strip_light_inset));
+
         light.radius    = strip_light_radius;
         light.intensity = 0.85F;
-        light.color     = power.color.mix(Color::white(), 0.55F);
+        light.color     = power.color.mix(ColorProps::white(), 0.55F);
         light.flicker   = 0.03F;
         lighting.add(light);
       }
@@ -130,80 +126,79 @@ namespace wheel_of_fear {
   }
 
   void RoomPowerGrid::draw(
-    const TileMap &map,
-    Renderer      &renderer
+    const TileMapModel &map,
+    Renderer           &renderer
   ) const {
     for(std::size_t room_index = 0; room_index < rooms_.size(); ++room_index) {
       const RoomPowerProps &power   = rooms_[room_index];
       const RoomProps      &room    = map.rooms()[room_index];
-      const Vec2            minimum = room.worldMinimum();
-      const Vec2            maximum = room.worldMaximum();
+      const Vec2Props       minimum = room.worldMinimum();
+      const Vec2Props       maximum = room.worldMaximum();
 
-      if(!renderer.isVisible(
-           room.center(),
-           std::max(maximum.x - minimum.x, maximum.y - minimum.y)
-         ))
-        continue;
+      const float reach =
+        std::max(maximum.x - minimum.x, maximum.y - minimum.y);
+      if(!renderer.isVisible(room.center(), reach)) continue;
 
-      const float perimeter     = perimeterOf(room);
-      const float head_distance = power.lit_amount * perimeter * 0.5F;
+      const RoomLedStrip &strip     = strips_[room_index];
+      const float         perimeter = strip.length();
 
-      for(
-        float distance_along = 0; distance_along < perimeter;
-        distance_along += strip_led_spacing
-      ) {
-        const Vec2 point = perimeterPoint(room, distance_along);
-        if(!renderer.isVisible(point, 8)) continue;
-        if(map.isWallAt(point)) continue;
+      for(const RoomLedPlacementProps &led : strip.placements(map)) {
+        if(led.faces_open_passage || led.is_covered_by_object) continue;
+        if(!renderer.isVisible(led.position, 8)) continue;
 
-        if(!isStripLitAt(power, perimeter, distance_along)) {
-          renderer.drawGlowRectangle(
-            point,
-            Vec2::of(1.5F, 1.5F),
-            Color::hex(0x10141c).withAlpha(0.35F)
-          );
-          continue;
-        }
-
-        const float offset = std::abs(
-          Scalar::floorModulo(
-            distance_along - power.conduit_offset + perimeter * 1.5F,
-            perimeter
-          ) -
-          perimeter *
-          0.5F
-        );
-
-        const float head_glow =
-          Scalar::clamp(
-            1 - std::abs((perimeter * 0.5F - offset) - head_distance) / 24,
-            0,
-            1
-          ) *
-          (1 - power.lit_amount * power.lit_amount);
-
-        renderer.drawGlowRectangle(
-          point,
-          Vec2::of(3, 3),
-          power.color.mix(Color::white(), 0.3F + head_glow * 0.6F)
-        );
-
-        if(head_glow > 0.05F)
-          renderer.drawGlowDisc(
-            point,
-            10,
-            Color::white().withAlpha(head_glow * 0.6F),
-            1.4F
-          );
+        drawLed(renderer, power, perimeter, led);
       }
 
       if(power.lit_amount > 0)
         renderer.drawGlowDisc(
-          perimeterPoint(room, power.conduit_offset),
+          strip.pointAt(power.conduit_offset),
           7,
           power.color.withAlpha(0.8F),
           1.2F
         );
     }
+  }
+
+  void RoomPowerGrid::drawLed(
+    Renderer                    &renderer,
+    const RoomPowerProps        &power,
+    float                        perimeter,
+    const RoomLedPlacementProps &led
+  ) {
+    if(!isStripLitAt(power, perimeter, led.distance_along)) {
+      renderer.drawGlowRectangle(
+        led.position,
+        Vec2Props::of(1.5F, 1.5F),
+        ColorProps::hex(0x10141c).withAlpha(0.35F)
+      );
+
+      return;
+    }
+
+    const float head_distance = power.lit_amount * perimeter * 0.5F;
+
+    const float lit_distance =
+      distanceFromConduit(power, perimeter, led.distance_along);
+
+    const float head_glow = ScalarMath::clamp(
+                              1 - (std::abs(lit_distance - head_distance) / 24),
+                              0,
+                              1
+                            ) *
+                            (1 - (power.lit_amount * power.lit_amount));
+
+    renderer.drawGlowRectangle(
+      led.position,
+      Vec2Props::of(3, 3),
+      power.color.mix(ColorProps::white(), 0.3F + (head_glow * 0.6F))
+    );
+
+    if(head_glow > 0.05F)
+      renderer.drawGlowDisc(
+        led.position,
+        10,
+        ColorProps::white().withAlpha(head_glow * 0.6F),
+        1.4F
+      );
   }
 } // namespace wheel_of_fear

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class NoiseSourceEnum {
+  enum class NoiseSourceEnum : std::uint8_t {
     footstep,
     running,
     repairing,

@@ -20,6 +20,7 @@ namespace wheel_of_fear {
         const QuadProps &quad
       ) {
         if(items_.size() >= capacity_) return;
+
         items_.push_back(quad);
       }
 
@@ -27,14 +28,17 @@ namespace wheel_of_fear {
         items_.clear();
       }
 
+      [[nodiscard]]
       std::span<const QuadProps> used() const {
         return items_;
       }
 
+      [[nodiscard]]
       std::size_t count() const {
         return items_.size();
       }
 
+      [[nodiscard]]
       std::size_t capacity() const {
         return capacity_;
       }

@@ -15,16 +15,17 @@ namespace wheel_of_fear {
       WGPUStringView view
     ) {
       if(view.data == nullptr) return {};
-      if(view.length == WGPU_STRLEN) return std::string(view.data);
-      return std::string(view.data, view.length);
+      if(view.length == WGPU_STRLEN) return {view.data};
+
+      return {view.data, view.length};
     }
 
     void reportUncapturedError(
-      WGPUDevice const*,
-      WGPUErrorType  type,
-      WGPUStringView message,
-      void*,
-      void*
+      [[maybe_unused]] WGPUDevice const* device,
+      WGPUErrorType                      type,
+      WGPUStringView                     message,
+      [[maybe_unused]] void*             first_userdata,
+      [[maybe_unused]] void*             second_userdata
     ) {
       SDL_Log(
         "wgpu error %d: %s",
@@ -34,11 +35,11 @@ namespace wheel_of_fear {
     }
 
     void reportDeviceLost(
-      WGPUDevice const*,
-      WGPUDeviceLostReason reason,
-      WGPUStringView       message,
-      void*,
-      void*
+      [[maybe_unused]] WGPUDevice const* device,
+      WGPUDeviceLostReason               reason,
+      WGPUStringView                     message,
+      [[maybe_unused]] void*             first_userdata,
+      [[maybe_unused]] void*             second_userdata
     ) {
       if(
         reason ==
@@ -46,6 +47,7 @@ namespace wheel_of_fear {
         reason == WGPUDeviceLostReason_CallbackCancelled
       )
         return;
+
       SDL_Log(
         "wgpu device lost %d: %s",
         static_cast<int>(reason),
@@ -70,7 +72,7 @@ namespace wheel_of_fear {
       WGPUAdapter              adapter,
       WGPUStringView           message,
       void*                    userdata,
-      void*
+      [[maybe_unused]] void*   second_userdata
     ) {
       auto* request = static_cast<AdapterRequestProps*>(userdata);
       if(status == WGPURequestAdapterStatus_Success) request->adapter = adapter;
@@ -83,7 +85,7 @@ namespace wheel_of_fear {
       WGPUDevice              device,
       WGPUStringView          message,
       void*                   userdata,
-      void*
+      [[maybe_unused]] void*  second_userdata
     ) {
       auto* request = static_cast<DeviceRequestProps*>(userdata);
       if(status == WGPURequestDeviceStatus_Success) request->device = device;
@@ -96,9 +98,12 @@ namespace wheel_of_fear {
     const Window &window
   ) {
     WGPUInstanceDescriptor instance_descriptor = WGPU_INSTANCE_DESCRIPTOR_INIT;
+
     instance_.reset(wgpuCreateInstance(&instance_descriptor));
+
     if(!instance_)
       throw std::runtime_error("unable to create the WebGPU instance");
+
     createSurface(window);
     requestAdapter();
     requestDevice();
@@ -117,11 +122,11 @@ namespace wheel_of_fear {
     const Window &window
   ) {
     WGPUSurfaceDescriptor descriptor = WGPU_SURFACE_DESCRIPTOR_INIT;
-#if defined(__APPLE__)
+#ifdef __APPLE__
     WGPUSurfaceSourceMetalLayer source = WGPU_SURFACE_SOURCE_METAL_LAYER_INIT;
     source.layer                       = window.metalLayer();
     descriptor.nextInChain             = &source.chain;
-#elif defined(_WIN32)
+#elifdef _WIN32
     const SDL_PropertiesID properties =
       SDL_GetWindowProperties(window.handle());
     WGPUSurfaceSourceWindowsHWND source = WGPU_SURFACE_SOURCE_WINDOWS_HWND_INIT;
@@ -155,6 +160,7 @@ namespace wheel_of_fear {
         SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER,
         nullptr
       );
+
       wayland_source.surface = wayland_surface;
       descriptor.nextInChain = &wayland_source.chain;
     } else {
@@ -163,9 +169,11 @@ namespace wheel_of_fear {
         SDL_PROP_WINDOW_X11_DISPLAY_POINTER,
         nullptr
       );
+
       xlib_source.window = static_cast<std::uint64_t>(
         SDL_GetNumberProperty(properties, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0)
       );
+
       descriptor.nextInChain = &xlib_source.chain;
     }
 #endif
@@ -176,43 +184,60 @@ namespace wheel_of_fear {
 
   void GpuContext::requestAdapter() {
     WGPURequestAdapterOptions options = WGPU_REQUEST_ADAPTER_OPTIONS_INIT;
-    options.compatibleSurface         = surface_.get();
-    options.powerPreference           = WGPUPowerPreference_HighPerformance;
-    AdapterRequestProps            request;
+
+    options.compatibleSurface = surface_.get();
+    options.powerPreference   = WGPUPowerPreference_HighPerformance;
+
+    AdapterRequestProps request;
+
     WGPURequestAdapterCallbackInfo callback =
       WGPU_REQUEST_ADAPTER_CALLBACK_INFO_INIT;
+
     callback.mode      = WGPUCallbackMode_AllowProcessEvents;
     callback.callback  = receiveAdapter;
     callback.userdata1 = &request;
     wgpuInstanceRequestAdapter(instance_.get(), &options, callback);
     while(!request.is_done) wgpuInstanceProcessEvents(instance_.get());
+
     if(request.adapter == nullptr)
       throw std::runtime_error("no WebGPU adapter: " + request.message);
+
     adapter_.reset(request.adapter);
   }
 
   void GpuContext::requestDevice() {
     WGPUDeviceDescriptor descriptor = WGPU_DEVICE_DESCRIPTOR_INIT;
-    descriptor.label = WGPUStringView {"wheel of fear device", WGPU_STRLEN};
+
+    descriptor.label =
+      WGPUStringView {.data = "wheel of fear device", .length = WGPU_STRLEN};
+
     descriptor.uncapturedErrorCallbackInfo.callback = reportUncapturedError;
+
     descriptor.deviceLostCallbackInfo.mode =
       WGPUCallbackMode_AllowProcessEvents;
+
     descriptor.deviceLostCallbackInfo.callback = reportDeviceLost;
-    DeviceRequestProps            request;
+
+    DeviceRequestProps request;
+
     WGPURequestDeviceCallbackInfo callback =
       WGPU_REQUEST_DEVICE_CALLBACK_INFO_INIT;
+
     callback.mode      = WGPUCallbackMode_AllowProcessEvents;
     callback.callback  = receiveDevice;
     callback.userdata1 = &request;
     wgpuAdapterRequestDevice(adapter_.get(), &descriptor, callback);
     while(!request.is_done) wgpuInstanceProcessEvents(instance_.get());
+
     if(request.device == nullptr)
       throw std::runtime_error("no WebGPU device: " + request.message);
+
     device_.reset(request.device);
   }
 
   void GpuContext::chooseSurfaceFormat() {
     WGPUSurfaceCapabilities capabilities = WGPU_SURFACE_CAPABILITIES_INIT;
+
     if(
       wgpuSurfaceGetCapabilities(
         surface_.get(),
@@ -222,14 +247,18 @@ namespace wheel_of_fear {
     ) {
       throw std::runtime_error("unable to query the surface capabilities");
     }
+
     constexpr std::array<WGPUTextureFormat, 2> preferred {
       WGPUTextureFormat_BGRA8Unorm,
-      WGPUTextureFormat_RGBA8Unorm
+      WGPUTextureFormat_RGBA8Unorm,
     };
+
     surface_format_ = capabilities.formatCount > 0
                       ? capabilities.formats[0]
                       : WGPUTextureFormat_BGRA8Unorm;
-    bool found      = false;
+
+    bool found = false;
+
     for(const WGPUTextureFormat candidate : preferred) {
       for(
         std::size_t index = 0; index < capabilities.formatCount && !found;
@@ -241,14 +270,16 @@ namespace wheel_of_fear {
         }
       }
     }
+
     wgpuSurfaceCapabilitiesFreeMembers(capabilities);
   }
 
   void GpuContext::configureSurface() {
     WGPUSurfaceConfiguration configuration = WGPU_SURFACE_CONFIGURATION_INIT;
-    configuration.device                   = device_.get();
-    configuration.format                   = surface_format_;
-    configuration.usage                    = WGPUTextureUsage_RenderAttachment;
+
+    configuration.device      = device_.get();
+    configuration.format      = surface_format_;
+    configuration.usage       = WGPUTextureUsage_RenderAttachment;
     configuration.width       = surface_width_ > 0 ? surface_width_ : 1;
     configuration.height      = surface_height_ > 0 ? surface_height_ : 1;
     configuration.presentMode = WGPUPresentMode_Fifo;
@@ -269,6 +300,7 @@ namespace wheel_of_fear {
       !needs_reconfigure_
     )
       return;
+
     surface_width_  = width;
     surface_height_ = height;
     configureSurface();
@@ -276,8 +308,11 @@ namespace wheel_of_fear {
 
   std::optional<GpuTexture> GpuContext::acquireSurfaceTexture() {
     if(needs_reconfigure_) configureSurface();
+
     WGPUSurfaceTexture surface_texture = WGPU_SURFACE_TEXTURE_INIT;
+
     wgpuSurfaceGetCurrentTexture(surface_.get(), &surface_texture);
+
     switch(static_cast<int>(surface_texture.status)) {
       case WGPUSurfaceGetCurrentTextureStatus_SuccessOptimal:
         return GpuTexture(surface_texture.texture);
@@ -288,8 +323,10 @@ namespace wheel_of_fear {
       case WGPUSurfaceGetCurrentTextureStatus_Occluded: break;
       default: needs_reconfigure_ = true; break;
     }
+
     if(surface_texture.texture != nullptr)
       wgpuTextureRelease(surface_texture.texture);
+
     return std::nullopt;
   }
 

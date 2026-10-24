@@ -29,7 +29,7 @@ namespace wheel_of_fear {
       static const GameModuleApiProps &resolveApi(
         const SharedLibrary &library
       );
-      Game* startGame(
+      GameApplication* startGame(
         const GameModuleApiProps  &api,
         std::span<const std::byte> snapshot
       ) const;
@@ -39,6 +39,6 @@ namespace wheel_of_fear {
       SharedLibraryWatcher           watcher_;
       std::unique_ptr<SharedLibrary> library_;
       const GameModuleApiProps*      api_  = nullptr;
-      Game*                          game_ = nullptr;
+      GameApplication*               game_ = nullptr;
   };
 } // namespace wheel_of_fear

@@ -12,14 +12,22 @@ namespace wheel_of_fear {
   ) {
     const std::string source =
       AssetLocator::readText(AssetLocator::shaderPath(file_name));
+
     const std::string    label(file_name);
     WGPUShaderSourceWGSL wgsl = WGPU_SHADER_SOURCE_WGSL_INIT;
-    wgsl.code                 = WGPUStringView {source.data(), source.size()};
+
+    wgsl.code = WGPUStringView {.data = source.data(), .length = source.size()};
+
     WGPUShaderModuleDescriptor descriptor = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
-    descriptor.nextInChain                = &wgsl.chain;
-    descriptor.label = WGPUStringView {label.data(), label.size()};
+
+    descriptor.nextInChain = &wgsl.chain;
+
+    descriptor.label =
+      WGPUStringView {.data = label.data(), .length = label.size()};
+
     GpuShaderModule module(wgpuDeviceCreateShaderModule(device, &descriptor));
     if(!module) throw std::runtime_error("unable to compile shader " + label);
+
     return module;
   }
 } // namespace wheel_of_fear

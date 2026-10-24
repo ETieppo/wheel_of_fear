@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "core/math/Scalar.hpp"
+#include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
   Scenery::Scenery(
@@ -36,24 +36,30 @@ namespace wheel_of_fear {
   ) const {
     const float wobble =
       std::sin(wobble_seconds_ * 40) * wobble_seconds_ * 0.6F;
+
     renderer.drawShadowDisc(
-      position_.add(Vec2::of(1, 3)),
+      position_.add(Vec2Props::of(1, 3)),
       9,
-      Color::black().withAlpha(0.45F),
+      ColorProps::black().withAlpha(0.45F),
       1.3F
     );
+
     renderer.drawSprite(
       sprite(sprites),
       position_,
       SpriteDrawDto {.rotation = wobble + tilt_, .mirrored = mirrored_}
     );
+
     const AtlasRegionProps* glow = glowSprite(sprites);
     if(glow == nullptr) return;
+
     const float blink =
       0.55F +
-      0.45F *
-      Scalar::hashTime(view.real_seconds + flicker_seed_ * 9, 6);
+      (0.45F *
+       ScalarMath::hashTime(view.real_seconds + (flicker_seed_ * 9), 6));
+
     const float strength = is_broken_ ? 0.04F : 0.18F;
+
     renderer.drawGlowSprite(
       *glow,
       position_,

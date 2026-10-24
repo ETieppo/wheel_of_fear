@@ -3,19 +3,19 @@
 #include <algorithm>
 #include <cmath>
 
-#include "core/math/Scalar.hpp"
+#include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
   Entity::Entity(
-    Vec2  position,
-    float collision_half_size
+    Vec2Props position,
+    float     collision_half_size
   )
       : position_(position)
       , collision_half_size_(collision_half_size) {
   }
 
   void Entity::respawnAt(
-    Vec2 position
+    Vec2Props position
   ) {
     position_          = position;
     heading_           = 0;
@@ -30,18 +30,18 @@ namespace wheel_of_fear {
     animation_seconds_ += delta_seconds;
   }
 
-  Vec2 Entity::facing() const {
-    return Vec2::fromAngle(heading_);
+  Vec2Props Entity::facing() const {
+    return Vec2Props::fromAngle(heading_);
   }
 
   float Entity::distanceTo(
-    Vec2 point
+    Vec2Props point
   ) const {
     return position_.distance(point);
   }
 
-  Vec2 Entity::directionTo(
-    Vec2 point
+  Vec2Props Entity::directionTo(
+    Vec2Props point
   ) const {
     return point.sub(position_).normalized();
   }
@@ -53,21 +53,23 @@ namespace wheel_of_fear {
   ) {
     const float difference =
       std::atan2(std::sin(angle - heading_), std::cos(angle - heading_));
-    heading_ += difference * Scalar::clamp(delta_seconds * turn_rate, 0, 1);
+
+    heading_ += difference * ScalarMath::clamp(delta_seconds * turn_rate, 0, 1);
   }
 
   void Entity::faceToward(
-    Vec2 point
+    Vec2Props point
   ) {
-    const Vec2 offset = point.sub(position_);
+    const Vec2Props offset = point.sub(position_);
     if(offset.length() > 0.01F) heading_ = offset.angle();
   }
 
   void Entity::slide(
     const Collider &collider,
-    Vec2            displacement
+    Vec2Props       displacement
   ) {
-    const Vec2 before = position_;
+    const Vec2Props before = position_;
+
     position_  = collider.slide(position_, displacement, collision_half_size_);
     is_moving_ = position_.distance(before) > 0.01F;
   }
@@ -77,6 +79,7 @@ namespace wheel_of_fear {
     std::size_t frame_count
   ) const {
     if(frame_count == 0) return 0;
+
     return static_cast<std::size_t>(
              std::max(animation_seconds_ * frames_per_second, 0.0F)
            ) %
@@ -84,10 +87,10 @@ namespace wheel_of_fear {
   }
 
   bool Entity::isFacing(
-    Vec2  point,
-    float minimum_cosine
+    Vec2Props point,
+    float     minimum_cosine
   ) const {
-    const Vec2 toward = point.sub(position_).normalized();
+    const Vec2Props toward = point.sub(position_).normalized();
     return toward.dot(facing()) >= minimum_cosine;
   }
 } // namespace wheel_of_fear

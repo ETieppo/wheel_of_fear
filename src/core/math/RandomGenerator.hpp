@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   class RandomGenerator {
@@ -28,7 +28,7 @@ namespace wheel_of_fear {
       bool chance(
         float probability
       );
-      Vec2 direction();
+      Vec2Props direction();
 
     private:
       std::uint64_t next();

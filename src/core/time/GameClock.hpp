@@ -7,6 +7,7 @@ namespace wheel_of_fear {
         float real_delta_seconds
       );
 
+      [[nodiscard]]
       bool isRunning() const {
         return is_running_;
       }
@@ -17,14 +18,17 @@ namespace wheel_of_fear {
         is_running_ = is_running;
       }
 
+      [[nodiscard]]
       float deltaSeconds() const {
         return delta_seconds_;
       }
 
+      [[nodiscard]]
       float realDeltaSeconds() const {
         return real_delta_seconds_;
       }
 
+      [[nodiscard]]
       float realSeconds() const {
         return real_seconds_;
       }

@@ -5,7 +5,7 @@
 
 #include <SDL3/SDL_video.h>
 
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   class Window {
@@ -23,14 +23,19 @@ namespace wheel_of_fear {
         const Window &
       ) = delete;
 
+      [[nodiscard]]
       SDL_Window* handle() const {
         return window_;
       }
 
-      void*         metalLayer() const;
-      Vec2          logicalSize() const;
+      [[nodiscard]]
+      void* metalLayer() const;
+      [[nodiscard]]
       std::uint32_t pixelWidth() const;
+      [[nodiscard]]
       std::uint32_t pixelHeight() const;
+      [[nodiscard]]
+      Vec2Props logicalSize() const;
 
     private:
       SDL_Window* window_     = nullptr;

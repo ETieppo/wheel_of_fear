@@ -1,16 +1,17 @@
 #pragma once
 
-#include "core/math/Vec2.hpp"
+#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   class Collider {
     public:
       virtual ~Collider() = default;
 
-      virtual Vec2 slide(
-        Vec2  position,
-        Vec2  displacement,
-        float half_size
+      [[nodiscard]]
+      virtual Vec2Props slide(
+        Vec2Props position,
+        Vec2Props displacement,
+        float     half_size
       ) const = 0;
   };
 } // namespace wheel_of_fear

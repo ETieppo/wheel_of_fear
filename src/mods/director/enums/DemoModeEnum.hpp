@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class DemoModeEnum {
+  enum class DemoModeEnum : std::uint8_t {
     none,
     play,
     deep,

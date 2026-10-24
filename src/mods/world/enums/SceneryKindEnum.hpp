@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class SceneryKindEnum {
+  enum class SceneryKindEnum : std::uint8_t {
     barrel,
     crate,
     pipes,

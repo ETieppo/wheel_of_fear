@@ -1,14 +1,15 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 
 namespace wheel_of_fear {
-  enum class RoomLayoutEnum {
+  enum class RoomLayoutEnum : std::uint8_t {
     hall,
     offices,
     server_farm,
     storage,
-    pump_station
+    pump_station,
   };
 
   inline constexpr std::array<RoomLayoutEnum, 5> all_room_layouts {

@@ -10,12 +10,15 @@ namespace wheel_of_fear {
     const DecodedAudioProps footstep = OggOpusDecoder::decodeFile(
       AssetLocator::assetPath("audio/sfx/footstep_0.opus")
     );
+
     CHECK(footstep.channels == 1);
     CHECK(footstep.sample_rate == 48000);
     CHECK(footstep.samples.size() > 1000);
+
     const DecodedAudioProps title = OggOpusDecoder::decodeFile(
       AssetLocator::assetPath("audio/music/title.opus")
     );
+
     CHECK(title.channels == 2);
     CHECK(title.samples.size() % 2 == 0);
   }

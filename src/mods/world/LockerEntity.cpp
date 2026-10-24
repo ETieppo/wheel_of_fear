@@ -1,0 +1,38 @@
+#include "mods/world/LockerEntity.hpp"
+
+#include <algorithm>
+
+#include "core/math/ScalarMath.hpp"
+
+namespace wheel_of_fear {
+  Vec2Props LockerEntity::entryPoint() const {
+    return position_.add(Vec2Props::of(0, faces_down_ ? 13.0F : -13.0F));
+  }
+
+  void LockerEntity::update(
+    float delta_seconds
+  ) {
+    door_open_amount_ = std::max(0.0F, door_open_amount_ - (delta_seconds * 2));
+  }
+
+  void LockerEntity::draw(
+    Renderer               &renderer,
+    const SpriteSheetProps &sprites
+  ) const {
+    const AtlasRegionProps &region =
+      door_open_amount_ > 0.3F ? sprites.locker_open : sprites.locker_closed;
+
+    renderer.drawShadowDisc(
+      position_.add(Vec2Props::of(0, 2)),
+      9,
+      ColorProps::black().withAlpha(0.5F),
+      1.3F
+    );
+
+    renderer.drawSprite(
+      region,
+      position_,
+      SpriteDrawDto {.rotation = faces_down_ ? 0.0F : ScalarMath::pi}
+    );
+  }
+} // namespace wheel_of_fear

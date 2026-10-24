@@ -3,13 +3,13 @@
 #include "mods/throwables/projectiles/Projectile.hpp"
 
 namespace wheel_of_fear {
-  class World;
+  class WorldSystem;
 
   class NeonGrenadeProjectile final: public Projectile {
     public:
       NeonGrenadeProjectile(
-        Vec2 start,
-        Vec2 target
+        Vec2Props start,
+        Vec2Props target
       )
           : Projectile(
               ItemEnum::neon_grenade,
@@ -20,10 +20,11 @@ namespace wheel_of_fear {
 
       void land(
         GameContextDto &context,
-        Vec2            landing
+        Vec2Props       landing
       ) override;
 
     protected:
+      [[nodiscard]]
       const AtlasRegionProps &sprite(
         const SpriteSheetProps &sprites
       ) const override {
@@ -41,9 +42,9 @@ namespace wheel_of_fear {
       static constexpr std::size_t flood_capacity = 96;
 
       static void floodNeon(
-        World &world,
-        Vec2   origin,
-        float  lifetime_seconds
+        WorldSystem &world,
+        Vec2Props    origin,
+        float        lifetime_seconds
       );
   };
 } // namespace wheel_of_fear

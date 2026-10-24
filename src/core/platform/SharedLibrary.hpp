@@ -19,6 +19,7 @@ namespace wheel_of_fear {
         const SharedLibrary &
       ) = delete;
 
+      [[nodiscard]]
       SDL_FunctionPointer function(
         const std::string &name
       ) const;

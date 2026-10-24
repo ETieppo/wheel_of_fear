@@ -13,8 +13,10 @@ namespace wheel_of_fear {
     std::size_t                cursor = 0;
     std::array<char32_t, 8>    decoded {};
     std::size_t                count = 0;
+
     while(cursor < text.size())
       decoded[count++] = Utf8Decoder::nextCodepoint(text, cursor);
+
     CHECK(count == 4);
     CHECK(decoded[1] == 0xE7);
   }

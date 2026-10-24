@@ -14,13 +14,16 @@ namespace wheel_of_fear {
         TextureAtlas &atlas
       );
 
+      [[nodiscard]]
       const GlyphProps &glyphFor(
         TypefaceEnum typeface,
         char32_t     codepoint
       ) const;
+      [[nodiscard]]
       float pixelSize(
         TypefaceEnum typeface
       ) const;
+      [[nodiscard]]
       float measure(
         TypefaceEnum     typeface,
         std::string_view text,
@@ -28,6 +31,7 @@ namespace wheel_of_fear {
       ) const;
 
     private:
+      [[nodiscard]]
       const FontProps &font(
         TypefaceEnum typeface
       ) const;

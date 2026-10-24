@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class PlayerActivityEnum {
+  enum class PlayerActivityEnum : std::uint8_t {
     exploring,
     repairing,
     hiding,
-    hugging
+    hugging,
   };
 } // namespace wheel_of_fear

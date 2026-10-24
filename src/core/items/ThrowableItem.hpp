@@ -5,10 +5,12 @@
 namespace wheel_of_fear {
   class ThrowableItem: public Item {
     public:
+      [[nodiscard]]
       bool isThrowable() const override {
         return true;
       }
 
+      [[nodiscard]]
       float throwPitch() const {
         return throw_pitch_;
       }
@@ -17,7 +19,7 @@ namespace wheel_of_fear {
       ThrowableItem(
         ItemEnum         kind,
         std::string_view display_name,
-        Color            color,
+        ColorProps       color,
         int              carry_limit,
         float            throw_pitch
       )

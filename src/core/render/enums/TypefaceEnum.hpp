@@ -1,11 +1,12 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
 namespace wheel_of_fear {
-  enum class TypefaceEnum {
+  enum class TypefaceEnum : std::uint8_t {
     body,
-    display
+    display,
   };
 
   inline constexpr std::size_t typeface_count = 2;

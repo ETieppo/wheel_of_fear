@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
 namespace wheel_of_fear {
-  enum class SoundEnum {
+  enum class SoundEnum : std::uint8_t {
     footstep,
     crawler_skitter,
     crawler_chitter,

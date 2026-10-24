@@ -2,12 +2,12 @@
 
 #include <string>
 
-#include "core/math/Color.hpp"
+#include "core/math/ColorProps.hpp"
 
 namespace wheel_of_fear {
   struct HudMessageProps {
       std::string text;
-      Color       color       = Color::white();
+      ColorProps  color       = ColorProps::white();
       float       age_seconds = 0;
   };
 } // namespace wheel_of_fear

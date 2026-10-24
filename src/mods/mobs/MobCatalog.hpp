@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "core/math/Vec2.hpp"
-#include "mods/mobs/Mob.hpp"
+#include "core/math/Vec2Props.hpp"
+#include "mods/mobs/MobEntity.hpp"
 #include "mods/mobs/MobTraitsProps.hpp"
 #include "mods/mobs/enums/MobKindEnum.hpp"
 
@@ -15,9 +15,9 @@ namespace wheel_of_fear {
       static const MobTraitsProps &traitsOf(
         MobKindEnum kind
       );
-      static std::unique_ptr<Mob> create(
+      static std::unique_ptr<MobEntity> create(
         MobKindEnum kind,
-        Vec2        position
+        Vec2Props   position
       );
   };
 } // namespace wheel_of_fear

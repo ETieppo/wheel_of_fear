@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cstdint>
+
 namespace wheel_of_fear {
-  enum class FlashlightModeEnum {
+  enum class FlashlightModeEnum : std::uint8_t {
     normal,
-    ultraviolet
+    ultraviolet,
   };
 } // namespace wheel_of_fear
