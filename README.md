@@ -1,7 +1,5 @@
 # Wheel of Fear (C++)
 
-C++23 port of the Zig game. Rendering uses wgpu-native with the WGSL shaders in `src/core/render/shaders`; SDL3 handles the window, input and audio.
-
 ## Requirements
 
 - CMake 3.24+ and a C++23 compiler
@@ -11,17 +9,29 @@ C++23 port of the Zig game. Rendering uses wgpu-native with the WGSL shaders in 
 ## Build and run
 
 ```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j
-./build/wheel_of_fear_tests
-./build/wheel_of_fear
+make run
 ```
 
 Assets are read from the repository's `assets/` folder. Set `ENGRENAGEM_DEMO` (`showcase`, `freeze`, `repair`, `locker`, `grenade`, ...) to run the scripted demo scenarios.
 
 ## Hot reload
 
-Configure with `-DWHEEL_OF_FEAR_HOT_RELOAD=ON` to build everything in `src/core`, `src/mods` and `src/game/Game.cpp` as a module that a small launcher reloads while the window stays open:
+ensure inotify-tools first in your path:
+
+```bash
+sudo pacman -S inotify-tools  # if you use arch
+sudo chmod +x watch.sh        # give file permision
+```
+
+then:
+
+```bash
+make dev
+```
+
+#### or
+
+Configure with `-DWHEEL_OF_FEAR_HOT_RELOAD=ON` to build everything in `src/core`, `src/mods` and `src/game/Game.cpp` as a module that a small launcher reloads while the window stays open
 
 ```sh
 cmake -S . -B build-hot -DCMAKE_BUILD_TYPE=Release -DWHEEL_OF_FEAR_HOT_RELOAD=ON
