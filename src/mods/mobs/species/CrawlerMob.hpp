@@ -9,18 +9,18 @@ namespace wheel_of_fear {
         .display_name = "Crawler",
         .introduction = "CRAWLER  -  a spider-drone that skitters toward every "
                         "sound. Light pins it in place.",
-        .speed        = 62,
+        .frozen_by    = LightFilterEnum::any_light,
+        .movement_sound          = SoundEnum::crawler_skitter,
+        .vocal_sound             = SoundEnum::crawler_chitter,
+        .first_phase             = 1,
+        .speed                   = 62,
         .collision_radius        = 7,
-        .frozen_by               = LightFilterEnum::any_light,
         .field_of_view_cosine    = 0.1F,
         .hearing_factor          = 1.15F,
         .strike_reach            = 11,
-        .movement_sound          = SoundEnum::crawler_skitter,
         .movement_sound_volume   = 0.26F,
         .movement_sound_interval = 0.34F,
-        .vocal_sound             = SoundEnum::crawler_chitter,
         .vocal_volume            = 0.55F,
-        .first_phase             = 1,
         .spawn_weight            = 1.0F,
       };
 

@@ -9,14 +9,14 @@ namespace wheel_of_fear {
         .display_name = "Shade",
         .introduction = "SHADE  -  a silent smear of dark. Only ultraviolet "
                         "reveals it, and only ultraviolet holds it.",
+        .frozen_by            = LightFilterEnum::ultraviolet_only,
+        .vocal_sound          = SoundEnum::whisper,
+        .first_phase          = 4,
         .speed        = 44,
         .collision_radius     = 7,
-        .frozen_by            = LightFilterEnum::ultraviolet_only,
         .visible_under        = LightFilterEnum::ultraviolet_only,
         .field_of_view_cosine = 0,
-        .vocal_sound          = SoundEnum::whisper,
         .vocal_volume         = 0.55F,
-        .first_phase          = 4,
         .spawn_weight         = 0.35F,
       };
 

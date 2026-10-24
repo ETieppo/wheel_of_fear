@@ -1,11 +1,11 @@
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+
 #include "core/render/ImageDecoder.hpp"
 #include "core/assets/AssetLocator.hpp"
 #include <cstddef>
 #include <stb_image.h>
 #include <stdexcept>
-
-#define STB_IMAGE_IMPLEMENTATION
-#define STBI_ONLY_PNG
 
 namespace wheel_of_fear {
   DecodedImageProps ImageDecoder::decodeRgba(
@@ -37,8 +37,8 @@ namespace wheel_of_fear {
       decoded
         + (static_cast<std::size_t>(width) * static_cast<std::size_t>(height) * 4)
     );
-
     stbi_image_free(decoded);
+
     if(premultiply) {
       for(std::size_t index = 0; index < image.pixels.size(); index += 4) {
         const std::uint32_t alpha = image.pixels[index + 3];

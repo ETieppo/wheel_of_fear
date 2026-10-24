@@ -10,16 +10,16 @@ namespace wheel_of_fear {
         .introduction
         = "BLOATER  -  a blind gas sac that drifts toward noise. Ultraviolet "
           "lights its fuse; it takes everything nearby with it.",
+        .frozen_by               = LightFilterEnum::any_light,
+        .movement_sound          = SoundEnum::bloater_gurgle,
+        .first_phase             = 2,
         .speed                   = 20,
         .collision_radius        = 9,
-        .frozen_by               = LightFilterEnum::any_light,
         .sight_factor            = 0,
         .hearing_factor          = 1.6F,
         .strike_reach            = 13,
-        .movement_sound          = SoundEnum::bloater_gurgle,
         .movement_sound_volume   = 0.32F,
         .movement_sound_interval = 1.9F,
-        .first_phase             = 2,
         .spawn_weight            = 0.55F,
       };
 

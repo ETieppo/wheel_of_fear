@@ -13,15 +13,15 @@ namespace wheel_of_fear {
         .introduction
         = "LANTERN MOTH  -  rare and friendly. Its glow holds the "
           "creatures still until a generator wakes.",
+        .frozen_by            = std::nullopt,
+        .first_phase          = 1,
         .speed                = 0,
         .collision_radius     = 5,
-        .frozen_by            = std::nullopt,
         .sight_factor         = 0,
         .is_hostile           = false,
         .is_huggable          = false,
         .can_burn             = false,
         .passes_through_walls = true,
-        .first_phase          = 1,
         .spawn_weight         = 0,
       };
 

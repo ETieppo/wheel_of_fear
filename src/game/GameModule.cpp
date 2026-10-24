@@ -44,7 +44,7 @@ namespace wheel_of_fear {
       .destroy         = destroyGame,
       .runFrame        = runGameFrame,
       .saveSnapshot    = saveGameSnapshot,
-      .restoreSnapshot = restoreGameSnapshot
+      .restoreSnapshot = restoreGameSnapshot,
     };
   } // namespace
 } // namespace wheel_of_fear

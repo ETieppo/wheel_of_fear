@@ -11,17 +11,17 @@ namespace wheel_of_fear {
         .introduction
         = "MELTER  -  an acid slug. Slow, but walls mean nothing to "
           "it. Listen for the hiss.",
+        .frozen_by               = LightFilterEnum::any_light,
+        .movement_sound          = SoundEnum::melter_slither,
+        .vocal_sound             = SoundEnum::acid_sizzle,
+        .first_phase             = 3,
         .speed                   = 18,
         .collision_radius        = 8,
-        .frozen_by               = LightFilterEnum::any_light,
         .sight_factor            = 0.8F,
         .hearing_factor          = 1.2F,
-        .movement_sound          = SoundEnum::melter_slither,
         .movement_sound_volume   = 0.3F,
         .movement_sound_interval = 1.1F,
-        .vocal_sound             = SoundEnum::acid_sizzle,
         .vocal_volume            = 0.5F,
-        .first_phase             = 3,
         .spawn_weight            = 0.45F,
       };
 

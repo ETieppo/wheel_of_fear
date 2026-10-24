@@ -13,16 +13,16 @@ namespace wheel_of_fear {
         .introduction
         = "MIMIC  -  it wears the shell of a fabricator. The tracker "
           "can't tell the difference. Neither can you.",
+        .frozen_by               = LightFilterEnum::any_light,
+        .movement_sound          = SoundEnum::mimic_clank,
+        .vocal_sound             = SoundEnum::jaws,
+        .first_phase             = 5,
         .speed                   = 46,
         .collision_radius        = 9,
-        .frozen_by               = LightFilterEnum::any_light,
         .strike_reach            = 13,
-        .movement_sound          = SoundEnum::mimic_clank,
         .movement_sound_volume   = 0.36F,
         .movement_sound_interval = 0.5F,
-        .vocal_sound             = SoundEnum::jaws,
         .vocal_volume            = 0.7F,
-        .first_phase             = 5,
         .spawn_weight            = 0,
       };
 
