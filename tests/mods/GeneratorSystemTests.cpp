@@ -1,15 +1,11 @@
+#include "support/HeadlessGameHarness.hpp"
 #include <cstddef>
+#include <doctest/doctest.h>
 #include <memory>
 #include <vector>
 
-#include <doctest/doctest.h>
-
-#include "support/HeadlessGameHarness.hpp"
-
 namespace wheel_of_fear {
-  TEST_CASE(
-    "a repaired generator stays online for the rest of the phase"
-  ) {
+  TEST_CASE("a repaired generator stays online for the rest of the phase") {
     const auto      harness = std::make_unique<HeadlessGameHarness>("power");
     GameContextDto &context = harness->context();
     const std::vector<GeneratorEntity> &generators = context.generators.all();

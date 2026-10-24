@@ -23,6 +23,7 @@ namespace wheel_of_fear {
           4
         > rgba
       );
+
       [[nodiscard]]
       std::array<
         std::uint8_t,

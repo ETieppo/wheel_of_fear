@@ -1,13 +1,10 @@
 #include "mods/director/DemoModeParser.hpp"
-
 #include <array>
 #include <cstdlib>
 #include <utility>
 
 namespace wheel_of_fear {
-  DemoModeEnum DemoModeParser::parse(
-    std::string_view name
-  ) {
+  DemoModeEnum DemoModeParser::parse(std::string_view name) {
     constexpr std::array<std::pair<std::string_view, DemoModeEnum>, 16> modes {
       {
        {"none", DemoModeEnum::none},
@@ -38,7 +35,6 @@ namespace wheel_of_fear {
   DemoModeEnum DemoModeParser::fromEnvironment() {
     const char* value = std::getenv("ENGRENAGEM_DEMO");
     if(value == nullptr) return DemoModeEnum::none;
-
     return parse(value);
   }
 } // namespace wheel_of_fear

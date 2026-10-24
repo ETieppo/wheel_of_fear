@@ -1,5 +1,4 @@
 #include "mods/flashlight/FlashlightBatteryComponent.hpp"
-
 #include <algorithm>
 
 namespace wheel_of_fear {
@@ -21,12 +20,10 @@ namespace wheel_of_fear {
     float delta_seconds
   ) {
     const bool was_charging = is_charging_;
-
-    is_charging_ = level_ < 1 && can_charge;
+    is_charging_            = level_ < 1 && can_charge;
 
     if(is_charging_)
       level_ = std::min(1.0F, level_ + (delta_seconds / recharge_seconds));
-
     return is_charging_ && !was_charging;
   }
 
@@ -35,11 +32,11 @@ namespace wheel_of_fear {
     float            delta_seconds
   ) {
     flicker_timer_ -= delta_seconds;
-    if(level_ <= 0 || level_ >= low_threshold) return false;
 
+    if(level_ <= 0 || level_ >= low_threshold) return false;
     if(flicker_timer_ <= 0)
-      flicker_timer_ =
-        random.range(0.05F, (0.8F * level_ / low_threshold) + 0.1F);
+      flicker_timer_
+        = random.range(0.05F, (0.8F * level_ / low_threshold) + 0.1F);
 
     return flicker_timer_ < 0.06F;
   }

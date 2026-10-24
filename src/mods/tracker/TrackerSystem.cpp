@@ -1,5 +1,4 @@
 #include "mods/tracker/TrackerSystem.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
@@ -22,11 +21,8 @@ namespace wheel_of_fear {
     open_amount_ = 0;
   }
 
-  void TrackerSystem::update(
-    GameContextDto &context
-  ) {
+  void TrackerSystem::update(GameContextDto &context) {
     if(!context.clock.isRunning()) return;
-
     toggleOnRequest(context);
 
     open_amount_ = ScalarMath::approach(
@@ -40,17 +36,14 @@ namespace wheel_of_fear {
     if(is_open_) sweep(context);
   }
 
-  void TrackerSystem::toggleOnRequest(
-    GameContextDto &context
-  ) {
+  void TrackerSystem::toggleOnRequest(GameContextDto &context) {
     if(
-      !context.input.wasPressed(InputActionEnum::toggle_tracker) ||
-      context.player.isDead()
+      !context.input.wasPressed(InputActionEnum::toggle_tracker)
+      || context.player.isDead()
     )
       return;
 
     is_open_ = !is_open_;
-
     context.sound_player.play(
       is_open_ ? SoundEnum::tracker_open : SoundEnum::tracker_close,
       0.7F,
@@ -59,12 +52,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void TrackerSystem::sweep(
-    GameContextDto &context
-  ) {
+  void TrackerSystem::sweep(GameContextDto &context) {
     const float previous_angle = sweep_angle_;
-
-    sweep_angle_ = ScalarMath::floorModulo(
+    sweep_angle_               = ScalarMath::floorModulo(
       sweep_angle_ + (context.clock.deltaSeconds() * sweep_speed),
       ScalarMath::tau
     );
@@ -84,9 +74,8 @@ namespace wheel_of_fear {
       if(!crossedAngle(previous_angle, sweep_angle_, bearing)) continue;
 
       last_ping_seconds_[index] = context.clock.realSeconds();
-
-      const float pitch =
-        signal.kind == SignalKindEnum::unidentified ? 0.8F : 1.0F;
+      const float pitch
+        = signal.kind == SignalKindEnum::unidentified ? 0.8F : 1.0F;
 
       context.sound_player.play(
         SoundEnum::tracker_blip,
@@ -112,9 +101,7 @@ namespace wheel_of_fear {
     return target > previous || target <= current;
   }
 
-  void TrackerSystem::draw(
-    GameContextDto &context
-  ) const {
+  void TrackerSystem::draw(GameContextDto &context) const {
     TrackerRadarWidget::draw(
       context,
       TrackerViewDto {

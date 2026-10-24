@@ -1,8 +1,6 @@
-#include <memory>
-
-#include <doctest/doctest.h>
-
 #include "support/HeadlessGameHarness.hpp"
+#include <doctest/doctest.h>
+#include <memory>
 
 namespace wheel_of_fear {
   namespace {
@@ -16,21 +14,17 @@ namespace wheel_of_fear {
       harness.context().input.simulateHold(action, false);
     }
 
-    void checkAimsAtMouse(
-      GameContextDto &context
-    ) {
-      const Vec2Props toward_mouse = context.camera
-                                       .mouseWorldPosition(context.input)
-                                       .sub(context.player.position())
-                                       .normalized();
+    void checkAimsAtMouse(GameContextDto &context) {
+      const Vec2Props toward_mouse
+        = context.camera.mouseWorldPosition(context.input)
+            .sub(context.player.position())
+            .normalized();
 
       CHECK(context.player.aimDirection().dot(toward_mouse) > 0.99F);
     }
   } // namespace
 
-  TEST_CASE(
-    "the flashlight follows the mouse, not the WASD direction"
-  ) {
+  TEST_CASE("the flashlight follows the mouse, not the WASD direction") {
     const auto      harness = std::make_unique<HeadlessGameHarness>("play");
     GameContextDto &context = harness->context();
     const Vec2Props window  = context.input.windowSize();
@@ -45,7 +39,6 @@ namespace wheel_of_fear {
     holdForFrames(*harness, InputActionEnum::move_left, 20);
     CHECK(context.player.aimDirection().x > 0.5F);
     checkAimsAtMouse(context);
-
     context.input.simulateMousePosition(Vec2Props::of(window.x / 2, 20));
 
     holdForFrames(*harness, InputActionEnum::move_down, 20);

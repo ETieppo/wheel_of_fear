@@ -11,7 +11,5 @@ namespace wheel_of_fear {
       float                padding = 0;
   };
 
-  static_assert(
-    sizeof(QuadViewProps) == 32
-  );
+  static_assert(sizeof(QuadViewProps) == 32);
 } // namespace wheel_of_fear

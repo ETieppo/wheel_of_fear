@@ -1,5 +1,4 @@
 #include "mods/camera/RoomFramer.hpp"
-
 #include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
@@ -7,11 +6,10 @@ namespace wheel_of_fear {
     const RoomProps &room,
     Vec2Props        desired
   ) {
-    const Vec2Props minimum =
-      room.worldMinimum().sub(Vec2Props::of(wall_margin, wall_margin));
-
-    const Vec2Props maximum =
-      room.worldMaximum().add(Vec2Props::of(wall_margin, wall_margin));
+    const Vec2Props minimum
+      = room.worldMinimum().sub(Vec2Props::of(wall_margin, wall_margin));
+    const Vec2Props maximum
+      = room.worldMaximum().add(Vec2Props::of(wall_margin, wall_margin));
 
     return Vec2Props::of(
       clampAxis(desired.x, minimum.x, maximum.x, half_view.x),
@@ -28,7 +26,6 @@ namespace wheel_of_fear {
     const float low  = minimum + half_extent;
     const float high = maximum - half_extent;
     if(low > high) return (minimum + maximum) / 2;
-
     return ScalarMath::clamp(value, low, high);
   }
 } // namespace wheel_of_fear

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/math/Vec2Props.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "mods/world/TileCoordinateProps.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   struct DoorwayProps {
@@ -20,12 +19,10 @@ namespace wheel_of_fear {
       float       seconds_since_change = 100;
 
       [[nodiscard]]
-      TileCoordinateProps tileAt(
-        int step
-      ) const {
+      TileCoordinateProps tileAt(int step) const {
         return is_vertical
-               ? TileCoordinateProps {.x = first_x, .y = first_y + step}
-               : TileCoordinateProps {.x = first_x + step, .y = first_y};
+          ? TileCoordinateProps {.x = first_x, .y = first_y + step}
+          : TileCoordinateProps {.x = first_x + step, .y = first_y};
       }
 
       [[nodiscard]]
@@ -47,16 +44,12 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      bool connects(
-        std::size_t room_index
-      ) const {
+      bool connects(std::size_t room_index) const {
         return room_a == room_index || room_b == room_index;
       }
 
       [[nodiscard]]
-      std::size_t otherRoom(
-        std::size_t room_index
-      ) const {
+      std::size_t otherRoom(std::size_t room_index) const {
         return room_a == room_index ? room_b : room_a;
       }
   };

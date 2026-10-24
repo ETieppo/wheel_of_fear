@@ -1,5 +1,4 @@
 #include "mods/director/demos/DemoScenarioFactory.hpp"
-
 #include "mods/director/demos/DoorsDemoScenario.hpp"
 #include "mods/director/demos/FreezeDemoScenario.hpp"
 #include "mods/director/demos/GrenadeDemoScenario.hpp"
@@ -15,9 +14,7 @@
 #include "mods/director/demos/WalkDemoScenario.hpp"
 
 namespace wheel_of_fear {
-  std::unique_ptr<DemoScenario> DemoScenarioFactory::create(
-    DemoModeEnum mode
-  ) {
+  std::unique_ptr<DemoScenario> DemoScenarioFactory::create(DemoModeEnum mode) {
     switch(mode) {
       case DemoModeEnum::none: return nullptr;
       case DemoModeEnum::play: return std::make_unique<PatrolDemoScenario>(1);

@@ -1,12 +1,10 @@
 #include "mods/hud/widgets/ObjectivesPanelWidget.hpp"
-
-#include <format>
-#include <string>
-
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
+#include <format>
+#include <string>
 
 namespace wheel_of_fear {
   void ObjectivesPanelWidget::draw(
@@ -37,7 +35,6 @@ namespace wheel_of_fear {
     );
 
     const bool is_unlocked = generators.exitDoor().isUnlocked();
-
     renderer.drawText(
       is_unlocked ? "EXIT OPEN" : "EXIT SEALED",
       left + width - 12,
@@ -55,7 +52,6 @@ namespace wheel_of_fear {
       const ColorProps color  = generator.statusColor();
 
       renderer.drawUiRectangle(chip_x, 46, 27, 24, color.withAlpha(0.12F));
-
       renderer.drawUiRectangle(
         chip_x,
         68,

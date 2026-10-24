@@ -3,9 +3,8 @@
 #include "core/theme/Palette.hpp"
 
 namespace wheel_of_fear {
-  DistractionTraitsProps DistractionCatalog::traitsOf(
-    DistractionKindEnum kind
-  ) {
+  DistractionTraitsProps
+  DistractionCatalog::traitsOf(DistractionKindEnum kind) {
     switch(kind) {
       case DistractionKindEnum::metal_clang:
         return DistractionTraitsProps {
@@ -15,6 +14,7 @@ namespace wheel_of_fear {
           .noise_radius = 230,
           .flash_color  = std::nullopt,
         };
+
       case DistractionKindEnum::pipe_rattle:
         return DistractionTraitsProps {
           .sound        = SoundEnum::metal_clang,
@@ -23,6 +23,7 @@ namespace wheel_of_fear {
           .noise_radius = 170,
           .flash_color  = std::nullopt,
         };
+
       case DistractionKindEnum::mob_fight:
         return DistractionTraitsProps {
           .sound        = SoundEnum::distant_scream,
@@ -31,6 +32,7 @@ namespace wheel_of_fear {
           .noise_radius = 260,
           .flash_color  = std::nullopt,
         };
+
       case DistractionKindEnum::glass_shatter:
         return DistractionTraitsProps {
           .sound         = SoundEnum::glass_shatter,
@@ -42,6 +44,7 @@ namespace wheel_of_fear {
           .flash_seconds = 0.25F,
           .spark_count   = 8,
         };
+
       case DistractionKindEnum::power_surge:
         return DistractionTraitsProps {
           .sound         = SoundEnum::electric_buzz,

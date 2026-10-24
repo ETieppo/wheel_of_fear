@@ -1,24 +1,19 @@
 #include "mods/mobs/species/MelterMob.hpp"
-
-#include <algorithm>
-
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/effects/EffectSystem.hpp"
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
 
 namespace wheel_of_fear {
-  void MelterMob::emitLights(
-    GameContextDto &context
-  ) {
-    flash_seconds_ =
-      std::max(0.0F, flash_seconds_ - context.clock.deltaSeconds());
+  void MelterMob::emitLights(GameContextDto &context) {
+    flash_seconds_
+      = std::max(0.0F, flash_seconds_ - context.clock.deltaSeconds());
     if(flash_seconds_ <= 0) return;
 
     LightProps flash;
-
     flash.position  = position();
     flash.radius    = 70;
     flash.intensity = 1.4F * flash_seconds_ / dissolve_flash_seconds;
@@ -26,17 +21,13 @@ namespace wheel_of_fear {
     context.lighting.add(flash);
   }
 
-  void MelterMob::think(
-    GameContextDto &context
-  ) {
+  void MelterMob::think(GameContextDto &context) {
     if(!canAct()) return;
 
     if(brain().isHunting()) {
       const Vec2Props direction = directionTo(brain().destination());
-
-      const Vec2Props contact_point =
-        position().add(direction.scale(species_traits.collision_radius + 6));
-
+      const Vec2Props contact_point
+        = position().add(direction.scale(species_traits.collision_radius + 6));
       const TileCoordinateProps tile = TileMapModel::tileAt(contact_point);
       const TileMapModel       &map  = context.world.map();
 
@@ -50,9 +41,7 @@ namespace wheel_of_fear {
     if(isMoving()) leaveAcidTrail(context);
   }
 
-  void MelterMob::leaveAcidTrail(
-    GameContextDto &context
-  ) {
+  void MelterMob::leaveAcidTrail(GameContextDto &context) {
     trail_seconds_ -= context.clock.deltaSeconds();
     if(trail_seconds_ > 0) return;
 
@@ -93,20 +82,16 @@ namespace wheel_of_fear {
     );
   }
 
-  void MelterMob::onContact(
-    GameContextDto &context
-  ) {
+  void MelterMob::onContact(GameContextDto &context) {
     brain().strikeAndRetreat(context, strike_retreat_seconds);
   }
 
-  void MelterMob::draw(
-    GameContextDto &context
-  ) const {
+  void MelterMob::draw(GameContextDto &context) const {
     const SpriteSheetProps &sprites    = context.art.sprites();
     const bool              is_working = isMoving() || dissolve_seconds_ > 0;
 
-    const std::size_t frame =
-      animationFrame(is_working ? 9.0F : 2.0F, sprites.melter_crawl.size());
+    const std::size_t frame
+      = animationFrame(is_working ? 9.0F : 2.0F, sprites.melter_crawl.size());
 
     appearance().drawBody(
       context,

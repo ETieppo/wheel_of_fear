@@ -1,14 +1,15 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/entity/Entity.hpp"
 #include "game/dtos/GameContextDto.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   class LockerHidingComponent {
     public:
+      void reset();
+
       [[nodiscard]]
       bool isHidden() const {
         return hidden_locker_index_.has_value();
@@ -34,8 +35,6 @@ namespace wheel_of_fear {
         return is_holding_breath_;
       }
 
-      void reset();
-
       void clearHideEvent() {
         hide_event_locker_index_.reset();
       }
@@ -45,15 +44,18 @@ namespace wheel_of_fear {
         const WorldSystem &world,
         Vec2Props          position
       );
+
       void enter(
         GameContextDto &context,
         Entity         &body,
         std::size_t     locker_index
       );
+
       void leave(
         GameContextDto &context,
         Entity         &body
       );
+
       void updateWhileHidden(
         GameContextDto &context,
         Entity         &body

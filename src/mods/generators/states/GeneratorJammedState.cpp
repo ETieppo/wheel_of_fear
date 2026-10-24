@@ -1,9 +1,4 @@
 #include "mods/generators/states/GeneratorJammedState.hpp"
-
-#include <cmath>
-#include <format>
-#include <string_view>
-
 #include "core/input/InputController.hpp"
 #include "core/items/ItemCatalog.hpp"
 #include "core/math/ScalarMath.hpp"
@@ -16,6 +11,9 @@
 #include "mods/hud/HudSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <cmath>
+#include <format>
+#include <string_view>
 
 namespace wheel_of_fear {
   ColorProps GeneratorJammedState::statusColor(
@@ -29,8 +27,7 @@ namespace wheel_of_fear {
     GameContextDto  &context
   ) {
     const auto parts = ItemCatalog::generatorParts();
-
-    required_item_ = parts[context.world.random().index(parts.size())];
+    required_item_   = parts[context.world.random().index(parts.size())];
 
     context.effects.emitSparks(
       context.world,
@@ -40,7 +37,6 @@ namespace wheel_of_fear {
     );
 
     generator.playSound(context, SoundEnum::generator_request, 0.9F, 1);
-
     context.hud.announce(
       Palette::spark_yellow,
       std::format(
@@ -57,8 +53,7 @@ namespace wheel_of_fear {
     const GeneratorUpdateDto &update
   ) {
     GeneratorMachineryProps &machinery = generator.machinery();
-
-    machinery.rotor_speed = ScalarMath::approach(
+    machinery.rotor_speed              = ScalarMath::approach(
       machinery.rotor_speed,
       0,
       context.clock.deltaSeconds() * 6
@@ -66,7 +61,6 @@ namespace wheel_of_fear {
 
     emitIdleSparks(generator, context);
     if(!update.is_player_near) return;
-
     offerRequiredItem(generator, context);
   }
 
@@ -80,7 +74,6 @@ namespace wheel_of_fear {
     if(machinery.spark_timer > 0) return;
 
     machinery.spark_timer = context.world.random().range(0.6F, 1.6F);
-
     context.effects.emitSparks(
       context.world,
       generator.position().add(Vec2Props::of(-4, -2)),
@@ -93,11 +86,10 @@ namespace wheel_of_fear {
     GeneratorEntity &generator,
     GameContextDto  &context
   ) const {
-    const std::string_view item_name =
-      ItemCatalog::of(required_item_).displayName();
+    const std::string_view item_name
+      = ItemCatalog::of(required_item_).displayName();
 
     InventoryComponent &inventory = context.player.inventory();
-
     if(!inventory.has(required_item_)) {
       context.hud.showPrompt(
         std::nullopt,
@@ -115,8 +107,8 @@ namespace wheel_of_fear {
       InputActionEnum::interact,
       std::format("insert {} into generator {}", item_name, generator.label())
     );
-    if(!context.input.wasPressed(InputActionEnum::interact)) return;
 
+    if(!context.input.wasPressed(InputActionEnum::interact)) return;
     inventory.consume(required_item_);
     generator.enterCharging();
     generator.playSound(context, SoundEnum::part_pickup, 0.7F, 0.8F);

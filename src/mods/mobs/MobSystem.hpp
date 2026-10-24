@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/mobs/MobDangerMonitor.hpp"
@@ -11,18 +8,18 @@
 #include "mods/mobs/MobHugCoordinator.hpp"
 #include "mods/mobs/MobSpawner.hpp"
 #include "mods/mobs/enums/MobKindEnum.hpp"
+#include <memory>
+#include <vector>
 
 namespace wheel_of_fear {
   class MobSystem {
     public:
       MobSystem();
-      MobSystem(
-        const MobSystem &
-      ) = delete;
-      MobSystem &operator =(
-        const MobSystem &
-      ) = delete;
       ~MobSystem();
+
+      MobSystem(const MobSystem &) = delete;
+
+      MobSystem &operator =(const MobSystem &) = delete;
 
       [[nodiscard]]
       const std::vector<std::unique_ptr<MobEntity>> &all() const {
@@ -44,9 +41,7 @@ namespace wheel_of_fear {
         return explosions_;
       }
 
-      void setGraceSeconds(
-        float seconds
-      ) {
+      void setGraceSeconds(float seconds) {
         grace_seconds_ = seconds;
       }
 
@@ -61,24 +56,20 @@ namespace wheel_of_fear {
         spawner_.spawn(kind, position);
       }
 
-      void populatePhase(
-        WorldSystem &world
-      );
-      void onGeneratorOnline(
-        GameContextDto &context
-      );
+      void populatePhase(WorldSystem &world);
+
+      void onGeneratorOnline(GameContextDto &context);
+
       void answerShepherd(
         Vec2Props caller,
         Vec2Props target,
         float     radius,
         float     frenzy_seconds
       );
-      void update(
-        GameContextDto &context
-      );
-      void draw(
-        GameContextDto &context
-      );
+
+      void update(GameContextDto &context);
+
+      void draw(GameContextDto &context);
 
     private:
       static constexpr float phase_grace_seconds = 8;
@@ -88,6 +79,7 @@ namespace wheel_of_fear {
         MobEntity      &mob,
         float           delta_seconds
       ) const;
+
       void witnessHiding(
         const GameContextDto &context,
         std::size_t           locker_index

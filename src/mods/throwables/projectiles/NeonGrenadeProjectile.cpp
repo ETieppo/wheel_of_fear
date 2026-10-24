@@ -1,8 +1,4 @@
 #include "mods/throwables/projectiles/NeonGrenadeProjectile.hpp"
-
-#include <array>
-#include <vector>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
@@ -14,6 +10,8 @@
 #include "mods/throwables/NeonPuddleHazard.hpp"
 #include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <array>
+#include <vector>
 
 namespace wheel_of_fear {
   void NeonGrenadeProjectile::land(
@@ -24,7 +22,6 @@ namespace wheel_of_fear {
     const Vec2Props player_position = context.player.position();
 
     context.noise.emit(landing, noise_radius, NoiseSourceEnum::explosion);
-
     context.sound_player.playAt(
       SoundEnum::neon_burst,
       1.0F,
@@ -34,7 +31,6 @@ namespace wheel_of_fear {
     );
 
     context.effects.emitNeonBurst(world, landing);
-
     world.shake(
       ScalarMath::clamp(
         0.8F - (landing.distance(player_position) / 300),
@@ -82,9 +78,9 @@ namespace wheel_of_fear {
           TileMapModel::tileCenter(start.x, start.y)
         );
 
-        const float reach = spread_tiles *
-                            RenderConfig::tile_size *
-                            (0.75F + (0.35F * random.unit()));
+        const float reach = spread_tiles
+          * RenderConfig::tile_size
+          * (0.75F + (0.35F * random.unit()));
         if(offset.length() > reach || queue.size() >= flood_capacity) continue;
 
         map.fluids().spillNeon(x, y, lifetime_seconds + random.range(-4, 6));
@@ -93,9 +89,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void NeonGrenadeProjectile::drawTrail(
-    Renderer &renderer
-  ) const {
+  void NeonGrenadeProjectile::drawTrail(Renderer &renderer) const {
     renderer.drawGlowDisc(
       airPosition(),
       5,

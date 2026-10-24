@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/audio/AudioMixer.hpp"
 #include "core/entity/Entity.hpp"
 #include "core/items/enums/ItemEnum.hpp"
 #include "game/dtos/GameContextDto.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class FabricatorEntity final: public Entity {
@@ -34,23 +33,16 @@ namespace wheel_of_fear {
       [[nodiscard]]
       Vec2Props frontPoint() const;
 
-      void update(
-        GameContextDto &context
-      );
-      void draw(
-        GameContextDto &context
-      ) const;
+      void update(GameContextDto &context);
+
+      void draw(GameContextDto &context) const;
 
     private:
-      void interrupt(
-        GameContextDto &context
-      );
-      void work(
-        GameContextDto &context
-      );
-      void deliver(
-        GameContextDto &context
-      );
+      void interrupt(GameContextDto &context);
+
+      void work(GameContextDto &context);
+
+      void deliver(GameContextDto &context);
 
       std::size_t room_index_;
       ItemEnum    produced_item_;

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <array>
-#include <vector>
-
 #include "core/items/enums/ItemEnum.hpp"
 #include "core/render/AtlasRegionProps.hpp"
+#include <array>
+#include <vector>
 
 namespace wheel_of_fear {
   using SpriteFrames = std::vector<AtlasRegionProps>;
@@ -67,9 +66,7 @@ namespace wheel_of_fear {
       std::array<AtlasRegionProps, item_count> item_icons {};
 
       [[nodiscard]]
-      const AtlasRegionProps &itemIcon(
-        ItemEnum item
-      ) const {
+      const AtlasRegionProps &itemIcon(ItemEnum item) const {
         return item_icons[indexOf(item)];
       }
   };

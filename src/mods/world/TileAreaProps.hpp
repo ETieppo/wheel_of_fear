@@ -17,22 +17,22 @@ namespace wheel_of_fear {
         const TileAreaProps &other,
         int                  margin
       ) const {
-        return left -
-               margin <
-               other.left +
-               other.width &&
-               other.left <
-               left +
-               width +
-               margin &&
-               top -
-               margin <
-               other.top +
-               other.height &&
-               other.top <
-               top +
-               height +
-               margin;
+        return left
+          - margin
+          < other.left
+          + other.width
+          && other.left
+          < left
+          + width
+          + margin
+          && top
+          - margin
+          < other.top
+          + other.height
+          && other.top
+          < top
+          + height
+          + margin;
       }
   };
 } // namespace wheel_of_fear

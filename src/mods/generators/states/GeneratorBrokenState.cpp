@@ -1,8 +1,4 @@
 #include "mods/generators/states/GeneratorBrokenState.hpp"
-
-#include <algorithm>
-#include <format>
-
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/theme/Palette.hpp"
@@ -14,6 +10,8 @@
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <format>
 
 namespace wheel_of_fear {
   ColorProps GeneratorBrokenState::statusColor(
@@ -29,10 +27,8 @@ namespace wheel_of_fear {
     generator.setProgress(std::max(0.0F, generator.progress() - 0.12F));
     wiring_progress_ = 0;
     context.world.shake(0.4F);
-
     context.effects
       .emitSparks(context.world, generator.position(), 24, Palette::spark_blue);
-
     generator.playSound(context, SoundEnum::generator_breakdown, 1.0F, 1);
 
     context.noise.emit(
@@ -57,14 +53,13 @@ namespace wheel_of_fear {
   ) {
     const float              delta     = context.clock.deltaSeconds();
     GeneratorMachineryProps &machinery = generator.machinery();
-
-    machinery.rotor_speed =
-      ScalarMath::approach(machinery.rotor_speed, 0, delta * 8);
+    machinery.rotor_speed
+      = ScalarMath::approach(machinery.rotor_speed, 0, delta * 8);
 
     emitFaultSparks(generator, context, delta);
     emitFaultLight(generator, context);
-    if(!update.is_player_near) return;
 
+    if(!update.is_player_near) return;
     if(!generator.isBeingRepaired()) {
       context.hud.showPrompt(
         InputActionEnum::interact,
@@ -84,10 +79,9 @@ namespace wheel_of_fear {
   ) {
     GeneratorMachineryProps &machinery = generator.machinery();
     RandomGenerator         &random    = context.world.random();
-
     machinery.spark_timer -= delta_seconds;
-    if(machinery.spark_timer > 0) return;
 
+    if(machinery.spark_timer > 0) return;
     machinery.spark_timer = random.range(0.08F, 0.5F);
 
     const float offset_x = random.range(-10, 10);
@@ -157,8 +151,8 @@ namespace wheel_of_fear {
         wiring_progress_ / wiring_repair_seconds * 100
       )
     );
-    if(wiring_progress_ < wiring_repair_seconds) return;
 
+    if(wiring_progress_ < wiring_repair_seconds) return;
     wiring_progress_ = 0;
     generator.enterCharging();
 

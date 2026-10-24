@@ -26,12 +26,9 @@ namespace wheel_of_fear {
   class GameSimulation {
     public:
       GameSimulation();
-      GameSimulation(
-        const GameSimulation &
-      ) = delete;
-      GameSimulation &operator =(
-        const GameSimulation &
-      ) = delete;
+      GameSimulation(const GameSimulation &)             = delete;
+      GameSimulation &operator =(const GameSimulation &) = delete;
+      void            resume(const GameSnapshotProps &snapshot);
 
       [[nodiscard]]
       InputController &input() {
@@ -53,14 +50,9 @@ namespace wheel_of_fear {
         return context_;
       }
 
-      void step(
-        float delta_seconds
-      );
+      void step(float delta_seconds);
       [[nodiscard]]
       GameSnapshotProps snapshot() const;
-      void              resume(
-        const GameSnapshotProps &snapshot
-      );
 
     private:
       void tick();

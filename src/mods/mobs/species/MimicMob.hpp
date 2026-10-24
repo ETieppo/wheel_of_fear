@@ -10,8 +10,8 @@ namespace wheel_of_fear {
 
       static constexpr MobTraitsProps species_traits {
         .display_name = "Mimic",
-        .introduction =
-          "MIMIC  -  it wears the shell of a fabricator. The tracker "
+        .introduction
+        = "MIMIC  -  it wears the shell of a fabricator. The tracker "
           "can't tell the difference. Neither can you.",
         .speed                   = 46,
         .collision_radius        = 9,
@@ -26,9 +26,7 @@ namespace wheel_of_fear {
         .spawn_weight            = 0,
       };
 
-      explicit MimicMob(
-        Vec2Props position
-      )
+      explicit MimicMob(Vec2Props position)
           : MobEntity(
               position,
               species_traits
@@ -50,27 +48,20 @@ namespace wheel_of_fear {
         return stance_ == MimicStanceEnum::disguised;
       }
 
-      void think(
-        GameContextDto &context
-      ) override;
-      void onContact(
-        GameContextDto &context
-      ) override;
-      void draw(
-        GameContextDto &context
-      ) const override;
+      void think(GameContextDto &context) override;
+
+      void onContact(GameContextDto &context) override;
+
+      void draw(GameContextDto &context) const override;
 
     private:
       static constexpr float wake_distance          = 46;
       static constexpr float lunge_duration         = 0.7F;
       static constexpr float strike_retreat_seconds = 0.6F;
 
-      void waitInDisguise(
-        GameContextDto &context
-      );
-      void lunge(
-        GameContextDto &context
-      );
+      void waitInDisguise(GameContextDto &context);
+
+      void lunge(GameContextDto &context);
 
       MimicStanceEnum stance_        = MimicStanceEnum::disguised;
       float           lunge_seconds_ = 0;

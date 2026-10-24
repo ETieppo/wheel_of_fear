@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cstdint>
-#include <filesystem>
-
 #include "core/render/Canvas.hpp"
 #include "core/render/FontProps.hpp"
+#include <cstdint>
+#include <filesystem>
 
 namespace wheel_of_fear {
   class FontBaker final {

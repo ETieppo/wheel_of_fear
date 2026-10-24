@@ -5,9 +5,7 @@
 namespace wheel_of_fear {
   class LockerDemoScenario final: public DemoScenario {
     public:
-      explicit LockerDemoScenario(
-        bool has_witness
-      )
+      explicit LockerDemoScenario(bool has_witness)
           : has_witness_(has_witness) {
       }
 

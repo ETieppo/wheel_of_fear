@@ -5,13 +5,13 @@
 namespace wheel_of_fear {
   class TitleGameState final: public GameState {
     public:
+      void mixMusic(GameContextDto &context) const override;
+
       void update(
         Director       &director,
         GameContextDto &context
       ) override;
-      void mixMusic(
-        GameContextDto &context
-      ) const override;
+
       void draw(
         const Director &director,
         GameContextDto &context

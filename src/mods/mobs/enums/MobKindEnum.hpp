@@ -25,9 +25,7 @@ namespace wheel_of_fear {
     MobKindEnum::moth,
   };
 
-  constexpr std::string_view nameOf(
-    MobKindEnum value
-  ) {
+  constexpr std::string_view nameOf(MobKindEnum value) {
     switch(value) {
       case MobKindEnum::crawler:  return "crawler";
       case MobKindEnum::bloater:  return "bloater";

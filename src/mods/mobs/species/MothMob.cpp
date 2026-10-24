@@ -1,8 +1,4 @@
 #include "mods/mobs/species/MothMob.hpp"
-
-#include <algorithm>
-#include <cmath>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
@@ -11,6 +7,8 @@
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <cmath>
 
 namespace wheel_of_fear {
   Vec2Props MothMob::flutter() const {
@@ -20,13 +18,30 @@ namespace wheel_of_fear {
     );
   }
 
-  void MothMob::emitLights(
-    GameContextDto &context
-  ) {
+  Vec2Props MothMob::lightSource(
+    const TileMapModel &map,
+    Vec2Props           toward
+  ) const {
+    const Vec2Props offset      = toward.sub(position());
+    const float     length      = offset.length();
+    const auto      probe_count = static_cast<int>(length / light_probe_step);
+
+    for(int probe_index = 0; probe_index < probe_count; ++probe_index) {
+      const float along = static_cast<float>(probe_index) * light_probe_step;
+
+      const Vec2Props probe = position().add(offset.scale(along / length));
+      if(!map.isSolidAt(probe)) return probe;
+    }
+
+    return toward;
+  }
+
+  void MothMob::emitLights(GameContextDto &context) {
     LightProps light;
 
-    light.position = position();
-    light.color    = light_color;
+    light.position
+      = lightSource(context.world.map(), context.player.position());
+    light.color = light_color;
 
     switch(stance_) {
       case MothStanceEnum::waiting:
@@ -34,12 +49,14 @@ namespace wheel_of_fear {
         light.intensity = 0.6F;
         light.flicker   = 0.2F;
         break;
+
       case MothStanceEnum::following:
         light.radius            = companion_light_radius;
         light.intensity         = 1.2F;
         light.flicker           = 0.12F;
         light.freezes_creatures = true;
         break;
+
       case MothStanceEnum::departing:
         light.radius    = companion_light_radius * appearance().opacity();
         light.intensity = 0.6F;
@@ -50,9 +67,7 @@ namespace wheel_of_fear {
     context.lighting.add(light);
   }
 
-  void MothMob::think(
-    GameContextDto &context
-  ) {
+  void MothMob::think(GameContextDto &context) {
     if(!home_) home_ = position();
 
     switch(stance_) {
@@ -62,9 +77,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void MothMob::wait(
-    GameContextDto &context
-  ) {
+  void MothMob::wait(GameContextDto &context) {
     if(!home_) return;
 
     setPosition(home_->add(flutter()));
@@ -79,13 +92,10 @@ namespace wheel_of_fear {
     );
   }
 
-  void MothMob::follow(
-    GameContextDto &context
-  ) {
+  void MothMob::follow(GameContextDto &context) {
     const PlayerEntity &player = context.player;
-
-    const Vec2Props perch =
-      player.position().add(Vec2Props::of(-12, -14)).add(flutter());
+    const Vec2Props     perch
+      = player.position().add(Vec2Props::of(-12, -14)).add(flutter());
 
     setPosition(
       position().lerp(perch, std::min(1.0F, context.clock.deltaSeconds() * 3))
@@ -95,9 +105,7 @@ namespace wheel_of_fear {
     if(voice().vocalCooldown() > 0) return;
 
     RandomGenerator &random = context.world.random();
-
     voice().setVocalCooldown(random.range(2, 4));
-
     voice().playSound(
       context,
       SoundEnum::moth_flutter,
@@ -106,9 +114,7 @@ namespace wheel_of_fear {
     );
   }
 
-  void MothMob::depart(
-    GameContextDto &context
-  ) {
+  void MothMob::depart(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
 
     setPosition(position().add(Vec2Props::of(10, -40).scale(delta)));
@@ -120,24 +126,19 @@ namespace wheel_of_fear {
     if(departure_seconds_ <= 0) setAlive(false);
   }
 
-  void MothMob::onGeneratorOnline(
-    GameContextDto &context
-  ) {
+  void MothMob::onGeneratorOnline(GameContextDto &context) {
     if(stance_ != MothStanceEnum::following) return;
 
     stance_            = MothStanceEnum::departing;
     departure_seconds_ = departure_duration;
     context.sound_player.play(SoundEnum::moth_flutter, 0.7F, 0, 0.8F);
-
     context.hud.announce(
       Palette::warm_light,
       "THE LANTERN MOTH DRIFTS AWAY INTO THE DARK"
     );
   }
 
-  void MothMob::draw(
-    GameContextDto &context
-  ) const {
+  void MothMob::draw(GameContextDto &context) const {
     const SpriteSheetProps &sprites  = context.art.sprites();
     Renderer               &renderer = context.renderer;
     const std::size_t frame = animationFrame(14, sprites.moth_flutter.size());

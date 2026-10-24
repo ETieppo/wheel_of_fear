@@ -1,24 +1,19 @@
 #pragma once
 
+#include "core/render/QuadProps.hpp"
 #include <cstddef>
 #include <span>
 #include <vector>
 
-#include "core/render/QuadProps.hpp"
-
 namespace wheel_of_fear {
   class QuadBatch {
     public:
-      explicit QuadBatch(
-        std::size_t capacity
-      )
+      explicit QuadBatch(std::size_t capacity)
           : capacity_(capacity) {
         items_.reserve(capacity);
       }
 
-      void push(
-        const QuadProps &quad
-      ) {
+      void push(const QuadProps &quad) {
         if(items_.size() >= capacity_) return;
 
         items_.push_back(quad);

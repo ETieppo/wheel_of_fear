@@ -1,13 +1,11 @@
 #include "mods/tracker/TrackerSignalCollector.hpp"
-
-#include <cstdint>
-
 #include "core/items/ItemCatalog.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/tracker/TrackerConfig.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <cstdint>
 
 namespace wheel_of_fear {
   TrackerSignalCollector::TrackerSignalCollector() {
@@ -26,17 +24,13 @@ namespace wheel_of_fear {
     collectGhosts(ghosts);
   }
 
-  void TrackerSignalCollector::addSignal(
-    const SignalProps &signal
-  ) {
+  void TrackerSignalCollector::addSignal(const SignalProps &signal) {
     if(signals_.size() >= TrackerConfig::signal_capacity) return;
-
     signals_.push_back(signal);
   }
 
-  void TrackerSignalCollector::collectGenerators(
-    const GameContextDto &context
-  ) {
+  void
+  TrackerSignalCollector::collectGenerators(const GameContextDto &context) {
     const auto &generators = context.generators.all();
 
     for(std::size_t index = 0; index < generators.size(); ++index) {
@@ -44,9 +38,10 @@ namespace wheel_of_fear {
       ColorProps             color     = Palette::tracker_green;
 
       if(
-        generator.state() ==
-        GeneratorStateEnum::jammed ||
-        generator.state() == GeneratorStateEnum::broken
+        generator.state()
+        == GeneratorStateEnum::jammed
+        || generator.state()
+        == GeneratorStateEnum::broken
       )
         color = Palette::spark_yellow;
       if(generator.isOnline()) color = Palette::success;
@@ -64,9 +59,8 @@ namespace wheel_of_fear {
     }
   }
 
-  void TrackerSignalCollector::collectFabricators(
-    const GameContextDto &context
-  ) {
+  void
+  TrackerSignalCollector::collectFabricators(const GameContextDto &context) {
     const auto &fabricators = context.generators.fabricators();
 
     for(std::size_t index = 0; index < fabricators.size(); ++index) {
@@ -86,12 +80,10 @@ namespace wheel_of_fear {
     }
   }
 
-  void TrackerSignalCollector::collectExit(
-    const GameContextDto &context
-  ) {
+  void TrackerSignalCollector::collectExit(const GameContextDto &context) {
     const ColorProps exit_color = context.generators.exitDoor().isUnlocked()
-                                  ? Palette::success
-                                  : Palette::danger;
+      ? Palette::success
+      : Palette::danger;
 
     addSignal(
       SignalProps {
@@ -105,14 +97,12 @@ namespace wheel_of_fear {
     );
   }
 
-  void TrackerSignalCollector::collectDisguisedMobs(
-    const GameContextDto &context
-  ) {
+  void
+  TrackerSignalCollector::collectDisguisedMobs(const GameContextDto &context) {
     const auto &mobs = context.mobs.all();
 
     for(std::size_t index = 0; index < mobs.size(); ++index) {
       if(!mobs[index]->isDisguised()) continue;
-
       const auto disguise = static_cast<ItemEnum>(index % item_count);
 
       addSignal(

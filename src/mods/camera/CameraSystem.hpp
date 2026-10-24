@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/input/InputController.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   class WorldSystem;
@@ -18,9 +17,7 @@ namespace wheel_of_fear {
         return focus_;
       }
 
-      void setFocus(
-        Vec2Props focus
-      ) {
+      void setFocus(Vec2Props focus) {
         focus_ = focus;
       }
 
@@ -45,21 +42,21 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       Vec2Props viewOrigin() const;
+
       [[nodiscard]]
-      Vec2Props mouseWorldPosition(
-        const InputController &input
-      ) const;
+      Vec2Props mouseWorldPosition(const InputController &input) const;
+
       void snapToPlayer(
         const WorldSystem  &world,
         const PlayerEntity &player
       );
+
       void glideTo(
         Vec2Props point,
         float     delta_seconds
       );
-      void update(
-        GameContextDto &context
-      );
+
+      void update(GameContextDto &context);
 
     private:
       static constexpr Vec2Props mouse_influence {.x = 0.42F, .y = 0.42F};
@@ -69,9 +66,7 @@ namespace wheel_of_fear {
       static constexpr float     room_transition_seconds = 0.7F;
       static constexpr float     shake_amplitude         = 9;
 
-      static Vec2Props mouseOffset(
-        const InputController &input
-      );
+      static Vec2Props mouseOffset(const InputController &input);
       static Vec2Props framedTarget(
         std::optional<std::size_t> room_index,
         const WorldSystem         &world,

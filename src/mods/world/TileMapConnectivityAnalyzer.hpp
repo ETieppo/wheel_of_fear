@@ -8,15 +8,13 @@ namespace wheel_of_fear {
     public:
       TileMapConnectivityAnalyzer() = delete;
 
-      static bool isRoomGraphConnected(
-        const TileMapModel &map
-      );
+      static bool isRoomGraphConnected(const TileMapModel &map);
+
       static bool isRoomOpenAreaConnected(
         const TileMapModel &map,
         const RoomProps    &room
       );
-      static bool isEveryFloorConnected(
-        const TileMapModel &map
-      );
+
+      static bool isEveryFloorConnected(const TileMapModel &map);
   };
 } // namespace wheel_of_fear

@@ -1,14 +1,11 @@
 #include "core/render/gpu/GpuResourceFactory.hpp"
-
 #include <algorithm>
 #include <array>
 #include <vector>
 
 namespace wheel_of_fear {
   namespace {
-    WGPUStringView viewOf(
-      std::string_view text
-    ) {
+    WGPUStringView viewOf(std::string_view text) {
       return WGPUStringView {.data = text.data(), .length = text.size()};
     }
   } // namespace
@@ -18,8 +15,7 @@ namespace wheel_of_fear {
     std::size_t      size
   ) const {
     WGPUBufferDescriptor descriptor = WGPU_BUFFER_DESCRIPTOR_INIT;
-
-    descriptor.label = viewOf(label);
+    descriptor.label                = viewOf(label);
     descriptor.usage = WGPUBufferUsage_CopyDst | WGPUBufferUsage_Uniform;
     descriptor.size  = size;
 
@@ -31,8 +27,7 @@ namespace wheel_of_fear {
     std::size_t      size
   ) const {
     WGPUBufferDescriptor descriptor = WGPU_BUFFER_DESCRIPTOR_INIT;
-
-    descriptor.label = viewOf(label);
+    descriptor.label                = viewOf(label);
     descriptor.usage = WGPUBufferUsage_CopyDst | WGPUBufferUsage_Storage;
     descriptor.size  = size;
 
@@ -46,11 +41,9 @@ namespace wheel_of_fear {
     WGPUTextureFormat format
   ) const {
     WGPUTextureDescriptor descriptor = WGPU_TEXTURE_DESCRIPTOR_INIT;
-
-    descriptor.label = viewOf(label);
-
-    descriptor.usage =
-      WGPUTextureUsage_TextureBinding | WGPUTextureUsage_RenderAttachment;
+    descriptor.label                 = viewOf(label);
+    descriptor.usage
+      = WGPUTextureUsage_TextureBinding | WGPUTextureUsage_RenderAttachment;
 
     descriptor.size = WGPUExtent3D {
       .width              = std::max(width, 1U),
@@ -59,9 +52,7 @@ namespace wheel_of_fear {
     };
 
     descriptor.format = format;
-
     GpuOwnedTextureProps target;
-
     target.texture.reset(wgpuDeviceCreateTexture(device_, &descriptor));
     target.view.reset(wgpuTextureCreateView(target.texture.get(), nullptr));
 
@@ -75,20 +66,19 @@ namespace wheel_of_fear {
     std::uint32_t    mip_level_count
   ) const {
     WGPUTextureDescriptor descriptor = WGPU_TEXTURE_DESCRIPTOR_INIT;
+    descriptor.label                 = viewOf(label);
+    descriptor.usage
+      = WGPUTextureUsage_TextureBinding | WGPUTextureUsage_CopyDst;
 
-    descriptor.label = viewOf(label);
-
-    descriptor.usage =
-      WGPUTextureUsage_TextureBinding | WGPUTextureUsage_CopyDst;
-
-    descriptor.size =
-      WGPUExtent3D {.width = width, .height = height, .depthOrArrayLayers = 1};
+    descriptor.size = WGPUExtent3D {
+      .width              = width,
+      .height             = height,
+      .depthOrArrayLayers = 1,
+    };
 
     descriptor.format        = WGPUTextureFormat_RGBA8Unorm;
     descriptor.mipLevelCount = mip_level_count;
-
     GpuOwnedTextureProps sampled;
-
     sampled.texture.reset(wgpuDeviceCreateTexture(device_, &descriptor));
     sampled.view.reset(wgpuTextureCreateView(sampled.texture.get(), nullptr));
 
@@ -103,14 +93,12 @@ namespace wheel_of_fear {
     std::span<const std::uint8_t> pixels
   ) const {
     WGPUTexelCopyTextureInfo destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
-
-    destination.texture  = texture;
-    destination.mipLevel = mip_level;
+    destination.texture                  = texture;
+    destination.mipLevel                 = mip_level;
 
     WGPUTexelCopyBufferLayout layout = WGPU_TEXEL_COPY_BUFFER_LAYOUT_INIT;
-
-    layout.bytesPerRow  = width * 4;
-    layout.rowsPerImage = height;
+    layout.bytesPerRow               = width * 4;
+    layout.rowsPerImage              = height;
 
     const WGPUExtent3D extent {
       .width              = width,
@@ -133,9 +121,8 @@ namespace wheel_of_fear {
     std::uint32_t                 width,
     std::uint32_t                 height
   ) {
-    const std::uint32_t next_width  = width / 2;
-    const std::uint32_t next_height = height / 2;
-
+    const std::uint32_t       next_width  = width / 2;
+    const std::uint32_t       next_height = height / 2;
     std::vector<std::uint8_t> result(
       static_cast<std::size_t>(next_width) * next_height * 4
     );
@@ -151,16 +138,16 @@ namespace wheel_of_fear {
 
           for(const auto &offset : offsets) {
             sum += pixels
-              [(((static_cast<std::size_t>((y * 2) + offset[1]) * width) +
-                 (static_cast<std::size_t>(x) * 2) +
-                 offset[0]) *
-                4) +
-               channel];
+              [(((static_cast<std::size_t>((y * 2) + offset[1]) * width)
+                 + (static_cast<std::size_t>(x) * 2)
+                 + offset[0])
+                * 4)
+               + channel];
           }
 
           result
-            [(((static_cast<std::size_t>(y) * next_width) + x) * 4) + channel] =
-              static_cast<std::uint8_t>(sum / 4);
+            [(((static_cast<std::size_t>(y) * next_width) + x) * 4) + channel]
+            = static_cast<std::uint8_t>(sum / 4);
         }
       }
     }
@@ -175,8 +162,8 @@ namespace wheel_of_fear {
     std::uint32_t level_count = 1;
     while((image.width >> level_count) >= 4) level_count += 1;
 
-    GpuOwnedTextureProps uploaded =
-      createSampledTexture(label, image.width, image.height, level_count);
+    GpuOwnedTextureProps uploaded
+      = createSampledTexture(label, image.width, image.height, level_count);
 
     std::uint32_t             width        = image.width;
     std::uint32_t             height       = image.height;
@@ -200,14 +187,13 @@ namespace wheel_of_fear {
     std::uint16_t    max_anisotropy
   ) const {
     WGPUSamplerDescriptor descriptor = WGPU_SAMPLER_DESCRIPTOR_INIT;
-
-    descriptor.label         = viewOf(label);
-    descriptor.addressModeU  = address_mode;
-    descriptor.addressModeV  = address_mode;
-    descriptor.magFilter     = WGPUFilterMode_Linear;
-    descriptor.minFilter     = WGPUFilterMode_Linear;
-    descriptor.mipmapFilter  = WGPUMipmapFilterMode_Linear;
-    descriptor.maxAnisotropy = max_anisotropy;
+    descriptor.label                 = viewOf(label);
+    descriptor.addressModeU          = address_mode;
+    descriptor.addressModeV          = address_mode;
+    descriptor.magFilter             = WGPUFilterMode_Linear;
+    descriptor.minFilter             = WGPUFilterMode_Linear;
+    descriptor.mipmapFilter          = WGPUMipmapFilterMode_Linear;
+    descriptor.maxAnisotropy         = max_anisotropy;
 
     return GpuSampler(wgpuDeviceCreateSampler(device_, &descriptor));
   }
@@ -216,9 +202,8 @@ namespace wheel_of_fear {
     std::string_view                          label,
     std::span<const WGPUBindGroupLayoutEntry> entries
   ) const {
-    WGPUBindGroupLayoutDescriptor descriptor =
-      WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;
-
+    WGPUBindGroupLayoutDescriptor descriptor
+      = WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;
     descriptor.label      = viewOf(label);
     descriptor.entryCount = entries.size();
     descriptor.entries    = entries.data();
@@ -234,11 +219,10 @@ namespace wheel_of_fear {
     std::span<const WGPUBindGroupEntry> entries
   ) const {
     WGPUBindGroupDescriptor descriptor = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
-
-    descriptor.label      = viewOf(label);
-    descriptor.layout     = layout;
-    descriptor.entryCount = entries.size();
-    descriptor.entries    = entries.data();
+    descriptor.label                   = viewOf(label);
+    descriptor.layout                  = layout;
+    descriptor.entryCount              = entries.size();
+    descriptor.entries                 = entries.data();
 
     return GpuBindGroup(wgpuDeviceCreateBindGroup(device_, &descriptor));
   }
@@ -248,9 +232,8 @@ namespace wheel_of_fear {
     WGPUShaderModule                      shader,
     std::span<const WGPUColorTargetState> targets
   ) const {
-    WGPUPipelineLayoutDescriptor layout_descriptor =
-      WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;
-
+    WGPUPipelineLayoutDescriptor layout_descriptor
+      = WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;
     layout_descriptor.label                = viewOf("pipeline layout");
     layout_descriptor.bindGroupLayoutCount = 1;
     layout_descriptor.bindGroupLayouts     = &layout;
@@ -260,15 +243,13 @@ namespace wheel_of_fear {
     );
 
     WGPUFragmentState fragment = WGPU_FRAGMENT_STATE_INIT;
+    fragment.module            = shader;
+    fragment.entryPoint        = viewOf("fs");
+    fragment.targetCount       = targets.size();
+    fragment.targets           = targets.data();
 
-    fragment.module      = shader;
-    fragment.entryPoint  = viewOf("fs");
-    fragment.targetCount = targets.size();
-    fragment.targets     = targets.data();
-
-    WGPURenderPipelineDescriptor descriptor =
-      WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;
-
+    WGPURenderPipelineDescriptor descriptor
+      = WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;
     descriptor.label              = viewOf("pipeline");
     descriptor.layout             = pipeline_layout.get();
     descriptor.vertex.module      = shader;
@@ -282,52 +263,40 @@ namespace wheel_of_fear {
     );
   }
 
-  WGPUBindGroupLayoutEntry GpuResourceFactory::uniformEntry(
-    std::uint32_t binding
-  ) {
+  WGPUBindGroupLayoutEntry
+  GpuResourceFactory::uniformEntry(std::uint32_t binding) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
-
-    entry.binding     = binding;
+    entry.binding                  = binding;
     entry.visibility  = WGPUShaderStage_Vertex | WGPUShaderStage_Fragment;
     entry.buffer.type = WGPUBufferBindingType_Uniform;
-
     return entry;
   }
 
-  WGPUBindGroupLayoutEntry GpuResourceFactory::storageEntry(
-    std::uint32_t binding
-  ) {
+  WGPUBindGroupLayoutEntry
+  GpuResourceFactory::storageEntry(std::uint32_t binding) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
-
-    entry.binding     = binding;
-    entry.visibility  = WGPUShaderStage_Vertex;
-    entry.buffer.type = WGPUBufferBindingType_ReadOnlyStorage;
-
+    entry.binding                  = binding;
+    entry.visibility               = WGPUShaderStage_Vertex;
+    entry.buffer.type              = WGPUBufferBindingType_ReadOnlyStorage;
     return entry;
   }
 
-  WGPUBindGroupLayoutEntry GpuResourceFactory::textureEntry(
-    std::uint32_t binding
-  ) {
+  WGPUBindGroupLayoutEntry
+  GpuResourceFactory::textureEntry(std::uint32_t binding) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
-
-    entry.binding               = binding;
-    entry.visibility            = WGPUShaderStage_Fragment;
-    entry.texture.sampleType    = WGPUTextureSampleType_Float;
-    entry.texture.viewDimension = WGPUTextureViewDimension_2D;
-
+    entry.binding                  = binding;
+    entry.visibility               = WGPUShaderStage_Fragment;
+    entry.texture.sampleType       = WGPUTextureSampleType_Float;
+    entry.texture.viewDimension    = WGPUTextureViewDimension_2D;
     return entry;
   }
 
-  WGPUBindGroupLayoutEntry GpuResourceFactory::samplerEntry(
-    std::uint32_t binding
-  ) {
+  WGPUBindGroupLayoutEntry
+  GpuResourceFactory::samplerEntry(std::uint32_t binding) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
-
-    entry.binding      = binding;
-    entry.visibility   = WGPUShaderStage_Fragment;
-    entry.sampler.type = WGPUSamplerBindingType_Filtering;
-
+    entry.binding                  = binding;
+    entry.visibility               = WGPUShaderStage_Fragment;
+    entry.sampler.type             = WGPUSamplerBindingType_Filtering;
     return entry;
   }
 
@@ -337,11 +306,9 @@ namespace wheel_of_fear {
     std::uint64_t size
   ) {
     WGPUBindGroupEntry entry = WGPU_BIND_GROUP_ENTRY_INIT;
-
-    entry.binding = binding;
-    entry.buffer  = buffer;
-    entry.size    = size;
-
+    entry.binding            = binding;
+    entry.buffer             = buffer;
+    entry.size               = size;
     return entry;
   }
 
@@ -350,10 +317,8 @@ namespace wheel_of_fear {
     WGPUTextureView view
   ) {
     WGPUBindGroupEntry entry = WGPU_BIND_GROUP_ENTRY_INIT;
-
-    entry.binding     = binding;
-    entry.textureView = view;
-
+    entry.binding            = binding;
+    entry.textureView        = view;
     return entry;
   }
 
@@ -362,10 +327,8 @@ namespace wheel_of_fear {
     WGPUSampler   sampler
   ) {
     WGPUBindGroupEntry entry = WGPU_BIND_GROUP_ENTRY_INIT;
-
-    entry.binding = binding;
-    entry.sampler = sampler;
-
+    entry.binding            = binding;
+    entry.sampler            = sampler;
     return entry;
   }
 } // namespace wheel_of_fear

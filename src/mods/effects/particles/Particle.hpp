@@ -7,9 +7,7 @@
 namespace wheel_of_fear {
   class Particle {
     public:
-      explicit Particle(
-        const ParticleProps &state
-      )
+      explicit Particle(const ParticleProps &state)
           : state_(state) {
       }
 
@@ -20,9 +18,7 @@ namespace wheel_of_fear {
         return state_.position;
       }
 
-      bool advance(
-        float delta_seconds
-      );
+      bool         advance(float delta_seconds);
       virtual void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites
@@ -49,7 +45,6 @@ namespace wheel_of_fear {
 
     private:
       static constexpr float gravity = 60;
-
-      ParticleProps state_;
+      ParticleProps          state_;
   };
 } // namespace wheel_of_fear

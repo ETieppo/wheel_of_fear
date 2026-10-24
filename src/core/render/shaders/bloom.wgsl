@@ -23,6 +23,7 @@ struct PostProcessProps {
 struct VertexOutputProps {
     @builtin(position) position: vec4<f32>,
 };
+
 @vertex fn vs(@builtin(vertex_index) vertex_index: u32) -> VertexOutputProps {
     var points = array<vec2<f32>, 3>(
         vec2<f32>(-1.0, -1.0),
@@ -44,6 +45,7 @@ fn brightPart(coordinate: vec2<f32>) -> vec3<f32> {
     let color = textureSample(lit_scene, lit_sampler, coordinate).rgb;
     let brightness = max(max(color.r, color.g), color.b);
     let knee = clamp((brightness - bloom_threshold) / max(brightness, 0.0001), 0.0, 1.0);
+
     return color * knee;
 }
 
@@ -53,15 +55,19 @@ fn brightPart(coordinate: vec2<f32>) -> vec3<f32> {
     let coordinate = input.position.xy / bloom_size;
     var sum = brightPart(coordinate) * 0.16;
     var total = 0.16;
+
     for (var ring = 1; ring <= 3; ring = ring + 1) {
         let radius = f32(ring) * 1.6;
         let weight = 0.14 / f32(ring);
+
         for (var spoke = 0; spoke < 8; spoke = spoke + 1) {
             let angle = f32(spoke) * 0.785398 + f32(ring) * 0.39;
             let offset = vec2<f32>(cos(angle), sin(angle)) * radius * texel;
+
             sum = sum + brightPart(coordinate + offset) * weight;
             total = total + weight;
         }
     }
+
     return vec4<f32>(sum / total, 1.0);
 }

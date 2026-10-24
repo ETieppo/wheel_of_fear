@@ -7,6 +7,8 @@ namespace wheel_of_fear {
     public:
       static constexpr float low_threshold = 0.18F;
 
+      void refill();
+
       [[nodiscard]]
       float level() const {
         return level_;
@@ -22,15 +24,16 @@ namespace wheel_of_fear {
         return level_ <= 0;
       }
 
-      void refill();
       void drain(
         float delta_seconds,
         float seconds_to_drain
       );
+
       bool updateCharging(
         bool  can_charge,
         float delta_seconds
       );
+
       bool flickersOff(
         RandomGenerator &random,
         float            delta_seconds

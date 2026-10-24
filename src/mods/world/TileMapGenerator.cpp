@@ -1,5 +1,6 @@
 #include "mods/world/TileMapGenerator.hpp"
-
+#include "core/render/RenderConfig.hpp"
+#include "mods/world/RoomShaper.hpp"
 #include <array>
 #include <cstdint>
 #include <cstdlib>
@@ -7,9 +8,6 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
-
-#include "core/render/RenderConfig.hpp"
-#include "mods/world/RoomShaper.hpp"
 
 namespace wheel_of_fear {
   void TileMapGenerator::generate(
@@ -20,8 +18,8 @@ namespace wheel_of_fear {
     const int map_height = (grid_rows * room_cell_height) + 1;
 
     if(
-      std::cmp_greater(map_width, RenderConfig::max_map_size) ||
-      std::cmp_greater(map_height, RenderConfig::max_map_size)
+      std::cmp_greater(map_width, RenderConfig::max_map_size)
+      || std::cmp_greater(map_height, RenderConfig::max_map_size)
     ) {
       throw std::runtime_error("map too large");
     }
@@ -58,7 +56,6 @@ namespace wheel_of_fear {
         };
 
         const std::size_t room_index = rooms.size();
-
         rooms.push_back(room);
 
         for(int y = room.top; y < room.top + room.height; ++y)
@@ -81,15 +78,13 @@ namespace wheel_of_fear {
 
   void TileMapGenerator::placeDoorways() {
     std::vector<DoorwayProps> &doorways = map_.doorways();
-
     doorways.clear();
 
     for(int row = 0; row < grid_rows_; ++row) {
       for(int column = 0; column < grid_columns_; ++column) {
-        const auto room_index = (static_cast<std::size_t>(row) *
-                                 static_cast<std::size_t>(grid_columns_)) +
-                                static_cast<std::size_t>(column);
-
+        const auto room_index = (static_cast<std::size_t>(row)
+                                 * static_cast<std::size_t>(grid_columns_))
+          + static_cast<std::size_t>(column);
         const RoomProps room = map_.rooms()[room_index];
 
         if(column + 1 < grid_columns_) {
@@ -132,9 +127,10 @@ namespace wheel_of_fear {
   void TileMapGenerator::openSpanningDoorways() {
     std::vector<DoorwayProps> &doorways   = map_.doorways();
     const std::size_t          room_count = map_.rooms().size();
-    std::vector<bool>          visited(room_count, false);
-    std::vector<std::size_t>   stack;
-    const std::size_t          start = random_.index(room_count);
+
+    std::vector<bool>        visited(room_count, false);
+    std::vector<std::size_t> stack;
+    const std::size_t        start = random_.index(room_count);
 
     visited[start] = true;
     stack.push_back(start);
@@ -149,7 +145,6 @@ namespace wheel_of_fear {
         ++doorway_index
       ) {
         const DoorwayProps &doorway = doorways[doorway_index];
-
         if(!doorway.connects(current) || visited[doorway.otherRoom(current)])
           continue;
 
@@ -161,10 +156,8 @@ namespace wheel_of_fear {
         continue;
       }
 
-      DoorwayProps &chosen = doorways[options[random_.index(option_count)]];
-
-      chosen.is_open = true;
-
+      DoorwayProps &chosen   = doorways[options[random_.index(option_count)]];
+      chosen.is_open         = true;
       const std::size_t next = chosen.otherRoom(current);
 
       visited[next] = true;
@@ -174,7 +167,6 @@ namespace wheel_of_fear {
     for(DoorwayProps &doorway : doorways) {
       if(!doorway.is_open && random_.chance(extra_doorway_chance))
         doorway.is_open = true;
-
       doorway.open_amount = doorway.is_open ? 1.0F : 0.0F;
       map_.setDoorwayTiles(doorway, doorway.is_open);
     }
@@ -185,9 +177,10 @@ namespace wheel_of_fear {
     int              x,
     int              y
   ) {
-    return std::abs(x - room.centerTileX()) <=
-           clearing_half_width &&
-           std::abs(y - room.centerTileY()) <= clearing_half_height;
+    return std::abs(x - room.centerTileX())
+      <= clearing_half_width
+      && std::abs(y - room.centerTileY())
+      <= clearing_half_height;
   }
 
   bool TileMapGenerator::isInsideFurnishableArea(
@@ -225,8 +218,8 @@ namespace wheel_of_fear {
         int check_x = block.left; check_x < block.left + block.width; ++check_x
       )
         if(
-          !isInsideFurnishableArea(room_index, check_x, check_y) ||
-          map_.isWall(check_x, check_y)
+          !isInsideFurnishableArea(room_index, check_x, check_y)
+          || map_.isWall(check_x, check_y)
         )
           return false;
     }
@@ -238,27 +231,21 @@ namespace wheel_of_fear {
     return true;
   }
 
-  int TileMapGenerator::randomInteriorX(
-    const RoomProps &room
-  ) const {
+  int TileMapGenerator::randomInteriorX(const RoomProps &room) const {
     return random_.intInclusive(
       room.left + RoomProps::free_border,
       room.left + room.width - RoomProps::free_border - 1
     );
   }
 
-  int TileMapGenerator::randomInteriorY(
-    const RoomProps &room
-  ) const {
+  int TileMapGenerator::randomInteriorY(const RoomProps &room) const {
     return random_.intInclusive(
       room.top + RoomProps::free_border,
       room.top + room.height - RoomProps::free_border - 1
     );
   }
 
-  void TileMapGenerator::furnishRoom(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::furnishRoom(std::size_t room_index) {
     const RoomProps room = map_.rooms()[room_index];
 
     switch(room.layout) {
@@ -272,9 +259,7 @@ namespace wheel_of_fear {
     sealUnreachableFloor(room_index);
   }
 
-  void TileMapGenerator::furnishHall(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::furnishHall(std::size_t room_index) {
     const RoomProps &room = map_.rooms()[room_index];
 
     for(
@@ -296,9 +281,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMapGenerator::furnishOffices(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::furnishOffices(std::size_t room_index) {
     const RoomProps &room = map_.rooms()[room_index];
 
     for(int attempt = 0; attempt < 5; ++attempt) {
@@ -319,9 +302,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMapGenerator::furnishServerFarm(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::furnishServerFarm(std::size_t room_index) {
     const RoomProps &room = map_.rooms()[room_index];
 
     for(int attempt = 0; attempt < 2; ++attempt) {
@@ -340,17 +321,13 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMapGenerator::furnishStorage(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::furnishStorage(std::size_t room_index) {
     const RoomProps &room = map_.rooms()[room_index];
 
     for(int attempt = 0; attempt < 2; ++attempt) {
-      const int x = randomInteriorX(room);
-      const int y = randomInteriorY(room);
-
+      const int           x = randomInteriorX(room);
+      const int           y = randomInteriorY(room);
       const TileAreaProps shelf {.left = x, .top = y, .width = 5, .height = 1};
-
       const TileAreaProps
         post {.left = x, .top = y + 1, .width = 1, .height = 3};
 
@@ -358,9 +335,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMapGenerator::furnishPumpStation(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::furnishPumpStation(std::size_t room_index) {
     const RoomProps &room = map_.rooms()[room_index];
 
     for(int attempt = 0; attempt < 6; ++attempt) {
@@ -374,17 +349,13 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMapGenerator::sealUnreachableFloor(
-    std::size_t room_index
-  ) {
+  void TileMapGenerator::sealUnreachableFloor(std::size_t room_index) {
     const RoomProps &room  = map_.rooms()[room_index];
     const auto       start = firstFloorTile(room_index);
     if(!start) return;
 
-    std::vector<bool> reached(room.tileCount(), false);
-
+    std::vector<bool>                reached(room.tileCount(), false);
     std::vector<TileCoordinateProps> queue {*start};
-
     reached[room.localIndex(start->x, start->y)] = true;
 
     for(std::size_t head = 0; head < queue.size(); ++head) {
@@ -406,9 +377,8 @@ namespace wheel_of_fear {
         if(!reached[room.localIndex(x, y)]) map_.raiseWall(x, y);
   }
 
-  std::optional<TileCoordinateProps> TileMapGenerator::firstFloorTile(
-    std::size_t room_index
-  ) const {
+  std::optional<TileCoordinateProps>
+  TileMapGenerator::firstFloorTile(std::size_t room_index) const {
     const RoomProps &room = map_.rooms()[room_index];
 
     for(int y = room.top; y < room.top + room.height; ++y)

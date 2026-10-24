@@ -9,9 +9,7 @@
 namespace wheel_of_fear {
   class ArtLibrary {
     public:
-      explicit ArtLibrary(
-        Renderer &renderer
-      );
+      explicit ArtLibrary(Renderer &renderer);
 
       [[nodiscard]]
       const SpriteSheetProps &sprites() const {
@@ -19,23 +17,17 @@ namespace wheel_of_fear {
       }
 
     private:
-      SpriteFrames loadStrip(
-        const SpriteStripProps &strip
-      );
-      SpriteFrames loadParticleStrip(
-        const SpriteStripProps &strip
-      );
-      AtlasRegionProps loadSingle(
-        const SpriteStripProps &strip
-      );
+      SpriteFrames     loadStrip(const SpriteStripProps &strip);
+      SpriteFrames     loadParticleStrip(const SpriteStripProps &strip);
+      AtlasRegionProps loadSingle(const SpriteStripProps &strip);
+      void             loadGroundMaterials();
+      Renderer        &renderer_;
+      AtlasShelfPacker packer_;
+      SpriteSheetProps sprites_;
+
       SpriteFrames copyFrames(
         const SpriteStripProps  &strip,
         const DecodedImageProps &image
       );
-      void loadGroundMaterials();
-
-      Renderer        &renderer_;
-      AtlasShelfPacker packer_;
-      SpriteSheetProps sprites_;
   };
 } // namespace wheel_of_fear

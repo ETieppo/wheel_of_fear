@@ -1,5 +1,4 @@
 #include "mods/director/demos/ShowcaseDemoScenario.hpp"
-
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
@@ -15,7 +14,6 @@ namespace wheel_of_fear {
 
     setStep(1);
     context.mobs.clear();
-
     float offset = -66;
 
     for(const MobKindEnum kind : all_mob_kinds) {

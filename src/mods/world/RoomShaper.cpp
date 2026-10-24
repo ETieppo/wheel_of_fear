@@ -1,11 +1,8 @@
 #include "mods/world/RoomShaper.hpp"
-
 #include <algorithm>
 
 namespace wheel_of_fear {
-  void RoomShaper::shape(
-    std::size_t room_index
-  ) {
+  void RoomShaper::shape(std::size_t room_index) {
     const RoomProps room = map_.rooms()[room_index];
 
     protected_zones_ = protectedZones(room_index, room);
@@ -44,15 +41,14 @@ namespace wheel_of_fear {
 
     for(const DoorwayProps &doorway : map_.doorways()) {
       if(!doorway.connects(room_index)) continue;
-
       if(doorway.is_vertical) {
         const bool is_room_on_right = room.left == doorway.first_x + 1;
 
         zones.push_back(
           TileAreaProps {
             .left   = is_room_on_right
-                      ? room.left
-                      : room.left + room.width - doorway_approach_depth,
+              ? room.left
+              : room.left + room.width - doorway_approach_depth,
             .top    = doorway.first_y - 1,
             .width  = doorway_approach_depth,
             .height = DoorwayProps::length + 2,
@@ -63,13 +59,12 @@ namespace wheel_of_fear {
       }
 
       const bool is_room_below = room.top == doorway.first_y + 1;
-
       zones.push_back(
         TileAreaProps {
           .left   = doorway.first_x - 1,
           .top    = is_room_below
-                    ? room.top
-                    : room.top + room.height - doorway_approach_depth,
+            ? room.top
+            : room.top + room.height - doorway_approach_depth,
           .width  = DoorwayProps::length + 2,
           .height = doorway_approach_depth,
         }
@@ -79,9 +74,7 @@ namespace wheel_of_fear {
     return zones;
   }
 
-  bool RoomShaper::isAllowed(
-    const TileAreaProps &cutout
-  ) const {
+  bool RoomShaper::isAllowed(const TileAreaProps &cutout) const {
     if(cutout.isEmpty()) return false;
 
     const bool touches_protected_zone = std::ranges::any_of(
@@ -89,10 +82,10 @@ namespace wheel_of_fear {
       [&cutout](const TileAreaProps &zone) { return cutout.overlaps(zone, 0); }
     );
 
-    const bool touches_other_cutout =
-      std::ranges::any_of(cutouts_, [&cutout](const TileAreaProps &other) {
-        return cutout.overlaps(other, cutout_separation);
-      });
+    const bool touches_other_cutout
+      = std::ranges::any_of(cutouts_, [&cutout](const TileAreaProps &other) {
+          return cutout.overlaps(other, cutout_separation);
+        });
 
     return !touches_protected_zone && !touches_other_cutout;
   }
@@ -103,7 +96,6 @@ namespace wheel_of_fear {
     bool             is_bottom
   ) {
     if(!random_.chance(corner_cut_chance)) return;
-
     int width  = random_.intInclusive(minimum_cut_size, (room.width / 2) - 3);
     int height = random_.intInclusive(minimum_cut_size, (room.height / 2) - 2);
 
@@ -125,19 +117,17 @@ namespace wheel_of_fear {
     }
   }
 
-  void RoomShaper::cutEdgeNotch(
-    const RoomProps &room
-  ) {
-    const int  depth       = random_.intInclusive(2, 4);
-    const int  length      = random_.intInclusive(3, 7);
-    const auto edge        = random_.index(4);
-    const bool is_vertical = edge >= 2;
-    const int  span        = is_vertical ? room.height : room.width;
-
-    const int start =
-      random_.intInclusive(minimum_cut_size, span - length - minimum_cut_size);
-
+  void RoomShaper::cutEdgeNotch(const RoomProps &room) {
     TileAreaProps cutout;
+    const int     depth       = random_.intInclusive(2, 4);
+    const int     length      = random_.intInclusive(3, 7);
+    const auto    edge        = random_.index(4);
+    const bool    is_vertical = edge >= 2;
+    const int     span        = is_vertical ? room.height : room.width;
+    const int     start       = random_.intInclusive(
+      minimum_cut_size,
+      span - length - minimum_cut_size
+    );
 
     switch(edge) {
       case 0:
@@ -148,6 +138,7 @@ namespace wheel_of_fear {
           .height = depth,
         };
         break;
+
       case 1:
         cutout = {
           .left   = room.left + start,
@@ -156,6 +147,7 @@ namespace wheel_of_fear {
           .height = depth,
         };
         break;
+
       case 2:
         cutout = {
           .left   = room.left,
@@ -164,6 +156,7 @@ namespace wheel_of_fear {
           .height = length,
         };
         break;
+
       default:
         cutout = {
           .left   = room.left + room.width - depth,
@@ -173,12 +166,11 @@ namespace wheel_of_fear {
         };
         break;
     }
+
     if(isAllowed(cutout)) cutouts_.push_back(cutout);
   }
 
-  void RoomShaper::apply(
-    const TileAreaProps &cutout
-  ) {
+  void RoomShaper::apply(const TileAreaProps &cutout) {
     for(int y = cutout.top; y < cutout.top + cutout.height; ++y)
       for(int x = cutout.left; x < cutout.left + cutout.width; ++x)
         map_.sealTile(x, y);

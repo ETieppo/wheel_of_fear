@@ -1,15 +1,11 @@
 #include "mods/throwables/NeonPuddleHazard.hpp"
-
+#include "core/math/ScalarMath.hpp"
+#include "core/theme/Palette.hpp"
 #include <algorithm>
 #include <cmath>
 
-#include "core/math/ScalarMath.hpp"
-#include "core/theme/Palette.hpp"
-
 namespace wheel_of_fear {
-  void NeonPuddleHazard::update(
-    float delta_seconds
-  ) {
+  void NeonPuddleHazard::update(float delta_seconds) {
     remaining_seconds_ -= delta_seconds;
     flash_seconds_ = std::max(0.0F, flash_seconds_ - delta_seconds);
   }
@@ -18,12 +14,11 @@ namespace wheel_of_fear {
     LightingSystem &lighting,
     float           real_seconds
   ) const {
+    LightProps  glow;
+    LightProps  flash;
     const float fade = ScalarMath::clamp(remaining_seconds_ / 8, 0, 1);
-
-    const float shimmer =
-      0.85F + (0.15F * std::sin((real_seconds * 4) + position_.x));
-
-    LightProps glow;
+    const float shimmer
+      = 0.85F + (0.15F * std::sin((real_seconds * 4) + position_.x));
 
     glow.position  = position_;
     glow.radius    = light_radius;
@@ -31,9 +26,8 @@ namespace wheel_of_fear {
     glow.color     = Palette::neon_magenta;
     glow.flicker   = 0.05F;
     lighting.add(glow);
-    if(flash_seconds_ <= 0) return;
 
-    LightProps flash;
+    if(flash_seconds_ <= 0) return;
 
     flash.position  = position_;
     flash.radius    = 170;

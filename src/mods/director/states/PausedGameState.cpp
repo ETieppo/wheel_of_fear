@@ -1,5 +1,4 @@
 #include "mods/director/states/PausedGameState.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
@@ -18,8 +17,8 @@ namespace wheel_of_fear {
     context.clock.setRunning(false);
 
     if(
-      context.input.wasPressed(InputActionEnum::back) ||
-      context.input.wasPressed(InputActionEnum::confirm)
+      context.input.wasPressed(InputActionEnum::back)
+      || context.input.wasPressed(InputActionEnum::confirm)
     ) {
       director.enterState(GameStateEnum::playing);
       context.clock.setRunning(true);
@@ -29,9 +28,7 @@ namespace wheel_of_fear {
       director.startPhase(context, director.phase());
   }
 
-  void PausedGameState::mixMusic(
-    GameContextDto &context
-  ) const {
+  void PausedGameState::mixMusic(GameContextDto &context) const {
     context.sound_player.setMusicMix(
       0,
       0.8F,

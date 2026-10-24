@@ -1,10 +1,9 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "core/render/Renderer.hpp"
 #include "mods/hud/HudMessageProps.hpp"
+#include <string>
+#include <vector>
 
 namespace wheel_of_fear {
   class MessageFeedWidget {
@@ -17,12 +16,10 @@ namespace wheel_of_fear {
         ColorProps  color,
         std::string text
       );
-      void age(
-        float delta_seconds
-      );
-      void draw(
-        Renderer &renderer
-      ) const;
+
+      void age(float delta_seconds);
+
+      void draw(Renderer &renderer) const;
 
     private:
       static constexpr std::size_t capacity         = 5;

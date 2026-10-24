@@ -1,5 +1,4 @@
 #include "mods/mobs/species/ShepherdMob.hpp"
-
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/mobs/MobSystem.hpp"
@@ -8,14 +7,11 @@
 #include "mods/world/WorldSystem.hpp"
 
 namespace wheel_of_fear {
-  void ShepherdMob::think(
-    GameContextDto &context
-  ) {
+  void ShepherdMob::think(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
-
     seconds_since_call_ += delta;
-    if(!canAct()) return;
 
+    if(!canAct()) return;
     const Vec2Props player_position = context.player.position();
 
     if(brain().intent() == MobIntentEnum::calling) {
@@ -25,21 +21,22 @@ namespace wheel_of_fear {
         brain().startSearching(position());
 
       brain().addIntentSeconds(delta);
-
       return;
     }
 
     if(
-      perception().canSeePlayerNow() &&
-      seconds_since_call_ >= call_interval_seconds
+      perception().canSeePlayerNow()
+      && seconds_since_call_
+      >= call_interval_seconds
     ) {
       call(context);
       return;
     }
 
     if(
-      perception().canSeePlayerNow() &&
-      distanceToPlayer(context) < preferred_distance
+      perception().canSeePlayerNow()
+      && distanceToPlayer(context)
+      < preferred_distance
     ) {
       locomotion().moveAlong(
         context,
@@ -48,16 +45,13 @@ namespace wheel_of_fear {
       );
 
       faceToward(player_position);
-
       return;
     }
 
     brain().hunt(context);
   }
 
-  void ShepherdMob::call(
-    GameContextDto &context
-  ) {
+  void ShepherdMob::call(GameContextDto &context) {
     seconds_since_call_ = 0;
     brain().changeIntent(MobIntentEnum::calling, position());
 
@@ -70,7 +64,6 @@ namespace wheel_of_fear {
 
     context.noise
       .emit(position(), call_radius * 0.5F, NoiseSourceEnum::shepherd_call);
-
     context.mobs.answerShepherd(
       position(),
       context.player.position(),
@@ -79,13 +72,10 @@ namespace wheel_of_fear {
     );
   }
 
-  void ShepherdMob::draw(
-    GameContextDto &context
-  ) const {
+  void ShepherdMob::draw(GameContextDto &context) const {
     const SpriteSheetProps &sprites = context.art.sprites();
-
-    const std::size_t frame =
-      animationFrame(isMoving() ? 8.0F : 2.0F, sprites.shepherd_walk.size());
+    const std::size_t       frame
+      = animationFrame(isMoving() ? 8.0F : 2.0F, sprites.shepherd_walk.size());
 
     appearance().drawBody(
       context,
@@ -95,9 +85,10 @@ namespace wheel_of_fear {
     );
 
     if(
-      seconds_since_call_ >=
-      call_ripple_seconds ||
-      condition().petrifyAmount() >= 0.5F
+      seconds_since_call_
+      >= call_ripple_seconds
+      || condition().petrifyAmount()
+      >= 0.5F
     )
       return;
 

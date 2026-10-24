@@ -1,13 +1,11 @@
 #include "mods/director/demos/PowerDemoScenario.hpp"
-
-#include <format>
-
 #include "core/input/InputController.hpp"
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void PowerDemoScenario::run(
@@ -25,7 +23,6 @@ namespace wheel_of_fear {
       context.player.setPosition(context.world.map().nearestFloor(
         generator.position().add(Vec2Props::of(0, 34))
       ));
-
       context.camera.snapToPlayer(context.world, context.player);
       generator.cancelPlannedIncidents();
       generator.setProgress(0.93F);
@@ -36,6 +33,7 @@ namespace wheel_of_fear {
       InputActionEnum::interact,
       !generator.isOnline()
     );
+
     if(!tick.should_log) return;
 
     logLine(

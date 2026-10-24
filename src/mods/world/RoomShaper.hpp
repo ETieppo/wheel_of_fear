@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstddef>
-#include <vector>
-
 #include "core/math/RandomGenerator.hpp"
 #include "mods/world/RoomProps.hpp"
 #include "mods/world/TileAreaProps.hpp"
 #include "mods/world/TileMapModel.hpp"
+#include <cstddef>
+#include <vector>
 
 namespace wheel_of_fear {
   class RoomShaper {
@@ -19,9 +18,7 @@ namespace wheel_of_fear {
           , random_(random) {
       }
 
-      void shape(
-        std::size_t room_index
-      );
+      void shape(std::size_t room_index);
 
     private:
       static constexpr float corner_cut_chance      = 0.55F;
@@ -38,21 +35,19 @@ namespace wheel_of_fear {
         std::size_t      room_index,
         const RoomProps &room
       ) const;
+
       [[nodiscard]]
-      bool isAllowed(
-        const TileAreaProps &cutout
-      ) const;
+      bool isAllowed(const TileAreaProps &cutout) const;
+
       void cutCorner(
         const RoomProps &room,
         bool             is_right,
         bool             is_bottom
       );
-      void cutEdgeNotch(
-        const RoomProps &room
-      );
-      void apply(
-        const TileAreaProps &cutout
-      );
+
+      void cutEdgeNotch(const RoomProps &room);
+
+      void apply(const TileAreaProps &cutout);
 
       TileMapModel              &map_;
       RandomGenerator           &random_;

@@ -1,14 +1,12 @@
 #include "mods/director/demos/GrenadeDemoScenario.hpp"
-
-#include <algorithm>
-#include <format>
-
 #include "core/input/InputController.hpp"
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <format>
 
 namespace wheel_of_fear {
   void GrenadeDemoScenario::run(
@@ -26,7 +24,6 @@ namespace wheel_of_fear {
 
     if(step() == 1 && tick.seconds > 1.2F) {
       setStep(2);
-
       const Vec2Props target = context.camera.mouseWorldPosition(context.input);
 
       for(int index = 0; index < 3; ++index) {
@@ -42,14 +39,13 @@ namespace wheel_of_fear {
 
       context.input.simulatePress(InputActionEnum::throw_grenade);
     }
+
     if(!tick.should_log) return;
-
     const auto neon = context.world.map().fluids().neonSeconds();
-
-    const auto neon_cells =
-      std::count_if(neon.begin(), neon.end(), [](float value) {
-        return value > 0;
-      });
+    const auto neon_cells
+      = std::count_if(neon.begin(), neon.end(), [](float value) {
+          return value > 0;
+        });
 
     logLine(
       std::format(

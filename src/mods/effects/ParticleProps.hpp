@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/math/ColorProps.hpp"
 #include "core/math/Vec2Props.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   struct ParticleProps {

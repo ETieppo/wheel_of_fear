@@ -1,10 +1,8 @@
-#include <exception>
-
-#include <SDL3/SDL_log.h>
-#include <SDL3/SDL_main.h>
-
 #include "core/platform/Window.hpp"
 #include "game/GameRunner.hpp"
+#include <SDL3/SDL_log.h>
+#include <SDL3/SDL_main.h>
+#include <exception>
 
 int main(
   [[maybe_unused]] int    argument_count,

@@ -1,14 +1,10 @@
 #include "mods/world/scenery/Scenery.hpp"
-
+#include "core/math/ScalarMath.hpp"
 #include <algorithm>
 #include <cmath>
 
-#include "core/math/ScalarMath.hpp"
-
 namespace wheel_of_fear {
-  Scenery::Scenery(
-    const SceneryPlacementDto &placement
-  )
+  Scenery::Scenery(const SceneryPlacementDto &placement)
       : position_(placement.position)
       , mirrored_(placement.mirrored)
       , room_index_(placement.room_index)
@@ -16,15 +12,11 @@ namespace wheel_of_fear {
       , flicker_seed_(placement.flicker_seed) {
   }
 
-  void Scenery::update(
-    float delta_seconds
-  ) {
+  void Scenery::update(float delta_seconds) {
     wobble_seconds_ = std::max(0.0F, wobble_seconds_ - delta_seconds);
   }
 
-  void Scenery::bump(
-    RandomGenerator &random
-  ) {
+  void Scenery::bump(RandomGenerator &random) {
     wobble_seconds_ = wobble_duration_seconds;
     reactToBump(random);
   }
@@ -34,8 +26,8 @@ namespace wheel_of_fear {
     const SpriteSheetProps &sprites,
     const SceneryViewDto   &view
   ) const {
-    const float wobble =
-      std::sin(wobble_seconds_ * 40) * wobble_seconds_ * 0.6F;
+    const float wobble
+      = std::sin(wobble_seconds_ * 40) * wobble_seconds_ * 0.6F;
 
     renderer.drawShadowDisc(
       position_.add(Vec2Props::of(1, 3)),
@@ -53,10 +45,9 @@ namespace wheel_of_fear {
     const AtlasRegionProps* glow = glowSprite(sprites);
     if(glow == nullptr) return;
 
-    const float blink =
-      0.55F +
-      (0.45F *
-       ScalarMath::hashTime(view.real_seconds + (flicker_seed_ * 9), 6));
+    const float blink = 0.55F
+      + (0.45F
+         * ScalarMath::hashTime(view.real_seconds + (flicker_seed_ * 9), 6));
 
     const float strength = is_broken_ ? 0.04F : 0.18F;
 

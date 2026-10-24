@@ -1,9 +1,8 @@
 #pragma once
 
+#include "core/math/Vec2Props.hpp"
 #include <cstddef>
 #include <optional>
-
-#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   struct MobMemoryProps {

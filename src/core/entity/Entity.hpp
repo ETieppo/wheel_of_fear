@@ -1,18 +1,22 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/entity/Collider.hpp"
 #include "core/math/Vec2Props.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class Entity {
     public:
       Entity() = default;
+      void respawnAt(Vec2Props position);
+      void faceToward(Vec2Props point);
+      void advanceAnimation(float delta_seconds);
+
       Entity(
         Vec2Props position,
         float     collision_half_size
       );
+
       virtual ~Entity() = default;
 
       [[nodiscard]]
@@ -20,9 +24,7 @@ namespace wheel_of_fear {
         return position_;
       }
 
-      void setPosition(
-        Vec2Props position
-      ) {
+      void setPosition(Vec2Props position) {
         position_ = position;
       }
 
@@ -31,9 +33,7 @@ namespace wheel_of_fear {
         return heading_;
       }
 
-      void setHeading(
-        float heading
-      ) {
+      void setHeading(float heading) {
         heading_ = heading;
       }
 
@@ -52,9 +52,7 @@ namespace wheel_of_fear {
         return is_alive_;
       }
 
-      void setAlive(
-        bool is_alive
-      ) {
+      void setAlive(bool is_alive) {
         is_alive_ = is_alive;
       }
 
@@ -63,45 +61,36 @@ namespace wheel_of_fear {
         return is_moving_;
       }
 
-      void setMoving(
-        bool is_moving
-      ) {
+      void setMoving(bool is_moving) {
         is_moving_ = is_moving;
       }
 
-      void respawnAt(
-        Vec2Props position
-      );
-      void advanceAnimation(
-        float delta_seconds
-      );
       [[nodiscard]]
       Vec2Props facing() const;
+
       [[nodiscard]]
-      float distanceTo(
-        Vec2Props point
-      ) const;
+      float distanceTo(Vec2Props point) const;
+
       [[nodiscard]]
-      Vec2Props directionTo(
-        Vec2Props point
-      ) const;
+      Vec2Props directionTo(Vec2Props point) const;
+
       void turnToward(
         float angle,
         float delta_seconds,
         float turn_rate
       );
-      void faceToward(
-        Vec2Props point
-      );
+
       void slide(
         const Collider &collider,
         Vec2Props       displacement
       );
+
       [[nodiscard]]
       std::size_t animationFrame(
         float       frames_per_second,
         std::size_t frame_count
       ) const;
+
       [[nodiscard]]
       bool isFacing(
         Vec2Props point,

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstddef>
-#include <cstdlib>
-
 #include "core/math/Vec2Props.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "mods/world/enums/RoomLayoutEnum.hpp"
+#include <cstddef>
+#include <cstdlib>
 
 namespace wheel_of_fear {
   struct RoomProps {
@@ -22,10 +21,10 @@ namespace wheel_of_fear {
       [[nodiscard]]
       Vec2Props center() const {
         return Vec2Props::of(
-          (static_cast<float>(left) + (static_cast<float>(width) / 2)) *
-            RenderConfig::tile_size,
-          (static_cast<float>(top) + (static_cast<float>(height) / 2)) *
-            RenderConfig::tile_size
+          (static_cast<float>(left) + (static_cast<float>(width) / 2))
+            * RenderConfig::tile_size,
+          (static_cast<float>(top) + (static_cast<float>(height) / 2))
+            * RenderConfig::tile_size
         );
       }
 
@@ -49,8 +48,8 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       std::size_t tileCount() const {
-        return static_cast<std::size_t>(width) *
-               static_cast<std::size_t>(height);
+        return static_cast<std::size_t>(width)
+          * static_cast<std::size_t>(height);
       }
 
       [[nodiscard]]
@@ -58,9 +57,9 @@ namespace wheel_of_fear {
         int x,
         int y
       ) const {
-        return (static_cast<std::size_t>(y - top) *
-                static_cast<std::size_t>(width)) +
-               static_cast<std::size_t>(x - left);
+        return (static_cast<std::size_t>(y - top)
+                * static_cast<std::size_t>(width))
+          + static_cast<std::size_t>(x - left);
       }
 
       [[nodiscard]]
@@ -80,9 +79,7 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      int gridDistance(
-        const RoomProps &other
-      ) const {
+      int gridDistance(const RoomProps &other) const {
         return std::abs(column - other.column) + std::abs(row - other.row);
       }
   };

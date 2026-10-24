@@ -35,29 +35,22 @@ namespace wheel_of_fear {
         float edge_high,
         float value
       ) {
-        const float t =
-          clamp((value - edge_low) / (edge_high - edge_low), 0, 1);
-
+        const float t
+          = clamp((value - edge_low) / (edge_high - edge_low), 0, 1);
         return t * t * (3 - (2 * t));
       }
 
-      static constexpr std::uint32_t hash(
-        std::uint32_t value
-      ) {
+      static constexpr std::uint32_t hash(std::uint32_t value) {
         std::uint32_t mixed = value * 0x9E3779B1U;
-
         mixed ^= mixed >> 15;
         mixed *= 0x85EBCA77U;
         mixed ^= mixed >> 13;
         mixed *= 0xC2B2AE3DU;
         mixed ^= mixed >> 16;
-
         return mixed;
       }
 
-      static constexpr float hashToUnit(
-        std::uint32_t value
-      ) {
+      static constexpr float hashToUnit(std::uint32_t value) {
         return static_cast<float>(hash(value) & 0xFFFFFFU) / 16777216.0F;
       }
 

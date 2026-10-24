@@ -3,18 +3,14 @@
 namespace wheel_of_fear {
   class GameClock {
     public:
-      void advance(
-        float real_delta_seconds
-      );
+      void advance(float real_delta_seconds);
 
       [[nodiscard]]
       bool isRunning() const {
         return is_running_;
       }
 
-      void setRunning(
-        bool is_running
-      ) {
+      void setRunning(bool is_running) {
         is_running_ = is_running;
       }
 

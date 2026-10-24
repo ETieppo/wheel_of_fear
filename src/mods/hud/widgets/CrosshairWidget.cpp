@@ -1,5 +1,4 @@
 #include "mods/hud/widgets/CrosshairWidget.hpp"
-
 #include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
@@ -21,8 +20,8 @@ namespace wheel_of_fear {
     );
 
     for(int tick = 0; tick < 4; ++tick) {
-      const float angle =
-        spin + (static_cast<float>(tick) * ScalarMath::pi / 2.0F);
+      const float angle
+        = spin + (static_cast<float>(tick) * ScalarMath::pi / 2.0F);
 
       renderer.drawUiShape(
         QuadKindEnum::solid,

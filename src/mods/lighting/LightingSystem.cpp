@@ -1,18 +1,13 @@
 #include "mods/lighting/LightingSystem.hpp"
-
-#include <algorithm>
-#include <numeric>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "mods/world/TileMapModel.hpp"
+#include <algorithm>
+#include <numeric>
 
 namespace wheel_of_fear {
-  void LightingSystem::add(
-    const LightProps &light
-  ) {
+  void LightingSystem::add(const LightProps &light) {
     if(lights_.size() >= capacity) return;
-
     lights_.push_back(light);
   }
 
@@ -42,7 +37,6 @@ namespace wheel_of_fear {
 
     for(const LightProps &light : lights_) {
       if(only_freezing && !light.freezes_creatures) continue;
-
       if(filter == LightFilterEnum::ultraviolet_only && !light.is_ultraviolet)
         continue;
 
@@ -51,26 +45,24 @@ namespace wheel_of_fear {
       if(distance > light.radius) continue;
 
       float strength = 1.0F - (distance / light.radius);
-
       strength *= strength;
 
       if(light.isSpotlight()) {
         const float alignment = offset.normalized().dot(light.direction);
-
-        const float cone = ScalarMath::smoothstep(
+        const float cone      = ScalarMath::smoothstep(
           light.cone_outer_cosine,
           light.cone_inner_cosine,
           alignment
         );
 
-        const float halo =
-          only_freezing ? 0.0F
-                        : ScalarMath::clamp(1 - (distance / 10), 0, 1) * 0.6F;
+        const float halo = only_freezing
+          ? 0.0F
+          : ScalarMath::clamp(1 - (distance / 10), 0, 1) * 0.6F;
 
         strength *= std::max(cone, halo);
       }
-      if(strength < 0.01F) continue;
 
+      if(strength < 0.01F) continue;
       if(light.casts_shadows && !map.hasLineOfSight(light.position, point))
         continue;
 
@@ -80,9 +72,7 @@ namespace wheel_of_fear {
     return total;
   }
 
-  void LightingSystem::submitToRenderer(
-    Renderer &renderer
-  ) const {
+  void LightingSystem::submitToRenderer(Renderer &renderer) const {
     const Vec2Props view_center = renderer.viewOrigin().add(
       Vec2Props::of(
         static_cast<float>(RenderConfig::view_width) / 2,
@@ -98,27 +88,24 @@ namespace wheel_of_fear {
       if(!renderer.isVisible(light.position, light.radius)) continue;
 
       visible_indices.push_back(index);
-
-      const float spotlight_bonus =
-        light.isSpotlight() ? spotlight_priority_bonus : 0.0F;
+      const float spotlight_bonus
+        = light.isSpotlight() ? spotlight_priority_bonus : 0.0F;
 
       priorities.push_back(
-        light.position.distance(view_center) -
-        (light.radius * 0.5F) -
-        spotlight_bonus
+        light.position.distance(view_center)
+        - (light.radius * 0.5F)
+        - spotlight_bonus
       );
     }
 
     std::vector<std::size_t> order(visible_indices.size());
-
     std::ranges::iota(order, std::size_t {0});
-
     std::ranges::stable_sort(order, [&](std::size_t first, std::size_t second) {
       return priorities[first] < priorities[second];
     });
 
-    const std::size_t submitted =
-      std::min(order.size(), RenderConfig::max_gpu_lights);
+    const std::size_t submitted
+      = std::min(order.size(), RenderConfig::max_gpu_lights);
 
     for(std::size_t slot = 0; slot < submitted; ++slot) {
       const LightProps &light = lights_[visible_indices[order[slot]]];

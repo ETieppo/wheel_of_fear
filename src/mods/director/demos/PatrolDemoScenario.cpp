@@ -1,9 +1,7 @@
 #include "mods/director/demos/PatrolDemoScenario.hpp"
-
-#include <format>
-
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void PatrolDemoScenario::run(
@@ -11,10 +9,10 @@ namespace wheel_of_fear {
     const DemoTickDto &tick
   ) {
     if(
-      !tick.should_log ||
-      tick.seconds <=
-      static_cast<float>(step()) *
-      log_step_seconds
+      !tick.should_log
+      || tick.seconds
+      <= static_cast<float>(step())
+      * log_step_seconds
     )
       return;
 

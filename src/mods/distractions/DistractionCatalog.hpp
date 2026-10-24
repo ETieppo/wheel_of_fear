@@ -8,8 +8,6 @@ namespace wheel_of_fear {
     public:
       DistractionCatalog() = delete;
 
-      static DistractionTraitsProps traitsOf(
-        DistractionKindEnum kind
-      );
+      static DistractionTraitsProps traitsOf(DistractionKindEnum kind);
   };
 } // namespace wheel_of_fear

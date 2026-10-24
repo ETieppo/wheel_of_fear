@@ -1,5 +1,4 @@
 #include "mods/generators/states/GeneratorOnlineState.hpp"
-
 #include "core/math/ScalarMath.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
@@ -19,13 +18,11 @@ namespace wheel_of_fear {
     [[maybe_unused]] const GeneratorUpdateDto &update
   ) {
     const float delta = context.clock.deltaSeconds();
-
     seconds_online_ += delta;
 
     GeneratorMachineryProps &machinery = generator.machinery();
-
-    machinery.rotor_speed =
-      ScalarMath::approach(machinery.rotor_speed, 9, delta * 2);
+    machinery.rotor_speed
+      = ScalarMath::approach(machinery.rotor_speed, 9, delta * 2);
 
     const float warm_up = ScalarMath::clamp(seconds_online_ / 1.5F, 0, 1);
     LightProps  light;

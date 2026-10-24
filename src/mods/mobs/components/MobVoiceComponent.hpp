@@ -8,9 +8,7 @@ namespace wheel_of_fear {
 
   class MobVoiceComponent {
     public:
-      explicit MobVoiceComponent(
-        MobEntity &owner
-      )
+      explicit MobVoiceComponent(MobEntity &owner)
           : owner_(owner) {
       }
 
@@ -19,28 +17,25 @@ namespace wheel_of_fear {
         return vocal_cooldown_;
       }
 
-      void setVocalCooldown(
-        float seconds
-      ) {
+      void setVocalCooldown(float seconds) {
         vocal_cooldown_ = seconds;
       }
 
-      void tickCooldown(
-        float delta_seconds
-      );
+      void tickCooldown(float delta_seconds);
+
       void playSound(
         GameContextDto &context,
         SoundEnum       sound,
         float           volume,
         float           pitch
       ) const;
+
       void vocalize(
         GameContextDto &context,
         float           chance
       );
-      void playMovementSound(
-        GameContextDto &context
-      );
+
+      void playMovementSound(GameContextDto &context);
 
     private:
       static constexpr float movement_sound_distance = 300;

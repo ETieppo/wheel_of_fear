@@ -1,19 +1,17 @@
 #pragma once
 
-#include <cstdint>
-#include <optional>
-
 #include "core/math/RandomGenerator.hpp"
 #include "mods/generators/SkillCheckZoneProps.hpp"
 #include "mods/generators/enums/SkillCheckResultEnum.hpp"
+#include <cstdint>
+#include <optional>
 
 namespace wheel_of_fear {
   class SkillCheckMinigame {
     public:
       SkillCheckMinigame() = default;
-      explicit SkillCheckMinigame(
-        const SkillCheckZoneProps &zone
-      );
+
+      explicit SkillCheckMinigame(const SkillCheckZoneProps &zone);
 
       [[nodiscard]]
       bool isActive() const {
@@ -62,18 +60,15 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       SkillCheckResultEnum judge() const;
+
       [[nodiscard]]
       bool hasMissed() const;
 
-      void setNeedleAngle(
-        float needle_angle
-      ) {
+      void setNeedleAngle(float needle_angle) {
         needle_angle_ = needle_angle;
       }
 
-      void postpone(
-        float seconds
-      ) {
+      void postpone(float seconds) {
         countdown_seconds_ = seconds;
       }
 
@@ -81,20 +76,20 @@ namespace wheel_of_fear {
         is_active_ = false;
       }
 
-      void tickResult(
-        float delta_seconds
-      );
-      bool tickCountdown(
-        float delta_seconds
-      );
+      void tickResult(float delta_seconds);
+
+      bool tickCountdown(float delta_seconds);
+
       void begin(
         std::uint32_t    phase,
         RandomGenerator &random
       );
+
       std::optional<SkillCheckResultEnum> advanceNeedle(
         float delta_seconds,
         bool  is_sync_pressed
       );
+
       void resolve(
         SkillCheckResultEnum result,
         RandomGenerator     &random

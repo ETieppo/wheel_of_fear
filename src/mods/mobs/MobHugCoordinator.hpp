@@ -1,10 +1,9 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "core/math/Vec2Props.hpp"
 #include "mods/mobs/MobEntity.hpp"
+#include <memory>
+#include <vector>
 
 namespace wheel_of_fear {
   class MobHugCoordinator {
@@ -17,15 +16,16 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       bool isHugInProgress() const;
+
       bool tryStartHug(
         Vec2Props position,
         Vec2Props facing
       );
+
       void cancelHug();
 
     private:
-      static constexpr float hug_reach = 22;
-
+      static constexpr float                         hug_reach = 22;
       const std::vector<std::unique_ptr<MobEntity>> &mobs_;
   };
 } // namespace wheel_of_fear

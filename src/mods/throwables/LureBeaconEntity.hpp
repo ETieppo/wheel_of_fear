@@ -9,9 +9,7 @@
 namespace wheel_of_fear {
   class LureBeaconEntity {
     public:
-      explicit LureBeaconEntity(
-        Vec2Props position
-      )
+      explicit LureBeaconEntity(Vec2Props position)
           : position_(position) {
       }
 
@@ -25,12 +23,10 @@ namespace wheel_of_fear {
         return remaining_seconds_ <= 0;
       }
 
-      void update(
-        GameContextDto &context
-      );
-      void emitLight(
-        LightingSystem &lighting
-      ) const;
+      void update(GameContextDto &context);
+
+      void emitLight(LightingSystem &lighting) const;
+
       void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites

@@ -1,17 +1,24 @@
 #include "core/render/Renderer.hpp"
-
-#include <algorithm>
-#include <cstddef>
-
 #include "core/render/RenderConfig.hpp"
 #include "core/render/Utf8Decoder.hpp"
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
 
 namespace wheel_of_fear {
   namespace {
-    constexpr float blank_texel =
-      1.5F / static_cast<float>(RenderConfig::atlas_size);
+    constexpr float blank_texel
+      = 1.5F / static_cast<float>(RenderConfig::atlas_size);
     constexpr std::array<float, 4>
       blank_region {blank_texel, blank_texel, blank_texel, blank_texel};
+
+    std::uint8_t toByte(float channel) {
+      return static_cast<std::uint8_t>(
+        std::lround(std::clamp(channel, 0.0F, 1.0F) * 255.0F)
+      );
+    }
   } // namespace
 
   Renderer::Renderer() {
@@ -19,11 +26,10 @@ namespace wheel_of_fear {
   }
 
   std::optional<GroundMaterialsDto> Renderer::takeGroundMaterials() {
-    std::optional<GroundMaterialsDto> materials =
-      std::move(pending_ground_materials_);
+    std::optional<GroundMaterialsDto> materials
+      = std::move(pending_ground_materials_);
 
     pending_ground_materials_.reset();
-
     return materials;
   }
 
@@ -58,20 +64,20 @@ namespace wheel_of_fear {
   ) const {
     const Vec2Props origin = viewOrigin();
 
-    return point.x >
-           origin.x -
-           margin &&
-           point.y >
-           origin.y -
-           margin &&
-           point.x <
-           origin.x +
-           static_cast<float>(RenderConfig::view_width) +
-           margin &&
-           point.y <
-           origin.y +
-           static_cast<float>(RenderConfig::view_height) +
-           margin;
+    return point.x
+      > origin.x
+      - margin
+      && point.y
+      > origin.y
+      - margin
+      && point.x
+      < origin.x
+      + static_cast<float>(RenderConfig::view_width)
+      + margin
+      && point.y
+      < origin.y
+      + static_cast<float>(RenderConfig::view_height)
+      + margin;
   }
 
   QuadProps Renderer::makeQuad(
@@ -219,8 +225,8 @@ namespace wheel_of_fear {
     float      width,
     ColorProps color
   ) {
-    const Vec2Props center =
-      origin.add(Vec2Props::fromAngle(angle).scale(length / 2));
+    const Vec2Props center
+      = origin.add(Vec2Props::fromAngle(angle).scale(length / 2));
 
     frame_.glow.push(makeQuad(
       center,
@@ -233,11 +239,8 @@ namespace wheel_of_fear {
     ));
   }
 
-  void Renderer::addLight(
-    const GpuLightProps &light
-  ) {
+  void Renderer::addLight(const GpuLightProps &light) {
     if(frame_.light_count >= RenderConfig::max_gpu_lights) return;
-
     frame_.lights[frame_.light_count] = light;
     frame_.light_count += 1;
   }
@@ -254,19 +257,46 @@ namespace wheel_of_fear {
       RenderConfig::tile_size,
       0,
     };
-    if(frame_.map_version == version) return;
 
+    if(frame_.map_version == version) return;
     std::ranges::fill(frame_.map_texels, std::uint8_t {0});
 
     for(std::uint32_t y = 0; y < height; ++y) {
       for(std::uint32_t x = 0; x < width; ++x) {
         frame_.map_texels
-          [((static_cast<std::size_t>(y) * RenderConfig::max_map_size) + x) *
-           4] = walls[(static_cast<std::size_t>(y) * width) + x] != 0 ? 255 : 0;
+          [((static_cast<std::size_t>(y) * RenderConfig::max_map_size) + x) * 4]
+          = walls[(static_cast<std::size_t>(y) * width) + x] != 0 ? 255 : 0;
       }
     }
 
     frame_.map_version = version;
+    frame_.map_revision += 1;
+  }
+
+  void Renderer::setRoomGlow(
+    int        x,
+    int        y,
+    ColorProps glow
+  ) {
+    constexpr auto map_size = static_cast<int>(RenderConfig::max_map_size);
+    if(x < 0 || y < 0 || x >= map_size || y >= map_size) return;
+
+    const std::size_t texel
+      = ((static_cast<std::size_t>(y) * RenderConfig::max_map_size)
+         + static_cast<std::size_t>(x))
+      * 4;
+    const std::array<std::uint8_t, 3> channels {
+      toByte(glow.r),
+      toByte(glow.g),
+      toByte(glow.b),
+    };
+
+    for(std::size_t channel = 0; channel < channels.size(); ++channel) {
+      std::uint8_t &stored = frame_.map_texels[texel + 1 + channel];
+      if(stored == channels[channel]) continue;
+      stored = channels[channel];
+      frame_.map_revision += 1;
+    }
   }
 
   void Renderer::setViewer(
@@ -395,7 +425,6 @@ namespace wheel_of_fear {
 
     if(alignment == TextAlignEnum::center)
       pen_x = x - (typefaces_.measure(typeface, text, size) / 2);
-
     if(alignment == TextAlignEnum::right)
       pen_x = x - typefaces_.measure(typeface, text, size);
 
@@ -403,8 +432,10 @@ namespace wheel_of_fear {
     std::size_t cursor   = 0;
 
     while(cursor < text.size()) {
-      const GlyphProps &glyph =
-        typefaces_.glyphFor(typeface, Utf8Decoder::nextCodepoint(text, cursor));
+      const GlyphProps &glyph = typefaces_.glyphFor(
+        typeface,
+        Utf8Decoder::nextCodepoint(text, cursor)
+      );
 
       if(glyph.region.width > 0) {
         const float width  = glyph.region.width * scale;

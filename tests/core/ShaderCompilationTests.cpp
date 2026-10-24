@@ -1,13 +1,11 @@
+#include "core/render/gpu/GpuHandle.hpp"
+#include "core/render/gpu/ShaderModuleLoader.hpp"
 #include <array>
+#include <doctest/doctest.h>
 #include <string>
 #include <string_view>
 #include <vector>
-
-#include <doctest/doctest.h>
 #include <webgpu/wgpu.h>
-
-#include "core/render/gpu/GpuHandle.hpp"
-#include "core/render/gpu/ShaderModuleLoader.hpp"
 
 namespace wheel_of_fear {
   namespace {
@@ -60,21 +58,18 @@ namespace wheel_of_fear {
       request->is_done = true;
     }
 
-    GpuAdapter requestHeadlessAdapter(
-      WGPUInstance instance
-    ) {
+    GpuAdapter requestHeadlessAdapter(WGPUInstance instance) {
       HeadlessGpuRequestProps   request;
       WGPURequestAdapterOptions options = WGPU_REQUEST_ADAPTER_OPTIONS_INIT;
-
-      WGPURequestAdapterCallbackInfo callback =
-        WGPU_REQUEST_ADAPTER_CALLBACK_INFO_INIT;
+      WGPURequestAdapterCallbackInfo callback
+        = WGPU_REQUEST_ADAPTER_CALLBACK_INFO_INIT;
 
       callback.mode      = WGPUCallbackMode_AllowProcessEvents;
       callback.callback  = receiveHeadlessAdapter;
       callback.userdata1 = &request;
       wgpuInstanceRequestAdapter(instance, &options, callback);
-      while(!request.is_done) wgpuInstanceProcessEvents(instance);
 
+      while(!request.is_done) wgpuInstanceProcessEvents(instance);
       return GpuAdapter(request.adapter);
     }
 
@@ -84,39 +79,33 @@ namespace wheel_of_fear {
     ) {
       HeadlessGpuRequestProps request;
       WGPUDeviceDescriptor    descriptor = WGPU_DEVICE_DESCRIPTOR_INIT;
-
       descriptor.uncapturedErrorCallbackInfo.callback = collectShaderError;
 
-      WGPURequestDeviceCallbackInfo callback =
-        WGPU_REQUEST_DEVICE_CALLBACK_INFO_INIT;
+      WGPURequestDeviceCallbackInfo callback
+        = WGPU_REQUEST_DEVICE_CALLBACK_INFO_INIT;
 
       callback.mode      = WGPUCallbackMode_AllowProcessEvents;
       callback.callback  = receiveHeadlessDevice;
       callback.userdata1 = &request;
       wgpuAdapterRequestDevice(adapter, &descriptor, callback);
-      while(!request.is_done) wgpuInstanceProcessEvents(instance);
 
+      while(!request.is_done) wgpuInstanceProcessEvents(instance);
       return GpuDevice(request.device);
     }
   } // namespace
 
-  TEST_CASE(
-    "every WGSL shader compiles on a headless GPU device"
-  ) {
+  TEST_CASE("every WGSL shader compiles on a headless GPU device") {
     WGPUInstanceDescriptor instance_descriptor = WGPU_INSTANCE_DESCRIPTOR_INIT;
     const GpuInstance      instance(wgpuCreateInstance(&instance_descriptor));
 
     REQUIRE(static_cast<bool>(instance));
-
     const GpuAdapter adapter = requestHeadlessAdapter(instance.get());
 
     REQUIRE_MESSAGE(static_cast<bool>(adapter), "no headless GPU adapter");
-
-    const GpuDevice device =
-      requestHeadlessDevice(instance.get(), adapter.get());
+    const GpuDevice device
+      = requestHeadlessDevice(instance.get(), adapter.get());
 
     REQUIRE(static_cast<bool>(device));
-
     constexpr std::array<std::string_view, 5> shader_files {
       "quad.wgsl",
       "light.wgsl",
@@ -128,13 +117,13 @@ namespace wheel_of_fear {
     for(const std::string_view shader_file : shader_files) {
       CAPTURE(shader_file);
       collectedShaderErrors().clear();
-
-      const GpuShaderModule module =
-        ShaderModuleLoader::loadWgsl(device.get(), shader_file);
+      const GpuShaderModule module
+        = ShaderModuleLoader::loadWgsl(device.get(), shader_file);
 
       wgpuInstanceProcessEvents(instance.get());
       CHECK(static_cast<bool>(module));
       CHECK(collectedShaderErrors().empty());
+
       for(const std::string &error : collectedShaderErrors()) MESSAGE(error);
     }
   }

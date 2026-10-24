@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string_view>
-
 #include "core/math/ColorProps.hpp"
 #include "core/render/Renderer.hpp"
+#include <string_view>
 
 namespace wheel_of_fear {
   class CenteredCardWidget final {

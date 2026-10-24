@@ -1,8 +1,4 @@
 #include "mods/generators/ExitDoorEntity.hpp"
-
-#include <algorithm>
-#include <format>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/theme/Palette.hpp"
@@ -12,6 +8,8 @@
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <format>
 
 namespace wheel_of_fear {
   namespace {
@@ -21,25 +19,20 @@ namespace wheel_of_fear {
     constexpr ColorProps locked_light_color = ColorProps::hex(0xff2a4a);
   } // namespace
 
-  void ExitDoorEntity::reset(
-    Vec2Props doorway_position
-  ) {
+  void ExitDoorEntity::reset(Vec2Props doorway_position) {
     respawnAt(doorway_position);
     is_unlocked_       = false;
     open_amount_       = 0;
     has_player_exited_ = false;
   }
 
-  void ExitDoorEntity::unlock(
-    GameContextDto &context
-  ) {
+  void ExitDoorEntity::unlock(GameContextDto &context) {
     if(is_unlocked_) return;
 
     is_unlocked_ = true;
     context.sound_player.play(SoundEnum::door_open, 0.9F, 0, 1);
     context.world.shake(0.6F);
     context.world.powerRoom(context.world.exitRoomIndex(), true);
-
     context.hud.announce(
       Palette::success,
       "ALL GENERATORS ONLINE  -  THE EXIT IS OPEN"
@@ -52,17 +45,15 @@ namespace wheel_of_fear {
     std::size_t     generator_count
   ) {
     const Vec2Props light_position = position().add(Vec2Props::of(0, 12));
-
-    const float player_distance =
-      context.player.position().distance(position());
+    const float     player_distance
+      = context.player.position().distance(position());
 
     LightProps light;
-
     light.position = light_position;
 
     if(!is_unlocked_) {
-      const bool is_blinking =
-        ScalarMath::floorModulo(context.world.elapsedSeconds(), 1.2F) < 0.15F;
+      const bool is_blinking
+        = ScalarMath::floorModulo(context.world.elapsedSeconds(), 1.2F) < 0.15F;
 
       light.radius        = 46;
       light.intensity     = is_blinking ? 0.8F : 0.15F;
@@ -95,9 +86,10 @@ namespace wheel_of_fear {
     context.lighting.add(light);
 
     if(
-      open_amount_ >
-      0.6F &&
-      context.player.position().distance(entryPoint()) < entry_radius
+      open_amount_
+      > 0.6F
+      && context.player.position().distance(entryPoint())
+      < entry_radius
     )
       has_player_exited_ = true;
 
@@ -105,16 +97,13 @@ namespace wheel_of_fear {
       context.hud.showPrompt(std::nullopt, "STEP INTO THE EXIT");
   }
 
-  void ExitDoorEntity::draw(
-    GameContextDto &context
-  ) const {
+  void ExitDoorEntity::draw(GameContextDto &context) const {
     Renderer               &renderer = context.renderer;
     const SpriteSheetProps &sprites  = context.art.sprites();
     const float             slide    = open_amount_ * slide_distance;
     const Vec2Props         center   = position();
 
     renderer.drawSprite(sprites.exit_frame, center.add(Vec2Props::of(0, -4)));
-
     renderer.drawSprite(
       sprites.blast_door_panel,
       center.add(Vec2Props::of(-12 - slide, -2))
@@ -126,8 +115,8 @@ namespace wheel_of_fear {
       SpriteDrawDto {.rotation = ScalarMath::pi}
     );
 
-    const ColorProps status =
-      is_unlocked_ ? Palette::success : locked_light_color;
+    const ColorProps status
+      = is_unlocked_ ? Palette::success : locked_light_color;
 
     renderer.drawGlowSprite(
       sprites.exit_frame_glow,

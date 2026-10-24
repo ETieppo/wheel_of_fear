@@ -1,10 +1,9 @@
 #pragma once
 
-#include <vector>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/tracker/GhostEchoProps.hpp"
 #include "mods/tracker/SignalProps.hpp"
+#include <vector>
 
 namespace wheel_of_fear {
   class TrackerSignalCollector {
@@ -22,24 +21,17 @@ namespace wheel_of_fear {
       );
 
     private:
-      void addSignal(
-        const SignalProps &signal
-      );
-      void collectGenerators(
-        const GameContextDto &context
-      );
-      void collectFabricators(
-        const GameContextDto &context
-      );
-      void collectExit(
-        const GameContextDto &context
-      );
-      void collectDisguisedMobs(
-        const GameContextDto &context
-      );
-      void collectGhosts(
-        const std::vector<GhostEchoProps> &ghosts
-      );
+      void addSignal(const SignalProps &signal);
+
+      void collectGenerators(const GameContextDto &context);
+
+      void collectFabricators(const GameContextDto &context);
+
+      void collectExit(const GameContextDto &context);
+
+      void collectDisguisedMobs(const GameContextDto &context);
+
+      void collectGhosts(const std::vector<GhostEchoProps> &ghosts);
 
       std::vector<SignalProps> signals_;
   };

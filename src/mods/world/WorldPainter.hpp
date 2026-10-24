@@ -21,14 +21,13 @@ namespace wheel_of_fear {
       void paintFloorLiquids() const;
       void paintScorchMarks() const;
       void paintVents() const;
-      void paintDoorway(
-        const DoorwayProps &doorway
-      ) const;
+      void paintDoorway(const DoorwayProps &doorway) const;
       void paintScenery() const;
       void paintLockers() const;
 
-      const WorldSystem      &world_;
-      Renderer               &renderer_;
+      const WorldSystem &world_;
+      Renderer          &renderer_;
+
       const SpriteSheetProps &sprites_;
       float                   real_seconds_;
   };

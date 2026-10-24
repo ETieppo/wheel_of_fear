@@ -1,13 +1,11 @@
 #include "mods/hud/widgets/InventoryBarWidget.hpp"
-
-#include <format>
-
 #include "core/items/ItemCatalog.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/hud/KeyLabelCatalog.hpp"
 #include "mods/player/components/InventoryComponent.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void InventoryBarWidget::draw(
@@ -50,8 +48,8 @@ namespace wheel_of_fear {
       );
 
       const InputActionEnum action = item == ItemEnum::lure_beacon
-                                     ? InputActionEnum::throw_lure
-                                     : InputActionEnum::throw_grenade;
+        ? InputActionEnum::throw_lure
+        : InputActionEnum::throw_grenade;
 
       renderer.drawText(
         KeyLabelCatalog::labelFor(action),

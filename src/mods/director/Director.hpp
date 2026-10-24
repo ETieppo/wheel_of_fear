@@ -1,10 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <span>
-#include <string_view>
-#include <vector>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/director/DemoScenarioRunner.hpp"
 #include "mods/director/DirectorSnapshotProps.hpp"
@@ -15,6 +10,10 @@
 #include "mods/director/states/PhaseIntroGameState.hpp"
 #include "mods/director/states/PlayingGameState.hpp"
 #include "mods/director/states/TitleGameState.hpp"
+#include <cstdint>
+#include <span>
+#include <string_view>
+#include <vector>
 
 namespace wheel_of_fear {
   class Director {
@@ -22,19 +21,15 @@ namespace wheel_of_fear {
       static constexpr float intro_seconds           = 6;
       static constexpr float cleared_seconds         = 3;
       static constexpr float game_over_delay_seconds = 1.4F;
+      static void            initialize(GameContextDto &context);
+      void                   update(GameContextDto &context);
+      void                   draw(GameContextDto &context) const;
+      void                   enterState(GameStateEnum state);
 
-      static void initialize(
-        GameContextDto &context
-      );
-      void update(
-        GameContextDto &context
-      );
-      void draw(
-        GameContextDto &context
-      ) const;
       [[nodiscard]]
       DirectorSnapshotProps snapshot() const;
-      void                  resume(
+
+      void resume(
         GameContextDto              &context,
         const DirectorSnapshotProps &snapshot
       );
@@ -64,9 +59,7 @@ namespace wheel_of_fear {
         return death_seconds_;
       }
 
-      void addDeathSeconds(
-        float seconds
-      ) {
+      void addDeathSeconds(float seconds) {
         death_seconds_ += seconds;
       }
 
@@ -80,9 +73,6 @@ namespace wheel_of_fear {
         return demo_;
       }
 
-      void enterState(
-        GameStateEnum state
-      );
       void startPhase(
         GameContextDto &context,
         std::uint32_t   phase
@@ -92,16 +82,14 @@ namespace wheel_of_fear {
       static constexpr std::uint64_t title_seed      = 0x7171;
       static constexpr std::uint64_t phase_seed_step = 0x9E3779B97F4A7C15ULL;
 
+      void updateFade(float real_delta_seconds);
+      void configurePostProcess(GameContextDto &context) const;
+
       [[nodiscard]]
       const GameState &currentState() const;
+
       [[nodiscard]]
       GameState &currentState();
-      void       updateFade(
-        float real_delta_seconds
-      );
-      void configurePostProcess(
-        GameContextDto &context
-      ) const;
 
       GameStateEnum                 state_         = GameStateEnum::title;
       float                         state_seconds_ = 0;

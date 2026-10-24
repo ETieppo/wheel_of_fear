@@ -10,6 +10,8 @@ namespace wheel_of_fear {
       static constexpr float walk_speed = 60;
       static constexpr float run_speed  = 98;
 
+      void reset();
+
       [[nodiscard]]
       bool isRunning() const {
         return is_running_;
@@ -20,11 +22,7 @@ namespace wheel_of_fear {
         return stride_distance_;
       }
 
-      void reset();
-
-      void push(
-        Vec2Props impulse
-      ) {
+      void push(Vec2Props impulse) {
         knockback_ = impulse;
       }
 

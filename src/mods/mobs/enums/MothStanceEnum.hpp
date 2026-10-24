@@ -10,9 +10,7 @@ namespace wheel_of_fear {
     departing,
   };
 
-  constexpr std::string_view nameOf(
-    MothStanceEnum stance
-  ) {
+  constexpr std::string_view nameOf(MothStanceEnum stance) {
     switch(stance) {
       case MothStanceEnum::waiting:   return "waiting";
       case MothStanceEnum::following: return "following";

@@ -1,7 +1,4 @@
 #include "mods/mobs/components/MobConditionComponent.hpp"
-
-#include <algorithm>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
@@ -11,33 +8,26 @@
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
 
 namespace wheel_of_fear {
-  void MobConditionComponent::frenzy(
-    float seconds
-  ) {
+  void MobConditionComponent::frenzy(float seconds) {
     frenzy_seconds_ = std::max(frenzy_seconds_, seconds);
   }
 
-  void MobConditionComponent::calmFrenzy(
-    float delta_seconds
-  ) {
+  void MobConditionComponent::calmFrenzy(float delta_seconds) {
     frenzy_seconds_ = std::max(0.0F, frenzy_seconds_ - delta_seconds);
   }
 
-  bool MobConditionComponent::isHeldByLight(
-    const GameContextDto &context
-  ) const {
+  bool
+  MobConditionComponent::isHeldByLight(const GameContextDto &context) const {
     if(owner_.isDisguised()) return false;
-
     const auto filter = owner_.traits().frozen_by;
-    if(!filter) return false;
 
-    return context.lighting.freezingLightAt(
-             context.world.map(),
-             owner_.position(),
-             *filter
-           ) > freeze_threshold;
+    if(!filter) return false;
+    return context.lighting
+             .freezingLightAt(context.world.map(), owner_.position(), *filter)
+      > freeze_threshold;
   }
 
   void MobConditionComponent::startBurning() {
@@ -45,17 +35,14 @@ namespace wheel_of_fear {
     is_being_hugged_ = false;
   }
 
-  void MobConditionComponent::advanceBurning(
-    GameContextDto &context
-  ) {
+  void MobConditionComponent::advanceBurning(GameContextDto &context) {
     const float  delta = context.clock.deltaSeconds();
     WorldSystem &world = context.world;
 
     if(isBurning()) {
       burn_seconds_ -= delta;
-
-      petrify_amount_ =
-        1 - (std::max(burn_seconds_, 0.0F) / burn_duration_seconds);
+      petrify_amount_
+        = 1 - (std::max(burn_seconds_, 0.0F) / burn_duration_seconds);
 
       if(world.random().chance(delta * 30))
         context.effects
@@ -77,9 +64,7 @@ namespace wheel_of_fear {
     context.noise.emit(owner_.position(), 200, NoiseSourceEnum::mob_incident);
   }
 
-  void MobConditionComponent::advanceHugAndCrumble(
-    GameContextDto &context
-  ) {
+  void MobConditionComponent::advanceHugAndCrumble(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
 
     if(isCrumbling()) {
@@ -93,9 +78,9 @@ namespace wheel_of_fear {
     }
 
     if(
-      owner_.distanceToPlayer(context) >
-      hug_break_distance ||
-      context.player.isDead()
+      owner_.distanceToPlayer(context)
+      > hug_break_distance
+      || context.player.isDead()
     ) {
       is_being_hugged_ = false;
       return;
@@ -117,11 +102,9 @@ namespace wheel_of_fear {
     float           delta_seconds
   ) {
     WorldSystem &world = context.world;
-
     crumble_seconds_ -= delta_seconds;
-
-    petrify_amount_ =
-      1 + (1 - (std::max(crumble_seconds_, 0.0F) / crumble_duration_seconds));
+    petrify_amount_
+      = 1 + (1 - (std::max(crumble_seconds_, 0.0F) / crumble_duration_seconds));
 
     if(world.random().chance(delta_seconds * 20))
       context.effects.emitCrumble(world, owner_.position(), 1);
@@ -129,7 +112,6 @@ namespace wheel_of_fear {
 
     owner_.setAlive(false);
     context.effects.emitCrumble(world, owner_.position(), 26);
-
     owner_.voice().playSound(
       context,
       SoundEnum::crumble,
@@ -138,9 +120,7 @@ namespace wheel_of_fear {
     );
   }
 
-  void MobConditionComponent::recoverFromPetrify(
-    float delta_seconds
-  ) {
+  void MobConditionComponent::recoverFromPetrify(float delta_seconds) {
     if(isBurning()) return;
 
     petrify_amount_ = std::max(

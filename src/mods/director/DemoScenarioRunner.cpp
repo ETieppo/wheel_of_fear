@@ -1,5 +1,4 @@
 #include "mods/director/DemoScenarioRunner.hpp"
-
 #include "core/time/GameClock.hpp"
 #include "mods/director/DemoModeParser.hpp"
 #include "mods/director/demos/DemoScenarioFactory.hpp"
@@ -25,6 +24,7 @@ namespace wheel_of_fear {
 
     const bool should_log = log_timer_ <= 0;
     if(should_log) log_timer_ = log_interval_seconds;
+
     context.player.vitality().grantInvulnerability(1);
     if(!scenario_) return;
 

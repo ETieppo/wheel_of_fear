@@ -1,8 +1,4 @@
 #include "mods/tracker/widgets/TrackerRadarWidget.hpp"
-
-#include <format>
-#include <string>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
 #include "core/theme/Palette.hpp"
@@ -11,6 +7,8 @@
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/tracker/TrackerConfig.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
+#include <string>
 
 namespace wheel_of_fear {
   void TrackerRadarWidget::draw(
@@ -27,8 +25,8 @@ namespace wheel_of_fear {
       0,
       0
     );
-    if(view.open_amount < 0.6F) return;
 
+    if(view.open_amount < 0.6F) return;
     drawWallEchoes(context);
     drawScope(context, view.sweep_angle);
 
@@ -39,9 +37,7 @@ namespace wheel_of_fear {
     drawCaptions(context, view.signals.size());
   }
 
-  Vec2Props TrackerRadarWidget::worldToRadar(
-    Vec2Props offset
-  ) {
+  Vec2Props TrackerRadarWidget::worldToRadar(Vec2Props offset) {
     return TrackerConfig::radar_center.add(
       offset.scale(TrackerConfig::radar_radius / TrackerConfig::scan_range)
     );
@@ -87,11 +83,10 @@ namespace wheel_of_fear {
     );
 
     for(int trail_index = 0; trail_index < 14; ++trail_index) {
-      const auto  trail = static_cast<float>(trail_index);
-      const float angle = sweep_angle - (trail * 0.035F);
-
-      const Vec2Props tip =
-        center.add(Vec2Props::fromAngle(angle).scale(radius / 2));
+      const auto      trail = static_cast<float>(trail_index);
+      const float     angle = sweep_angle - (trail * 0.035F);
+      const Vec2Props tip
+        = center.add(Vec2Props::fromAngle(angle).scale(radius / 2));
 
       renderer.drawUiShape(
         QuadKindEnum::solid,
@@ -104,31 +99,27 @@ namespace wheel_of_fear {
     }
   }
 
-  void TrackerRadarWidget::drawWallEchoes(
-    GameContextDto &context
-  ) {
+  void TrackerRadarWidget::drawWallEchoes(GameContextDto &context) {
     const TileMapModel &map             = context.world.map();
     const Vec2Props     player_position = context.player.position();
-
-    const auto reach =
-      static_cast<int>(TrackerConfig::scan_range / RenderConfig::tile_size);
-
+    const auto          reach
+      = static_cast<int>(TrackerConfig::scan_range / RenderConfig::tile_size);
     const TileCoordinateProps center = TileMapModel::tileAt(player_position);
 
     for(int y = center.y - reach; y <= center.y + reach; ++y) {
       for(int x = center.x - reach; x <= center.x + reach; ++x) {
         if(!map.contains(x, y) || !map.isWall(x, y)) continue;
 
-        const bool borders_floor = !map.isWall(x + 1, y) ||
-                                   !map.isWall(x - 1, y) ||
-                                   !map.isWall(x, y + 1) ||
-                                   !map.isWall(x, y - 1);
+        const bool borders_floor = !map.isWall(x + 1, y)
+          || !map.isWall(x - 1, y)
+          || !map.isWall(x, y + 1)
+          || !map.isWall(x, y - 1);
+
         if(!borders_floor) continue;
+        const Vec2Props offset
+          = TileMapModel::tileCenter(x, y).sub(player_position);
 
-        const Vec2Props offset =
-          TileMapModel::tileCenter(x, y).sub(player_position);
         if(offset.length() > TrackerConfig::scan_range) continue;
-
         const Vec2Props point = worldToRadar(offset);
 
         context.renderer.drawUiRectangle(
@@ -142,9 +133,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void TrackerRadarWidget::drawPlayerMarker(
-    GameContextDto &context
-  ) {
+  void TrackerRadarWidget::drawPlayerMarker(GameContextDto &context) {
     Renderer &renderer = context.renderer;
 
     renderer.drawUiShape(
@@ -211,14 +200,12 @@ namespace wheel_of_fear {
     const float     distance = offset.length();
     const float     jitter_strength = distance * 0.04F;
     const auto      identity        = static_cast<float>(signal.identity);
-
-    const Vec2Props jitter =
-      Vec2Props::of(
-        ScalarMath::hashTime(real_seconds + identity, 3) - 0.5F,
-        ScalarMath::hashTime(real_seconds + identity + 0.5F, 3) - 0.5F
+    const Vec2Props jitter
+      = Vec2Props::of(
+          ScalarMath::hashTime(real_seconds + identity, 3) - 0.5F,
+          ScalarMath::hashTime(real_seconds + identity + 0.5F, 3) - 0.5F
       )
-        .scale(jitter_strength);
-
+          .scale(jitter_strength);
     const float glow = ScalarMath::clamp(
       1 - ((real_seconds - last_ping) / blip_fade_seconds),
       0.25F,
@@ -229,7 +216,6 @@ namespace wheel_of_fear {
       drawOutOfRangeSignal(context, signal, offset);
       return;
     }
-
     const Vec2Props point = worldToRadar(offset.add(jitter));
 
     context.renderer.drawUiShape(
@@ -298,6 +284,7 @@ namespace wheel_of_fear {
           TextAlignEnum::left
         );
         break;
+
       case SignalKindEnum::fabricator:
         renderer.drawUiShape(
           QuadKindEnum::solid,
@@ -315,6 +302,7 @@ namespace wheel_of_fear {
             ColorProps::white().withAlpha(glow)
           );
         break;
+
       case SignalKindEnum::exit:
         renderer.drawUiShape(
           QuadKindEnum::ring,
@@ -333,6 +321,7 @@ namespace wheel_of_fear {
           TextAlignEnum::left
         );
         break;
+
       case SignalKindEnum::unidentified:
         renderer.drawUiShape(
           QuadKindEnum::ring,

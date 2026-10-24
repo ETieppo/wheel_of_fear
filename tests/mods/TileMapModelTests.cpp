@@ -1,17 +1,13 @@
-#include <doctest/doctest.h>
-
 #include "core/render/RenderConfig.hpp"
 #include "mods/world/TileMapConnectivityAnalyzer.hpp"
 #include "mods/world/TileMapGenerator.hpp"
 #include "mods/world/TileMapModel.hpp"
+#include <doctest/doctest.h>
 
 namespace wheel_of_fear {
-  TEST_CASE(
-    "sliding never ends inside a wall or prop"
-  ) {
+  TEST_CASE("sliding never ends inside a wall or prop") {
     RandomGenerator random(7);
     TileMapModel    map;
-
     TileMapGenerator(map, random).generate(4, 3);
 
     map.reserveProp(
@@ -31,14 +27,12 @@ namespace wheel_of_fear {
     }
   }
 
-  TEST_CASE(
-    "generated maps keep every floor tile and every room reachable"
-  ) {
+  TEST_CASE("generated maps keep every floor tile and every room reachable") {
     for(std::uint64_t seed = 0; seed < 8; ++seed) {
       RandomGenerator random(seed + 31);
       TileMapModel    map;
-
       TileMapGenerator(map, random).generate(5, 7);
+
       CHECK(map.width() <= static_cast<int>(RenderConfig::max_map_size));
       CHECK(map.height() <= static_cast<int>(RenderConfig::max_map_size));
       CHECK(TileMapConnectivityAnalyzer::isRoomGraphConnected(map));
@@ -46,16 +40,12 @@ namespace wheel_of_fear {
     }
   }
 
-  TEST_CASE(
-    "room boundary walls cannot be dissolved"
-  ) {
+  TEST_CASE("room boundary walls cannot be dissolved") {
     RandomGenerator random(5);
     TileMapModel    map;
-
     TileMapGenerator(map, random).generate(3, 3);
 
     const RoomProps room = map.rooms()[0];
-
     CHECK_FALSE(map.dissolveWall(room.left + room.width, room.top + 2));
     CHECK_FALSE(map.dissolveWall(room.left + 2, room.top + room.height));
   }

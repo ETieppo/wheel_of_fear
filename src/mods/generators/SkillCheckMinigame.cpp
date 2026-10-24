@@ -1,13 +1,9 @@
 #include "mods/generators/SkillCheckMinigame.hpp"
-
+#include "core/math/ScalarMath.hpp"
 #include <algorithm>
 
-#include "core/math/ScalarMath.hpp"
-
 namespace wheel_of_fear {
-  SkillCheckMinigame::SkillCheckMinigame(
-    const SkillCheckZoneProps &zone
-  )
+  SkillCheckMinigame::SkillCheckMinigame(const SkillCheckZoneProps &zone)
       : zone_start_(zone.zone_start)
       , zone_width_(zone.zone_width)
       , perfect_width_(zone.perfect_width) {
@@ -18,35 +14,30 @@ namespace wheel_of_fear {
       return SkillCheckResultEnum::failed;
 
     const float perfect_start = perfectStart();
-
     if(
-      needle_angle_ >=
-      perfect_start &&
-      needle_angle_ <=
-      perfect_start +
-      perfect_width_
+      needle_angle_
+      >= perfect_start
+      && needle_angle_
+      <= perfect_start
+      + perfect_width_
     )
       return SkillCheckResultEnum::perfect;
-
     return SkillCheckResultEnum::good;
   }
 
   bool SkillCheckMinigame::hasMissed() const {
-    return needle_angle_ >
-           zoneEnd() +
-           0.05F ||
-           needle_angle_ >= ScalarMath::tau;
+    return needle_angle_
+      > zoneEnd()
+      + 0.05F
+      || needle_angle_
+      >= ScalarMath::tau;
   }
 
-  void SkillCheckMinigame::tickResult(
-    float delta_seconds
-  ) {
+  void SkillCheckMinigame::tickResult(float delta_seconds) {
     result_seconds_ = std::max(0.0F, result_seconds_ - delta_seconds);
   }
 
-  bool SkillCheckMinigame::tickCountdown(
-    float delta_seconds
-  ) {
+  bool SkillCheckMinigame::tickCountdown(float delta_seconds) {
     countdown_seconds_ -= delta_seconds;
     return countdown_seconds_ <= 0;
   }
@@ -79,7 +70,6 @@ namespace wheel_of_fear {
     needle_angle_ += delta_seconds * revolutions_per_second_ * ScalarMath::tau;
     if(is_sync_pressed) return judge();
     if(hasMissed()) return SkillCheckResultEnum::failed;
-
     return std::nullopt;
   }
 

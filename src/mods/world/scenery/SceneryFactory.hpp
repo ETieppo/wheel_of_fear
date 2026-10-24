@@ -1,10 +1,9 @@
 #pragma once
 
-#include <memory>
-
 #include "mods/world/dtos/SceneryPlacementDto.hpp"
 #include "mods/world/enums/SceneryKindEnum.hpp"
 #include "mods/world/scenery/Scenery.hpp"
+#include <memory>
 
 namespace wheel_of_fear {
   class SceneryFactory final {

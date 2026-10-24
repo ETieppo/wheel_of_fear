@@ -18,9 +18,7 @@ namespace wheel_of_fear {
         return ColorProps {.r = 0, .g = 0, .b = 0, .a = 1};
       }
 
-      static constexpr ColorProps hex(
-        std::uint32_t value
-      ) {
+      static constexpr ColorProps hex(std::uint32_t value) {
         return ColorProps {
           .r = static_cast<float>((value >> 16) & 0xffU) / 255.0F,
           .g = static_cast<float>((value >> 8) & 0xffU) / 255.0F,
@@ -30,9 +28,7 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      constexpr ColorProps withAlpha(
-        float alpha
-      ) const {
+      constexpr ColorProps withAlpha(float alpha) const {
         return ColorProps {.r = r, .g = g, .b = b, .a = alpha};
       }
 
@@ -50,9 +46,7 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      constexpr ColorProps scaled(
-        float factor
-      ) const {
+      constexpr ColorProps scaled(float factor) const {
         return ColorProps {
           .r = r * factor,
           .g = g * factor,

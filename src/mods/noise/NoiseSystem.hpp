@@ -1,11 +1,10 @@
 #pragma once
 
+#include "mods/noise/NoiseEventProps.hpp"
+#include "mods/noise/dtos/HeardNoiseDto.hpp"
 #include <optional>
 #include <span>
 #include <vector>
-
-#include "mods/noise/NoiseEventProps.hpp"
-#include "mods/noise/dtos/HeardNoiseDto.hpp"
 
 namespace wheel_of_fear {
   class TileMapModel;
@@ -20,9 +19,8 @@ namespace wheel_of_fear {
         events_.clear();
       }
 
-      void update(
-        float delta_seconds
-      );
+      void update(float delta_seconds);
+
       void emit(
         Vec2Props       position,
         float           radius,
@@ -45,7 +43,6 @@ namespace wheel_of_fear {
       static constexpr std::size_t capacity               = 128;
       static constexpr float       lifetime_seconds       = 0.35F;
       static constexpr float       occluded_radius_factor = 0.7F;
-
       std::vector<NoiseEventProps> events_;
   };
 } // namespace wheel_of_fear

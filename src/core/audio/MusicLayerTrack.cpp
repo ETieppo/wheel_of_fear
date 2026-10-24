@@ -1,5 +1,4 @@
 #include "core/audio/MusicLayerTrack.hpp"
-
 #include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {

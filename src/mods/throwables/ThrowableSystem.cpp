@@ -1,8 +1,4 @@
 #include "mods/throwables/ThrowableSystem.hpp"
-
-#include <algorithm>
-#include <format>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/items/ItemCatalog.hpp"
 #include "core/time/GameClock.hpp"
@@ -12,15 +8,14 @@
 #include "mods/throwables/projectiles/LureBeaconProjectile.hpp"
 #include "mods/throwables/projectiles/NeonGrenadeProjectile.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <format>
 
 namespace wheel_of_fear {
-  ThrowableSystem::ThrowableSystem() = default;
-
+  ThrowableSystem::ThrowableSystem()  = default;
   ThrowableSystem::~ThrowableSystem() = default;
 
-  void ThrowableSystem::generatePhase(
-    WorldSystem &world
-  ) {
+  void ThrowableSystem::generatePhase(WorldSystem &world) {
     projectiles_.clear();
     beacons_.clear();
     puddles_.clear();
@@ -33,10 +28,8 @@ namespace wheel_of_fear {
 
     for(std::size_t index = 0; index < lure_count + grenade_count; ++index) {
       const RoomProps &room = rooms[random.index(rooms.size())];
-
-      const ItemEnum item =
-        index < lure_count ? ItemEnum::lure_beacon : ItemEnum::neon_grenade;
-
+      const ItemEnum   item
+        = index < lure_count ? ItemEnum::lure_beacon : ItemEnum::neon_grenade;
       pickups_.emplace_back(world.map().randomFloorInRoom(random, room), item);
     }
   }
@@ -61,9 +54,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void ThrowableSystem::update(
-    GameContextDto &context
-  ) {
+  void ThrowableSystem::update(GameContextDto &context) {
     emitLights(context);
     if(!context.clock.isRunning()) return;
 
@@ -73,15 +64,12 @@ namespace wheel_of_fear {
     collectPickups(context);
   }
 
-  void ThrowableSystem::advanceProjectiles(
-    GameContextDto &context
-  ) {
+  void ThrowableSystem::advanceProjectiles(GameContextDto &context) {
     const TileMapModel &map   = context.world.map();
     std::size_t         index = 0;
 
     while(index < projectiles_.size()) {
       Projectile &projectile = *projectiles_[index];
-
       projectile.advance(context.clock.deltaSeconds());
 
       if(
@@ -98,16 +86,13 @@ namespace wheel_of_fear {
       );
 
       std::unique_ptr<Projectile> landed = std::move(projectiles_[index]);
-
-      projectiles_[index] = std::move(projectiles_.back());
+      projectiles_[index]                = std::move(projectiles_.back());
       projectiles_.pop_back();
       landed->land(context, landing);
     }
   }
 
-  void ThrowableSystem::advanceBeacons(
-    GameContextDto &context
-  ) {
+  void ThrowableSystem::advanceBeacons(GameContextDto &context) {
     for(LureBeaconEntity &beacon : beacons_) beacon.update(context);
 
     std::erase_if(beacons_, [](const LureBeaconEntity &beacon) {
@@ -115,9 +100,7 @@ namespace wheel_of_fear {
     });
   }
 
-  void ThrowableSystem::advancePuddles(
-    float delta_seconds
-  ) {
+  void ThrowableSystem::advancePuddles(float delta_seconds) {
     for(NeonPuddleHazard &puddle : puddles_) puddle.update(delta_seconds);
 
     std::erase_if(puddles_, [](const NeonPuddleHazard &puddle) {
@@ -125,9 +108,7 @@ namespace wheel_of_fear {
     });
   }
 
-  void ThrowableSystem::emitLights(
-    GameContextDto &context
-  ) const {
+  void ThrowableSystem::emitLights(GameContextDto &context) const {
     for(const NeonPuddleHazard &puddle : puddles_)
       puddle.emitLights(context.lighting, context.clock.realSeconds());
 
@@ -135,9 +116,7 @@ namespace wheel_of_fear {
       beacon.emitLight(context.lighting);
   }
 
-  void ThrowableSystem::collectPickups(
-    GameContextDto &context
-  ) {
+  void ThrowableSystem::collectPickups(GameContextDto &context) {
     PlayerEntity &player = context.player;
     if(!player.canBeTargeted()) return;
 
@@ -149,13 +128,12 @@ namespace wheel_of_fear {
 
       if(map.isSolidAt(pickup.position()))
         pickup.settleOn(map.nearestFloor(pickup.position()));
-
       const ItemEnum item = pickup.item();
 
       if(
-        pickup.position().distance(player.position()) >=
-        PickupEntity::reach ||
-        !player.inventory().receive(item)
+        pickup.position().distance(player.position())
+        >= PickupEntity::reach
+        || !player.inventory().receive(item)
       ) {
         index += 1;
         continue;
@@ -165,7 +143,6 @@ namespace wheel_of_fear {
       pickups_.pop_back();
 
       const Item &details = ItemCatalog::of(item);
-
       context.sound_player.play(SoundEnum::part_pickup, 0.5F, 0, 1.4F);
 
       context.hud.announce(
@@ -180,9 +157,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void ThrowableSystem::draw(
-    GameContextDto &context
-  ) const {
+  void ThrowableSystem::draw(GameContextDto &context) const {
     Renderer               &renderer = context.renderer;
     const SpriteSheetProps &sprites  = context.art.sprites();
 

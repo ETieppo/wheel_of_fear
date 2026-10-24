@@ -1,11 +1,8 @@
 #include "mods/noise/NoiseSystem.hpp"
-
 #include "mods/world/TileMapModel.hpp"
 
 namespace wheel_of_fear {
-  void NoiseSystem::update(
-    float delta_seconds
-  ) {
+  void NoiseSystem::update(float delta_seconds) {
     std::size_t index = 0;
 
     while(index < events_.size()) {
@@ -48,14 +45,13 @@ namespace wheel_of_fear {
     for(const NoiseEventProps &event : events_) {
       const float distance = event.position.distance(listener);
       float       radius   = event.radius * hearing_factor;
-      if(distance > radius) continue;
 
+      if(distance > radius) continue;
       if(!map.hasLineOfSight(event.position, listener))
         radius *= occluded_radius_factor;
 
       const float loudness = 1 - (distance / radius);
       if(loudness <= 0) continue;
-
       if(!loudest || loudness > loudest->loudness)
         loudest = HeardNoiseDto {.event = event, .loudness = loudness};
     }

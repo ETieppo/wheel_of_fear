@@ -1,8 +1,4 @@
 #include "mods/generators/states/GeneratorChargingState.hpp"
-
-#include <algorithm>
-#include <format>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
@@ -14,14 +10,15 @@
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <format>
 
 namespace wheel_of_fear {
-  ColorProps GeneratorChargingState::statusColor(
-    const GeneratorEntity &generator
-  ) const {
+  ColorProps
+  GeneratorChargingState::statusColor(const GeneratorEntity &generator) const {
     return generator.state() == GeneratorStateEnum::offline
-           ? Palette::neon_red
-           : Palette::neon_amber;
+      ? Palette::neon_red
+      : Palette::neon_amber;
   }
 
   void GeneratorChargingState::update(
@@ -49,16 +46,15 @@ namespace wheel_of_fear {
       resolveSkillCheck(generator, context, SkillCheckResultEnum::failed);
 
     skill_check.cancel();
-
     GeneratorMachineryProps &machinery = generator.machinery();
-
-    machinery.rotor_speed =
-      ScalarMath::approach(machinery.rotor_speed, 0, delta * 3);
+    machinery.rotor_speed
+      = ScalarMath::approach(machinery.rotor_speed, 0, delta * 3);
 
     if(
-      generator.state() ==
-      GeneratorStateEnum::charging &&
-      generator.progress() > 0
+      generator.state()
+      == GeneratorStateEnum::charging
+      && generator.progress()
+      > 0
     )
       regressWhileUnattended(generator, context);
 
@@ -78,9 +74,8 @@ namespace wheel_of_fear {
 
     context.player.beginRepair(generator.position());
     generator.enterCharging();
-    seconds_unattended_    = 0;
-    has_warned_regression_ = false;
-
+    seconds_unattended_           = 0;
+    has_warned_regression_        = false;
     const float previous_progress = generator.progress();
 
     generator.setProgress(
@@ -88,8 +83,7 @@ namespace wheel_of_fear {
     );
 
     GeneratorMachineryProps &machinery = generator.machinery();
-
-    machinery.rotor_speed = ScalarMath::approach(
+    machinery.rotor_speed              = ScalarMath::approach(
       machinery.rotor_speed,
       2 + (generator.progress() * 7),
       delta * 6
@@ -111,9 +105,10 @@ namespace wheel_of_fear {
     generator.triggerCrossedIncidents(context, previous_progress);
 
     if(
-      generator.state() ==
-      GeneratorStateEnum::charging &&
-      generator.progress() >= 1
+      generator.state()
+      == GeneratorStateEnum::charging
+      && generator.progress()
+      >= 1
     )
       generator.bringOnline(context);
   }
@@ -125,7 +120,6 @@ namespace wheel_of_fear {
   ) {
     ratchet_timer_ -= delta_seconds * (1 + (generator.progress() * 2.5F));
     if(ratchet_timer_ > 0) return;
-
     ratchet_timer_ = 0.34F;
 
     generator.playSound(
@@ -187,7 +181,6 @@ namespace wheel_of_fear {
 
       skill_check.begin(context.world.phase(), context.world.random());
       context.sound_player.play(SoundEnum::qte_alert, 0.7F, 0, 1);
-
       return;
     }
 
@@ -195,6 +188,7 @@ namespace wheel_of_fear {
       delta,
       context.input.wasPressed(InputActionEnum::hold_breath)
     );
+
     if(result) resolveSkillCheck(generator, context, *result);
   }
 
@@ -212,12 +206,15 @@ namespace wheel_of_fear {
         );
         context.sound_player.play(SoundEnum::qte_success, 0.7F, 0, 1.25F);
         break;
+
       case SkillCheckResultEnum::good:
         context.sound_player.play(SoundEnum::qte_success, 0.55F, 0, 1);
         break;
+
       case SkillCheckResultEnum::failed:
         shortCircuit(generator, context);
         break;
+
       case SkillCheckResultEnum::none: break;
     }
   }
@@ -232,7 +229,6 @@ namespace wheel_of_fear {
 
     context.sound_player.play(SoundEnum::qte_fail, 0.9F, 0, 1);
     generator.playSound(context, SoundEnum::electric_buzz, 0.7F, 1.2F);
-
     context.effects
       .emitSparks(context.world, generator.position(), 16, Palette::spark_blue);
 
@@ -245,9 +241,9 @@ namespace wheel_of_fear {
     context.world.shake(0.4F);
 
     if(
-      generator.progress() >
-      0.1F &&
-      context.world.random().chance(failure_breakdown_chance)
+      generator.progress()
+      > 0.1F
+      && context.world.random().chance(failure_breakdown_chance)
     ) {
       generator.triggerIncident(context, GeneratorIncidentEnum::breakdown);
       return;

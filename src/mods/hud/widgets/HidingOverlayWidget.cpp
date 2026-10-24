@@ -1,11 +1,9 @@
 #include "mods/hud/widgets/HidingOverlayWidget.hpp"
-
-#include <cmath>
-
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/player/components/LockerHidingComponent.hpp"
+#include <cmath>
 
 namespace wheel_of_fear {
   void HidingOverlayWidget::draw(
@@ -62,8 +60,8 @@ namespace wheel_of_fear {
       TextAlignEnum::left
     );
 
-    const ColorProps breath_color =
-      hiding.isHoldingBreath() ? Palette::neon_cyan : Palette::muted_text;
+    const ColorProps breath_color
+      = hiding.isHoldingBreath() ? Palette::neon_cyan : Palette::muted_text;
 
     UiPainter::drawSegmentedBar(
       renderer,

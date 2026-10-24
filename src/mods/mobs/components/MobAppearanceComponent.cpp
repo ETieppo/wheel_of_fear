@@ -1,24 +1,21 @@
 #include "mods/mobs/components/MobAppearanceComponent.hpp"
-
-#include <algorithm>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/mobs/MobEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
 
 namespace wheel_of_fear {
-  void MobAppearanceComponent::refreshVisibility(
-    const GameContextDto &context
-  ) {
+  void
+  MobAppearanceComponent::refreshVisibility(const GameContextDto &context) {
     const MobConditionComponent &condition = owner_.condition();
 
     if(
-      condition.isBurning() ||
-      condition.isCrumbling() ||
-      condition.isBeingHugged() ||
-      owner_.isDisguised()
+      condition.isBurning()
+      || condition.isCrumbling()
+      || condition.isBeingHugged()
+      || owner_.isDisguised()
     ) {
       visibility_ = 1;
       return;
@@ -41,14 +38,13 @@ namespace wheel_of_fear {
   ) const {
     const float presence_amount = presence();
     if(presence_amount <= 0.01F) return;
+    const MobConditionComponent &condition = owner_.condition();
 
-    const MobConditionComponent &condition     = owner_.condition();
-    Renderer                    &renderer      = context.renderer;
-    const Vec2Props              draw_position = owner_.position();
-    const float rotation = owner_.heading() + look.rotation_offset;
-
-    const ColorProps tint =
-      condition.isBurning() ? ColorProps::hex(0xfff2d8) : look.tint;
+    Renderer        &renderer      = context.renderer;
+    const Vec2Props  draw_position = owner_.position();
+    const float      rotation      = owner_.heading() + look.rotation_offset;
+    const ColorProps tint
+      = condition.isBurning() ? ColorProps::hex(0xfff2d8) : look.tint;
 
     renderer.drawShadowDisc(
       draw_position.add(Vec2Props::of(1.5F, 3)),
@@ -68,6 +64,7 @@ namespace wheel_of_fear {
         .scale    = look.scale,
       }
     );
+
     if(condition.petrifyAmount() > 0.5F) return;
 
     renderer.drawGlowSprite(
@@ -82,12 +79,13 @@ namespace wheel_of_fear {
 
   float MobAppearanceComponent::glowLevel() const {
     const MobConditionComponent &condition = owner_.condition();
-    if(condition.isFrozen()) return 0.35F;
 
+    if(condition.isFrozen()) return 0.35F;
     if(
-      condition.frenzySeconds() >
-      0 ||
-      owner_.brain().intent() == MobIntentEnum::chasing
+      condition.frenzySeconds()
+      > 0
+      || owner_.brain().intent()
+      == MobIntentEnum::chasing
     )
       return 1.0F;
 

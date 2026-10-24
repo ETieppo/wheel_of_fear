@@ -1,26 +1,21 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-#include <vector>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/generators/ExitDoorEntity.hpp"
 #include "mods/generators/FabricatorEntity.hpp"
 #include "mods/generators/GeneratorEntity.hpp"
+#include <cstddef>
+#include <optional>
+#include <vector>
 
 namespace wheel_of_fear {
   class GeneratorSystem {
     public:
-      void generatePhase(
-        WorldSystem &world
-      );
-      void update(
-        GameContextDto &context
-      );
-      void draw(
-        GameContextDto &context
-      ) const;
+      void generatePhase(WorldSystem &world);
+
+      void update(GameContextDto &context);
+
+      void draw(GameContextDto &context) const;
 
       std::vector<GeneratorEntity> &all() {
         return generators_;
@@ -61,10 +56,12 @@ namespace wheel_of_fear {
         WorldSystem       &world,
         std::vector<bool> &occupied_rooms
       );
+
       void placeFabricators(
         WorldSystem       &world,
         std::vector<bool> &occupied_rooms
       );
+
       std::optional<std::size_t> pickDistantRoom(
         WorldSystem             &world,
         const std::vector<bool> &occupied_rooms

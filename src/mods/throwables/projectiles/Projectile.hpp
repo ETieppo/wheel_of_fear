@@ -26,9 +26,7 @@ namespace wheel_of_fear {
         return start_;
       }
 
-      void advance(
-        float delta_seconds
-      );
+      void advance(float delta_seconds);
 
       [[nodiscard]]
       bool hasLanded() const {
@@ -37,11 +35,14 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       float progress() const;
+
       [[nodiscard]]
       Vec2Props groundPosition() const;
+
       [[nodiscard]]
       Vec2Props airPosition() const;
-      void      draw(
+
+      void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites
       ) const;
@@ -53,13 +54,10 @@ namespace wheel_of_fear {
 
     protected:
       [[nodiscard]]
-      virtual const AtlasRegionProps &sprite(
-        const SpriteSheetProps &sprites
-      ) const = 0;
+      virtual const AtlasRegionProps &
+      sprite(const SpriteSheetProps &sprites) const = 0;
 
-      virtual void drawTrail(
-        [[maybe_unused]] Renderer &renderer
-      ) const {
+      virtual void drawTrail([[maybe_unused]] Renderer &renderer) const {
       }
 
     private:

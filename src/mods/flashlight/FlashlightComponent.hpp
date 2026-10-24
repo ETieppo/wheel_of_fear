@@ -15,6 +15,8 @@
 namespace wheel_of_fear {
   class FlashlightComponent {
     public:
+      void reset();
+
       [[nodiscard]]
       FlashlightModeEnum mode() const {
         return mode_;
@@ -40,17 +42,11 @@ namespace wheel_of_fear {
         return mode_ == FlashlightModeEnum::ultraviolet;
       }
 
-      void reset();
-
-      void setEnabled(
-        bool is_enabled
-      ) {
+      void setEnabled(bool is_enabled) {
         is_enabled_ = is_enabled;
       }
 
-      void cycleMode(
-        SoundPlayer &sound_player
-      );
+      void cycleMode(SoundPlayer &sound_player);
       void update(
         const FlashlightConditionsDto &conditions,
         RandomGenerator               &random,
@@ -60,11 +56,13 @@ namespace wheel_of_fear {
         LightingSystem          &lighting,
         const FlashlightGripDto &grip
       ) const;
+
       void drawBeam(
         Renderer                &renderer,
         const SpriteSheetProps  &sprites,
         const FlashlightGripDto &grip
       ) const;
+
       [[nodiscard]]
       float sightRangeForMobs() const;
 
@@ -79,21 +77,16 @@ namespace wheel_of_fear {
       static constexpr float repair_pool_radius  = 42;
 
       [[nodiscard]]
-      bool usesUltraviolet(
-        const FlashlightGripDto &grip
-      ) const;
+      bool usesUltraviolet(const FlashlightGripDto &grip) const;
+
       [[nodiscard]]
-      ColorProps beamColor(
-        const FlashlightGripDto &grip
-      ) const;
+      ColorProps beamColor(const FlashlightGripDto &grip) const;
+
       [[nodiscard]]
-      float beamIntensity(
-        const FlashlightGripDto &grip
-      ) const;
+      float beamIntensity(const FlashlightGripDto &grip) const;
+
       [[nodiscard]]
-      FlashlightBeamDto beamShape(
-        const FlashlightGripDto &grip
-      ) const;
+      FlashlightBeamDto beamShape(const FlashlightGripDto &grip) const;
 
       FlashlightModeEnum         mode_       = FlashlightModeEnum::normal;
       bool                       is_enabled_ = true;

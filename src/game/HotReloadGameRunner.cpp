@@ -1,22 +1,16 @@
 #include "game/HotReloadGameRunner.hpp"
-
+#include <SDL3/SDL_log.h>
 #include <chrono>
 #include <exception>
 #include <stdexcept>
 #include <vector>
 
-#include <SDL3/SDL_log.h>
-
 namespace wheel_of_fear {
-  std::unique_ptr<GameRunner> GameRunner::create(
-    Window &window
-  ) {
+  std::unique_ptr<GameRunner> GameRunner::create(Window &window) {
     return std::make_unique<HotReloadGameRunner>(window);
   }
 
-  HotReloadGameRunner::HotReloadGameRunner(
-    Window &window
-  )
+  HotReloadGameRunner::HotReloadGameRunner(Window &window)
       : window_(window)
       , watcher_(
           WHEEL_OF_FEAR_GAME_MODULE_PATH,
@@ -36,9 +30,8 @@ namespace wheel_of_fear {
     return api_->runFrame(*game_);
   }
 
-  const GameModuleApiProps &HotReloadGameRunner::resolveApi(
-    const SharedLibrary &library
-  ) {
+  const GameModuleApiProps &
+  HotReloadGameRunner::resolveApi(const SharedLibrary &library) {
     const auto entry_point = reinterpret_cast<GameModuleApiEntryPoint>(
       library.function(game_module_api_symbol)
     );
@@ -79,7 +72,6 @@ namespace wheel_of_fear {
     }
 
     const std::vector<std::byte> snapshot = api_->saveSnapshot(*game_);
-
     api_->destroy(game_);
     game_ = nullptr;
 

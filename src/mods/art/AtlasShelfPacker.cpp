@@ -1,5 +1,4 @@
 #include "mods/art/AtlasShelfPacker.hpp"
-
 #include <algorithm>
 #include <stdexcept>
 
@@ -27,7 +26,6 @@ namespace wheel_of_fear {
 
     cursor_x_ += width + padding;
     row_height_ = std::max(row_height_, height);
-
     return region;
   }
 } // namespace wheel_of_fear

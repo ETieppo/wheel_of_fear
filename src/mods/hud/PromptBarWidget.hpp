@@ -1,10 +1,9 @@
 #pragma once
 
-#include <optional>
-#include <string>
-
 #include "core/input/enums/InputActionEnum.hpp"
 #include "core/render/Renderer.hpp"
+#include <optional>
+#include <string>
 
 namespace wheel_of_fear {
   class PromptBarWidget {
@@ -14,9 +13,7 @@ namespace wheel_of_fear {
         std::optional<InputActionEnum> key,
         std::string                    text
       );
-      void draw(
-        Renderer &renderer
-      ) const;
+      void draw(Renderer &renderer) const;
 
     private:
       std::string                    text_;

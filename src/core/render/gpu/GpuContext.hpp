@@ -1,24 +1,20 @@
 #pragma once
 
-#include <cstdint>
-#include <optional>
-
 #include "core/platform/Window.hpp"
 #include "core/render/gpu/GpuHandle.hpp"
+#include <cstdint>
+#include <optional>
 
 namespace wheel_of_fear {
   class GpuContext {
     public:
-      explicit GpuContext(
-        const Window &window
-      );
+      explicit GpuContext(const Window &window);
       ~GpuContext();
-      GpuContext(
-        const GpuContext &
-      ) = delete;
-      GpuContext &operator =(
-        const GpuContext &
-      ) = delete;
+      GpuContext(const GpuContext &)             = delete;
+      GpuContext &operator =(const GpuContext &) = delete;
+
+      std::optional<GpuTexture> acquireSurfaceTexture();
+      void                      present();
 
       [[nodiscard]]
       WGPUDevice device() const {
@@ -49,13 +45,9 @@ namespace wheel_of_fear {
         std::uint32_t width,
         std::uint32_t height
       );
-      std::optional<GpuTexture> acquireSurfaceTexture();
-      void                      present();
 
     private:
-      void createSurface(
-        const Window &window
-      );
+      void createSurface(const Window &window);
       void requestAdapter();
       void requestDevice();
       void chooseSurfaceFormat();

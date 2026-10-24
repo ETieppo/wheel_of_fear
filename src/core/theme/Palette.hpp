@@ -1,8 +1,7 @@
 #pragma once
 
-#include <array>
-
 #include "core/math/ColorProps.hpp"
+#include <array>
 
 namespace wheel_of_fear {
   class Palette final {
@@ -22,7 +21,6 @@ namespace wheel_of_fear {
         neon_amber,
         neon_lime,
       };
-
       static constexpr ColorProps flashlight_white  = ColorProps::hex(0xdff6ff);
       static constexpr ColorProps ultraviolet_light = ColorProps::hex(0x9a5cff);
       static constexpr ColorProps warm_light        = ColorProps::hex(0xffd9a0);

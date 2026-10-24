@@ -1,11 +1,9 @@
 #include "mods/world/MazeShifter.hpp"
-
-#include <algorithm>
-#include <cmath>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "mods/world/TileMapConnectivityAnalyzer.hpp"
+#include <algorithm>
+#include <cmath>
 
 namespace wheel_of_fear {
   namespace {
@@ -19,12 +17,9 @@ namespace wheel_of_fear {
     constexpr int         neighborhood_grid_distance   = 1;
     constexpr std::size_t candidate_capacity           = 64;
 
-    float sign(
-      float value
-    ) {
+    float sign(float value) {
       if(value > 0) return 1;
       if(value < 0) return -1;
-
       return 0;
     }
   } // namespace
@@ -41,34 +36,29 @@ namespace wheel_of_fear {
   ) {
     for(DoorwayProps &doorway : map.doorways()) {
       doorway.seconds_since_change += delta_seconds;
-
       const float target = doorway.is_open ? 1.0F : 0.0F;
 
       float next = ScalarMath::clamp(
-        doorway.open_amount + (sign(target - doorway.open_amount) *
-                               delta_seconds *
-                               door_travel_per_second),
+        doorway.open_amount
+          + (sign(target - doorway.open_amount) * delta_seconds * door_travel_per_second),
         0,
         1
       );
 
       if(
-        std::abs(target - doorway.open_amount) <=
-        delta_seconds *
-        door_travel_per_second
+        std::abs(target - doorway.open_amount)
+        <= delta_seconds
+        * door_travel_per_second
       )
         next = target;
 
-      const bool tiles_are_passable =
-        !map.isWall(doorway.first_x, doorway.first_y);
-
+      const bool tiles_are_passable
+        = !map.isWall(doorway.first_x, doorway.first_y);
       if(tiles_are_passable && next < 0.5F && isOccupied(doorway, occupants))
         next = 0.5F;
 
-      doorway.open_amount = next;
-
+      doorway.open_amount           = next;
       const bool should_be_passable = next >= 0.5F;
-
       if(should_be_passable != tiles_are_passable)
         map.setDoorwayTiles(doorway, should_be_passable);
     }
@@ -87,38 +77,34 @@ namespace wheel_of_fear {
     timer_seconds_ -= delta_seconds;
     if(timer_seconds_ > 0) return false;
 
-    const float reduction =
-      interval_reduction_per_phase * static_cast<float>(std::min(phase, 6U));
+    const float reduction
+      = interval_reduction_per_phase * static_cast<float>(std::min(phase, 6U));
+    timer_seconds_
+      = random.range(minimum_interval_seconds, maximum_interval_seconds)
+      - reduction;
 
-    timer_seconds_ =
-      random.range(minimum_interval_seconds, maximum_interval_seconds) -
-      reduction;
     if(!focus_room) return false;
-
     std::optional<std::size_t> opened;
 
-    const std::vector<std::size_t> closed_candidates =
-      collectCandidates(map, *focus_room, view_center, occupants, false);
-
+    const std::vector<std::size_t> closed_candidates
+      = collectCandidates(map, *focus_room, view_center, occupants, false);
     if(!closed_candidates.empty()) {
       opened = closed_candidates[random.index(closed_candidates.size())];
       map.doorways()[*opened].is_open              = true;
       map.doorways()[*opened].seconds_since_change = 0;
     }
 
-    std::optional<std::size_t> closed;
-
-    const std::vector<std::size_t> open_candidates =
-      collectCandidates(map, *focus_room, view_center, occupants, true);
+    std::optional<std::size_t>     closed;
+    const std::vector<std::size_t> open_candidates
+      = collectCandidates(map, *focus_room, view_center, occupants, true);
 
     for(std::size_t attempt = 0; attempt < open_candidates.size(); ++attempt) {
-      const std::size_t doorway_index =
-        open_candidates[random.index(open_candidates.size())];
+      const std::size_t doorway_index
+        = open_candidates[random.index(open_candidates.size())];
       if(opened && doorway_index == *opened) continue;
 
       DoorwayProps &doorway = map.doorways()[doorway_index];
-
-      doorway.is_open = false;
+      doorway.is_open       = false;
 
       if(TileMapConnectivityAnalyzer::isRoomGraphConnected(map)) {
         doorway.seconds_since_change = 0;
@@ -130,7 +116,6 @@ namespace wheel_of_fear {
     }
 
     moved_doorway_indices_ = {opened, closed};
-
     return opened.has_value() || closed.has_value();
   }
 
@@ -149,13 +134,13 @@ namespace wheel_of_fear {
       ++doorway_index
     ) {
       if(candidates.size() >= candidate_capacity) break;
-
       const DoorwayProps &doorway = doorways[doorway_index];
 
       if(
-        doorway.is_open !=
-        wants_open ||
-        doorway.seconds_since_change < recent_change_seconds
+        doorway.is_open
+        != wants_open
+        || doorway.seconds_since_change
+        < recent_change_seconds
       )
         continue;
 
@@ -163,11 +148,11 @@ namespace wheel_of_fear {
         map.roomGridDistance(doorway.room_a, focus_room),
         map.roomGridDistance(doorway.room_b, focus_room)
       );
-      if(nearest_distance > neighborhood_grid_distance) continue;
 
+      if(nearest_distance > neighborhood_grid_distance) continue;
       if(
-        isInsideView(doorway.center(), view_center) ||
-        isOccupied(doorway, occupants)
+        isInsideView(doorway.center(), view_center)
+        || isOccupied(doorway, occupants)
       )
         continue;
 
@@ -181,9 +166,9 @@ namespace wheel_of_fear {
     const DoorwayProps        &doorway,
     std::span<const Vec2Props> occupants
   ) {
-    const float reach =
-      (RenderConfig::tile_size * static_cast<float>(DoorwayProps::length) / 2) +
-      occupant_clearance;
+    const float reach
+      = (RenderConfig::tile_size * static_cast<float>(DoorwayProps::length) / 2)
+      + occupant_clearance;
 
     return std::ranges::any_of(occupants, [&](Vec2Props occupant) {
       return occupant.distance(doorway.center()) < reach;
@@ -194,14 +179,14 @@ namespace wheel_of_fear {
     Vec2Props point,
     Vec2Props view_center
   ) {
-    const float half_width =
-      (static_cast<float>(RenderConfig::view_width) / 2) + hidden_margin;
+    const float half_width
+      = (static_cast<float>(RenderConfig::view_width) / 2) + hidden_margin;
+    const float half_height
+      = (static_cast<float>(RenderConfig::view_height) / 2) + hidden_margin;
 
-    const float half_height =
-      (static_cast<float>(RenderConfig::view_height) / 2) + hidden_margin;
-
-    return std::abs(point.x - view_center.x) <
-           half_width &&
-           std::abs(point.y - view_center.y) < half_height;
+    return std::abs(point.x - view_center.x)
+      < half_width
+      && std::abs(point.y - view_center.y)
+      < half_height;
   }
 } // namespace wheel_of_fear

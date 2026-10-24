@@ -1,22 +1,17 @@
 #include "mods/mobs/MobDangerMonitor.hpp"
-
-#include <algorithm>
-#include <limits>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include <algorithm>
+#include <limits>
 
 namespace wheel_of_fear {
-  void MobDangerMonitor::update(
-    GameContextDto &context
-  ) {
+  void MobDangerMonitor::update(GameContextDto &context) {
     const float nearest = nearestHunterDistance(context.player.position());
     const float delta   = context.clock.deltaSeconds();
-
-    const float target_level =
-      ScalarMath::clamp(1 - (nearest / danger_distance), 0, 1);
+    const float target_level
+      = ScalarMath::clamp(1 - (nearest / danger_distance), 0, 1);
 
     level_ = ScalarMath::approach(level_, target_level, delta * 2);
     if(level_ < 0.35F) return;
@@ -24,17 +19,16 @@ namespace wheel_of_fear {
     playHeartbeat(context, delta);
   }
 
-  float MobDangerMonitor::nearestHunterDistance(
-    Vec2Props player_position
-  ) const {
+  float
+  MobDangerMonitor::nearestHunterDistance(Vec2Props player_position) const {
     float nearest = std::numeric_limits<float>::infinity();
 
     for(const auto &mob : mobs_) {
       if(
-        !mob->traits().is_hostile ||
-        !mob->canAct() ||
-        !mob->brain().isHunting() ||
-        mob->isDisguised()
+        !mob->traits().is_hostile
+        || !mob->canAct()
+        || !mob->brain().isHunting()
+        || mob->isDisguised()
       )
         continue;
 
@@ -52,7 +46,6 @@ namespace wheel_of_fear {
     if(heartbeat_timer_ > 0) return;
 
     heartbeat_timer_ = 0.95F - (level_ * 0.45F);
-
     context.sound_player
       .play(SoundEnum::heartbeat, 0.4F + (level_ * 0.5F), 0, 1);
   }

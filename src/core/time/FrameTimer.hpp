@@ -6,7 +6,6 @@ namespace wheel_of_fear {
   class FrameTimer {
     public:
       FrameTimer();
-
       float lap();
 
     private:

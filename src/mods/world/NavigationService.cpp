@@ -28,7 +28,6 @@ namespace wheel_of_fear {
   ) {
     if(from.distance(target) < direct_path_distance)
       return target.sub(from).normalized();
-
     clock_seconds_ = elapsed_seconds;
 
     DistanceField* field = fieldFor(map, target);
@@ -52,12 +51,12 @@ namespace wheel_of_fear {
         field.markUsed(clock_seconds_);
         return &field;
       }
+
       if(field.lastUsedSeconds() < oldest->lastUsedSeconds()) oldest = &field;
     }
 
     oldest->compute(map, target);
     oldest->markUsed(clock_seconds_);
-
     return oldest;
   }
 } // namespace wheel_of_fear

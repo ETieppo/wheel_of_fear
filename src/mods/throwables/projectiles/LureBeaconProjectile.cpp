@@ -1,5 +1,4 @@
 #include "mods/throwables/projectiles/LureBeaconProjectile.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/effects/EffectSystem.hpp"

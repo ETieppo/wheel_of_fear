@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/math/RandomGenerator.hpp"
 #include "mods/world/RoomProps.hpp"
 #include "mods/world/TileAreaProps.hpp"
 #include "mods/world/TileMapModel.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   class TileMapGenerator {
@@ -32,8 +31,7 @@ namespace wheel_of_fear {
       static constexpr float extra_doorway_chance  = 0.3F;
       static constexpr int   clearing_half_width   = 5;
       static constexpr int   clearing_half_height  = 4;
-
-      static bool isInClearing(
+      static bool            isInClearing(
         const RoomProps &room,
         int              x,
         int              y
@@ -45,48 +43,40 @@ namespace wheel_of_fear {
         int         x,
         int         y
       ) const;
+
       [[nodiscard]]
-      std::optional<TileCoordinateProps> firstFloorTile(
-        std::size_t room_index
-      ) const;
+      std::optional<TileCoordinateProps>
+      firstFloorTile(std::size_t room_index) const;
 
       void carveRooms();
       void shapeRooms();
       void placeDoorways();
       void openSpanningDoorways();
-      void furnishRoom(
-        std::size_t room_index
-      );
-      void furnishHall(
-        std::size_t room_index
-      );
-      void furnishOffices(
-        std::size_t room_index
-      );
-      void furnishServerFarm(
-        std::size_t room_index
-      );
-      void furnishStorage(
-        std::size_t room_index
-      );
-      void furnishPumpStation(
-        std::size_t room_index
-      );
+
+      void furnishRoom(std::size_t room_index);
+
+      void furnishHall(std::size_t room_index);
+
+      void furnishOffices(std::size_t room_index);
+
+      void furnishServerFarm(std::size_t room_index);
+
+      void furnishStorage(std::size_t room_index);
+
+      void furnishPumpStation(std::size_t room_index);
+
       bool placeWallBlock(
         std::size_t          room_index,
         const TileAreaProps &block
       );
-      void sealUnreachableFloor(
-        std::size_t room_index
-      );
+
+      void sealUnreachableFloor(std::size_t room_index);
+
       [[nodiscard]]
-      int randomInteriorX(
-        const RoomProps &room
-      ) const;
+      int randomInteriorX(const RoomProps &room) const;
+
       [[nodiscard]]
-      int randomInteriorY(
-        const RoomProps &room
-      ) const;
+      int randomInteriorY(const RoomProps &room) const;
 
       TileMapModel    &map_;
       RandomGenerator &random_;

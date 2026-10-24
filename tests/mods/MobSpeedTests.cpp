@@ -1,9 +1,8 @@
-#include <doctest/doctest.h>
-
 #include "mods/mobs/MobCatalog.hpp"
 #include "mods/mobs/components/MobLocomotionComponent.hpp"
 #include "mods/mobs/species/MimicMob.hpp"
 #include "mods/player/components/PlayerMovementComponent.hpp"
+#include <doctest/doctest.h>
 
 namespace wheel_of_fear {
   TEST_CASE(
@@ -14,18 +13,15 @@ namespace wheel_of_fear {
       if(!traits.is_hostile) continue;
 
       CAPTURE(traits.display_name);
-
       CHECK(
-        traits.speed *
-        MobLocomotionComponent::frenzy_speed_multiplier <
-        PlayerMovementComponent::run_speed
+        traits.speed
+        * MobLocomotionComponent::frenzy_speed_multiplier
+        < PlayerMovementComponent::run_speed
       );
     }
   }
 
-  TEST_CASE(
-    "the mimic lunge is a burst the running player can still escape"
-  ) {
+  TEST_CASE("the mimic lunge is a burst the running player can still escape") {
     CHECK(MimicMob::lunge_speed < PlayerMovementComponent::run_speed);
   }
 } // namespace wheel_of_fear

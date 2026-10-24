@@ -1,42 +1,37 @@
 #include "mods/mobs/components/MobBrainComponent.hpp"
-
-#include <algorithm>
-#include <cmath>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/mobs/MobEntity.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <cmath>
 
 namespace wheel_of_fear {
   bool MobBrainComponent::isHunting() const {
-    return intent_ ==
-           MobIntentEnum::chasing ||
-           intent_ ==
-           MobIntentEnum::investigating ||
-           intent_ == MobIntentEnum::lurking;
+    return intent_
+      == MobIntentEnum::chasing
+      || intent_
+      == MobIntentEnum::investigating
+      || intent_
+      == MobIntentEnum::lurking;
   }
 
-  void MobBrainComponent::tickCooldowns(
-    float delta_seconds
-  ) {
+  void MobBrainComponent::tickCooldowns(float delta_seconds) {
     strike_cooldown_ = std::max(0.0F, strike_cooldown_ - delta_seconds);
     retreat_seconds_ = std::max(0.0F, retreat_seconds_ - delta_seconds);
   }
 
-  void MobBrainComponent::hunt(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::hunt(GameContextDto &context) {
     if(!owner_.canAct()) return;
-
     chooseIntent(context);
     pursueIntent(context);
 
     if(
-      strike_cooldown_ <=
-      0 &&
-      owner_.perception().touchesPlayer(context, owner_.traits().strike_reach)
+      strike_cooldown_
+      <= 0
+      && owner_.perception()
+           .touchesPlayer(context, owner_.traits().strike_reach)
     )
       owner_.onContact(context);
   }
@@ -52,9 +47,7 @@ namespace wheel_of_fear {
     progress_.last_progress_position = owner_.position();
   }
 
-  void MobBrainComponent::startSearching(
-    Vec2Props anchor
-  ) {
+  void MobBrainComponent::startSearching(Vec2Props anchor) {
     search_anchor_  = anchor;
     linger_seconds_ = 0;
     changeIntent(MobIntentEnum::searching, anchor);
@@ -68,14 +61,10 @@ namespace wheel_of_fear {
     retreat_seconds_ = retreat_seconds;
   }
 
-  void MobBrainComponent::exposeHiddenPlayer(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::exposeHiddenPlayer(GameContextDto &context) {
     PlayerEntity &player = context.player;
     if(!player.isHidden()) return;
-
     player.dragOutOfLocker(context);
-
     MobPerceptionComponent &perception = owner_.perception();
 
     perception.forgetLocker();
@@ -84,9 +73,7 @@ namespace wheel_of_fear {
     strikePlayer(context);
   }
 
-  void MobBrainComponent::chooseIntent(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::chooseIntent(GameContextDto &context) {
     const MobPerceptionComponent &perception      = owner_.perception();
     const MobMemoryProps         &memory          = perception.memory();
     const Vec2Props               player_position = context.player.position();
@@ -94,15 +81,14 @@ namespace wheel_of_fear {
     if(retreat_seconds_ > 0) {
       if(intent_ != MobIntentEnum::retreating)
         changeIntent(MobIntentEnum::retreating, owner_.position());
-
       return;
     }
 
     if(perception.canSeePlayerNow()) {
       if(
-        intent_ ==
-        MobIntentEnum::lurking &&
-        context.world.isHazardAt(player_position)
+        intent_
+        == MobIntentEnum::lurking
+        && context.world.isHazardAt(player_position)
       )
         return;
 
@@ -116,23 +102,23 @@ namespace wheel_of_fear {
 
     if(intent_ == MobIntentEnum::chasing || intent_ == MobIntentEnum::lurking) {
       if(memory.seconds_since_seen < sight_memory_seconds) return;
-
       startSearching(memory.last_seen_player.value_or(owner_.position()));
-
       return;
     }
 
     if(
-      memory.known_locker_index &&
-      *memory.known_locker_index < context.world.lockers().size()
+      memory.known_locker_index
+      && *memory.known_locker_index
+      < context.world.lockers().size()
     ) {
-      const Vec2Props entry =
-        context.world.lockers()[*memory.known_locker_index].entryPoint();
+      const Vec2Props entry
+        = context.world.lockers()[*memory.known_locker_index].entryPoint();
 
       if(
-        intent_ !=
-        MobIntentEnum::investigating ||
-        destination_.distance(entry) > 1
+        intent_
+        != MobIntentEnum::investigating
+        || destination_.distance(entry)
+        > 1
       )
         changeIntent(MobIntentEnum::investigating, entry);
 
@@ -143,9 +129,10 @@ namespace wheel_of_fear {
       const Vec2Props noise_position = *memory.noise_position;
 
       if(
-        intent_ !=
-        MobIntentEnum::investigating ||
-        noise_position.distance(destination_) > 24
+        intent_
+        != MobIntentEnum::investigating
+        || noise_position.distance(destination_)
+        > 24
       )
         owner_.voice().vocalize(context, 0.4F);
 
@@ -153,9 +140,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void MobBrainComponent::pursueIntent(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::pursueIntent(GameContextDto &context) {
     intent_seconds_ += context.clock.deltaSeconds();
 
     switch(intent_) {
@@ -171,15 +156,14 @@ namespace wheel_of_fear {
     trackProgress(context);
   }
 
-  void MobBrainComponent::trackProgress(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::trackProgress(GameContextDto &context) {
     if(
-      intent_ ==
-      MobIntentEnum::lurking ||
-      intent_ ==
-      MobIntentEnum::calling ||
-      linger_seconds_ > 0
+      intent_
+      == MobIntentEnum::lurking
+      || intent_
+      == MobIntentEnum::calling
+      || linger_seconds_
+      > 0
     ) {
       progress_.stuck_seconds = 0;
       return;
@@ -188,7 +172,6 @@ namespace wheel_of_fear {
     if(owner_.position().distance(progress_.last_progress_position) > 10) {
       progress_.last_progress_position = owner_.position();
       progress_.stuck_seconds          = 0;
-
       return;
     }
 
@@ -203,12 +186,9 @@ namespace wheel_of_fear {
       changeIntent(MobIntentEnum::patrolling, owner_.position());
   }
 
-  void MobBrainComponent::patrol(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::patrol(GameContextDto &context) {
     WorldSystem &world = context.world;
     if(!patrol_room_) choosePatrolRoom(context);
-
     if(linger_seconds_ > 0) {
       linger_seconds_ -= context.clock.deltaSeconds();
       lookAround(context);
@@ -218,8 +198,8 @@ namespace wheel_of_fear {
     }
 
     if(owner_.distanceTo(destination_) < arrival_distance) {
-      linger_seconds_ =
-        world.random().range(minimum_linger_seconds, maximum_linger_seconds);
+      linger_seconds_
+        = world.random().range(minimum_linger_seconds, maximum_linger_seconds);
 
       return;
     }
@@ -233,15 +213,12 @@ namespace wheel_of_fear {
     );
   }
 
-  void MobBrainComponent::choosePatrolRoom(
-    GameContextDto &context
-  ) {
-    WorldSystem &world = context.world;
+  void MobBrainComponent::choosePatrolRoom(GameContextDto &context) {
+    WorldSystem               &world = context.world;
+    std::optional<std::size_t> current_room
+      = world.map().roomIndexAt(owner_.position());
 
-    std::optional<std::size_t> current_room =
-      world.map().roomIndexAt(owner_.position());
     if(!current_room) current_room = world.map().roomIndexAt(destination_);
-
     const float pressure = ScalarMath::clamp(
       0.35F + (0.08F * static_cast<float>(world.phase())),
       0,
@@ -249,15 +226,12 @@ namespace wheel_of_fear {
     );
 
     const auto player_room = world.map().roomIndexAt(context.player.position());
-
-    const std::optional<std::size_t> toward =
-      world.random().chance(pressure) ? player_room : std::nullopt;
-
-    const std::size_t room_index =
-      world.randomPatrolRoom(current_room.value_or(0), toward);
+    const std::optional<std::size_t> toward
+      = world.random().chance(pressure) ? player_room : std::nullopt;
+    const std::size_t room_index
+      = world.randomPatrolRoom(current_room.value_or(0), toward);
 
     patrol_room_ = room_index;
-
     destination_ = world.map().randomFloorInRoom(
       world.random(),
       world.map().rooms()[room_index]
@@ -266,9 +240,7 @@ namespace wheel_of_fear {
     progress_.last_progress_position = owner_.position();
   }
 
-  void MobBrainComponent::investigate(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::investigate(GameContextDto &context) {
     MobLocomotionComponent &locomotion = owner_.locomotion();
 
     if(owner_.distanceTo(destination_) > arrival_distance) {
@@ -286,7 +258,6 @@ namespace wheel_of_fear {
 
     if(perception.memory().known_locker_index) {
       const std::size_t locker_index = *perception.memory().known_locker_index;
-
       perception.forgetLocker();
 
       if(context.player.hiding().hiddenLockerIndex() == locker_index) {
@@ -298,37 +269,33 @@ namespace wheel_of_fear {
     startSearching(destination_);
   }
 
-  void MobBrainComponent::search(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::search(GameContextDto &context) {
     WorldSystem &world = context.world;
 
     if(intent_seconds_ > search_seconds) {
       patrol_room_.reset();
       changeIntent(MobIntentEnum::patrolling, owner_.position());
-
       return;
     }
 
     if(linger_seconds_ > 0) {
       linger_seconds_ -= context.clock.deltaSeconds();
       lookAround(context);
-
       return;
     }
 
     if(
-      owner_.distanceTo(destination_) <
-      arrival_distance ||
-      progress_.stuck_seconds > 1.2F
+      owner_.distanceTo(destination_)
+      < arrival_distance
+      || progress_.stuck_seconds
+      > 1.2F
     ) {
-      linger_seconds_ = world.random().range(0.4F, 1.2F);
-
+      linger_seconds_        = world.random().range(0.4F, 1.2F);
       const Vec2Props wander = world.random().direction();
       const float     reach  = world.random().range(12, search_radius);
 
-      destination_ =
-        world.map().nearestFloor(search_anchor_.add(wander.scale(reach)));
+      destination_
+        = world.map().nearestFloor(search_anchor_.add(wander.scale(reach)));
 
       return;
     }
@@ -342,26 +309,22 @@ namespace wheel_of_fear {
     );
   }
 
-  void MobBrainComponent::chase(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::chase(GameContextDto &context) {
     WorldSystem            &world      = context.world;
     MobLocomotionComponent &locomotion = owner_.locomotion();
     const bool      can_see_player     = owner_.perception().canSeePlayerNow();
     const Vec2Props player_position    = context.player.position();
 
-    const Vec2Props target =
-      can_see_player ? player_position
-                     : owner_.perception().memory().last_seen_player.value_or(
-                         player_position
-                       );
+    const Vec2Props target = can_see_player
+      ? player_position
+      : owner_.perception().memory().last_seen_player.value_or(player_position);
 
     destination_ = target;
 
     if(
-      can_see_player &&
-      world.isHazardAt(player_position) &&
-      owner_.traits().avoids_hazards
+      can_see_player
+      && world.isHazardAt(player_position)
+      && owner_.traits().avoids_hazards
     ) {
       if(!locomotion.navigateTo(context, target, locomotion.currentSpeed()))
         changeIntent(MobIntentEnum::lurking, target);
@@ -370,8 +333,9 @@ namespace wheel_of_fear {
     }
 
     if(
-      can_see_player &&
-      owner_.distanceTo(player_position) < direct_chase_distance
+      can_see_player
+      && owner_.distanceTo(player_position)
+      < direct_chase_distance
     ) {
       if(!locomotion.moveAlong(
            context,
@@ -383,26 +347,23 @@ namespace wheel_of_fear {
       return;
     }
 
-    const Vec2Props direction =
-      can_see_player
-        ? world.navigation().directionToPlayer(world.map(), owner_.position())
-        : world.navigation().directionToward(
-            world.map(),
-            owner_.position(),
-            target,
-            world.elapsedSeconds()
-          );
+    const Vec2Props direction = can_see_player
+      ? world.navigation().directionToPlayer(world.map(), owner_.position())
+      : world.navigation().directionToward(
+          world.map(),
+          owner_.position(),
+          target,
+          world.elapsedSeconds()
+        );
 
-    const Vec2Props fallback =
-      direction.length() < 0.5F ? owner_.directionTo(target) : direction;
+    const Vec2Props fallback
+      = direction.length() < 0.5F ? owner_.directionTo(target) : direction;
 
     if(!locomotion.moveAlong(context, fallback, locomotion.currentSpeed()))
       changeIntent(MobIntentEnum::lurking, target);
   }
 
-  void MobBrainComponent::lurk(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::lurk(GameContextDto &context) {
     const bool      can_see_player  = owner_.perception().canSeePlayerNow();
     const Vec2Props player_position = context.player.position();
 
@@ -421,9 +382,7 @@ namespace wheel_of_fear {
       startSearching(owner_.position());
   }
 
-  void MobBrainComponent::lookAround(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::lookAround(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
     const float sweep = std::sin(owner_.animationSeconds() * 1.7F) * 1.2F;
 
@@ -434,13 +393,11 @@ namespace wheel_of_fear {
     );
   }
 
-  void MobBrainComponent::fleeFromPlayer(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::fleeFromPlayer(GameContextDto &context) {
     MobLocomotionComponent &locomotion = owner_.locomotion();
 
-    const Vec2Props away =
-      owner_.position().sub(context.player.position()).normalized();
+    const Vec2Props away
+      = owner_.position().sub(context.player.position()).normalized();
 
     locomotion.moveAlong(
       context,
@@ -450,9 +407,7 @@ namespace wheel_of_fear {
     if(retreat_seconds_ <= 0) startSearching(owner_.position());
   }
 
-  void MobBrainComponent::strikePlayer(
-    GameContextDto &context
-  ) {
+  void MobBrainComponent::strikePlayer(GameContextDto &context) {
     strike_cooldown_ = strike_cooldown_seconds;
     context.player.takeHit(context, owner_.position());
   }

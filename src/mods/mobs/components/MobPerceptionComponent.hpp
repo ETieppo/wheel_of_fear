@@ -1,19 +1,16 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/mobs/MobMemoryProps.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class MobEntity;
 
   class MobPerceptionComponent {
     public:
-      explicit MobPerceptionComponent(
-        MobEntity &owner
-      )
+      explicit MobPerceptionComponent(MobEntity &owner)
           : owner_(owner) {
       }
 
@@ -27,9 +24,7 @@ namespace wheel_of_fear {
         return can_see_player_;
       }
 
-      void witnessHiding(
-        std::size_t locker_index
-      ) {
+      void witnessHiding(std::size_t locker_index) {
         memory_.known_locker_index = locker_index;
       }
 
@@ -37,9 +32,7 @@ namespace wheel_of_fear {
         memory_.known_locker_index.reset();
       }
 
-      void rememberPlayerAt(
-        Vec2Props player_position
-      ) {
+      void rememberPlayerAt(Vec2Props player_position) {
         memory_.last_seen_player   = player_position;
         memory_.seconds_since_seen = 0;
       }
@@ -48,14 +41,15 @@ namespace wheel_of_fear {
         GameContextDto &context,
         bool            can_notice
       );
+
       void observeHiding(
         const GameContextDto &context,
         std::size_t           locker_index,
         Vec2Props             locker_position
       );
-      void hearShepherd(
-        Vec2Props target
-      );
+
+      void hearShepherd(Vec2Props target);
+
       [[nodiscard]]
       bool touchesPlayer(
         const GameContextDto &context,
@@ -69,12 +63,9 @@ namespace wheel_of_fear {
       static constexpr float chasing_witness_distance     = 340;
 
       [[nodiscard]]
-      bool canSeePlayer(
-        const GameContextDto &context
-      ) const;
-      void listen(
-        GameContextDto &context
-      );
+      bool canSeePlayer(const GameContextDto &context) const;
+
+      void listen(GameContextDto &context);
 
       MobEntity     &owner_;
       MobMemoryProps memory_ {};

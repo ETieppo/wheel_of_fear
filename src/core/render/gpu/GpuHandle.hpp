@@ -1,17 +1,16 @@
 #pragma once
 
 #include <utility>
-
 #include <webgpu/webgpu.h>
 
 namespace wheel_of_fear {
   template<typename Handle, void (*Release)(Handle)> class GpuHandle {
     public:
-      GpuHandle() = default;
+      GpuHandle()                              = default;
+      GpuHandle(const GpuHandle &)             = delete;
+      GpuHandle &operator =(const GpuHandle &) = delete;
 
-      explicit GpuHandle(
-        Handle handle
-      )
+      explicit GpuHandle(Handle handle)
           : handle_(handle) {
       }
 
@@ -19,16 +18,7 @@ namespace wheel_of_fear {
         reset();
       }
 
-      GpuHandle(
-        const GpuHandle &
-      ) = delete;
-      GpuHandle &operator =(
-        const GpuHandle &
-      ) = delete;
-
-      GpuHandle(
-        GpuHandle &&other
-      ) noexcept
+      GpuHandle(GpuHandle &&other) noexcept
           : handle_(
               std::exchange(
                 other.handle_,
@@ -37,9 +27,7 @@ namespace wheel_of_fear {
             ) {
       }
 
-      GpuHandle &operator =(
-        GpuHandle &&other
-      ) noexcept {
+      GpuHandle &operator =(GpuHandle &&other) noexcept {
         if(this != &other) {
           reset();
           handle_ = std::exchange(other.handle_, nullptr);
@@ -57,9 +45,7 @@ namespace wheel_of_fear {
         return handle_ != nullptr;
       }
 
-      void reset(
-        Handle handle = nullptr
-      ) {
+      void reset(Handle handle = nullptr) {
         if(handle_ != nullptr) Release(handle_);
         handle_ = handle;
       }
@@ -77,18 +63,18 @@ namespace wheel_of_fear {
   using GpuTexture     = GpuHandle<WGPUTexture, wgpuTextureRelease>;
   using GpuTextureView = GpuHandle<WGPUTextureView, wgpuTextureViewRelease>;
   using GpuSampler     = GpuHandle<WGPUSampler, wgpuSamplerRelease>;
-  using GpuBindGroupLayout =
-    GpuHandle<WGPUBindGroupLayout, wgpuBindGroupLayoutRelease>;
+  using GpuBindGroupLayout
+    = GpuHandle<WGPUBindGroupLayout, wgpuBindGroupLayoutRelease>;
   using GpuBindGroup = GpuHandle<WGPUBindGroup, wgpuBindGroupRelease>;
-  using GpuPipelineLayout =
-    GpuHandle<WGPUPipelineLayout, wgpuPipelineLayoutRelease>;
-  using GpuRenderPipeline =
-    GpuHandle<WGPURenderPipeline, wgpuRenderPipelineRelease>;
+  using GpuPipelineLayout
+    = GpuHandle<WGPUPipelineLayout, wgpuPipelineLayoutRelease>;
+  using GpuRenderPipeline
+    = GpuHandle<WGPURenderPipeline, wgpuRenderPipelineRelease>;
   using GpuShaderModule = GpuHandle<WGPUShaderModule, wgpuShaderModuleRelease>;
-  using GpuCommandEncoder =
-    GpuHandle<WGPUCommandEncoder, wgpuCommandEncoderRelease>;
-  using GpuCommandBuffer =
-    GpuHandle<WGPUCommandBuffer, wgpuCommandBufferRelease>;
-  using GpuRenderPassEncoder =
-    GpuHandle<WGPURenderPassEncoder, wgpuRenderPassEncoderRelease>;
+  using GpuCommandEncoder
+    = GpuHandle<WGPUCommandEncoder, wgpuCommandEncoderRelease>;
+  using GpuCommandBuffer
+    = GpuHandle<WGPUCommandBuffer, wgpuCommandBufferRelease>;
+  using GpuRenderPassEncoder
+    = GpuHandle<WGPURenderPassEncoder, wgpuRenderPassEncoderRelease>;
 } // namespace wheel_of_fear

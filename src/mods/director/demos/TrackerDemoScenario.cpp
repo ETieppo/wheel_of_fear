@@ -1,5 +1,4 @@
 #include "mods/director/demos/TrackerDemoScenario.hpp"
-
 #include "mods/tracker/TrackerSystem.hpp"
 
 namespace wheel_of_fear {

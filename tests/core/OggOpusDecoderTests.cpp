@@ -1,12 +1,9 @@
-#include <doctest/doctest.h>
-
 #include "core/assets/AssetLocator.hpp"
 #include "core/audio/OggOpusDecoder.hpp"
+#include <doctest/doctest.h>
 
 namespace wheel_of_fear {
-  TEST_CASE(
-    "decodes the bundled ogg opus effects at 48 kHz"
-  ) {
+  TEST_CASE("decodes the bundled ogg opus effects at 48 kHz") {
     const DecodedAudioProps footstep = OggOpusDecoder::decodeFile(
       AssetLocator::assetPath("audio/sfx/footstep_0.opus")
     );

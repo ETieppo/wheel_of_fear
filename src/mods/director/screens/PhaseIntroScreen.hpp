@@ -1,10 +1,9 @@
 #pragma once
 
+#include "core/render/Renderer.hpp"
 #include <cstdint>
 #include <span>
 #include <string_view>
-
-#include "core/render/Renderer.hpp"
 
 namespace wheel_of_fear {
   class PhaseIntroScreen final {

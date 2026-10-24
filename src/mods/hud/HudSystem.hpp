@@ -1,20 +1,17 @@
 #pragma once
 
-#include <optional>
-#include <string>
-
 #include "core/input/enums/InputActionEnum.hpp"
 #include "core/math/ColorProps.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/hud/MessageFeedWidget.hpp"
 #include "mods/hud/PromptBarWidget.hpp"
+#include <optional>
+#include <string>
 
 namespace wheel_of_fear {
   class HudSystem {
     public:
-      void beginFrame(
-        float real_delta_seconds
-      );
+      void beginFrame(float real_delta_seconds);
 
       void clearMessages() {
         messages_.clear();
@@ -34,15 +31,11 @@ namespace wheel_of_fear {
         prompt_.show(key, std::move(text));
       }
 
-      void setVisible(
-        bool is_visible
-      ) {
+      void setVisible(bool is_visible) {
         is_visible_ = is_visible;
       }
 
-      void draw(
-        GameContextDto &context
-      ) const;
+      void draw(GameContextDto &context) const;
 
     private:
       MessageFeedWidget messages_;

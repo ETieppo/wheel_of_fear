@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/mobs/MobProgressProps.hpp"
 #include "mods/mobs/enums/MobIntentEnum.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   class MobEntity;
@@ -17,8 +16,8 @@ namespace wheel_of_fear {
         MobEntity &owner,
         Vec2Props  position
       )
-          : owner_(owner)
-          , destination_(position)
+          : destination_(position)
+          , owner_(owner)
           , progress_ {.last_progress_position = position} {
       }
 
@@ -35,9 +34,7 @@ namespace wheel_of_fear {
         return intent_seconds_;
       }
 
-      void addIntentSeconds(
-        float seconds
-      ) {
+      void addIntentSeconds(float seconds) {
         intent_seconds_ += seconds;
       }
 
@@ -46,32 +43,27 @@ namespace wheel_of_fear {
         return destination_;
       }
 
-      void setRetreatSeconds(
-        float seconds
-      ) {
+      void setRetreatSeconds(float seconds) {
         retreat_seconds_ = seconds;
       }
 
-      void tickCooldowns(
-        float delta_seconds
-      );
-      void hunt(
-        GameContextDto &context
-      );
+      void tickCooldowns(float delta_seconds);
+
+      void hunt(GameContextDto &context);
+
       void changeIntent(
         MobIntentEnum intent,
         Vec2Props     destination
       );
-      void startSearching(
-        Vec2Props anchor
-      );
+
+      void startSearching(Vec2Props anchor);
+
       void strikeAndRetreat(
         GameContextDto &context,
         float           retreat_seconds
       );
-      void exposeHiddenPlayer(
-        GameContextDto &context
-      );
+
+      void exposeHiddenPlayer(GameContextDto &context);
 
     private:
       static constexpr float patrol_speed_factor      = 0.42F;
@@ -89,48 +81,35 @@ namespace wheel_of_fear {
       static constexpr float lurk_give_up_seconds     = 6;
       static constexpr float direct_chase_distance    = 72;
 
-      void chooseIntent(
-        GameContextDto &context
-      );
-      void pursueIntent(
-        GameContextDto &context
-      );
-      void trackProgress(
-        GameContextDto &context
-      );
-      void patrol(
-        GameContextDto &context
-      );
-      void choosePatrolRoom(
-        GameContextDto &context
-      );
-      void investigate(
-        GameContextDto &context
-      );
-      void search(
-        GameContextDto &context
-      );
-      void chase(
-        GameContextDto &context
-      );
-      void lurk(
-        GameContextDto &context
-      );
-      void lookAround(
-        GameContextDto &context
-      );
-      void fleeFromPlayer(
-        GameContextDto &context
-      );
-      void strikePlayer(
-        GameContextDto &context
-      );
+      void chooseIntent(GameContextDto &context);
 
+      void pursueIntent(GameContextDto &context);
+
+      void trackProgress(GameContextDto &context);
+
+      void patrol(GameContextDto &context);
+
+      void choosePatrolRoom(GameContextDto &context);
+
+      void investigate(GameContextDto &context);
+
+      void search(GameContextDto &context);
+
+      void chase(GameContextDto &context);
+
+      void lurk(GameContextDto &context);
+
+      void lookAround(GameContextDto &context);
+
+      void fleeFromPlayer(GameContextDto &context);
+
+      void strikePlayer(GameContextDto &context);
+
+      std::optional<std::size_t> patrol_room_;
+      Vec2Props                  destination_;
       MobEntity                 &owner_;
       MobIntentEnum              intent_         = MobIntentEnum::patrolling;
       float                      intent_seconds_ = 0;
-      Vec2Props                  destination_;
-      std::optional<std::size_t> patrol_room_;
       float                      linger_seconds_ = 0;
       Vec2Props                  search_anchor_ {};
       MobProgressProps           progress_;

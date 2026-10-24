@@ -11,9 +11,7 @@ namespace wheel_of_fear {
     failed,
   };
 
-  constexpr std::string_view nameOf(
-    SkillCheckResultEnum value
-  ) {
+  constexpr std::string_view nameOf(SkillCheckResultEnum value) {
     switch(value) {
       case SkillCheckResultEnum::none:    return "none";
       case SkillCheckResultEnum::perfect: return "perfect";

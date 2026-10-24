@@ -1,14 +1,14 @@
 #pragma once
 
-#include <vector>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/tracker/TrackerGhostField.hpp"
 #include "mods/tracker/TrackerSignalCollector.hpp"
+#include <vector>
 
 namespace wheel_of_fear {
   class TrackerSystem {
     public:
+      void close();
       TrackerSystem();
 
       [[nodiscard]]
@@ -21,19 +21,13 @@ namespace wheel_of_fear {
         return open_amount_;
       }
 
-      void forceOpen(
-        bool is_open
-      ) {
+      void forceOpen(bool is_open) {
         is_open_ = is_open;
       }
 
-      void close();
-      void update(
-        GameContextDto &context
-      );
-      void draw(
-        GameContextDto &context
-      ) const;
+      void update(GameContextDto &context);
+
+      void draw(GameContextDto &context) const;
 
     private:
       static constexpr float sweep_speed       = 2.4F;
@@ -46,12 +40,9 @@ namespace wheel_of_fear {
         float target
       );
 
-      void toggleOnRequest(
-        GameContextDto &context
-      );
-      void sweep(
-        GameContextDto &context
-      );
+      void toggleOnRequest(GameContextDto &context);
+
+      void sweep(GameContextDto &context);
 
       bool                   is_open_     = false;
       float                  open_amount_ = 0;

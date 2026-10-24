@@ -14,9 +14,7 @@ namespace wheel_of_fear {
 
   inline constexpr std::size_t item_count = 5;
 
-  constexpr std::size_t indexOf(
-    ItemEnum item
-  ) {
+  constexpr std::size_t indexOf(ItemEnum item) {
     return static_cast<std::size_t>(item);
   }
 } // namespace wheel_of_fear

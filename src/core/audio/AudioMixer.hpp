@@ -1,14 +1,12 @@
 #pragma once
 
+#include "core/audio/AudioVoiceProps.hpp"
+#include <SDL3/SDL_audio.h>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <mutex>
 #include <vector>
-
-#include <SDL3/SDL_audio.h>
-
-#include "core/audio/AudioVoiceProps.hpp"
 
 namespace wheel_of_fear {
   using VoiceId                     = std::uint64_t;
@@ -21,12 +19,8 @@ namespace wheel_of_fear {
 
       AudioMixer();
       ~AudioMixer();
-      AudioMixer(
-        const AudioMixer &
-      ) = delete;
-      AudioMixer &operator =(
-        const AudioMixer &
-      ) = delete;
+      AudioMixer(const AudioMixer &)             = delete;
+      AudioMixer &operator =(const AudioMixer &) = delete;
 
       bool isAvailable() const {
         return stream_ != nullptr;
@@ -37,21 +31,17 @@ namespace wheel_of_fear {
         float                                     volume,
         bool                                      is_looping
       );
+
       void setVolume(
         VoiceId voice,
         float   volume
       );
-      void stop(
-        VoiceId voice
-      );
-      bool isPlaying(
-        VoiceId voice
-      ) const;
+
+      void        stop(VoiceId voice);
+      bool        isPlaying(VoiceId voice) const;
       std::size_t activeVoiceCount() const;
-      void        setMasterVolume(
-        float volume
-      );
-      void releaseFinished();
+      void        setMasterVolume(float volume);
+      void        releaseFinished();
 
     private:
       static void SDLCALL feed(
@@ -60,15 +50,10 @@ namespace wheel_of_fear {
         int              additional_amount,
         int              total_amount
       );
-      void mix(
-        std::size_t sample_count
-      );
-      AudioVoiceProps* find(
-        VoiceId voice
-      );
-      const AudioVoiceProps* find(
-        VoiceId voice
-      ) const;
+
+      void                   mix(std::size_t sample_count);
+      AudioVoiceProps*       find(VoiceId voice);
+      const AudioVoiceProps* find(VoiceId voice) const;
 
       SDL_AudioStream*             stream_ = nullptr;
       mutable std::mutex           mutex_;

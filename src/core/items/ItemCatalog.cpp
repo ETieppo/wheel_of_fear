@@ -1,5 +1,4 @@
 #include "core/items/ItemCatalog.hpp"
-
 #include "core/items/FuseItem.hpp"
 #include "core/items/GearItem.hpp"
 #include "core/items/LureBeaconItem.hpp"
@@ -26,15 +25,14 @@ namespace wheel_of_fear {
       ItemEnum::fuse,
       ItemEnum::valve,
     };
+
     constexpr std::array<ItemEnum, 2> throwable_kinds {
       ItemEnum::lure_beacon,
       ItemEnum::neon_grenade,
     };
   } // namespace
 
-  const Item &ItemCatalog::of(
-    ItemEnum kind
-  ) {
+  const Item &ItemCatalog::of(ItemEnum kind) {
     switch(kind) {
       case ItemEnum::gear:         return itemInstances().gear;
       case ItemEnum::fuse:         return itemInstances().fuse;
@@ -46,9 +44,7 @@ namespace wheel_of_fear {
     return itemInstances().gear;
   }
 
-  const ThrowableItem &ItemCatalog::throwable(
-    ItemEnum kind
-  ) {
+  const ThrowableItem &ItemCatalog::throwable(ItemEnum kind) {
     if(kind == ItemEnum::neon_grenade) return itemInstances().neon_grenade;
 
     return itemInstances().lure_beacon;

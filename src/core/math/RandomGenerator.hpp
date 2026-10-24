@@ -1,17 +1,14 @@
 #pragma once
 
+#include "core/math/Vec2Props.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdint>
 
-#include "core/math/Vec2Props.hpp"
-
 namespace wheel_of_fear {
   class RandomGenerator {
     public:
-      explicit RandomGenerator(
-        std::uint64_t seed
-      );
+      explicit RandomGenerator(std::uint64_t seed);
 
       float unit();
       float range(
@@ -22,20 +19,13 @@ namespace wheel_of_fear {
         int low,
         int high
       );
-      std::size_t index(
-        std::size_t count
-      );
-      bool chance(
-        float probability
-      );
-      Vec2Props direction();
+      std::size_t index(std::size_t count);
+      bool        chance(float probability);
+      Vec2Props   direction();
 
     private:
-      std::uint64_t next();
-      std::uint64_t below(
-        std::uint64_t bound
-      );
-
+      std::uint64_t                next();
+      std::uint64_t                below(std::uint64_t bound);
       std::array<std::uint64_t, 4> state_ {};
   };
 } // namespace wheel_of_fear

@@ -1,5 +1,4 @@
 #include "mods/mobs/MobCatalog.hpp"
-
 #include "mods/mobs/species/BloaterMob.hpp"
 #include "mods/mobs/species/CrawlerMob.hpp"
 #include "mods/mobs/species/MelterMob.hpp"
@@ -9,9 +8,7 @@
 #include "mods/mobs/species/ShepherdMob.hpp"
 
 namespace wheel_of_fear {
-  const MobTraitsProps &MobCatalog::traitsOf(
-    MobKindEnum kind
-  ) {
+  const MobTraitsProps &MobCatalog::traitsOf(MobKindEnum kind) {
     switch(kind) {
       case MobKindEnum::crawler:  return CrawlerMob::species_traits;
       case MobKindEnum::bloater:  return BloaterMob::species_traits;

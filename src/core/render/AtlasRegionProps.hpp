@@ -1,9 +1,8 @@
 #pragma once
 
-#include <array>
-
 #include "core/math/Vec2Props.hpp"
 #include "core/render/RenderConfig.hpp"
+#include <array>
 
 namespace wheel_of_fear {
   struct AtlasRegionProps {

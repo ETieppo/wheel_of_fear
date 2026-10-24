@@ -24,9 +24,7 @@ namespace wheel_of_fear {
         .spawn_weight            = 1.0F,
       };
 
-      explicit CrawlerMob(
-        Vec2Props position
-      )
+      explicit CrawlerMob(Vec2Props position)
           : MobEntity(
               position,
               species_traits
@@ -43,15 +41,11 @@ namespace wheel_of_fear {
         return species_traits;
       }
 
-      void onContact(
-        GameContextDto &context
-      ) override;
-      void onLightReleased(
-        GameContextDto &context
-      ) override;
-      void draw(
-        GameContextDto &context
-      ) const override;
+      void onContact(GameContextDto &context) override;
+
+      void onLightReleased(GameContextDto &context) override;
+
+      void draw(GameContextDto &context) const override;
 
     private:
       static constexpr float strike_retreat_seconds = 1.4F;

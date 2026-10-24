@@ -23,9 +23,8 @@ namespace wheel_of_fear {
 
     protected:
       [[nodiscard]]
-      const AtlasRegionProps &sprite(
-        const SpriteSheetProps &sprites
-      ) const override {
+      const AtlasRegionProps &
+      sprite(const SpriteSheetProps &sprites) const override {
         return sprites.lure_beacon;
       }
 

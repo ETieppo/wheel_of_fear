@@ -1,24 +1,22 @@
 #pragma once
 
-#include <vector>
-
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/distractions/DistractionEvent.hpp"
 #include "mods/distractions/enums/DistractionKindEnum.hpp"
+#include <vector>
 
 namespace wheel_of_fear {
   class MobEntity;
 
   class DistractionSystem {
     public:
+      void update(GameContextDto &context);
+
       void clear() {
         active_.clear();
       }
 
-      void update(
-        GameContextDto &context
-      );
       void provoke(
         GameContextDto     &context,
         DistractionKindEnum kind,
@@ -35,15 +33,14 @@ namespace wheel_of_fear {
         GameContextDto &context,
         MobEntity      &mob
       );
+
       void checkMobFight(
         GameContextDto &context,
         MobEntity      &mob,
         std::size_t     first_other_index
       );
-      void advanceFlashes(
-        GameContextDto &context
-      );
 
+      void                          advanceFlashes(GameContextDto &context);
       std::vector<DistractionEvent> active_;
   };
 } // namespace wheel_of_fear

@@ -10,7 +10,5 @@ namespace wheel_of_fear {
       std::array<float, 4> parameters {};
   };
 
-  static_assert(
-    sizeof(QuadProps) == 64
-  );
+  static_assert(sizeof(QuadProps) == 64);
 } // namespace wheel_of_fear

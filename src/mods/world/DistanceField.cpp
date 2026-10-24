@@ -38,11 +38,10 @@ namespace wheel_of_fear {
     const TileMapModel &map,
     Vec2Props           target
   ) {
-    const auto cell_count = static_cast<std::size_t>(map.width()) *
-                            static_cast<std::size_t>(map.height());
+    const auto cell_count = static_cast<std::size_t>(map.width())
+      * static_cast<std::size_t>(map.height());
 
     distances_.assign(cell_count, unreachable_distance);
-
     const TileCoordinateProps target_tile = TileMapModel::tileAt(target);
 
     target_tile_ = target_tile;
@@ -50,13 +49,11 @@ namespace wheel_of_fear {
     if(!map.contains(target_tile.x, target_tile.y)) return;
 
     queue_.clear();
-
     const std::size_t start = map.cellIndex(target_tile.x, target_tile.y);
 
     queue_.push_back(static_cast<std::uint32_t>(start));
     distances_[start] = 0;
-
-    const auto width = static_cast<std::uint32_t>(map.width());
+    const auto width  = static_cast<std::uint32_t>(map.width());
 
     for(std::size_t head = 0; head < queue_.size(); ++head) {
       const std::uint32_t cell     = queue_[head];
@@ -103,8 +100,8 @@ namespace wheel_of_fear {
     for(const TileCoordinateProps &offset : eight_neighbors) {
       const int neighbor_x = tile.x + offset.x;
       const int neighbor_y = tile.y + offset.y;
-      if(map.isBlocked(neighbor_x, neighbor_y)) continue;
 
+      if(map.isBlocked(neighbor_x, neighbor_y)) continue;
       const bool is_diagonal = offset.x != 0 && offset.y != 0;
 
       if(
@@ -113,12 +110,11 @@ namespace wheel_of_fear {
       )
         continue;
 
-      const std::uint16_t distance =
-        distances_[map.cellIndex(neighbor_x, neighbor_y)];
+      const std::uint16_t distance
+        = distances_[map.cellIndex(neighbor_x, neighbor_y)];
 
       if(distance < best_distance) {
-        best_distance = distance;
-
+        best_distance  = distance;
         best_direction = TileMapModel::tileCenter(neighbor_x, neighbor_y)
                            .sub(point)
                            .normalized();

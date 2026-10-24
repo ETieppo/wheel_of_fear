@@ -1,13 +1,11 @@
 #include "mods/director/demos/DoorsDemoScenario.hpp"
-
-#include <algorithm>
-#include <format>
-
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/TileMapConnectivityAnalyzer.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <format>
 
 namespace wheel_of_fear {
   void DoorsDemoScenario::run(
@@ -15,9 +13,7 @@ namespace wheel_of_fear {
     const DemoTickDto &tick
   ) {
     WorldSystem &world = context.world;
-
     context.mobs.setGraceSeconds(1000);
-
     const std::size_t start_room = world.startRoomIndex();
 
     if(step() == 0) {
@@ -25,7 +21,6 @@ namespace wheel_of_fear {
 
       for(const DoorwayProps &doorway : world.map().doorways()) {
         if(!doorway.connects(start_room) || doorway.is_open) continue;
-
         const Vec2Props room_center = world.map().rooms()[start_room].center();
 
         context.player.setPosition(
@@ -44,8 +39,8 @@ namespace wheel_of_fear {
     );
 
     for(DoorwayProps &doorway : world.map().doorways())
-      doorway.seconds_since_change =
-        std::max(doorway.seconds_since_change, 11.0F);
+      doorway.seconds_since_change
+        = std::max(doorway.seconds_since_change, 11.0F);
 
     for(const auto &moved : world.mazeShifter().movedDoorwayIndices())
       if(moved) total_moved_doorways_ += 1;

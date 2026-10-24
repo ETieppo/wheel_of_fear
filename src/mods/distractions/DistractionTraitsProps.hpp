@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/audio/enums/SoundEnum.hpp"
 #include "core/math/ColorProps.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   struct DistractionTraitsProps {

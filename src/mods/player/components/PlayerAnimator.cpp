@@ -1,12 +1,9 @@
 #include "mods/player/components/PlayerAnimator.hpp"
-
 #include <algorithm>
 
 namespace wheel_of_fear {
   namespace {
-    std::size_t frameAt(
-      float value
-    ) {
+    std::size_t frameAt(float value) {
       return static_cast<std::size_t>(std::max(value, 0.0F));
     }
   } // namespace
@@ -17,7 +14,6 @@ namespace wheel_of_fear {
     std::size_t         frame
   ) {
     const std::size_t index = frame % bodies.size();
-
     return PlayerPoseDto {
       .body = bodies[index],
       .glow = glows[index % glows.size()],
@@ -38,19 +34,21 @@ namespace wheel_of_fear {
           sprites.player_hug_glow,
           frameAt(real_seconds * 12)
         );
+
       case PlayerActivityEnum::repairing:
         return pick(
           sprites.player_repair,
           sprites.player_repair_glow,
           frameAt(real_seconds * 9)
         );
+
       default: break;
     }
 
     if(is_moving) {
-      const float frame = stride_distance /
-                          stride_length *
-                          static_cast<float>(sprites.player_walk.size());
+      const float frame = stride_distance
+        / stride_length
+        * static_cast<float>(sprites.player_walk.size());
 
       return pick(
         sprites.player_walk,

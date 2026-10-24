@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/math/ColorProps.hpp"
 #include "core/math/RandomGenerator.hpp"
 #include "core/math/Vec2Props.hpp"
@@ -13,13 +10,13 @@
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/world/dtos/SceneryPlacementDto.hpp"
 #include "mods/world/dtos/SceneryViewDto.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   class Scenery {
     public:
-      explicit Scenery(
-        const SceneryPlacementDto &placement
-      );
+      explicit Scenery(const SceneryPlacementDto &placement);
       virtual ~Scenery() = default;
 
       [[nodiscard]]
@@ -37,16 +34,14 @@ namespace wheel_of_fear {
         return is_broken_;
       }
 
-      void update(
-        float delta_seconds
-      );
-      void bump(
-        RandomGenerator &random
-      );
+      void update(float delta_seconds);
+
+      void bump(RandomGenerator &random);
 
       [[nodiscard]]
       virtual std::optional<DistractionKindEnum> bumpDistraction() const = 0;
-      virtual void                               draw(
+
+      virtual void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites,
         const SceneryViewDto   &view
@@ -60,20 +55,16 @@ namespace wheel_of_fear {
 
     protected:
       [[nodiscard]]
-      virtual const AtlasRegionProps &sprite(
-        const SpriteSheetProps &sprites
-      ) const = 0;
+      virtual const AtlasRegionProps &
+      sprite(const SpriteSheetProps &sprites) const = 0;
 
       [[nodiscard]]
-      virtual const AtlasRegionProps* glowSprite(
-        [[maybe_unused]] const SpriteSheetProps &sprites
-      ) const {
+      virtual const AtlasRegionProps*
+      glowSprite([[maybe_unused]] const SpriteSheetProps &sprites) const {
         return nullptr;
       }
 
-      virtual void reactToBump(
-        [[maybe_unused]] RandomGenerator &random
-      ) {
+      virtual void reactToBump([[maybe_unused]] RandomGenerator &random) {
       }
 
       [[nodiscard]]
@@ -95,9 +86,7 @@ namespace wheel_of_fear {
         is_broken_ = true;
       }
 
-      void tilt(
-        float amount
-      ) {
+      void tilt(float amount) {
         tilt_ = amount;
       }
 

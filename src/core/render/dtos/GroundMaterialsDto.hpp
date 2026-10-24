@@ -1,9 +1,8 @@
 #pragma once
 
+#include "core/render/DecodedImageProps.hpp"
 #include <array>
 #include <cstddef>
-
-#include "core/render/DecodedImageProps.hpp"
 
 namespace wheel_of_fear {
   inline constexpr std::size_t ground_texture_count = 6;

@@ -1,30 +1,21 @@
 #include "mods/world/TileFluidLayer.hpp"
-
+#include "mods/world/TileMapModel.hpp"
 #include <algorithm>
 
-#include "mods/world/TileMapModel.hpp"
-
 namespace wheel_of_fear {
-  void TileFluidLayer::reset(
-    std::size_t cell_count
-  ) {
+  void TileFluidLayer::reset(std::size_t cell_count) {
     acid_seconds_.assign(cell_count, 0);
     neon_seconds_.assign(cell_count, 0);
   }
 
-  void TileFluidLayer::clearCell(
-    std::size_t cell
-  ) {
+  void TileFluidLayer::clearCell(std::size_t cell) {
     acid_seconds_[cell] = 0;
     neon_seconds_[cell] = 0;
   }
 
-  float TileFluidLayer::acidAt(
-    Vec2Props point
-  ) const {
+  float TileFluidLayer::acidAt(Vec2Props point) const {
     const TileCoordinateProps tile = TileMapModel::tileAt(point);
     if(!map_.contains(tile.x, tile.y)) return 0;
-
     return acid_seconds_[map_.cellIndex(tile.x, tile.y)];
   }
 
@@ -36,13 +27,10 @@ namespace wheel_of_fear {
     if(!map_.contains(tile.x, tile.y) || map_.isWall(tile.x, tile.y)) return;
 
     float &cell = acid_seconds_[map_.cellIndex(tile.x, tile.y)];
-
-    cell = std::max(cell, seconds);
+    cell        = std::max(cell, seconds);
   }
 
-  float TileFluidLayer::neonAt(
-    Vec2Props point
-  ) const {
+  float TileFluidLayer::neonAt(Vec2Props point) const {
     const TileCoordinateProps tile = TileMapModel::tileAt(point);
     return neonAtTile(tile.x, tile.y);
   }
@@ -61,15 +49,11 @@ namespace wheel_of_fear {
     float seconds
   ) {
     if(!map_.contains(x, y) || map_.isWall(x, y)) return;
-
     float &cell = neon_seconds_[map_.cellIndex(x, y)];
-
-    cell = std::max(cell, seconds);
+    cell        = std::max(cell, seconds);
   }
 
-  void TileFluidLayer::evaporate(
-    float seconds
-  ) {
+  void TileFluidLayer::evaporate(float seconds) {
     for(float &acid : acid_seconds_)
       if(acid > 0) acid = std::max(0.0F, acid - seconds);
 

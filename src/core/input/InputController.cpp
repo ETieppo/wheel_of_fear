@@ -1,15 +1,11 @@
 #include "core/input/InputController.hpp"
-
+#include "core/render/RenderConfig.hpp"
 #include <algorithm>
 #include <cstddef>
 
-#include "core/render/RenderConfig.hpp"
-
 namespace wheel_of_fear {
   namespace {
-    std::size_t slotOf(
-      InputActionEnum action
-    ) {
+    std::size_t slotOf(InputActionEnum action) {
       return static_cast<std::size_t>(action);
     }
   } // namespace
@@ -18,9 +14,8 @@ namespace wheel_of_fear {
     pressed_.fill(false);
   }
 
-  std::optional<InputActionEnum> InputController::actionForKey(
-    SDL_Keycode key
-  ) {
+  std::optional<InputActionEnum>
+  InputController::actionForKey(SDL_Keycode key) {
     switch(key) {
       case SDLK_W:
       case SDLK_UP:     return InputActionEnum::move_up;
@@ -46,9 +41,7 @@ namespace wheel_of_fear {
     }
   }
 
-  void InputController::handleEvent(
-    const SDL_Event &event
-  ) {
+  void InputController::handleEvent(const SDL_Event &event) {
     switch(event.type) {
       case SDL_EVENT_QUIT:
       case SDL_EVENT_WINDOW_CLOSE_REQUESTED: is_quit_requested_ = true; break;
@@ -84,22 +77,16 @@ namespace wheel_of_fear {
     }
   }
 
-  void InputController::press(
-    InputActionEnum action
-  ) {
+  void InputController::press(InputActionEnum action) {
     held_[slotOf(action)]    = true;
     pressed_[slotOf(action)] = true;
   }
 
-  void InputController::release(
-    InputActionEnum action
-  ) {
+  void InputController::release(InputActionEnum action) {
     held_[slotOf(action)] = false;
   }
 
-  void InputController::simulatePress(
-    InputActionEnum action
-  ) {
+  void InputController::simulatePress(InputActionEnum action) {
     pressed_[slotOf(action)] = true;
   }
 
@@ -110,15 +97,11 @@ namespace wheel_of_fear {
     held_[slotOf(action)] = is_held;
   }
 
-  bool InputController::isHeld(
-    InputActionEnum action
-  ) const {
+  bool InputController::isHeld(InputActionEnum action) const {
     return held_[slotOf(action)];
   }
 
-  bool InputController::wasPressed(
-    InputActionEnum action
-  ) const {
+  bool InputController::wasPressed(InputActionEnum action) const {
     return pressed_[slotOf(action)];
   }
 
@@ -128,7 +111,6 @@ namespace wheel_of_fear {
     if(isHeld(InputActionEnum::move_right)) direction.x += 1;
     if(isHeld(InputActionEnum::move_up)) direction.y -= 1;
     if(isHeld(InputActionEnum::move_down)) direction.y += 1;
-
     return direction.normalized();
   }
 
@@ -136,9 +118,8 @@ namespace wheel_of_fear {
     float width,
     float height
   ) const {
-    const float scale =
-      std::min(window_size_.x / width, window_size_.y / height);
-
+    const float scale
+      = std::min(window_size_.x / width, window_size_.y / height);
     const Vec2Props offset = Vec2Props::of(
       (window_size_.x - (width * scale)) / 2,
       (window_size_.y - (height * scale)) / 2

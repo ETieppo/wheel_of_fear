@@ -1,28 +1,25 @@
 #pragma once
 
-#include <array>
-#include <string_view>
-
 #include "core/render/FontProps.hpp"
 #include "core/render/TextureAtlas.hpp"
 #include "core/render/enums/TypefaceEnum.hpp"
+#include <array>
+#include <string_view>
 
 namespace wheel_of_fear {
   class TypefaceSet {
     public:
-      void bakeInto(
-        TextureAtlas &atlas
-      );
+      void bakeInto(TextureAtlas &atlas);
 
       [[nodiscard]]
       const GlyphProps &glyphFor(
         TypefaceEnum typeface,
         char32_t     codepoint
       ) const;
+
       [[nodiscard]]
-      float pixelSize(
-        TypefaceEnum typeface
-      ) const;
+      float pixelSize(TypefaceEnum typeface) const;
+
       [[nodiscard]]
       float measure(
         TypefaceEnum     typeface,
@@ -32,9 +29,7 @@ namespace wheel_of_fear {
 
     private:
       [[nodiscard]]
-      const FontProps &font(
-        TypefaceEnum typeface
-      ) const;
+      const FontProps &font(TypefaceEnum typeface) const;
 
       std::array<FontProps, typeface_count> fonts_ {};
   };

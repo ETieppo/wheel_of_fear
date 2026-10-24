@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string_view>
-
 #include "core/items/enums/ItemEnum.hpp"
 #include "core/math/ColorProps.hpp"
+#include <string_view>
 
 namespace wheel_of_fear {
   class Item {

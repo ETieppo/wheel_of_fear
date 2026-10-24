@@ -1,5 +1,4 @@
 #include "mods/director/Director.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
@@ -25,19 +24,15 @@ namespace wheel_of_fear {
       title_ambient {.r = 0.05F, .g = 0.055F, .b = 0.09F, .a = 1};
   } // namespace
 
-  void Director::initialize(
-    GameContextDto &context
-  ) {
+  void Director::initialize(GameContextDto &context) {
     WorldSystem &world = context.world;
-
     world.generatePhase(1, title_seed);
 
     for(
       std::size_t room_index = 0; room_index < world.map().rooms().size();
       ++room_index
-    ) {
+    )
       if(room_index % 3 == 0) world.powerRoom(room_index, true);
-    }
 
     context.camera.setFocus(world.map().rooms().front().center());
   }
@@ -55,14 +50,11 @@ namespace wheel_of_fear {
     const DirectorSnapshotProps &snapshot
   ) {
     if(!snapshot.is_in_phase) return;
-
     seed_counter_ = snapshot.phase_seed - phase_seed_step;
     startPhase(context, snapshot.phase);
   }
 
-  void Director::enterState(
-    GameStateEnum state
-  ) {
+  void Director::enterState(GameStateEnum state) {
     state_         = state;
     state_seconds_ = 0;
   }
@@ -72,8 +64,7 @@ namespace wheel_of_fear {
     std::uint32_t   phase
   ) {
     WorldSystem &world = context.world;
-
-    phase_ = phase;
+    phase_             = phase;
     seed_counter_ += phase_seed_step;
     world.generatePhase(phase, seed_counter_);
     context.generators.generatePhase(world);
@@ -93,11 +84,8 @@ namespace wheel_of_fear {
     context.sound_player.play(SoundEnum::phase_start, 0.9F, 0, 1);
   }
 
-  void Director::update(
-    GameContextDto &context
-  ) {
+  void Director::update(GameContextDto &context) {
     state_seconds_ += context.clock.realDeltaSeconds();
-
     if(context.input.wasPressed(InputActionEnum::toggle_mute))
       context.sound_player.toggleMute();
 
@@ -133,40 +121,31 @@ namespace wheel_of_fear {
     return title_state_;
   }
 
-  void Director::updateFade(
-    float real_delta_seconds
-  ) {
+  void Director::updateFade(float real_delta_seconds) {
     float target_fade = 0;
 
     if(state_ == GameStateEnum::phase_cleared)
       target_fade = ScalarMath::clamp(state_seconds_ / cleared_seconds, 0, 1);
-
     if(state_ == GameStateEnum::phase_intro)
       target_fade = ScalarMath::clamp(1 - (state_seconds_ / 1.2F), 0, 1);
 
-    fade_amount_ =
-      ScalarMath::approach(fade_amount_, target_fade, real_delta_seconds * 3);
+    fade_amount_
+      = ScalarMath::approach(fade_amount_, target_fade, real_delta_seconds * 3);
   }
 
-  void Director::configurePostProcess(
-    GameContextDto &context
-  ) const {
+  void Director::configurePostProcess(GameContextDto &context) const {
     const PlayerEntity        &player     = context.player;
     const FlashlightComponent &flashlight = player.flashlight();
-
-    const float ultraviolet_tint =
-      flashlight.isUltraviolet() && flashlight.isOn() && !player.isRepairing()
-        ? 1.0F
-        : 0.0F;
-
-    const float desaturation =
-      state_ == GameStateEnum::game_over || player.isDead()
-        ? ScalarMath::clamp(death_seconds_, 0, 0.85F)
-        : 0.0F;
-
-    const float danger =
-      context.clock.isRunning() ? context.mobs.danger().level() : 0.0F;
-
+    const float                ultraviolet_tint
+      = flashlight.isUltraviolet() && flashlight.isOn() && !player.isRepairing()
+      ? 1.0F
+      : 0.0F;
+    const float desaturation
+      = state_ == GameStateEnum::game_over || player.isDead()
+      ? ScalarMath::clamp(death_seconds_, 0, 0.85F)
+      : 0.0F;
+    const float danger
+      = context.clock.isRunning() ? context.mobs.danger().level() : 0.0F;
     const bool is_in_play = state_ != GameStateEnum::title;
 
     context.renderer.setPostProcess(
@@ -186,9 +165,7 @@ namespace wheel_of_fear {
     );
   }
 
-  void Director::draw(
-    GameContextDto &context
-  ) const {
+  void Director::draw(GameContextDto &context) const {
     configurePostProcess(context);
     currentState().draw(*this, context);
   }

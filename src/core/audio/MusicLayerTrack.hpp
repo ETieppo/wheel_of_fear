@@ -1,9 +1,8 @@
 #pragma once
 
+#include "core/audio/AudioMixer.hpp"
 #include <memory>
 #include <vector>
-
-#include "core/audio/AudioMixer.hpp"
 
 namespace wheel_of_fear {
   class MusicLayerTrack {
@@ -14,9 +13,7 @@ namespace wheel_of_fear {
           : samples_(std::move(stereo_samples)) {
       }
 
-      void setTargetVolume(
-        float target_volume
-      ) {
+      void setTargetVolume(float target_volume) {
         target_volume_ = target_volume;
       }
 

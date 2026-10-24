@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
-
 #include "core/entity/Entity.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
@@ -15,6 +12,8 @@
 #include "mods/player/components/ThrowingArmComponent.hpp"
 #include "mods/player/components/VitalityComponent.hpp"
 #include "mods/player/enums/PlayerActivityEnum.hpp"
+#include <cstddef>
+#include <optional>
 
 namespace wheel_of_fear {
   class PlayerEntity final: public Entity {
@@ -23,25 +22,20 @@ namespace wheel_of_fear {
 
       PlayerEntity();
 
-      void respawn(
-        Vec2Props position
-      );
-      void update(
-        GameContextDto &context
-      );
-      void draw(
-        GameContextDto &context
-      ) const;
-      void beginRepair(
-        Vec2Props target
-      );
+      void respawn(Vec2Props position);
+
+      void update(GameContextDto &context);
+
+      void draw(GameContextDto &context) const;
+
+      void beginRepair(Vec2Props target);
+
       void takeHit(
         GameContextDto &context,
         Vec2Props       source
       );
-      void dragOutOfLocker(
-        GameContextDto &context
-      );
+
+      void dragOutOfLocker(GameContextDto &context);
 
       FlashlightComponent &flashlight() {
         return flashlight_;
@@ -117,26 +111,25 @@ namespace wheel_of_fear {
       static constexpr float aura_radius   = 54;
       static constexpr float aim_turn_rate = 30;
 
-      [[nodiscard]]
-      FlashlightGripDto grip() const;
-      void              emitLights(
-        GameContextDto &context
-      ) const;
       void turnTowardAim();
       void faceRepairTarget();
+
+      [[nodiscard]]
+      FlashlightGripDto grip() const;
+
+      void emitLights(GameContextDto &context) const;
+
       void explore(
         GameContextDto    &context,
         PlayerActivityEnum previous_activity
       );
-      void handleExplorationActions(
-        GameContextDto &context
-      );
-      void updateFlashlight(
-        GameContextDto &context
-      );
 
-      PlayerActivityEnum       activity_ = PlayerActivityEnum::exploring;
+      void handleExplorationActions(GameContextDto &context);
+
+      void updateFlashlight(GameContextDto &context);
+
       std::optional<Vec2Props> repair_target_;
+      PlayerActivityEnum       activity_       = PlayerActivityEnum::exploring;
       bool                     is_interacting_ = false;
       PlayerAimComponent       aim_;
       FlashlightComponent      flashlight_;

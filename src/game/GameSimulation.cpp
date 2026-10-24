@@ -25,9 +25,7 @@ namespace wheel_of_fear {
     Director::initialize(context_);
   }
 
-  void GameSimulation::step(
-    float delta_seconds
-  ) {
+  void GameSimulation::step(float delta_seconds) {
     clock_.advance(delta_seconds);
     tick();
     draw();
@@ -37,9 +35,7 @@ namespace wheel_of_fear {
     return GameSnapshotProps {director_.snapshot()};
   }
 
-  void GameSimulation::resume(
-    const GameSnapshotProps &snapshot
-  ) {
+  void GameSimulation::resume(const GameSnapshotProps &snapshot) {
     director_.resume(context_, snapshot.director);
   }
 

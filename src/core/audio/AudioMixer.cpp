@@ -1,8 +1,6 @@
 #include "core/audio/AudioMixer.hpp"
-
-#include <algorithm>
-
 #include <SDL3/SDL_log.h>
+#include <algorithm>
 
 namespace wheel_of_fear {
   AudioMixer::AudioMixer() {
@@ -39,9 +37,8 @@ namespace wheel_of_fear {
   ) {
     auto* mixer = static_cast<AudioMixer*>(userdata);
     if(additional_amount <= 0) return;
-
-    const auto sample_count =
-      static_cast<std::size_t>(additional_amount) / sizeof(float);
+    const auto sample_count
+      = static_cast<std::size_t>(additional_amount) / sizeof(float);
 
     mixer->mix(sample_count);
 
@@ -52,11 +49,8 @@ namespace wheel_of_fear {
     );
   }
 
-  void AudioMixer::mix(
-    std::size_t sample_count
-  ) {
+  void AudioMixer::mix(std::size_t sample_count) {
     const std::scoped_lock lock(mutex_);
-
     mix_buffer_.assign(sample_count, 0.0F);
 
     for(AudioVoiceProps &voice : voices_) {
@@ -89,7 +83,6 @@ namespace wheel_of_fear {
     bool                                      is_looping
   ) {
     if(stream_ == nullptr) return no_voice;
-
     const std::scoped_lock lock(mutex_);
     const VoiceId          id = next_id_++;
 
@@ -107,24 +100,24 @@ namespace wheel_of_fear {
     return id;
   }
 
-  AudioVoiceProps* AudioMixer::find(
-    VoiceId voice
-  ) {
-    const auto found =
-      std::ranges::find_if(voices_, [voice](const AudioVoiceProps &candidate) {
+  AudioVoiceProps* AudioMixer::find(VoiceId voice) {
+    const auto found = std::ranges::find_if(
+      voices_,
+      [voice](const AudioVoiceProps &candidate) {
         return candidate.id == voice;
-      });
+      }
+    );
 
     return found == voices_.end() ? nullptr : &*found;
   }
 
-  const AudioVoiceProps* AudioMixer::find(
-    VoiceId voice
-  ) const {
-    const auto found =
-      std::ranges::find_if(voices_, [voice](const AudioVoiceProps &candidate) {
+  const AudioVoiceProps* AudioMixer::find(VoiceId voice) const {
+    const auto found = std::ranges::find_if(
+      voices_,
+      [voice](const AudioVoiceProps &candidate) {
         return candidate.id == voice;
-      });
+      }
+    );
 
     return found == voices_.end() ? nullptr : &*found;
   }
@@ -137,23 +130,16 @@ namespace wheel_of_fear {
     if(AudioVoiceProps* found = find(voice)) found->volume = volume;
   }
 
-  void AudioMixer::stop(
-    VoiceId voice
-  ) {
+  void AudioMixer::stop(VoiceId voice) {
     if(voice == no_voice) return;
-
     const std::scoped_lock lock(mutex_);
     if(AudioVoiceProps* found = find(voice)) found->is_playing = false;
   }
 
-  bool AudioMixer::isPlaying(
-    VoiceId voice
-  ) const {
+  bool AudioMixer::isPlaying(VoiceId voice) const {
     if(voice == no_voice) return false;
-
     const std::scoped_lock lock(mutex_);
     const AudioVoiceProps* found = find(voice);
-
     return found != nullptr && found->is_playing;
   }
 
@@ -162,11 +148,8 @@ namespace wheel_of_fear {
     return voices_.size();
   }
 
-  void AudioMixer::setMasterVolume(
-    float volume
-  ) {
+  void AudioMixer::setMasterVolume(float volume) {
     const std::scoped_lock lock(mutex_);
-
     master_volume_ = volume;
   }
 

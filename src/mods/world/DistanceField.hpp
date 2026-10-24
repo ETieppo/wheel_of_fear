@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
-
 #include "core/math/Vec2Props.hpp"
 #include "mods/world/TileCoordinateProps.hpp"
 #include "mods/world/TileMapModel.hpp"
+#include <cstdint>
+#include <vector>
 
 namespace wheel_of_fear {
   class DistanceField {
@@ -17,15 +16,18 @@ namespace wheel_of_fear {
         const TileMapModel &map,
         TileCoordinateProps target_tile
       ) const;
+
       void compute(
         const TileMapModel &map,
         Vec2Props           target
       );
+
       [[nodiscard]]
       std::uint16_t distanceAt(
         const TileMapModel &map,
         Vec2Props           point
       ) const;
+
       [[nodiscard]]
       Vec2Props directionAt(
         const TileMapModel &map,
@@ -41,9 +43,7 @@ namespace wheel_of_fear {
         return last_used_seconds_;
       }
 
-      void markUsed(
-        float seconds
-      ) {
+      void markUsed(float seconds) {
         last_used_seconds_ = seconds;
       }
 

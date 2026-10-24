@@ -7,9 +7,7 @@ namespace wheel_of_fear {
       int x = 0;
       int y = 0;
 
-      bool operator ==(
-        const TileCoordinateProps &
-      ) const = default;
+      bool operator ==(const TileCoordinateProps &) const = default;
   };
 
   inline constexpr std::array<TileCoordinateProps, 4> four_neighbor_steps {

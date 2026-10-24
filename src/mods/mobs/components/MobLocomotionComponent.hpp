@@ -12,19 +12,19 @@ namespace wheel_of_fear {
 
       static constexpr float turn_rate = 8;
 
-      explicit MobLocomotionComponent(
-        MobEntity &owner
-      )
+      explicit MobLocomotionComponent(MobEntity &owner)
           : owner_(owner) {
       }
 
       [[nodiscard]]
       float currentSpeed() const;
-      bool  navigateTo(
+
+      bool navigateTo(
         GameContextDto &context,
         Vec2Props       destination,
         float           speed
       );
+
       bool moveAlong(
         GameContextDto &context,
         Vec2Props       direction,

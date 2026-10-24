@@ -1,5 +1,4 @@
 #include "mods/director/screens/CenteredCardWidget.hpp"
-
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
@@ -14,6 +13,8 @@ namespace wheel_of_fear {
   ) {
     constexpr float center_x = RenderConfig::ui_width / 2;
 
+    UiPainter::drawPanel(renderer, center_x - 280, 190, 560, 130, color, 1);
+
     renderer.drawUiRectangle(
       0,
       0,
@@ -21,8 +22,6 @@ namespace wheel_of_fear {
       RenderConfig::ui_height,
       ColorProps::black().withAlpha(0.35F)
     );
-
-    UiPainter::drawPanel(renderer, center_x - 280, 190, 560, 130, color, 1);
 
     UiPainter::drawGlitchTitle(
       renderer,

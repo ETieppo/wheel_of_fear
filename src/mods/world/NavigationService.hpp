@@ -1,22 +1,24 @@
 #pragma once
 
-#include <array>
-
 #include "mods/world/DistanceField.hpp"
+#include <array>
 
 namespace wheel_of_fear {
   class NavigationService {
     public:
       void invalidate();
+
       void refreshTowardPlayer(
         const TileMapModel &map,
         Vec2Props           player_position
       );
+
       [[nodiscard]]
       Vec2Props directionToPlayer(
         const TileMapModel &map,
         Vec2Props           from
       ) const;
+
       Vec2Props directionToward(
         const TileMapModel &map,
         Vec2Props           from,

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <array>
-#include <cstdint>
-
 #include "core/render/dtos/GroundMaterialsDto.hpp"
 #include "core/render/gpu/GpuHandle.hpp"
 #include "core/render/gpu/GpuOwnedTextureProps.hpp"
+#include <array>
+#include <cstdint>
 
 namespace wheel_of_fear {
   struct PersistentGpuResourcesProps {
@@ -35,6 +34,6 @@ namespace wheel_of_fear {
       GpuBindGroup                                           glow_bind_group;
       GpuBindGroup                                           ui_bind_group;
       GpuBindGroup                                           light_bind_group;
-      std::uint64_t uploaded_map_version = 0;
+      std::uint64_t uploaded_map_revision = 0;
   };
 } // namespace wheel_of_fear

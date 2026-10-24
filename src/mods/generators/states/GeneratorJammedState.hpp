@@ -7,18 +7,19 @@ namespace wheel_of_fear {
   class GeneratorJammedState final: public GeneratorState {
     public:
       [[nodiscard]]
-      ColorProps statusColor(
-        const GeneratorEntity &generator
-      ) const override;
+      ColorProps statusColor(const GeneratorEntity &generator) const override;
+
       void enter(
         GeneratorEntity &generator,
         GameContextDto  &context
       );
+
       void update(
         GeneratorEntity          &generator,
         GameContextDto           &context,
         const GeneratorUpdateDto &update
       ) override;
+
       void drawOverlay(
         const GeneratorEntity &generator,
         GameContextDto        &context
@@ -29,6 +30,7 @@ namespace wheel_of_fear {
         GeneratorEntity &generator,
         GameContextDto  &context
       );
+
       void offerRequiredItem(
         GeneratorEntity &generator,
         GameContextDto  &context

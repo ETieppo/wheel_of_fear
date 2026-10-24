@@ -29,8 +29,10 @@ struct VertexOutputProps {
         vec2<f32>(3.0, -1.0),
         vec2<f32>(-1.0, 3.0)
     );
+
     var output: VertexOutputProps;
     output.position = vec4<f32>(points[vertex_index], 0.0, 1.0);
+
     return output;
 }
 
@@ -46,10 +48,12 @@ fn hash2(point: vec2<f32>) -> f32 {
 fn bloomAt(coordinate: vec2<f32>) -> vec3<f32> {
     let texel = 1.0 / (post.target_info.xy / 4.0);
     var sum = textureSample(bloom, lit_sampler, coordinate).rgb * 0.4;
+
     sum = sum + textureSample(bloom, lit_sampler, coordinate + vec2<f32>(texel.x * 3.0, 0.0)).rgb * 0.15;
     sum = sum + textureSample(bloom, lit_sampler, coordinate - vec2<f32>(texel.x * 3.0, 0.0)).rgb * 0.15;
     sum = sum + textureSample(bloom, lit_sampler, coordinate + vec2<f32>(0.0, texel.y * 3.0)).rgb * 0.15;
     sum = sum + textureSample(bloom, lit_sampler, coordinate - vec2<f32>(0.0, texel.y * 3.0)).rgb * 0.15;
+
     return sum;
 }
 
@@ -60,6 +64,7 @@ fn toneMap(color: vec3<f32>) -> vec3<f32> {
     let d = 0.59;
     let e = 0.14;
     let mapped = clamp((color * (a * color + b)) / (color * (c * color + d) + e), vec3<f32>(0.0), vec3<f32>(1.0));
+
     return pow(mapped, vec3<f32>(0.82));
 }
 
@@ -86,8 +91,10 @@ fn toneMap(color: vec3<f32>) -> vec3<f32> {
 
     rgb = toneMap(rgb * 1.15);
     let vignette = 1.0 - dot(centered, centered) * (0.95 + 0.7 * danger);
+
     rgb = rgb * clamp(vignette, 0.0, 1.0);
     let grain = hash2(input.position.xy + vec2<f32>(fract(post.time * 7.31) * 517.0, fract(post.time * 3.17) * 911.0)) - 0.5;
+
     rgb = rgb + grain * (0.018 + 0.03 * danger);
     rgb = rgb * (1.0 - post.effects.z * 0.85);
     rgb = rgb * (1.0 - post.effects.w);
@@ -95,5 +102,6 @@ fn toneMap(color: vec3<f32>) -> vec3<f32> {
     if (coordinate.x < 0.0 || coordinate.y < 0.0 || coordinate.x > 1.0 || coordinate.y > 1.0) {
         rgb = vec3<f32>(0.0, 0.0, 0.0);
     }
+
     return vec4<f32>(rgb, 1.0);
 }

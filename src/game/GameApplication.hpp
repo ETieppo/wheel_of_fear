@@ -10,22 +10,14 @@
 namespace wheel_of_fear {
   class GameApplication {
     public:
-      explicit GameApplication(
-        Window &window
-      );
-      GameApplication(
-        const GameApplication &
-      ) = delete;
-      GameApplication &operator =(
-        const GameApplication &
-      ) = delete;
+      explicit GameApplication(Window &window);
+      GameApplication(const GameApplication &)             = delete;
+      GameApplication &operator =(const GameApplication &) = delete;
+      bool             runFrame();
+      void             resume(const GameSnapshotProps &snapshot);
 
-      bool runFrame();
       [[nodiscard]]
       GameSnapshotProps snapshot() const;
-      void              resume(
-        const GameSnapshotProps &snapshot
-      );
 
     private:
       static constexpr float maximum_frame_seconds = 1.0F / 20.0F;

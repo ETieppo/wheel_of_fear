@@ -1,25 +1,20 @@
 #include "mods/generators/GeneratorSystem.hpp"
-
-#include <algorithm>
-#include <string_view>
-
 #include "core/render/RenderConfig.hpp"
 #include "core/render/Renderer.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <string_view>
 
 namespace wheel_of_fear {
   namespace {
     constexpr std::string_view generator_labels = "ABCDEFGHIJ";
   }
 
-  void GeneratorSystem::generatePhase(
-    WorldSystem &world
-  ) {
+  void GeneratorSystem::generatePhase(WorldSystem &world) {
     generators_.clear();
     fabricators_.clear();
     exit_door_.reset(world.exitPosition());
-
     std::vector<bool> occupied_rooms(world.map().rooms().size(), false);
 
     occupied_rooms[world.startRoomIndex()] = true;
@@ -34,11 +29,10 @@ namespace wheel_of_fear {
   ) {
     RandomGenerator &random = world.random();
 
-    const std::size_t generator_count =
-      std::min<std::size_t>(2 + world.phase(), 6);
-
-    const float incident_chance =
-      std::min(0.35F + (0.1F * static_cast<float>(world.phase())), 0.85F);
+    const std::size_t generator_count
+      = std::min<std::size_t>(2 + world.phase(), 6);
+    const float incident_chance
+      = std::min(0.35F + (0.1F * static_cast<float>(world.phase())), 0.85F);
 
     for(
       std::size_t generator_index = 0; generator_index < generator_count;
@@ -46,7 +40,6 @@ namespace wheel_of_fear {
     ) {
       const auto room_index = pickDistantRoom(world, occupied_rooms);
       if(!room_index) break;
-
       occupied_rooms[*room_index] = true;
 
       const RoomProps &room     = world.map().rooms()[*room_index];
@@ -100,11 +93,10 @@ namespace wheel_of_fear {
       const RoomProps &room = rooms[room_index];
       const int column = room.left + 3 + random.intInclusive(0, room.width - 7);
       if(!world.map().reserveProp(column, room.top, 1, 1)) continue;
-
       occupied_rooms[room_index] = true;
 
-      const auto produced =
-        static_cast<ItemEnum>(fabricators_.size() % item_count);
+      const auto produced
+        = static_cast<ItemEnum>(fabricators_.size() % item_count);
 
       fabricators_.emplace_back(
         TileMapModel::tileCenter(column, room.top).add(Vec2Props::of(0, 2)),
@@ -138,7 +130,6 @@ namespace wheel_of_fear {
         );
 
       const float score = nearest + (world.random().unit() * 1.5F);
-
       if(score > best_score) {
         best_score = score;
         best_room  = room_index;
@@ -149,32 +140,28 @@ namespace wheel_of_fear {
   }
 
   bool GeneratorSystem::areAllOnline() const {
-    return !generators_.empty() && std::ranges::all_of(
-                                     generators_,
-                                     [](const GeneratorEntity &generator) {
-                                       return generator.isOnline();
-                                     }
-                                   );
+    return !generators_.empty()
+      && std::ranges::all_of(generators_, [](const GeneratorEntity &generator) {
+           return generator.isOnline();
+         });
   }
 
   const GeneratorEntity* GeneratorSystem::activeRepair() const {
     for(const GeneratorEntity &generator : generators_)
       if(
-        generator.isBeingRepaired() ||
-        generator.skillCheck().resultSeconds() > 0
+        generator.isBeingRepaired()
+        || generator.skillCheck().resultSeconds()
+        > 0
       )
         return &generator;
 
     return nullptr;
   }
 
-  void GeneratorSystem::update(
-    GameContextDto &context
-  ) {
+  void GeneratorSystem::update(GameContextDto &context) {
     if(!context.clock.isRunning()) return;
-
-    const float seconds_to_charge =
-      16.0F + (2.5F * static_cast<float>(std::min(context.world.phase(), 6U)));
+    const float seconds_to_charge = 16.0F
+      + (2.5F * static_cast<float>(std::min(context.world.phase(), 6U)));
 
     std::size_t online_count = 0;
 
@@ -182,16 +169,15 @@ namespace wheel_of_fear {
       generator.update(context, seconds_to_charge);
       if(generator.isOnline()) online_count += 1;
     }
+
     for(FabricatorEntity &fabricator : fabricators_) fabricator.update(context);
     if(areAllOnline()) exit_door_.unlock(context);
+
     exit_door_.update(context, online_count, generators_.size());
   }
 
-  void GeneratorSystem::draw(
-    GameContextDto &context
-  ) const {
+  void GeneratorSystem::draw(GameContextDto &context) const {
     if(context.world.map().width() == 0) return;
-
     Renderer &renderer = context.renderer;
 
     for(const FabricatorEntity &fabricator : fabricators_)

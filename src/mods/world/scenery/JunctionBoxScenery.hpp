@@ -14,15 +14,12 @@ namespace wheel_of_fear {
 
     protected:
       [[nodiscard]]
-      const AtlasRegionProps &sprite(
-        const SpriteSheetProps &sprites
-      ) const override {
+      const AtlasRegionProps &
+      sprite(const SpriteSheetProps &sprites) const override {
         return sprites.junction_box;
       }
 
-      void reactToBump(
-        RandomGenerator &random
-      ) override {
+      void reactToBump(RandomGenerator &random) override {
         if(random.chance(0.5F)) breakApart();
       }
   };

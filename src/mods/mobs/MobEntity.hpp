@@ -18,69 +18,51 @@ namespace wheel_of_fear {
         Vec2Props             position,
         const MobTraitsProps &traits
       );
-      MobEntity(
-        const MobEntity &
-      ) = delete;
-      MobEntity &operator =(
-        const MobEntity &
-      ) = delete;
+
+      MobEntity(const MobEntity &) = delete;
+
+      MobEntity &operator =(const MobEntity &) = delete;
 
       [[nodiscard]]
       virtual MobKindEnum kind() const = 0;
+
       [[nodiscard]]
       virtual const MobTraitsProps &traits() const = 0;
 
-      virtual void think(
-        GameContextDto &context
-      ) {
+      virtual void think(GameContextDto &context) {
         brain_.hunt(context);
       }
 
-      virtual void onContact(
-        GameContextDto &context
-      );
+      virtual void onContact(GameContextDto &context);
 
-      virtual void onLightReleased(
-        [[maybe_unused]] GameContextDto &context
-      ) {
+      virtual void onLightReleased([[maybe_unused]] GameContextDto &context) {
       }
 
-      virtual void emitLights(
-        [[maybe_unused]] GameContextDto &context
-      ) {
+      virtual void emitLights([[maybe_unused]] GameContextDto &context) {
       }
 
-      virtual void draw(
-        GameContextDto &context
-      ) const = 0;
+      virtual void draw(GameContextDto &context) const = 0;
 
       [[nodiscard]]
       virtual bool isDisguised() const {
         return false;
       }
 
-      virtual void ignite(
-        GameContextDto &context
-      );
-      virtual void catchBlast(
-        GameContextDto &context
-      );
+      virtual void ignite(GameContextDto &context);
 
-      virtual void onGeneratorOnline(
-        [[maybe_unused]] GameContextDto &context
-      ) {
+      virtual void catchBlast(GameContextDto &context);
+
+      virtual void onGeneratorOnline([[maybe_unused]] GameContextDto &context) {
       }
 
-      void update(
-        GameContextDto &context
-      );
+      void update(GameContextDto &context);
 
       [[nodiscard]]
       bool isBusy() const {
-        return !isAlive() ||
-               condition_.isBeingHugged() ||
-               condition_.isCrumbling() ||
-               condition_.isBurning();
+        return !isAlive()
+          || condition_.isBeingHugged()
+          || condition_.isCrumbling()
+          || condition_.isBurning();
       }
 
       [[nodiscard]]
@@ -93,16 +75,12 @@ namespace wheel_of_fear {
         return incident_cooldown_;
       }
 
-      void setIncidentCooldown(
-        float seconds
-      ) {
+      void setIncidentCooldown(float seconds) {
         incident_cooldown_ = seconds;
       }
 
       [[nodiscard]]
-      float distanceToPlayer(
-        const GameContextDto &context
-      ) const;
+      float distanceToPlayer(const GameContextDto &context) const;
 
       [[nodiscard]]
       MobBrainComponent &brain() {

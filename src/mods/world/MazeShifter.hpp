@@ -1,24 +1,25 @@
 #pragma once
 
+#include "core/math/RandomGenerator.hpp"
+#include "core/math/Vec2Props.hpp"
+#include "mods/world/TileMapModel.hpp"
 #include <array>
 #include <cstddef>
 #include <optional>
 #include <span>
 #include <vector>
 
-#include "core/math/RandomGenerator.hpp"
-#include "core/math/Vec2Props.hpp"
-#include "mods/world/TileMapModel.hpp"
-
 namespace wheel_of_fear {
   class MazeShifter {
     public:
-      void        reset();
+      void reset();
+
       static void animateDoorways(
         TileMapModel              &map,
         float                      delta_seconds,
         std::span<const Vec2Props> occupants
       );
+
       bool advance(
         TileMapModel              &map,
         RandomGenerator           &random,
@@ -34,9 +35,7 @@ namespace wheel_of_fear {
         return timer_seconds_;
       }
 
-      void setTimerSeconds(
-        float seconds
-      ) {
+      void setTimerSeconds(float seconds) {
         timer_seconds_ = seconds;
       }
 
@@ -63,6 +62,7 @@ namespace wheel_of_fear {
         std::span<const Vec2Props> occupants,
         bool                       wants_open
       );
+
       static bool isOccupied(
         const DoorwayProps        &doorway,
         std::span<const Vec2Props> occupants

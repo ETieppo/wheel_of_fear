@@ -1,11 +1,9 @@
 #include "mods/director/demos/FreezeDemoScenario.hpp"
-
-#include <format>
-
 #include "core/math/ScalarMath.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void FreezeDemoScenario::run(
@@ -13,7 +11,6 @@ namespace wheel_of_fear {
     const DemoTickDto &tick
   ) {
     const PlayerEntity &player = context.player;
-
     context.mobs.setGraceSeconds(0);
 
     if(step() == 0) {
@@ -42,8 +39,8 @@ namespace wheel_of_fear {
         0
       )
     );
-    if(!tick.should_log) return;
 
+    if(!tick.should_log) return;
     const auto &mobs = context.mobs.all();
 
     for(std::size_t index = 0; index < mobs.size(); ++index) {

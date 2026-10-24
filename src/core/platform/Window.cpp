@@ -1,11 +1,9 @@
 #include "core/platform/Window.hpp"
-
-#include <stdexcept>
-#include <string>
-
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_metal.h>
 #include <SDL3/SDL_mouse.h>
+#include <stdexcept>
+#include <string>
 
 namespace wheel_of_fear {
   Window::Window(
@@ -17,8 +15,8 @@ namespace wheel_of_fear {
       throw std::runtime_error(
         std::string("SDL_Init failed: ") + SDL_GetError()
       );
-    SDL_WindowFlags flags =
-      SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    SDL_WindowFlags flags
+      = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
 #ifdef __APPLE__
     flags |= SDL_WINDOW_METAL;
 #endif
@@ -52,27 +50,21 @@ namespace wheel_of_fear {
   std::uint32_t Window::pixelWidth() const {
     int width  = 0;
     int height = 0;
-
     SDL_GetWindowSizeInPixels(window_, &width, &height);
-
     return static_cast<std::uint32_t>(width);
   }
 
   std::uint32_t Window::pixelHeight() const {
     int width  = 0;
     int height = 0;
-
     SDL_GetWindowSizeInPixels(window_, &width, &height);
-
     return static_cast<std::uint32_t>(height);
   }
 
   Vec2Props Window::logicalSize() const {
     int width  = 0;
     int height = 0;
-
     SDL_GetWindowSize(window_, &width, &height);
-
     return Vec2Props::of(static_cast<float>(width), static_cast<float>(height));
   }
 } // namespace wheel_of_fear

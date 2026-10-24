@@ -1,13 +1,11 @@
 #include "mods/player/components/LockerHidingComponent.hpp"
-
-#include <algorithm>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
 
 namespace wheel_of_fear {
   void LockerHidingComponent::reset() {
@@ -66,7 +64,6 @@ namespace wheel_of_fear {
     Entity         &body
   ) {
     if(!hidden_locker_index_) return;
-
     LockerEntity &locker = context.world.lockers()[*hidden_locker_index_];
 
     locker.swingDoor();
@@ -87,7 +84,6 @@ namespace wheel_of_fear {
     Entity         &body
   ) {
     const float delta = context.clock.deltaSeconds();
-
     context.hud.showPrompt(InputActionEnum::interact, "leave the locker");
 
     if(context.input.wasPressed(InputActionEnum::interact)) {
@@ -95,8 +91,8 @@ namespace wheel_of_fear {
       return;
     }
 
-    is_holding_breath_ =
-      context.input.isHeld(InputActionEnum::hold_breath) && breath_ > 0;
+    is_holding_breath_
+      = context.input.isHeld(InputActionEnum::hold_breath) && breath_ > 0;
 
     if(is_holding_breath_) {
       breath_ = std::max(0.0F, breath_ - (delta / breath_hold_seconds));
@@ -104,7 +100,6 @@ namespace wheel_of_fear {
 
       context.noise
         .emit(body.position(), gasp_noise_radius, NoiseSourceEnum::breathing);
-
       context.sound_player.play(SoundEnum::breathing, 0.9F, 0, 1.25F);
       breathing_timer_ = breathing_interval_seconds;
 
@@ -116,7 +111,6 @@ namespace wheel_of_fear {
     if(breathing_timer_ > 0) return;
 
     breathing_timer_ = breathing_interval_seconds;
-
     context.noise.emit(
       body.position(),
       breathing_noise_radius,

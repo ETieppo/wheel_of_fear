@@ -45,12 +45,14 @@ struct VertexOutputProps {
     let rotated = vec2<f32>(scaled.x * cosine - scaled.y * sine, scaled.x * sine + scaled.y * cosine) + quad.position_size.xy;
     let normalized_device = (rotated - view.origin) / view.size * 2.0 - vec2<f32>(1.0, 1.0);
     var output: VertexOutputProps;
+
     output.position = vec4<f32>(normalized_device.x, -normalized_device.y, 0.0, 1.0);
     output.texture_coordinate = quad.texture_region.xy + (quad.texture_region.zw - quad.texture_region.xy) * (corner + vec2<f32>(0.5, 0.5));
     output.local = corner * 2.0;
     output.color = quad.color;
     output.parameters = quad.parameters;
     output.world = rotated;
+
     return output;
 }
 
@@ -66,6 +68,7 @@ fn valueNoise(point: vec2<f32>) -> f32 {
     let b = hash2(cell + vec2<f32>(1.0, 0.0));
     let c = hash2(cell + vec2<f32>(0.0, 1.0));
     let d = hash2(cell + vec2<f32>(1.0, 1.0));
+
     return mix(mix(a, b, smooth_local.x), mix(c, d, smooth_local.x), smooth_local.y);
 }
 
@@ -83,6 +86,7 @@ fn premultiplied(color: vec4<f32>) -> vec4<f32> {
     if (kind < 0.5) {
         var rgb = texel.rgb / max(texel.a, 0.001) * input.color.rgb;
         let petrify = input.parameters.z;
+
         if (petrify > 0.0) {
             let luminance = dot(rgb, vec3<f32>(0.299, 0.587, 0.114));
             let grain = valueNoise(input.world * 1.5) * 0.6 + valueNoise(input.world * 5.0) * 0.4;
@@ -92,6 +96,7 @@ fn premultiplied(color: vec4<f32>) -> vec4<f32> {
             let crack = 1.0 - smoothstep(0.0, 0.035 + 0.04 * clamp(petrify - 1.0, 0.0, 1.0), crack_field);
             rgb = rgb * (1.0 - 0.65 * crack * clamp(petrify - 0.6, 0.0, 1.0));
         }
+
         let alpha = texel.a * input.color.a;
         result = vec4<f32>(rgb * alpha, alpha);
     } else if (kind < 1.5) {
@@ -123,5 +128,6 @@ fn premultiplied(color: vec4<f32>) -> vec4<f32> {
         let dust = 0.7 + 0.3 * valueNoise(input.world * 0.8 + vec2<f32>(view.time * 3.0, view.time * 1.3));
         result = premultiplied(vec4<f32>(input.color.rgb, input.color.a * fade * edge * edge * dust));
     }
+
     return result;
 }

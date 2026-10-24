@@ -1,10 +1,9 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/mobs/MobEntity.hpp"
+#include <memory>
+#include <vector>
 
 namespace wheel_of_fear {
   class MobDangerMonitor {
@@ -24,17 +23,14 @@ namespace wheel_of_fear {
         level_ = 0;
       }
 
-      void update(
-        GameContextDto &context
-      );
+      void update(GameContextDto &context);
 
     private:
       static constexpr float danger_distance = 170;
 
       [[nodiscard]]
-      float nearestHunterDistance(
-        Vec2Props player_position
-      ) const;
+      float nearestHunterDistance(Vec2Props player_position) const;
+
       void playHeartbeat(
         GameContextDto &context,
         float           delta_seconds

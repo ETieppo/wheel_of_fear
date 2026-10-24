@@ -7,9 +7,9 @@ namespace wheel_of_fear {
 
   class MobConditionComponent {
     public:
-      explicit MobConditionComponent(
-        MobEntity &owner
-      )
+      void startBurning();
+
+      explicit MobConditionComponent(MobEntity &owner)
           : owner_(owner) {
       }
 
@@ -18,9 +18,7 @@ namespace wheel_of_fear {
         return is_frozen_;
       }
 
-      void setFrozen(
-        bool is_frozen
-      ) {
+      void setFrozen(bool is_frozen) {
         is_frozen_ = is_frozen;
       }
 
@@ -29,9 +27,7 @@ namespace wheel_of_fear {
         return is_being_hugged_;
       }
 
-      void setBeingHugged(
-        bool is_being_hugged
-      ) {
+      void setBeingHugged(bool is_being_hugged) {
         is_being_hugged_ = is_being_hugged;
       }
 
@@ -55,23 +51,16 @@ namespace wheel_of_fear {
         return petrify_amount_;
       }
 
-      void frenzy(
-        float seconds
-      );
-      void calmFrenzy(
-        float delta_seconds
-      );
+      void frenzy(float seconds);
+
+      void calmFrenzy(float delta_seconds);
+
       [[nodiscard]]
-      bool isHeldByLight(
-        const GameContextDto &context
-      ) const;
-      void startBurning();
-      void advanceBurning(
-        GameContextDto &context
-      );
-      void advanceHugAndCrumble(
-        GameContextDto &context
-      );
+      bool isHeldByLight(const GameContextDto &context) const;
+
+      void advanceBurning(GameContextDto &context);
+
+      void advanceHugAndCrumble(GameContextDto &context);
 
     private:
       static constexpr float freeze_threshold            = 0.035F;
@@ -85,9 +74,8 @@ namespace wheel_of_fear {
         GameContextDto &context,
         float           delta_seconds
       );
-      void recoverFromPetrify(
-        float delta_seconds
-      );
+
+      void recoverFromPetrify(float delta_seconds);
 
       MobEntity &owner_;
       float      frenzy_seconds_  = 0;

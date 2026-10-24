@@ -1,8 +1,6 @@
 #include "mods/throwables/projectiles/Projectile.hpp"
-
-#include <algorithm>
-
 #include "core/math/ScalarMath.hpp"
+#include <algorithm>
 
 namespace wheel_of_fear {
   Projectile::Projectile(
@@ -25,9 +23,7 @@ namespace wheel_of_fear {
         ) {
   }
 
-  void Projectile::advance(
-    float delta_seconds
-  ) {
+  void Projectile::advance(float delta_seconds) {
     flight_seconds_ = std::min(total_seconds_, flight_seconds_ + delta_seconds);
     setHeading(heading() + (delta_seconds * 16));
     setPosition(groundPosition());

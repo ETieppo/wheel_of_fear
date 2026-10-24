@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstddef>
-#include <string_view>
-
 #include "core/math/ColorProps.hpp"
 #include "core/render/Renderer.hpp"
 #include "core/render/SegmentedBarProps.hpp"
+#include <cstddef>
+#include <string_view>
 
 namespace wheel_of_fear {
   class UiPainter final {
@@ -21,6 +20,7 @@ namespace wheel_of_fear {
         ColorProps accent,
         float      alpha
       );
+
       static float drawKeycap(
         Renderer        &renderer,
         std::string_view label,
@@ -29,10 +29,12 @@ namespace wheel_of_fear {
         float            size,
         ColorProps       color
       );
+
       static void drawSegmentedBar(
         Renderer                &renderer,
         const SegmentedBarProps &bar
       );
+
       static void drawGlitchTitle(
         Renderer        &renderer,
         std::string_view text,
@@ -43,6 +45,7 @@ namespace wheel_of_fear {
         float            seconds,
         float            intensity
       );
+
       static void drawScanlines(
         Renderer &renderer,
         float     width,

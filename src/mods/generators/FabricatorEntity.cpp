@@ -1,9 +1,4 @@
 #include "mods/generators/FabricatorEntity.hpp"
-
-#include <algorithm>
-#include <cmath>
-#include <format>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/items/ItemCatalog.hpp"
 #include "core/theme/Palette.hpp"
@@ -14,6 +9,9 @@
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <cmath>
+#include <format>
 
 namespace wheel_of_fear {
   namespace {
@@ -42,27 +40,23 @@ namespace wheel_of_fear {
     return position().add(Vec2Props::of(0, front_offset));
   }
 
-  void FabricatorEntity::update(
-    GameContextDto &context
-  ) {
+  void FabricatorEntity::update(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
-
     advanceAnimation(delta);
     cooldown_seconds_ = std::max(0.0F, cooldown_seconds_ - delta);
 
     const PlayerEntity &player = context.player;
-
-    const bool is_player_near = frontPoint().distance(player.position()) <
-                                interaction_distance &&
-                                player.canBeTargeted();
+    const bool is_player_near  = frontPoint().distance(player.position())
+      < interaction_distance
+      && player.canBeTargeted();
 
     if(!is_player_near) {
       interrupt(context);
       return;
     }
 
-    const std::string_view item_name =
-      ItemCatalog::of(produced_item_).displayName();
+    const std::string_view item_name
+      = ItemCatalog::of(produced_item_).displayName();
 
     if(!isReady()) {
       context.hud.showPrompt(
@@ -87,9 +81,7 @@ namespace wheel_of_fear {
     work(context);
   }
 
-  void FabricatorEntity::work(
-    GameContextDto &context
-  ) {
+  void FabricatorEntity::work(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
 
     if(
@@ -117,8 +109,8 @@ namespace wheel_of_fear {
       );
     }
 
-    const std::string_view item_name =
-      ItemCatalog::of(produced_item_).displayName();
+    const std::string_view item_name
+      = ItemCatalog::of(produced_item_).displayName();
 
     context.hud.showPrompt(
       std::nullopt,
@@ -128,14 +120,12 @@ namespace wheel_of_fear {
         work_progress_ / fabrication_seconds * 100
       )
     );
+
     if(work_progress_ >= fabrication_seconds) deliver(context);
   }
 
-  void FabricatorEntity::deliver(
-    GameContextDto &context
-  ) {
+  void FabricatorEntity::deliver(GameContextDto &context) {
     interrupt(context);
-
     const Item &item = ItemCatalog::of(produced_item_);
 
     if(!context.player.inventory().receive(produced_item_)) {
@@ -150,24 +140,19 @@ namespace wheel_of_fear {
     cooldown_seconds_ = cooldown_after_fabrication;
     context.effects.emitSparks(context.world, position(), 10, item.color());
     context.sound_player.play(SoundEnum::part_pickup, 0.8F, 0, 1);
-
     context.hud.announce(
       item.color(),
       std::format("FABRICATED  {}", item.displayName())
     );
   }
 
-  void FabricatorEntity::interrupt(
-    GameContextDto &context
-  ) {
+  void FabricatorEntity::interrupt(GameContextDto &context) {
     work_progress_ = 0;
     context.sound_player.stop(work_voice_);
     work_voice_ = no_voice;
   }
 
-  void FabricatorEntity::draw(
-    GameContextDto &context
-  ) const {
+  void FabricatorEntity::draw(GameContextDto &context) const {
     Renderer               &renderer     = context.renderer;
     const SpriteSheetProps &sprites      = context.art.sprites();
     const float             real_seconds = context.clock.realSeconds();
@@ -182,11 +167,9 @@ namespace wheel_of_fear {
     );
 
     renderer.drawSprite(sprites.fabricator, center);
-
     const ColorProps screen_color = isReady() ? item_color : Palette::neon_red;
-
-    const float flicker =
-      0.75F + (0.25F * std::sin((real_seconds * 7) + center.x));
+    const float      flicker
+      = 0.75F + (0.25F * std::sin((real_seconds * 7) + center.x));
 
     renderer.drawGlowSprite(
       sprites.fabricator_glow,
@@ -195,7 +178,6 @@ namespace wheel_of_fear {
     );
 
     const float hover = std::sin((real_seconds * 2.5F) + center.x) * 1.5F;
-
     renderer.drawGlowSprite(
       sprites.itemIcon(produced_item_),
       center.add(Vec2Props::of(0, -18 + hover)),

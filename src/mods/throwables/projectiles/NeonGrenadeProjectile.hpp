@@ -25,15 +25,12 @@ namespace wheel_of_fear {
 
     protected:
       [[nodiscard]]
-      const AtlasRegionProps &sprite(
-        const SpriteSheetProps &sprites
-      ) const override {
+      const AtlasRegionProps &
+      sprite(const SpriteSheetProps &sprites) const override {
         return sprites.neon_grenade;
       }
 
-      void drawTrail(
-        Renderer &renderer
-      ) const override;
+      void drawTrail(Renderer &renderer) const override;
 
     private:
       static constexpr float       noise_radius   = 520;

@@ -1,5 +1,4 @@
 #include "core/assets/SoundCatalog.hpp"
-
 #include <array>
 
 namespace wheel_of_fear {
@@ -257,9 +256,7 @@ namespace wheel_of_fear {
     };
   } // namespace
 
-  std::span<const std::string_view> SoundCatalog::filesFor(
-    SoundEnum sound
-  ) {
+  std::span<const std::string_view> SoundCatalog::filesFor(SoundEnum sound) {
     switch(sound) {
       case SoundEnum::footstep:              return footstep_files;
       case SoundEnum::crawler_skitter:       return crawler_skitter_files;
@@ -314,9 +311,7 @@ namespace wheel_of_fear {
     return footstep_files;
   }
 
-  std::string_view SoundCatalog::musicFor(
-    MusicLayerEnum layer
-  ) {
+  std::string_view SoundCatalog::musicFor(MusicLayerEnum layer) {
     switch(layer) {
       case MusicLayerEnum::ambience: return "audio/music/ambience.opus";
       case MusicLayerEnum::tension:  return "audio/music/tension.opus";

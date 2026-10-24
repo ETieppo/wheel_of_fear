@@ -1,15 +1,12 @@
 #include "mods/world/scenery/NeonSignScenery.hpp"
-
 #include "core/math/ScalarMath.hpp"
 
 namespace wheel_of_fear {
-  float NeonSignScenery::brightness(
-    const SceneryViewDto &view
-  ) const {
+  float NeonSignScenery::brightness(const SceneryViewDto &view) const {
     if(view.is_room_powered) return 1;
 
-    const float sputter =
-      ScalarMath::hashTime(view.real_seconds + (flickerSeed() * 17), 9);
+    const float sputter
+      = ScalarMath::hashTime(view.real_seconds + (flickerSeed() * 17), 9);
 
     return sputter > 0.86F ? 0.05F : 0.35F;
   }
@@ -53,7 +50,6 @@ namespace wheel_of_fear {
 
     const float level = brightness(view);
     if(level <= 0.05F) return;
-
     LightProps light;
 
     light.position      = position().add(Vec2Props::of(0, 14));

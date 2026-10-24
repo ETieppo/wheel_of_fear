@@ -1,8 +1,6 @@
 #include "mods/throwables/PickupEntity.hpp"
-
-#include <cmath>
-
 #include "core/items/ItemCatalog.hpp"
+#include <cmath>
 
 namespace wheel_of_fear {
   void PickupEntity::draw(
@@ -11,11 +9,10 @@ namespace wheel_of_fear {
     std::size_t             index,
     float                   real_seconds
   ) const {
-    const auto order = static_cast<float>(index);
-
+    const auto              order  = static_cast<float>(index);
     const AtlasRegionProps &sprite = item_ == ItemEnum::neon_grenade
-                                     ? sprites.neon_grenade
-                                     : sprites.lure_beacon;
+      ? sprites.neon_grenade
+      : sprites.lure_beacon;
 
     renderer.drawShadowDisc(
       position_.add(Vec2Props::of(0.5F, 1.5F)),
@@ -26,7 +23,6 @@ namespace wheel_of_fear {
 
     renderer
       .drawSprite(sprite, position_, SpriteDrawDto {.rotation = order * 1.7F});
-
     const float glint = 0.5F + (0.5F * std::sin((real_seconds * 3) + order));
 
     renderer.drawGlowDisc(

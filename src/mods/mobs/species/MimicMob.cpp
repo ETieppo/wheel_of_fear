@@ -1,17 +1,13 @@
 #include "mods/mobs/species/MimicMob.hpp"
-
-#include <cmath>
-
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <cmath>
 
 namespace wheel_of_fear {
-  void MimicMob::think(
-    GameContextDto &context
-  ) {
+  void MimicMob::think(GameContextDto &context) {
     if(isBusy()) return;
 
     switch(stance_) {
@@ -21,15 +17,13 @@ namespace wheel_of_fear {
     }
   }
 
-  void MimicMob::waitInDisguise(
-    GameContextDto &context
-  ) {
+  void MimicMob::waitInDisguise(GameContextDto &context) {
     condition().setFrozen(false);
 
     if(
-      distanceToPlayer(context) >
-      wake_distance ||
-      !context.player.canBeTargeted()
+      distanceToPlayer(context)
+      > wake_distance
+      || !context.player.canBeTargeted()
     )
       return;
 
@@ -40,9 +34,7 @@ namespace wheel_of_fear {
     context.world.shake(0.35F);
   }
 
-  void MimicMob::lunge(
-    GameContextDto &context
-  ) {
+  void MimicMob::lunge(GameContextDto &context) {
     if(condition().isFrozen()) {
       stance_ = MimicStanceEnum::hunting;
       return;
@@ -50,25 +42,20 @@ namespace wheel_of_fear {
 
     locomotion()
       .moveAlong(context, directionTo(context.player.position()), lunge_speed);
-
     lunge_seconds_ -= context.clock.deltaSeconds();
-    if(lunge_seconds_ <= 0) stance_ = MimicStanceEnum::hunting;
 
+    if(lunge_seconds_ <= 0) stance_ = MimicStanceEnum::hunting;
     if(perception().touchesPlayer(context, species_traits.strike_reach)) {
       brain().strikeAndRetreat(context, strike_retreat_seconds);
       stance_ = MimicStanceEnum::hunting;
     }
   }
 
-  void MimicMob::onContact(
-    GameContextDto &context
-  ) {
+  void MimicMob::onContact(GameContextDto &context) {
     brain().strikeAndRetreat(context, strike_retreat_seconds);
   }
 
-  void MimicMob::draw(
-    GameContextDto &context
-  ) const {
+  void MimicMob::draw(GameContextDto &context) const {
     const SpriteSheetProps &sprites  = context.art.sprites();
     Renderer               &renderer = context.renderer;
 
@@ -81,9 +68,8 @@ namespace wheel_of_fear {
       );
 
       renderer.drawSprite(sprites.fabricator, position());
-
-      const float blink =
-        0.6F + (0.4F * std::sin(context.clock.realSeconds() * 4));
+      const float blink
+        = 0.6F + (0.4F * std::sin(context.clock.realSeconds() * 4));
 
       renderer.drawGlowSprite(
         sprites.fabricator_glow,

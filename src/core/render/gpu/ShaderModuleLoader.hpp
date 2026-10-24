@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string_view>
-
 #include "core/render/gpu/GpuHandle.hpp"
+#include <string_view>
 
 namespace wheel_of_fear {
   class ShaderModuleLoader final {

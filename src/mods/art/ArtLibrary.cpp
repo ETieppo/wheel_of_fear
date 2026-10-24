@@ -1,18 +1,14 @@
 #include "mods/art/ArtLibrary.hpp"
-
-#include <algorithm>
-#include <cstring>
-
 #include "core/assets/AssetLocator.hpp"
 #include "core/assets/SpriteCatalog.hpp"
 #include "core/assets/TextureCatalog.hpp"
 #include "core/render/ImageDecoder.hpp"
 #include "core/render/RenderConfig.hpp"
+#include <algorithm>
+#include <cstring>
 
 namespace wheel_of_fear {
-  ArtLibrary::ArtLibrary(
-    Renderer &renderer
-  )
+  ArtLibrary::ArtLibrary(Renderer &renderer)
       : renderer_(renderer)
       , packer_(
           RenderConfig::atlas_size,
@@ -27,49 +23,33 @@ namespace wheel_of_fear {
     sprites_.player_hug       = loadStrip(Catalog::generated_player_hug);
     sprites_.player_hug_glow  = loadStrip(Catalog::generated_player_hug_glow);
     sprites_.player_repair    = loadStrip(Catalog::generated_player_repair);
-
-    sprites_.player_repair_glow =
-      loadStrip(Catalog::generated_player_repair_glow);
-
+    sprites_.player_repair_glow
+      = loadStrip(Catalog::generated_player_repair_glow);
     sprites_.crawler_walk = loadStrip(Catalog::generated_crawler_walk);
-
-    sprites_.crawler_walk_glow =
-      loadStrip(Catalog::generated_crawler_walk_glow);
-
+    sprites_.crawler_walk_glow
+      = loadStrip(Catalog::generated_crawler_walk_glow);
     sprites_.bloater_drift = loadStrip(Catalog::generated_bloater_drift);
-
-    sprites_.bloater_drift_glow =
-      loadStrip(Catalog::generated_bloater_drift_glow);
-
+    sprites_.bloater_drift_glow
+      = loadStrip(Catalog::generated_bloater_drift_glow);
     sprites_.melter_crawl = loadStrip(Catalog::generated_melter_crawl);
-
-    sprites_.melter_crawl_glow =
-      loadStrip(Catalog::generated_melter_crawl_glow);
-
+    sprites_.melter_crawl_glow
+      = loadStrip(Catalog::generated_melter_crawl_glow);
     sprites_.shepherd_walk = loadStrip(Catalog::generated_shepherd_walk);
-
-    sprites_.shepherd_walk_glow =
-      loadStrip(Catalog::generated_shepherd_walk_glow);
-
+    sprites_.shepherd_walk_glow
+      = loadStrip(Catalog::generated_shepherd_walk_glow);
     sprites_.shade_drift      = loadStrip(Catalog::generated_shade_drift);
     sprites_.shade_drift_glow = loadStrip(Catalog::generated_shade_drift_glow);
     sprites_.mimic_hunt       = loadStrip(Catalog::generated_mimic_hunt);
     sprites_.mimic_hunt_glow  = loadStrip(Catalog::generated_mimic_hunt_glow);
     sprites_.moth_flutter     = loadStrip(Catalog::generated_moth_flutter);
-
-    sprites_.moth_flutter_glow =
-      loadStrip(Catalog::generated_moth_flutter_glow);
-
+    sprites_.moth_flutter_glow
+      = loadStrip(Catalog::generated_moth_flutter_glow);
     sprites_.generator_base = loadSingle(Catalog::generated_generator_base);
-
-    sprites_.generator_glow =
-      loadSingle(Catalog::generated_generator_base_glow);
-
+    sprites_.generator_glow
+      = loadSingle(Catalog::generated_generator_base_glow);
     sprites_.generator_rotor = loadSingle(Catalog::generated_generator_rotor);
-
-    sprites_.generator_rotor_glow =
-      loadSingle(Catalog::generated_generator_rotor_glow);
-
+    sprites_.generator_rotor_glow
+      = loadSingle(Catalog::generated_generator_rotor_glow);
     sprites_.fabricator       = loadSingle(Catalog::generated_fabricator);
     sprites_.fabricator_glow  = loadSingle(Catalog::generated_fabricator_glow);
     sprites_.server_rack      = loadSingle(Catalog::generated_server_rack);
@@ -97,13 +77,11 @@ namespace wheel_of_fear {
     sprites_.locker_closed = loadSingle(Catalog::locker_closed);
     sprites_.locker_open   = loadSingle(Catalog::locker_open);
     sprites_.vent          = loadSingle(Catalog::vent);
-
-    sprites_.neon_signs = {
+    sprites_.neon_signs    = {
       loadSingle(Catalog::neon_sign_0),
       loadSingle(Catalog::neon_sign_1),
       loadSingle(Catalog::neon_sign_2),
     };
-
     sprites_.item_icons = {
       loadSingle(Catalog::icon_gear),
       loadSingle(Catalog::icon_fuse),
@@ -111,7 +89,6 @@ namespace wheel_of_fear {
       loadSingle(Catalog::generated_icon_lure),
       loadSingle(Catalog::generated_icon_grenade),
     };
-
     renderer_.atlas().markDirty();
     loadGroundMaterials();
   }
@@ -152,17 +129,13 @@ namespace wheel_of_fear {
     renderer_.setGroundMaterials(std::move(materials));
   }
 
-  AtlasRegionProps ArtLibrary::loadSingle(
-    const SpriteStripProps &strip
-  ) {
+  AtlasRegionProps ArtLibrary::loadSingle(const SpriteStripProps &strip) {
     return loadStrip(strip).front();
   }
 
-  SpriteFrames ArtLibrary::loadParticleStrip(
-    const SpriteStripProps &strip
-  ) {
-    DecodedImageProps image =
-      ImageDecoder::decodeRgba(AssetLocator::assetPath(strip.path), false);
+  SpriteFrames ArtLibrary::loadParticleStrip(const SpriteStripProps &strip) {
+    DecodedImageProps image
+      = ImageDecoder::decodeRgba(AssetLocator::assetPath(strip.path), false);
 
     for(std::size_t index = 0; index < image.pixels.size(); index += 4) {
       const std::uint8_t luminance = std::max(
@@ -180,12 +153,9 @@ namespace wheel_of_fear {
     return copyFrames(strip, image);
   }
 
-  SpriteFrames ArtLibrary::loadStrip(
-    const SpriteStripProps &strip
-  ) {
-    const DecodedImageProps image =
-      ImageDecoder::decodeRgba(AssetLocator::assetPath(strip.path), true);
-
+  SpriteFrames ArtLibrary::loadStrip(const SpriteStripProps &strip) {
+    const DecodedImageProps image
+      = ImageDecoder::decodeRgba(AssetLocator::assetPath(strip.path), true);
     return copyFrames(strip, image);
   }
 
@@ -195,29 +165,25 @@ namespace wheel_of_fear {
   ) {
     Canvas       atlas = renderer_.atlas().canvas();
     SpriteFrames regions;
-
     regions.reserve(strip.frame_count);
 
     for(std::uint32_t frame = 0; frame < strip.frame_count; ++frame) {
-      AtlasRegionProps region =
-        packer_.reserve(strip.frame_width, strip.frame_height);
-
+      AtlasRegionProps region
+        = packer_.reserve(strip.frame_width, strip.frame_height);
       region.pixels_per_unit = strip.pixels_per_unit;
 
-      const auto origin_x = static_cast<std::size_t>(region.x);
-      const auto origin_y = static_cast<std::size_t>(region.y);
-
-      const std::size_t row_bytes =
-        static_cast<std::size_t>(strip.frame_width) * 4;
+      const auto        origin_x = static_cast<std::size_t>(region.x);
+      const auto        origin_y = static_cast<std::size_t>(region.y);
+      const std::size_t row_bytes
+        = static_cast<std::size_t>(strip.frame_width) * 4;
 
       for(std::size_t y = 0; y < strip.frame_height; ++y) {
-        const std::size_t source_row =
-          ((y * image.width) +
-           (static_cast<std::size_t>(frame) * strip.frame_width)) *
-          4;
-
-        const std::size_t target_row =
-          (((origin_y + y) * RenderConfig::atlas_size) + origin_x) * 4;
+        const std::size_t source_row
+          = ((y * image.width)
+             + (static_cast<std::size_t>(frame) * strip.frame_width))
+          * 4;
+        const std::size_t target_row
+          = (((origin_y + y) * RenderConfig::atlas_size) + origin_x) * 4;
 
         std::memcpy(
           atlas.pixels().data() + target_row,

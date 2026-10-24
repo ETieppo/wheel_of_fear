@@ -1,8 +1,7 @@
 #pragma once
 
-#include <span>
-
 #include "mods/tracker/SignalProps.hpp"
+#include <span>
 
 namespace wheel_of_fear {
   struct TrackerViewDto {

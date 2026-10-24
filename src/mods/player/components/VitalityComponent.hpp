@@ -5,6 +5,9 @@ namespace wheel_of_fear {
     public:
       static constexpr int max_health = 3;
 
+      void restore();
+      bool absorbHit();
+
       [[nodiscard]]
       int health() const {
         return health_;
@@ -25,19 +28,13 @@ namespace wheel_of_fear {
         return hurt_flash_;
       }
 
-      void restore();
-      void tick(
-        float delta_seconds
-      );
-      bool absorbHit();
+      void tick(float delta_seconds);
 
       void dropGuard() {
         invulnerable_seconds_ = 0;
       }
 
-      void grantInvulnerability(
-        float seconds
-      ) {
+      void grantInvulnerability(float seconds) {
         invulnerable_seconds_ = seconds;
       }
 

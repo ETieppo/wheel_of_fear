@@ -1,11 +1,9 @@
 #include "mods/director/demos/SectorsDemoScenario.hpp"
-
-#include <format>
-
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void SectorsDemoScenario::run(
@@ -36,7 +34,6 @@ namespace wheel_of_fear {
     if(!generators.areAllOnline()) {
       for(GeneratorEntity &generator : generators.all())
         generator.forceOnline(context);
-
       return;
     }
 

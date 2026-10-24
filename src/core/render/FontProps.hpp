@@ -1,8 +1,7 @@
 #pragma once
 
-#include <array>
-
 #include "core/render/GlyphProps.hpp"
+#include <array>
 
 namespace wheel_of_fear {
   struct FontProps {

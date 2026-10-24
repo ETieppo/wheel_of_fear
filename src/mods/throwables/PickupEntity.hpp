@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/items/enums/ItemEnum.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "core/render/Renderer.hpp"
 #include "mods/art/SpriteSheetProps.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class PickupEntity {
@@ -30,9 +29,7 @@ namespace wheel_of_fear {
         return item_;
       }
 
-      void settleOn(
-        Vec2Props floor
-      ) {
+      void settleOn(Vec2Props floor) {
         position_ = floor;
       }
 

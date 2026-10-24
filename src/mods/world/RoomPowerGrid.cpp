@@ -1,20 +1,19 @@
 #include "mods/world/RoomPowerGrid.hpp"
-
+#include "core/math/ScalarMath.hpp"
 #include <algorithm>
 #include <cmath>
 #include <utility>
 
-#include "core/math/ScalarMath.hpp"
-
 namespace wheel_of_fear {
   void RoomPowerGrid::addRoom(
-    ColorProps   color,
-    RoomLedStrip strip,
-    float        conduit_offset
+    LedGradientProps      gradient,
+    RoomLedStrip          strip,
+    float                 conduit_offset,
+    RoomLightingPlanProps lighting_plan
   ) {
     rooms_.push_back(
       RoomPowerProps {
-        .color          = color,
+        .gradient       = gradient,
         .is_powered     = false,
         .lit_amount     = 0,
         .conduit_offset = conduit_offset,
@@ -22,6 +21,7 @@ namespace wheel_of_fear {
     );
 
     strips_.push_back(std::move(strip));
+    lighting_plans_.push_back(std::move(lighting_plan));
   }
 
   void RoomPowerGrid::power(
@@ -29,25 +29,18 @@ namespace wheel_of_fear {
     bool        is_powered
   ) {
     if(room_index >= rooms_.size()) return;
-
     rooms_[room_index].is_powered = is_powered;
   }
 
-  bool RoomPowerGrid::isPowered(
-    std::size_t room_index
-  ) const {
+  bool RoomPowerGrid::isPowered(std::size_t room_index) const {
     return room_index < rooms_.size() && rooms_[room_index].is_powered;
   }
 
-  bool RoomPowerGrid::isFullyLit(
-    std::size_t room_index
-  ) const {
+  bool RoomPowerGrid::isFullyLit(std::size_t room_index) const {
     return room_index < rooms_.size() && rooms_[room_index].isFullyLit();
   }
 
-  float RoomPowerGrid::litAmount(
-    std::size_t room_index
-  ) const {
+  float RoomPowerGrid::litAmount(std::size_t room_index) const {
     return room_index < rooms_.size() ? rooms_[room_index].lit_amount : 0.0F;
   }
 
@@ -69,59 +62,97 @@ namespace wheel_of_fear {
     float                 perimeter,
     float                 distance_along
   ) {
-    return distanceFromConduit(power, perimeter, distance_along) <=
-           power.lit_amount *
-           perimeter *
-           0.5F;
+    return distanceFromConduit(power, perimeter, distance_along)
+      <= power.lit_amount
+      * perimeter
+      * 0.5F;
   }
 
-  void RoomPowerGrid::advance(
-    float delta_seconds
+  float RoomPowerGrid::glowLevelAt(
+    const RoomPowerProps &power,
+    float                 perimeter,
+    float                 distance_along
   ) {
+    if(power.lit_amount <= 0) return 0;
+    const float head_distance = power.lit_amount * perimeter * 0.5F;
+    const float behind_head
+      = head_distance - distanceFromConduit(power, perimeter, distance_along);
+    return ScalarMath::clamp(1 + (behind_head / glow_fade_distance), 0, 1);
+  }
+
+  void RoomPowerGrid::paintRoomGlow(Renderer &renderer) const {
+    for(std::size_t room_index = 0; room_index < rooms_.size(); ++room_index) {
+      const RoomPowerProps &power     = rooms_[room_index];
+      const float           perimeter = strips_[room_index].length();
+
+      for(
+        const RoomGlowTileProps &tile : lighting_plans_[room_index].glow_tiles
+      ) {
+        const float level = glowLevelAt(power, perimeter, tile.distance_along);
+        const ColorProps glow = ledColorAt(room_index, tile.distance_along)
+                                  .mix(ColorProps::white(), glow_white_mix)
+                                  .scaled(level);
+
+        renderer.setRoomGlow(tile.x, tile.y, glow);
+      }
+    }
+  }
+
+  void RoomPowerGrid::advance(float delta_seconds) {
     for(RoomPowerProps &power : rooms_) {
       const float rate = power.is_powered ? 1 / strip_power_up_seconds
                                           : -1 / strip_power_down_seconds;
 
-      power.lit_amount =
-        ScalarMath::clamp(power.lit_amount + (rate * delta_seconds), 0, 1);
+      power.lit_amount
+        = ScalarMath::clamp(power.lit_amount + (rate * delta_seconds), 0, 1);
     }
   }
 
-  Vec2Props RoomPowerGrid::conduitPoint(
-    std::size_t room_index
-  ) const {
+  Vec2Props RoomPowerGrid::conduitPoint(std::size_t room_index) const {
     return strips_[room_index].pointAt(rooms_[room_index].conduit_offset);
   }
 
-  void RoomPowerGrid::emitLights(
-    LightingSystem &lighting
+  float RoomPowerGrid::stripLength(std::size_t room_index) const {
+    return strips_[room_index].length();
+  }
+
+  ColorProps RoomPowerGrid::ledColorAt(
+    std::size_t room_index,
+    float       distance_along
   ) const {
-    for(std::size_t room_index = 0; room_index < rooms_.size(); ++room_index) {
-      const RoomPowerProps &power = rooms_[room_index];
-      if(power.lit_amount <= 0) continue;
+    const RoomPowerProps &power = rooms_[room_index];
+    const float           fraction_along
+      = (distance_along - power.conduit_offset) / strips_[room_index].length();
 
-      const RoomLedStrip &strip     = strips_[room_index];
-      const float         perimeter = strip.length();
+    return power.gradient.colorAt(fraction_along);
+  }
 
-      for(std::size_t anchor = 0; anchor < strip_light_count; ++anchor) {
-        const float distance_along =
-          power.conduit_offset + (perimeter *
-                                  (static_cast<float>(anchor) + 0.5F) /
-                                  static_cast<float>(strip_light_count));
-        if(!isStripLitAt(power, perimeter, distance_along)) continue;
+  void RoomPowerGrid::emitLights(LightingSystem &lighting) const {
+    for(std::size_t room_index = 0; room_index < rooms_.size(); ++room_index)
+      emitRoomLights(lighting, room_index);
+  }
 
-        LightProps light;
+  void RoomPowerGrid::emitRoomLights(
+    LightingSystem &lighting,
+    std::size_t     room_index
+  ) const {
+    const RoomPowerProps &power = rooms_[room_index];
+    if(power.lit_amount <= 0) return;
+    const float perimeter = strips_[room_index].length();
 
-        light.position =
-          strip.pointAt(distance_along)
-            .add(strip.inwardAt(distance_along).scale(strip_light_inset));
+    for(
+      const RoomFillLightProps &fill : lighting_plans_[room_index].fill_lights
+    ) {
+      if(!isStripLitAt(power, perimeter, fill.distance_along)) continue;
 
-        light.radius    = strip_light_radius;
-        light.intensity = 0.85F;
-        light.color     = power.color.mix(ColorProps::white(), 0.55F);
-        light.flicker   = 0.03F;
-        lighting.add(light);
-      }
+      LightProps light;
+      light.position  = fill.position;
+      light.radius    = fill.radius;
+      light.intensity = fill_light_intensity;
+      light.color     = ledColorAt(room_index, fill.distance_along)
+                          .mix(ColorProps::white(), 0.55F);
+      light.flicker   = 0.03F;
+      lighting.add(light);
     }
   }
 
@@ -134,41 +165,48 @@ namespace wheel_of_fear {
       const RoomProps      &room    = map.rooms()[room_index];
       const Vec2Props       minimum = room.worldMinimum();
       const Vec2Props       maximum = room.worldMaximum();
+      const float           reach
+        = std::max(maximum.x - minimum.x, maximum.y - minimum.y);
 
-      const float reach =
-        std::max(maximum.x - minimum.x, maximum.y - minimum.y);
       if(!renderer.isVisible(room.center(), reach)) continue;
+      const RoomLedStrip &strip = strips_[room_index];
 
-      const RoomLedStrip &strip     = strips_[room_index];
-      const float         perimeter = strip.length();
-
-      for(const RoomLedPlacementProps &led : strip.placements(map)) {
-        if(led.faces_open_passage || led.is_covered_by_object) continue;
-        if(!renderer.isVisible(led.position, 8)) continue;
-
-        drawLed(renderer, power, perimeter, led);
+      for(const RoomLedPlacementProps &piece : strip.placements(map)) {
+        if(piece.faces_open_passage || piece.is_covered_by_object) continue;
+        if(!renderer.isVisible(piece.position, 8)) continue;
+        drawPiece(renderer, room_index, piece);
       }
 
       if(power.lit_amount > 0)
         renderer.drawGlowDisc(
           strip.pointAt(power.conduit_offset),
           7,
-          power.color.withAlpha(0.8F),
+          ledColorAt(room_index, power.conduit_offset).withAlpha(0.8F),
           1.2F
         );
     }
   }
 
-  void RoomPowerGrid::drawLed(
+  void RoomPowerGrid::drawPiece(
     Renderer                    &renderer,
-    const RoomPowerProps        &power,
-    float                        perimeter,
-    const RoomLedPlacementProps &led
-  ) {
-    if(!isStripLitAt(power, perimeter, led.distance_along)) {
+    std::size_t                  room_index,
+    const RoomLedPlacementProps &piece
+  ) const {
+    const RoomPowerProps &power     = rooms_[room_index];
+    const float           perimeter = strips_[room_index].length();
+    const float     middle_along    = piece.distance_along + (piece.span / 2);
+    const Vec2Props center          = piece.position.add(
+      piece.direction.scale((piece.span + strip_width) / 2)
+    );
+    const Vec2Props size
+      = std::abs(piece.direction.x) > std::abs(piece.direction.y)
+      ? Vec2Props::of(piece.span, strip_width)
+      : Vec2Props::of(strip_width, piece.span);
+
+    if(!isStripLitAt(power, perimeter, middle_along)) {
       renderer.drawGlowRectangle(
-        led.position,
-        Vec2Props::of(1.5F, 1.5F),
+        center,
+        size,
         ColorProps::hex(0x10141c).withAlpha(0.35F)
       );
 
@@ -176,26 +214,23 @@ namespace wheel_of_fear {
     }
 
     const float head_distance = power.lit_amount * perimeter * 0.5F;
-
-    const float lit_distance =
-      distanceFromConduit(power, perimeter, led.distance_along);
-
+    const float lit_distance
+      = distanceFromConduit(power, perimeter, middle_along);
     const float head_glow = ScalarMath::clamp(
                               1 - (std::abs(lit_distance - head_distance) / 24),
                               0,
                               1
-                            ) *
-                            (1 - (power.lit_amount * power.lit_amount));
+                            )
+      * (1 - (power.lit_amount * power.lit_amount));
 
-    renderer.drawGlowRectangle(
-      led.position,
-      Vec2Props::of(3, 3),
-      power.color.mix(ColorProps::white(), 0.3F + (head_glow * 0.6F))
-    );
+    const ColorProps color
+      = ledColorAt(room_index, middle_along)
+          .mix(ColorProps::white(), 0.2F + (head_glow * 0.6F));
 
+    renderer.drawGlowRectangle(center, size, color);
     if(head_glow > 0.05F)
       renderer.drawGlowDisc(
-        led.position,
+        center,
         10,
         ColorProps::white().withAlpha(head_glow * 0.6F),
         1.4F

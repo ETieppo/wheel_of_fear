@@ -1,5 +1,4 @@
 #include "mods/player/PlayerEntity.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
@@ -25,9 +24,7 @@ namespace wheel_of_fear {
     respawn(Vec2Props {});
   }
 
-  void PlayerEntity::respawn(
-    Vec2Props position
-  ) {
+  void PlayerEntity::respawn(Vec2Props position) {
     respawnAt(position);
     aim_.reset();
     activity_ = PlayerActivityEnum::exploring;
@@ -47,7 +44,6 @@ namespace wheel_of_fear {
     if(flashlight_.isOn()) return flashlight_.sightRangeForMobs();
     if(movement_.isRunning()) return 170;
     if(isMoving()) return 105;
-
     return 60;
   }
 
@@ -59,13 +55,10 @@ namespace wheel_of_fear {
     };
   }
 
-  void PlayerEntity::update(
-    GameContextDto &context
-  ) {
+  void PlayerEntity::update(GameContextDto &context) {
     hiding_.clearHideEvent();
     if(context.world.map().width() > 0 && !isDead()) emitLights(context);
     if(!context.clock.isRunning()) return;
-
     const float delta = context.clock.deltaSeconds();
 
     advanceAnimation(delta);
@@ -75,7 +68,6 @@ namespace wheel_of_fear {
 
     is_interacting_ = context.input.isHeld(InputActionEnum::interact);
     if(!is_interacting_) repair_target_.reset();
-
     const PlayerActivityEnum previous_activity = activity_;
 
     activity_ = PlayerActivityEnum::exploring;
@@ -113,8 +105,8 @@ namespace wheel_of_fear {
       position(),
       context.camera.mouseWorldPosition(context.input)
     );
-    turnTowardAim();
 
+    turnTowardAim();
     activity_ = HugController::update(
       context,
       *this,
@@ -124,7 +116,6 @@ namespace wheel_of_fear {
 
     if(activity_ != PlayerActivityEnum::hugging)
       movement_.update(context, *this);
-
     handleExplorationActions(context);
   }
 
@@ -132,18 +123,14 @@ namespace wheel_of_fear {
     turnToward(aim_.direction().angle(), 1.0F / 30.0F, aim_turn_rate);
   }
 
-  void PlayerEntity::handleExplorationActions(
-    GameContextDto &context
-  ) {
+  void PlayerEntity::handleExplorationActions(GameContextDto &context) {
     const InputController &input = context.input;
-
     if(input.wasPressed(InputActionEnum::switch_light_mode))
       flashlight_.cycleMode(context.sound_player);
 
     const Vec2Props target = context.camera.mouseWorldPosition(input);
-
-    const Vec2Props lamp_tip =
-      FlashlightComponent::lampTip(position(), aim_.direction());
+    const Vec2Props lamp_tip
+      = FlashlightComponent::lampTip(position(), aim_.direction());
 
     if(input.wasPressed(InputActionEnum::throw_lure))
       throwing_arm_
@@ -158,8 +145,8 @@ namespace wheel_of_fear {
         target
       );
 
-    const auto locker_index =
-      LockerHidingComponent::nearestLocker(context.world, position());
+    const auto locker_index
+      = LockerHidingComponent::nearestLocker(context.world, position());
     if(!locker_index) return;
 
     context.hud.showPrompt(InputActionEnum::interact, "hide in the locker");
@@ -170,9 +157,7 @@ namespace wheel_of_fear {
     activity_ = PlayerActivityEnum::hiding;
   }
 
-  void PlayerEntity::updateFlashlight(
-    GameContextDto &context
-  ) {
+  void PlayerEntity::updateFlashlight(GameContextDto &context) {
     FlashlightConditionsDto conditions;
 
     conditions.delta_seconds       = context.clock.deltaSeconds();
@@ -185,9 +170,7 @@ namespace wheel_of_fear {
       .update(conditions, context.world.random(), context.sound_player);
   }
 
-  void PlayerEntity::beginRepair(
-    Vec2Props target
-  ) {
+  void PlayerEntity::beginRepair(Vec2Props target) {
     if(isHidden() || isDead()) return;
 
     repair_target_ = target;
@@ -203,7 +186,6 @@ namespace wheel_of_fear {
     movement_.push(position().sub(source).normalized().scale(220));
     repair_target_.reset();
     context.world.shake(1);
-
     context.sound_player.play(
       SoundEnum::player_hurt,
       0.9F,
@@ -215,22 +197,17 @@ namespace wheel_of_fear {
       context.sound_player.play(SoundEnum::player_death, 1.0F, 0, 1);
   }
 
-  void PlayerEntity::dragOutOfLocker(
-    GameContextDto &context
-  ) {
+  void PlayerEntity::dragOutOfLocker(GameContextDto &context) {
     hiding_.leave(context, *this);
     activity_ = PlayerActivityEnum::exploring;
     vitality_.dropGuard();
     context.world.shake(0.8F);
   }
 
-  void PlayerEntity::emitLights(
-    GameContextDto &context
-  ) const {
+  void PlayerEntity::emitLights(GameContextDto &context) const {
     if(isHidden()) return;
 
     LightProps aura;
-
     aura.position      = position();
     aura.radius        = aura_radius;
     aura.intensity     = 0.55F;
@@ -240,27 +217,22 @@ namespace wheel_of_fear {
     flashlight_.emitLights(context.lighting, grip());
   }
 
-  void PlayerEntity::draw(
-    GameContextDto &context
-  ) const {
+  void PlayerEntity::draw(GameContextDto &context) const {
     if(context.world.map().width() == 0 || isHidden()) return;
 
     const float real_seconds = context.clock.realSeconds();
-
-    const bool is_blinking = vitality_.isInvulnerable() &&
-                             vitality_.hurtFlash() >
-                             0 &&
-                             !isDead() &&
-                             ScalarMath::floorModulo(real_seconds, 0.16F) <
-                             0.08F;
+    const bool  is_blinking  = vitality_.isInvulnerable()
+      && vitality_.hurtFlash()
+      > 0
+      && !isDead()
+      && ScalarMath::floorModulo(real_seconds, 0.16F)
+      < 0.08F;
     if(is_blinking) return;
 
     Renderer               &renderer = context.renderer;
     const SpriteSheetProps &sprites  = context.art.sprites();
-
-    const ColorProps tint =
-      isDead() ? ColorProps::hex(0x6a6a72) : ColorProps::white();
-
+    const ColorProps        tint
+      = isDead() ? ColorProps::hex(0x6a6a72) : ColorProps::white();
     const float rotation = isDead() ? heading() + 1.4F : heading();
 
     renderer.drawShadowDisc(

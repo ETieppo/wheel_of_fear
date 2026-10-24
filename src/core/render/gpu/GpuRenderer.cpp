@@ -1,18 +1,15 @@
 #include "core/render/gpu/GpuRenderer.hpp"
-
-#include <algorithm>
-#include <array>
-#include <vector>
-
 #include "core/render/QuadViewProps.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/gpu/ShaderModuleLoader.hpp"
+#include <algorithm>
+#include <array>
+#include <vector>
 
 namespace wheel_of_fear {
   namespace {
     constexpr WGPUTextureFormat hdr_format    = WGPUTextureFormat_RGBA16Float;
     constexpr WGPUTextureFormat sprite_format = WGPUTextureFormat_RGBA8Unorm;
-
     constexpr WGPUBlendState premultiplied_blend {
       .color =
         WGPUBlendComponent {
@@ -32,17 +29,15 @@ namespace wheel_of_fear {
       const WGPUBlendState* blend
     ) {
       WGPUColorTargetState target = WGPU_COLOR_TARGET_STATE_INIT;
-
-      target.format    = format;
-      target.blend     = blend;
-      target.writeMask = WGPUColorWriteMask_All;
+      target.format               = format;
+      target.blend                = blend;
+      target.writeMask            = WGPUColorWriteMask_All;
 
       return target;
     }
 
     DecodedImageProps placeholderImage() {
       DecodedImageProps image;
-
       image.width  = 4;
       image.height = 4;
       image.pixels.assign(std::size_t {4} * 4 * 4, 128);
@@ -51,9 +46,7 @@ namespace wheel_of_fear {
     }
   } // namespace
 
-  GpuRenderer::GpuRenderer(
-    GpuContext &context
-  )
+  GpuRenderer::GpuRenderer(GpuContext &context)
       : context_(context)
       , factory_(
           context.device(),
@@ -61,9 +54,7 @@ namespace wheel_of_fear {
         ) {
   }
 
-  void GpuRenderer::createPersistentResources(
-    Renderer &renderer
-  ) {
+  void GpuRenderer::createPersistentResources(Renderer &renderer) {
     auto resources = std::make_unique<PersistentGpuResourcesProps>();
 
     resources->atlas = factory_.createSampledTexture(
@@ -80,20 +71,16 @@ namespace wheel_of_fear {
       1
     );
 
-    resources->clamp_sampler =
-      factory_.createSampler("clamp linear", WGPUAddressMode_ClampToEdge, 1);
-
-    resources->repeat_sampler =
-      factory_.createSampler("repeat linear", WGPUAddressMode_Repeat, 8);
-
-    resources->world_view_buffer =
-      factory_.createUniformBuffer("world view", sizeof(QuadViewProps));
-
-    resources->ui_view_buffer =
-      factory_.createUniformBuffer("ui view", sizeof(QuadViewProps));
-
-    resources->post_buffer =
-      factory_.createUniformBuffer("post process", sizeof(PostProcessProps));
+    resources->clamp_sampler
+      = factory_.createSampler("clamp linear", WGPUAddressMode_ClampToEdge, 1);
+    resources->repeat_sampler
+      = factory_.createSampler("repeat linear", WGPUAddressMode_Repeat, 8);
+    resources->world_view_buffer
+      = factory_.createUniformBuffer("world view", sizeof(QuadViewProps));
+    resources->ui_view_buffer
+      = factory_.createUniformBuffer("ui view", sizeof(QuadViewProps));
+    resources->post_buffer
+      = factory_.createUniformBuffer("post process", sizeof(PostProcessProps));
 
     resources->world_quad_buffer = factory_.createStorageBuffer(
       "world quads",
@@ -119,16 +106,16 @@ namespace wheel_of_fear {
       Factory::textureEntry(3),
     };
 
-    resources->quad_layout =
-      factory_.createBindGroupLayout("quad layout", quad_entries);
+    resources->quad_layout
+      = factory_.createBindGroupLayout("quad layout", quad_entries);
 
     const std::array light_entries {
       Factory::uniformEntry(0),
       Factory::textureEntry(1),
     };
 
-    resources->light_layout =
-      factory_.createBindGroupLayout("light layout", light_entries);
+    resources->light_layout
+      = factory_.createBindGroupLayout("light layout", light_entries);
 
     const std::array composite_entries {
       Factory::uniformEntry(0),
@@ -147,8 +134,8 @@ namespace wheel_of_fear {
       Factory::textureEntry(13),
     };
 
-    resources->composite_layout =
-      factory_.createBindGroupLayout("composite layout", composite_entries);
+    resources->composite_layout
+      = factory_.createBindGroupLayout("composite layout", composite_entries);
 
     const std::array bloom_entries {
       Factory::uniformEntry(0),
@@ -156,8 +143,8 @@ namespace wheel_of_fear {
       Factory::samplerEntry(2),
     };
 
-    resources->bloom_layout =
-      factory_.createBindGroupLayout("bloom layout", bloom_entries);
+    resources->bloom_layout
+      = factory_.createBindGroupLayout("bloom layout", bloom_entries);
 
     const std::array post_entries {
       Factory::uniformEntry(0),
@@ -166,25 +153,20 @@ namespace wheel_of_fear {
       Factory::samplerEntry(3),
     };
 
-    resources->post_layout =
-      factory_.createBindGroupLayout("post layout", post_entries);
+    resources->post_layout
+      = factory_.createBindGroupLayout("post layout", post_entries);
 
-    const WGPUDevice device = context_.device();
-
-    const GpuShaderModule quad_shader =
-      ShaderModuleLoader::loadWgsl(device, "quad.wgsl");
-
-    const GpuShaderModule light_shader =
-      ShaderModuleLoader::loadWgsl(device, "light.wgsl");
-
-    const GpuShaderModule composite_shader =
-      ShaderModuleLoader::loadWgsl(device, "composite.wgsl");
-
-    const GpuShaderModule bloom_shader =
-      ShaderModuleLoader::loadWgsl(device, "bloom.wgsl");
-
-    const GpuShaderModule post_shader =
-      ShaderModuleLoader::loadWgsl(device, "post.wgsl");
+    const WGPUDevice      device = context_.device();
+    const GpuShaderModule quad_shader
+      = ShaderModuleLoader::loadWgsl(device, "quad.wgsl");
+    const GpuShaderModule light_shader
+      = ShaderModuleLoader::loadWgsl(device, "light.wgsl");
+    const GpuShaderModule composite_shader
+      = ShaderModuleLoader::loadWgsl(device, "composite.wgsl");
+    const GpuShaderModule bloom_shader
+      = ShaderModuleLoader::loadWgsl(device, "bloom.wgsl");
+    const GpuShaderModule post_shader
+      = ShaderModuleLoader::loadWgsl(device, "post.wgsl");
 
     const std::array world_targets {
       colorTarget(sprite_format, &premultiplied_blend),
@@ -200,7 +182,6 @@ namespace wheel_of_fear {
     };
 
     const std::array hdr_targets {colorTarget(hdr_format, nullptr)};
-
     const std::array surface_targets {
       colorTarget(context_.surfaceFormat(), nullptr),
     };
@@ -241,8 +222,8 @@ namespace wheel_of_fear {
       surface_targets
     );
 
-    std::optional<GroundMaterialsDto> materials =
-      renderer.takeGroundMaterials();
+    std::optional<GroundMaterialsDto> materials
+      = renderer.takeGroundMaterials();
 
     for(std::size_t index = 0; index < ground_texture_count; ++index) {
       if(materials) {
@@ -319,10 +300,10 @@ namespace wheel_of_fear {
     std::uint32_t screen_height
   ) {
     const float pixels_per_unit = std::min(
-      static_cast<float>(screen_width) /
-        static_cast<float>(RenderConfig::view_width),
-      static_cast<float>(screen_height) /
-        static_cast<float>(RenderConfig::view_height)
+      static_cast<float>(screen_width)
+        / static_cast<float>(RenderConfig::view_width),
+      static_cast<float>(screen_height)
+        / static_cast<float>(RenderConfig::view_height)
     );
 
     const std::uint32_t width = std::max(
@@ -342,22 +323,20 @@ namespace wheel_of_fear {
     if(targets_ && targets_->width == width && targets_->height == height)
       return;
 
-    auto targets = std::make_unique<SizedRenderTargetsProps>();
-
+    auto targets    = std::make_unique<SizedRenderTargetsProps>();
     targets->width  = width;
     targets->height = height;
+    targets->scene
+      = factory_.createRenderTarget("scene", width, height, sprite_format);
 
-    targets->scene =
-      factory_.createRenderTarget("scene", width, height, sprite_format);
+    targets->glow
+      = factory_.createRenderTarget("glow", width, height, sprite_format);
 
-    targets->glow =
-      factory_.createRenderTarget("glow", width, height, sprite_format);
+    const std::uint32_t light_width
+      = width / RenderConfig::light_resolution_divisor;
 
-    const std::uint32_t light_width =
-      width / RenderConfig::light_resolution_divisor;
-
-    const std::uint32_t light_height =
-      height / RenderConfig::light_resolution_divisor;
+    const std::uint32_t light_height
+      = height / RenderConfig::light_resolution_divisor;
 
     targets->irradiance = factory_.createRenderTarget(
       "irradiance",
@@ -373,9 +352,8 @@ namespace wheel_of_fear {
       hdr_format
     );
 
-    targets->lit =
-      factory_.createRenderTarget("lit", width, height, hdr_format);
-
+    targets->lit
+      = factory_.createRenderTarget("lit", width, height, hdr_format);
     targets->bloom = factory_.createRenderTarget(
       "bloom",
       width / RenderConfig::bloom_resolution_divisor,
@@ -383,11 +361,9 @@ namespace wheel_of_fear {
       hdr_format
     );
 
-    using Factory = GpuResourceFactory;
-
-    const PersistentGpuResourcesProps &resources = *persistent_;
-
-    const WGPUBindGroupEntry post_entry = Factory::bufferBinding(
+    using Factory                                 = GpuResourceFactory;
+    const PersistentGpuResourcesProps &resources  = *persistent_;
+    const WGPUBindGroupEntry           post_entry = Factory::bufferBinding(
       0,
       resources.post_buffer.get(),
       sizeof(PostProcessProps)
@@ -444,9 +420,7 @@ namespace wheel_of_fear {
     targets_ = std::move(targets);
   }
 
-  void GpuRenderer::uploadFrame(
-    Renderer &renderer
-  ) {
+  void GpuRenderer::uploadFrame(Renderer &renderer) {
     PersistentGpuResourcesProps &resources = *persistent_;
     FrameProps                  &frame     = renderer.frame();
     const WGPUQueue              queue     = context_.queue();
@@ -464,8 +438,8 @@ namespace wheel_of_fear {
       atlas.markUploaded();
     }
 
-    if(resources.uploaded_map_version != frame.map_version) {
-      resources.uploaded_map_version = frame.map_version;
+    if(resources.uploaded_map_revision != frame.map_revision) {
+      resources.uploaded_map_revision = frame.map_revision;
 
       factory_.writeTexture(
         resources.wall_map.texture.get(),
@@ -478,14 +452,12 @@ namespace wheel_of_fear {
 
     const auto screen_width  = static_cast<float>(context_.surfaceWidth());
     const auto screen_height = static_cast<float>(context_.surfaceHeight());
+    frame.post.screen_size   = {screen_width, screen_height};
 
-    frame.post.screen_size = {screen_width, screen_height};
-
-    const std::uint32_t light_width =
-      targets_->width / RenderConfig::light_resolution_divisor;
-
-    const std::uint32_t light_height =
-      targets_->height / RenderConfig::light_resolution_divisor;
+    const std::uint32_t light_width
+      = targets_->width / RenderConfig::light_resolution_divisor;
+    const std::uint32_t light_height
+      = targets_->height / RenderConfig::light_resolution_divisor;
 
     frame.post.target_info = {
       static_cast<float>(targets_->width),
@@ -498,7 +470,6 @@ namespace wheel_of_fear {
     frame.post.lights      = frame.lights;
 
     constexpr auto atlas_extent = static_cast<float>(RenderConfig::atlas_size);
-
     const QuadViewProps world_view {
       .origin     = frame.post.view_origin,
       .size       = frame.post.view_size,
@@ -549,32 +520,30 @@ namespace wheel_of_fear {
       sizeof(frame.post)
     );
 
-    const auto write_quads =
-      [queue](WGPUBuffer buffer, const QuadBatch &batch) {
-        if(batch.count() > 0)
-          wgpuQueueWriteBuffer(
-            queue,
-            buffer,
-            0,
-            batch.used().data(),
-            batch.used().size_bytes()
-          );
-      };
+    const auto write_quads
+      = [queue](WGPUBuffer buffer, const QuadBatch &batch) {
+          if(batch.count() > 0)
+            wgpuQueueWriteBuffer(
+              queue,
+              buffer,
+              0,
+              batch.used().data(),
+              batch.used().size_bytes()
+            );
+        };
 
     write_quads(resources.world_quad_buffer.get(), frame.world);
     write_quads(resources.glow_quad_buffer.get(), frame.glow);
     write_quads(resources.ui_quad_buffer.get(), frame.ui);
   }
 
-  void GpuRenderer::render(
-    Renderer &renderer
-  ) {
+  void GpuRenderer::render(Renderer &renderer) {
     if(!persistent_) createPersistentResources(renderer);
     ensureSizedTargets(context_.surfaceWidth(), context_.surfaceHeight());
     uploadFrame(renderer);
 
-    std::optional<GpuTexture> surface_texture =
-      context_.acquireSurfaceTexture();
+    std::optional<GpuTexture> surface_texture
+      = context_.acquireSurfaceTexture();
     if(!surface_texture) return;
 
     const GpuTextureView back_buffer(
@@ -666,7 +635,6 @@ namespace wheel_of_fear {
     );
 
     const WGPUCommandBuffer submitted = command.get();
-
     wgpuQueueSubmit(context_.queue(), 1, &submitted);
     context_.present();
   }
@@ -681,13 +649,11 @@ namespace wheel_of_fear {
     std::size_t                            vertex_count
   ) {
     std::vector<WGPURenderPassColorAttachment> attachments;
-
     attachments.reserve(views.size());
 
     for(const WGPUTextureView view : views) {
-      WGPURenderPassColorAttachment attachment =
-        WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
-
+      WGPURenderPassColorAttachment attachment
+        = WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
       attachment.view       = view;
       attachment.loadOp     = load_op;
       attachment.storeOp    = WGPUStoreOp_Store;
@@ -696,9 +662,8 @@ namespace wheel_of_fear {
     }
 
     WGPURenderPassDescriptor descriptor = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
-
-    descriptor.colorAttachmentCount = attachments.size();
-    descriptor.colorAttachments     = attachments.data();
+    descriptor.colorAttachmentCount     = attachments.size();
+    descriptor.colorAttachments         = attachments.data();
 
     const GpuRenderPassEncoder pass(
       wgpuCommandEncoderBeginRenderPass(encoder, &descriptor)
@@ -707,7 +672,6 @@ namespace wheel_of_fear {
     if(vertex_count > 0) {
       wgpuRenderPassEncoderSetPipeline(pass.get(), pipeline);
       wgpuRenderPassEncoderSetBindGroup(pass.get(), 0, bind_group, 0, nullptr);
-
       wgpuRenderPassEncoderDraw(
         pass.get(),
         static_cast<std::uint32_t>(vertex_count),

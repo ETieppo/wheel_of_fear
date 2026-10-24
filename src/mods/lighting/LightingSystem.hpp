@@ -1,10 +1,9 @@
 #pragma once
 
-#include <vector>
-
 #include "core/render/Renderer.hpp"
 #include "mods/lighting/LightProps.hpp"
 #include "mods/lighting/enums/LightFilterEnum.hpp"
+#include <vector>
 
 namespace wheel_of_fear {
   class TileMapModel;
@@ -19,24 +18,28 @@ namespace wheel_of_fear {
         lights_.clear();
       }
 
-      void add(
-        const LightProps &light
-      );
+      [[nodiscard]]
+      const std::vector<LightProps> &lights() const {
+        return lights_;
+      }
+
+      void add(const LightProps &light);
+
       [[nodiscard]]
       float freezingLightAt(
         const TileMapModel &map,
         Vec2Props           point,
         LightFilterEnum     filter
       ) const;
+
       [[nodiscard]]
       float visibilityAt(
         const TileMapModel &map,
         Vec2Props           point,
         LightFilterEnum     filter
       ) const;
-      void submitToRenderer(
-        Renderer &renderer
-      ) const;
+
+      void submitToRenderer(Renderer &renderer) const;
 
     private:
       static constexpr std::size_t capacity                 = 160;

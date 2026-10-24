@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstdint>
-
 #include "mods/director/demos/DemoScenario.hpp"
+#include <cstdint>
 
 namespace wheel_of_fear {
   class SectorsDemoScenario final: public DemoScenario {

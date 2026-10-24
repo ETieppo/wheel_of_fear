@@ -1,12 +1,10 @@
 #include "mods/mobs/MobEntity.hpp"
-
-#include <algorithm>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/effects/EffectSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
 
 namespace wheel_of_fear {
   MobEntity::MobEntity(
@@ -37,19 +35,16 @@ namespace wheel_of_fear {
     );
   }
 
-  float MobEntity::distanceToPlayer(
-    const GameContextDto &context
-  ) const {
+  float MobEntity::distanceToPlayer(const GameContextDto &context) const {
     return distanceTo(context.player.position());
   }
 
-  void MobEntity::update(
-    GameContextDto &context
-  ) {
+  void MobEntity::update(GameContextDto &context) {
     if(!isAlive()) return;
 
     const float delta = context.clock.deltaSeconds();
     if(!condition_.isFrozen()) advanceAnimation(delta);
+
     incident_cooldown_ = std::max(0.0F, incident_cooldown_ - delta);
     brain_.tickCooldowns(delta);
     voice_.tickCooldown(delta);
@@ -58,15 +53,11 @@ namespace wheel_of_fear {
     voice_.playMovementSound(context);
   }
 
-  void MobEntity::onContact(
-    GameContextDto &context
-  ) {
+  void MobEntity::onContact(GameContextDto &context) {
     brain_.strikeAndRetreat(context, default_retreat_seconds);
   }
 
-  void MobEntity::ignite(
-    GameContextDto &context
-  ) {
+  void MobEntity::ignite(GameContextDto &context) {
     condition_.startBurning();
 
     voice_.playSound(
@@ -77,9 +68,7 @@ namespace wheel_of_fear {
     );
   }
 
-  void MobEntity::catchBlast(
-    GameContextDto &context
-  ) {
+  void MobEntity::catchBlast(GameContextDto &context) {
     setAlive(false);
     condition_.setBeingHugged(false);
     context.effects.emitCrumble(context.world, position(), 14);

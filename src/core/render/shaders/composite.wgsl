@@ -73,6 +73,7 @@ fn valueNoise(point: vec2<f32>) -> f32 {
     let b = hash2(cell + vec2<f32>(1.0, 0.0));
     let c = hash2(cell + vec2<f32>(0.0, 1.0));
     let d = hash2(cell + vec2<f32>(1.0, 1.0));
+
     return mix(mix(a, b, smooth_local.x), mix(c, d, smooth_local.x), smooth_local.y);
 }
 
@@ -84,6 +85,7 @@ fn wallAtTile(tile: vec2<f32>) -> f32 {
     if (!isInsideMap(tile)) {
         return 1.0;
     }
+
     return textureLoad(wall_map, vec2<i32>(i32(tile.x), i32(tile.y)), 0).r;
 }
 
@@ -95,10 +97,12 @@ fn decodeNormal(sample: vec4<f32>) -> vec3<f32> {
 fn nonNegativeLog2(value: f32) -> f32 {
     var level = 0.0;
     var octave = 1.0;
+
     for (var index = 0; index < 16; index = index + 1) {
         level = level + clamp(value / octave - 1.0, 0.0, 1.0);
         octave = octave * 2.0;
     }
+
     return level;
 }
 
@@ -109,12 +113,15 @@ fn materialLevel(world_per_pixel: f32, repeat_units: f32) -> f32 {
 fn floorOcclusion(tile: vec2<f32>, local: vec2<f32>) -> f32 {
     var occlusion = 1.0;
     let reach = 0.6;
+
     occlusion = occlusion * mix(1.0, smoothstep(0.0, reach, local.x), wallAtTile(tile + vec2<f32>(-1.0, 0.0)));
     occlusion = occlusion * mix(1.0, smoothstep(0.0, reach, 1.0 - local.x), wallAtTile(tile + vec2<f32>(1.0, 0.0)));
     occlusion = occlusion * mix(1.0, smoothstep(0.0, reach * 1.4, local.y), wallAtTile(tile + vec2<f32>(0.0, -1.0)));
     occlusion = occlusion * mix(1.0, smoothstep(0.0, reach * 0.6, 1.0 - local.y), wallAtTile(tile + vec2<f32>(0.0, 1.0)));
+
     let corner = min(length(local), reach) / reach;
     occlusion = occlusion * mix(1.0, corner, wallAtTile(tile + vec2<f32>(-1.0, -1.0)) * (1.0 - wallAtTile(tile + vec2<f32>(-1.0, 0.0))) * (1.0 - wallAtTile(tile + vec2<f32>(0.0, -1.0))));
+
     return 0.35 + 0.65 * occlusion;
 }
 
@@ -122,6 +129,7 @@ fn groundSurface(world: vec2<f32>, world_per_pixel: f32) -> SurfaceProps {
     let tile = floor(world / post.map_info.z);
     let local = fract(world / post.map_info.z);
     var surface: SurfaceProps;
+
     if (!isInsideMap(tile)) {
         surface.albedo = vec3<f32>(0.0, 0.0, 0.0);
         surface.normal = vec3<f32>(0.0, 0.0, 1.0);
@@ -129,6 +137,7 @@ fn groundSurface(world: vec2<f32>, world_per_pixel: f32) -> SurfaceProps {
         surface.shininess = 0.0;
         return surface;
     }
+
     if (wallAtTile(tile) > 0.5) {
         let shows_face = wallAtTile(tile + vec2<f32>(0.0, 1.0)) < 0.5;
         if (shows_face && local.y > 1.0 - face_height) {
@@ -142,22 +151,28 @@ fn groundSurface(world: vec2<f32>, world_per_pixel: f32) -> SurfaceProps {
             surface.shininess = 0.5;
             return surface;
         }
+
         let wall_uv = world / wall_repeat_units;
         let color = textureSampleLevel(wall_color, repeat_sampler, wall_uv, materialLevel(world_per_pixel, wall_repeat_units)).rgb;
         let bumped = decodeNormal(textureSampleLevel(wall_normal, repeat_sampler, wall_uv, materialLevel(world_per_pixel, wall_repeat_units)));
         var edge = 1.0;
+
         if (wallAtTile(tile + vec2<f32>(-1.0, 0.0)) < 0.5) { edge = min(edge, local.x); }
         if (wallAtTile(tile + vec2<f32>(1.0, 0.0)) < 0.5) { edge = min(edge, 1.0 - local.x); }
         if (wallAtTile(tile + vec2<f32>(0.0, -1.0)) < 0.5) { edge = min(edge, local.y); }
         if (shows_face) { edge = min(edge, (1.0 - face_height) - local.y); }
+
         let rim = 1.0 - smoothstep(0.0, 0.12, edge);
         let rim_line = 1.0 - smoothstep(0.0, 0.035, edge);
+
         surface.albedo = color * 0.3 + vec3<f32>(0.25, 0.28, 0.34) * rim + vec3<f32>(0.35, 0.4, 0.48) * rim_line;
         surface.normal = bumped;
         surface.occlusion = 0.8;
         surface.shininess = 0.35;
+
         return surface;
     }
+
     let floor_uv = world / floor_repeat_units;
     let color = textureSampleLevel(floor_color, repeat_sampler, floor_uv, materialLevel(world_per_pixel, floor_repeat_units)).rgb;
     let bumped = decodeNormal(textureSampleLevel(floor_normal, repeat_sampler, floor_uv, materialLevel(world_per_pixel, floor_repeat_units)));
@@ -166,6 +181,7 @@ fn groundSurface(world: vec2<f32>, world_per_pixel: f32) -> SurfaceProps {
     surface.normal = bumped;
     surface.occlusion = floorOcclusion(tile, local);
     surface.shininess = 1.0;
+
     return surface;
 }
 
@@ -199,5 +215,6 @@ fn groundSurface(world: vec2<f32>, world_per_pixel: f32) -> SurfaceProps {
     let haze = valueNoise(world / 22.0 + vec2<f32>(post.time * 0.15, post.time * 0.07));
     rgb = rgb + vec3<f32>(0.006, 0.008, 0.014) * haze;
     rgb = rgb * mix(0.02, 1.0, line_of_sight);
+
     return vec4<f32>(rgb, 1.0);
 }

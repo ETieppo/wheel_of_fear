@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstdint>
-
 #include "core/render/AtlasRegionProps.hpp"
+#include <cstdint>
 
 namespace wheel_of_fear {
   class AtlasShelfPacker {

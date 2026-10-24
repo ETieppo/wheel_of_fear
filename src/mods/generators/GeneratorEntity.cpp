@@ -1,9 +1,4 @@
 #include "mods/generators/GeneratorEntity.hpp"
-
-#include <algorithm>
-#include <cmath>
-#include <format>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
@@ -16,6 +11,9 @@
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <algorithm>
+#include <cmath>
+#include <format>
 
 namespace wheel_of_fear {
   GeneratorEntity::GeneratorEntity(
@@ -62,16 +60,14 @@ namespace wheel_of_fear {
     float           seconds_to_charge
   ) {
     const float delta = context.clock.deltaSeconds();
-
     advanceAnimation(delta);
     machinery_.rotor_angle += machinery_.rotor_speed * delta;
     skill_check_.tickResult(delta);
 
-    const bool is_player_near =
-      distanceTo(context.player.position()) < interaction_distance;
+    const bool is_player_near
+      = distanceTo(context.player.position()) < interaction_distance;
 
     refreshRepairStatus(context, is_player_near);
-
     currentState().update(
       *this,
       context,
@@ -90,18 +86,14 @@ namespace wheel_of_fear {
     bool                  is_player_near
   ) {
     const PlayerEntity &player = context.player;
-
-    was_repaired_last_frame_ = is_being_repaired_;
-
-    is_being_repaired_ = currentState().canBeRepaired() &&
-                         is_player_near &&
-                         player.isInteracting() &&
-                         player.canBeTargeted();
+    was_repaired_last_frame_   = is_being_repaired_;
+    is_being_repaired_         = currentState().canBeRepaired()
+      && is_player_near
+      && player.isInteracting()
+      && player.canBeTargeted();
   }
 
-  void GeneratorEntity::emitChargeLight(
-    GameContextDto &context
-  ) const {
+  void GeneratorEntity::emitChargeLight(GameContextDto &context) const {
     LightProps light;
 
     light.position      = position();
@@ -135,10 +127,11 @@ namespace wheel_of_fear {
       const float threshold = incident_thresholds[incident_index];
 
       if(
-        triggered_incidents_[incident_index] ||
-        previous_progress >=
-        threshold ||
-        progress_ < threshold
+        triggered_incidents_[incident_index]
+        || previous_progress
+        >= threshold
+        || progress_
+        < threshold
       )
         continue;
 
@@ -155,10 +148,12 @@ namespace wheel_of_fear {
 
     switch(incident) {
       case GeneratorIncidentEnum::none: break;
+
       case GeneratorIncidentEnum::jam:
         state_ = GeneratorStateEnum::jammed;
         jammed_state_.enter(*this, context);
         break;
+
       case GeneratorIncidentEnum::breakdown:
         state_ = GeneratorStateEnum::broken;
         broken_state_.enter(*this, context);
@@ -166,20 +161,16 @@ namespace wheel_of_fear {
     }
   }
 
-  void GeneratorEntity::bringOnline(
-    GameContextDto &context
-  ) {
+  void GeneratorEntity::bringOnline(GameContextDto &context) {
     state_ = GeneratorStateEnum::online;
     online_state_.enter();
     skill_check_.cancel();
     context.world.powerRoom(room_index_, true);
     context.world.shake(0.35F);
-
     context.effects
       .emitSparks(context.world, position(), 30, Palette::neon_cyan);
 
     playSound(context, SoundEnum::generator_online, 1.0F, 1);
-
     context.sound_player.playAt(
       SoundEnum::led_power_up,
       0.8F,
@@ -196,17 +187,13 @@ namespace wheel_of_fear {
     context.mobs.onGeneratorOnline(context);
   }
 
-  void GeneratorEntity::forceOnline(
-    GameContextDto &context
-  ) {
+  void GeneratorEntity::forceOnline(GameContextDto &context) {
     progress_ = 1;
     state_    = GeneratorStateEnum::online;
     context.world.powerRoom(room_index_, true);
   }
 
-  void GeneratorEntity::draw(
-    GameContextDto &context
-  ) const {
+  void GeneratorEntity::draw(GameContextDto &context) const {
     Renderer               &renderer     = context.renderer;
     const SpriteSheetProps &sprites      = context.art.sprites();
     const float             real_seconds = context.clock.realSeconds();
@@ -220,7 +207,6 @@ namespace wheel_of_fear {
     );
 
     renderer.drawSprite(sprites.generator_base, center);
-
     renderer.drawSprite(
       sprites.generator_rotor,
       center,
@@ -229,9 +215,8 @@ namespace wheel_of_fear {
 
     const ColorProps status_color = statusColor();
     const float core_level = isOnline() ? 0.8F : 0.12F + (progress_ * 0.35F);
-
-    const float pulse =
-      0.85F + (0.15F * std::sin(real_seconds * (3 + machinery_.rotor_speed)));
+    const float pulse
+      = 0.85F + (0.15F * std::sin(real_seconds * (3 + machinery_.rotor_speed)));
 
     renderer.drawGlowSprite(
       sprites.generator_glow,
@@ -264,23 +249,20 @@ namespace wheel_of_fear {
     const float lit_dots = progress_ * static_cast<float>(progress_ring_dots);
 
     for(int dot = 0; dot < progress_ring_dots; ++dot) {
-      const float fraction =
-        static_cast<float>(dot) / static_cast<float>(progress_ring_dots);
-
-      const float angle =
-        (fraction * ScalarMath::tau) - (ScalarMath::pi / 2.0F);
-
-      const Vec2Props point =
-        position().add(Vec2Props::fromAngle(angle).scale(progress_ring_radius));
-
+      const float fraction
+        = static_cast<float>(dot) / static_cast<float>(progress_ring_dots);
+      const float angle
+        = (fraction * ScalarMath::tau) - (ScalarMath::pi / 2.0F);
+      const Vec2Props point = position().add(
+        Vec2Props::fromAngle(angle).scale(progress_ring_radius)
+      );
       const bool is_lit = static_cast<float>(dot) < lit_dots;
-
-      const bool is_threshold =
-        std::ranges::any_of(incident_thresholds, [fraction](float threshold) {
-          return std::abs(fraction - threshold) <
-                 0.5F /
-                 static_cast<float>(progress_ring_dots);
-        });
+      const bool is_threshold
+        = std::ranges::any_of(incident_thresholds, [fraction](float threshold) {
+            return std::abs(fraction - threshold)
+              < 0.5F
+              / static_cast<float>(progress_ring_dots);
+          });
 
       ColorProps dot_color = ColorProps::hex(0x202838);
       if(is_threshold) dot_color = Palette::spark_yellow.withAlpha(0.6F);

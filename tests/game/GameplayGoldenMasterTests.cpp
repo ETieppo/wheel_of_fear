@@ -1,14 +1,15 @@
+#include "support/HeadlessGameHarness.hpp"
 #include <array>
 #include <cstdint>
+#include <doctest/doctest.h>
 #include <memory>
 #include <string_view>
 
-#include <doctest/doctest.h>
-
-#include "support/HeadlessGameHarness.hpp"
-
 namespace wheel_of_fear {
   namespace {
+    constexpr int frame_count     = 1200;
+    constexpr int sample_interval = 15;
+
     struct GoldenMasterCaseProps {
         std::string_view demo_mode;
         std::uint64_t    expected_fingerprint;
@@ -24,50 +25,39 @@ namespace wheel_of_fear {
       };
     }
 
-    constexpr int frame_count     = 1200;
-    constexpr int sample_interval = 15;
-
     constexpr std::array<GoldenMasterCaseProps, 16> golden_master_cases {
-      goldenCase("none", 16467131506377287946ULL),
-      goldenCase("play", 15614293038488856873ULL),
-      goldenCase("deep", 9222236461530351679ULL),
-      goldenCase("tracker", 10485458730266733577ULL),
-      goldenCase("sectors", 3732755655864352810ULL),
-      goldenCase("showcase", 10496593956240203542ULL),
-      goldenCase("freeze", 4994920308019554794ULL),
-      goldenCase("moth", 3531764166164114164ULL),
-      goldenCase("locker", 6229823768048464017ULL),
-      goldenCase("witness", 10498217765680320769ULL),
-      goldenCase("repair", 15054823844236158264ULL),
-      goldenCase("power", 8452166042667028858ULL),
-      goldenCase("grenade", 3082578536531543162ULL),
-      goldenCase("lure", 3500444812547284908ULL),
-      goldenCase("doors", 5094187250472935369ULL),
-      goldenCase("walk", 7360409517096963973ULL),
+      goldenCase("none", 2260802571275938495ULL),
+      goldenCase("play", 4606756502277195433ULL),
+      goldenCase("deep", 10354815022693644597ULL),
+      goldenCase("tracker", 6212961513808940026ULL),
+      goldenCase("sectors", 1834963208022850004ULL),
+      goldenCase("showcase", 17463417680836924264ULL),
+      goldenCase("freeze", 12816746611816117225ULL),
+      goldenCase("moth", 16308746009625321247ULL),
+      goldenCase("locker", 3388930426652436210ULL),
+      goldenCase("witness", 12222381865618191580ULL),
+      goldenCase("repair", 14430012839130274652ULL),
+      goldenCase("power", 5008915058096031097ULL),
+      goldenCase("grenade", 10929154195232234991ULL),
+      goldenCase("lure", 2627612148598187031ULL),
+      goldenCase("doors", 3889474961947922463ULL),
+      goldenCase("walk", 10134188619832363132ULL),
     };
 
-    std::uint64_t fingerprintOf(
-      std::string_view demo_mode
-    ) {
-      const auto harness =
-        std::make_unique<HeadlessGameHarness>(std::string(demo_mode));
-
+    std::uint64_t fingerprintOf(std::string_view demo_mode) {
+      const auto harness
+        = std::make_unique<HeadlessGameHarness>(std::string(demo_mode));
       return harness->runFrames(frame_count, sample_interval);
     }
   } // namespace
 
-  TEST_CASE(
-    "headless simulation is deterministic across runs"
-  ) {
+  TEST_CASE("headless simulation is deterministic across runs") {
     CHECK(fingerprintOf("play") == fingerprintOf("play"));
   }
 
-  TEST_CASE(
-    "every demo scenario renders the recorded golden master"
-  ) {
+  TEST_CASE("every demo scenario renders the recorded golden master") {
     for(const GoldenMasterCaseProps &golden_case : golden_master_cases) {
       CAPTURE(golden_case.demo_mode);
-
       CHECK(
         fingerprintOf(golden_case.demo_mode) == golden_case.expected_fingerprint
       );

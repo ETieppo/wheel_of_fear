@@ -1,20 +1,15 @@
 #include "core/render/TypefaceSet.hpp"
-
-#include <cstddef>
-#include <exception>
-
-#include <SDL3/SDL_log.h>
-
 #include "core/assets/AssetLocator.hpp"
 #include "core/assets/FontCatalog.hpp"
 #include "core/render/FontBaker.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/Utf8Decoder.hpp"
+#include <SDL3/SDL_log.h>
+#include <cstddef>
+#include <exception>
 
 namespace wheel_of_fear {
-  void TypefaceSet::bakeInto(
-    TextureAtlas &atlas
-  ) {
+  void TypefaceSet::bakeInto(TextureAtlas &atlas) {
     std::uint32_t cursor_y = RenderConfig::font_region_top;
 
     try {
@@ -42,9 +37,7 @@ namespace wheel_of_fear {
     atlas.markDirty();
   }
 
-  const FontProps &TypefaceSet::font(
-    TypefaceEnum typeface
-  ) const {
+  const FontProps &TypefaceSet::font(TypefaceEnum typeface) const {
     return fonts_[static_cast<std::size_t>(typeface)];
   }
 
@@ -55,9 +48,7 @@ namespace wheel_of_fear {
     return font(typeface).glyphs[codepoint < 256 ? codepoint : U'?'];
   }
 
-  float TypefaceSet::pixelSize(
-    TypefaceEnum typeface
-  ) const {
+  float TypefaceSet::pixelSize(TypefaceEnum typeface) const {
     return font(typeface).pixel_size;
   }
 
@@ -71,9 +62,9 @@ namespace wheel_of_fear {
     std::size_t cursor = 0;
 
     while(cursor < text.size())
-      width +=
-        glyphFor(typeface, Utf8Decoder::nextCodepoint(text, cursor)).advance *
-        scale;
+      width
+        += glyphFor(typeface, Utf8Decoder::nextCodepoint(text, cursor)).advance
+        * scale;
 
     return width;
   }

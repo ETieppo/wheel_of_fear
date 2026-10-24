@@ -1,14 +1,11 @@
 #include "core/render/FontBaker.hpp"
-
 #include <algorithm>
+#include <ft2build.h>
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
-
-#include <ft2build.h>
 #include FT_FREETYPE_H
-
 #include "core/assets/AssetLocator.hpp"
 #include "core/render/RenderConfig.hpp"
 
@@ -16,26 +13,22 @@ namespace wheel_of_fear {
   namespace {
     class FreeTypeLibraryDeleter {
       public:
-        void operator ()(
-          FT_Library library
-        ) const {
+        void operator ()(FT_Library library) const {
           FT_Done_FreeType(library);
         }
     };
 
     class FreeTypeFaceDeleter {
       public:
-        void operator ()(
-          FT_Face face
-        ) const {
+        void operator ()(FT_Face face) const {
           FT_Done_Face(face);
         }
     };
 
     using FreeTypeLibrary = std::
       unique_ptr<std::remove_pointer_t<FT_Library>, FreeTypeLibraryDeleter>;
-    using FreeTypeFace =
-      std::unique_ptr<std::remove_pointer_t<FT_Face>, FreeTypeFaceDeleter>;
+    using FreeTypeFace
+      = std::unique_ptr<std::remove_pointer_t<FT_Face>, FreeTypeFaceDeleter>;
 
     struct GlyphCursorProps {
         std::uint32_t x          = 2;
@@ -47,7 +40,6 @@ namespace wheel_of_fear {
 
     FreeTypeLibrary createLibrary() {
       FT_Library raw_library = nullptr;
-
       if(FT_Init_FreeType(&raw_library) != 0)
         throw std::runtime_error("unable to initialize FreeType");
 
@@ -68,7 +60,8 @@ namespace wheel_of_fear {
           static_cast<FT_Long>(bytes.size()),
           0,
           &raw_face
-        ) != 0
+        )
+        != 0
       ) {
         throw std::runtime_error("unable to load font " + font_path.string());
       }
@@ -98,8 +91,9 @@ namespace wheel_of_fear {
     ) {
       for(std::uint32_t y = 0; y < bitmap.rows; ++y) {
         for(std::uint32_t x = 0; x < bitmap.width; ++x) {
-          const std::uint8_t coverage =
-            bitmap.buffer[(static_cast<std::ptrdiff_t>(y) * bitmap.pitch) + x];
+          const std::uint8_t coverage
+            = bitmap
+                .buffer[(static_cast<std::ptrdiff_t>(y) * bitmap.pitch) + x];
 
           atlas.set(
             static_cast<int>(cursor.x + x),
@@ -116,7 +110,6 @@ namespace wheel_of_fear {
       GlyphCursorProps  &cursor
     ) {
       GlyphProps glyph {};
-
       glyph.advance   = static_cast<float>(slot->advance.x) / 64.0F;
       glyph.bearing_x = static_cast<float>(slot->bitmap_left);
       glyph.bearing_y = static_cast<float>(slot->bitmap_top);
@@ -124,7 +117,6 @@ namespace wheel_of_fear {
       const std::uint32_t width  = slot->bitmap.width;
       const std::uint32_t height = slot->bitmap.rows;
       if(width == 0 || height == 0) return glyph;
-
       reserveRowSpace(cursor, width, height);
       copyBitmap(slot->bitmap, atlas, cursor);
 
@@ -138,7 +130,6 @@ namespace wheel_of_fear {
 
       cursor.x += width + glyph_padding;
       cursor.row_height = std::max(cursor.row_height, height);
-
       return glyph;
     }
   } // namespace
@@ -152,18 +143,15 @@ namespace wheel_of_fear {
     const std::vector<std::uint8_t> bytes = AssetLocator::readBytes(font_path);
     const FreeTypeLibrary           library = createLibrary();
     const FreeTypeFace              face = loadFace(library, bytes, font_path);
-
     FT_Set_Pixel_Sizes(face.get(), 0, static_cast<FT_UInt>(font.pixel_size));
-
     GlyphCursorProps cursor {.x = glyph_padding, .y = top, .row_height = 0};
 
     for(char32_t codepoint = 32; codepoint < 256; ++codepoint) {
       if(codepoint >= 127 && codepoint < 160) continue;
-
       const FT_UInt glyph_index = FT_Get_Char_Index(face.get(), codepoint);
+
       if(glyph_index == 0 && codepoint != 32) continue;
       if(FT_Load_Glyph(face.get(), glyph_index, FT_LOAD_RENDER) != 0) continue;
-
       font.glyphs[codepoint] = bakeGlyph(face->glyph, atlas, cursor);
     }
 

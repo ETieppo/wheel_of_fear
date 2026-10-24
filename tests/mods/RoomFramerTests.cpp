@@ -1,13 +1,9 @@
+#include "mods/camera/RoomFramer.hpp"
 #include <array>
-
 #include <doctest/doctest.h>
 
-#include "mods/camera/RoomFramer.hpp"
-
 namespace wheel_of_fear {
-  TEST_CASE(
-    "the camera never shows past the walls of the current room"
-  ) {
+  TEST_CASE("the camera never shows past the walls of the current room") {
     const RoomProps room {
       .left   = 31,
       .top    = 21,
@@ -31,6 +27,7 @@ namespace wheel_of_fear {
       const Vec2Props desired : std::array<Vec2Props, 4> {
         Vec2Props::of(-500, -500),
         Vec2Props::of(5000, 5000),
+
         room.center(),
         Vec2Props::of(room.center().x, -40),
       }

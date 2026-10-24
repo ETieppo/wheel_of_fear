@@ -1,11 +1,9 @@
 #include "mods/director/demos/MothDemoScenario.hpp"
-
-#include <format>
-#include <string_view>
-
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/mobs/species/MothMob.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include <format>
+#include <string_view>
 
 namespace wheel_of_fear {
   void MothDemoScenario::run(
@@ -13,7 +11,6 @@ namespace wheel_of_fear {
     const DemoTickDto &tick
   ) {
     PlayerEntity &player = context.player;
-
     context.mobs.setGraceSeconds(0);
     player.flashlight().setEnabled(false);
 
@@ -28,8 +25,8 @@ namespace wheel_of_fear {
 
       spawnInSight(context, MobKindEnum::crawler, 160);
     }
-    if(!tick.should_log) return;
 
+    if(!tick.should_log) return;
     Vec2Props        moth_position {};
     std::string_view stance = "missing";
 

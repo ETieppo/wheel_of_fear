@@ -1,5 +1,4 @@
 #include "mods/mobs/MobHugCoordinator.hpp"
-
 #include <algorithm>
 
 namespace wheel_of_fear {
@@ -22,7 +21,6 @@ namespace wheel_of_fear {
 
       const Vec2Props offset   = mob->position().sub(position);
       const float     distance = offset.length();
-
       if(
         distance >= closest_distance || offset.normalized().dot(facing) < -0.3F
       )
@@ -31,8 +29,8 @@ namespace wheel_of_fear {
       closest_distance = distance;
       closest          = mob.get();
     }
-    if(closest == nullptr) return false;
 
+    if(closest == nullptr) return false;
     closest->condition().setBeingHugged(true);
 
     return true;

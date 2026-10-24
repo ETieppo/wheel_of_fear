@@ -1,15 +1,15 @@
 #pragma once
 
-#include <cstdint>
-#include <memory>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/director/demos/DemoScenario.hpp"
+#include <cstdint>
+#include <memory>
 
 namespace wheel_of_fear {
   class DemoScenarioRunner {
     public:
       DemoScenarioRunner();
+      void restart();
 
       [[nodiscard]]
       bool isActive() const {
@@ -21,7 +21,6 @@ namespace wheel_of_fear {
         return scenario_ ? scenario_->startingPhase() : 1;
       }
 
-      void restart();
       void run(
         GameContextDto &context,
         float           seconds

@@ -1,5 +1,4 @@
 #include "mods/mobs/MobExplosionHandler.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/theme/Palette.hpp"
@@ -34,11 +33,9 @@ namespace wheel_of_fear {
     MobEntity      &bomb
   ) {
     if(!bomb.isAlive()) return;
-
     bomb.setAlive(false);
 
     const Vec2Props center = bomb.position();
-
     announceExplosion(context, center);
 
     if(center.distance(context.player.position()) < explosion_player_radius)
@@ -54,9 +51,7 @@ namespace wheel_of_fear {
   ) {
     WorldSystem    &world           = context.world;
     const Vec2Props player_position = context.player.position();
-
     context.effects.emitExplosion(world, center);
-
     context.sound_player.playAt(
       SoundEnum::explosion,
       1.0F,
@@ -77,7 +72,6 @@ namespace wheel_of_fear {
       .emit(center, explosion_noise_radius, NoiseSourceEnum::explosion);
 
     LightProps flash;
-
     flash.position          = center;
     flash.radius            = 150;
     flash.intensity         = 2.2F;
@@ -106,13 +100,13 @@ namespace wheel_of_fear {
   ) {
     for(const auto &victim : mobs_) {
       if(
-        !victim->isAlive() ||
-        !victim->traits().is_hostile ||
-        victim->isDisguised()
+        !victim->isAlive()
+        || !victim->traits().is_hostile
+        || victim->isDisguised()
       )
         continue;
-      if(victim->distanceTo(center) > explosion_radius) continue;
 
+      if(victim->distanceTo(center) > explosion_radius) continue;
       victim->catchBlast(context);
     }
   }

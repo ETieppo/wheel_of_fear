@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/math/Vec2Props.hpp"
 #include "core/render/Renderer.hpp"
 #include "mods/art/SpriteSheetProps.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class LockerEntity {
@@ -38,9 +37,8 @@ namespace wheel_of_fear {
         door_open_amount_ = 1;
       }
 
-      void update(
-        float delta_seconds
-      );
+      void update(float delta_seconds);
+
       void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites

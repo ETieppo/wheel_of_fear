@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstdint>
-#include <optional>
-
 #include "core/items/enums/ItemEnum.hpp"
 #include "core/math/ColorProps.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "mods/tracker/enums/SignalKindEnum.hpp"
+#include <cstdint>
+#include <optional>
 
 namespace wheel_of_fear {
   struct SignalProps {

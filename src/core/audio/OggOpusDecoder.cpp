@@ -1,15 +1,12 @@
 #include "core/audio/OggOpusDecoder.hpp"
-
+#include "core/assets/AssetLocator.hpp"
 #include <algorithm>
 #include <cstring>
 #include <memory>
+#include <opus.h>
 #include <stdexcept>
 #include <string_view>
 #include <utility>
-
-#include <opus.h>
-
-#include "core/assets/AssetLocator.hpp"
 
 namespace wheel_of_fear {
   namespace {
@@ -19,25 +16,18 @@ namespace wheel_of_fear {
 
     class OpusDecoderDeleter {
       public:
-        void operator ()(
-          OpusDecoder* decoder
-        ) const {
+        void operator ()(OpusDecoder* decoder) const {
           opus_decoder_destroy(decoder);
         }
     };
 
-    std::uint16_t readLittleEndian16(
-      const std::uint8_t* data
-    ) {
+    std::uint16_t readLittleEndian16(const std::uint8_t* data) {
       const auto low  = static_cast<std::uint32_t>(data[0]);
       const auto high = static_cast<std::uint32_t>(data[1]);
-
       return static_cast<std::uint16_t>(low | (high << 8U));
     }
 
-    std::int64_t readLittleEndian64(
-      const std::uint8_t* data
-    ) {
+    std::int64_t readLittleEndian64(const std::uint8_t* data) {
       std::uint64_t value = 0;
 
       for(int index = 7; index >= 0; --index)
@@ -50,15 +40,15 @@ namespace wheel_of_fear {
       const std::vector<std::uint8_t> &packet,
       std::string_view                 magic
     ) {
-      return packet.size() >=
-             magic.size() &&
-             std::memcmp(packet.data(), magic.data(), magic.size()) == 0;
+      return packet.size()
+        >= magic.size()
+        && std::memcmp(packet.data(), magic.data(), magic.size())
+        == 0;
     }
   } // namespace
 
-  DecodedAudioProps OggOpusDecoder::decodeFile(
-    const std::filesystem::path &path
-  ) {
+  DecodedAudioProps
+  OggOpusDecoder::decodeFile(const std::filesystem::path &path) {
     const std::vector<std::uint8_t> bytes = AssetLocator::readBytes(path);
     return decode(bytes);
   }
@@ -75,9 +65,8 @@ namespace wheel_of_fear {
       if(std::memcmp(bytes.data() + offset, "OggS", 4) != 0)
         throw std::runtime_error("malformed ogg page");
 
-      const std::int64_t granule_position =
-        readLittleEndian64(bytes.data() + offset + 6);
-
+      const std::int64_t granule_position
+        = readLittleEndian64(bytes.data() + offset + 6);
       const std::size_t segment_count = bytes[offset + 26];
       const std::size_t table_offset  = offset + page_header_size;
 
@@ -112,12 +101,13 @@ namespace wheel_of_fear {
     return packets;
   }
 
-  DecodedAudioProps OggOpusDecoder::decode(
-    std::span<const std::uint8_t> bytes
-  ) {
-    std::int64_t final_granule_position = -1;
-    const auto   packets = extractPackets(bytes, final_granule_position);
+  DecodedAudioProps
+  OggOpusDecoder::decode(std::span<const std::uint8_t> bytes) {
+    std::int64_t      final_granule_position = -1;
+    int               error                  = 0;
+    DecodedAudioProps audio;
 
+    const auto packets = extractPackets(bytes, final_granule_position);
     if(packets.size() < 2 || !startsWith(packets[0], "OpusHead"))
       throw std::runtime_error("missing opus header");
 
@@ -126,11 +116,8 @@ namespace wheel_of_fear {
 
     const int         channels = head[9];
     const std::size_t pre_skip = readLittleEndian16(head.data() + 10);
-
     if(channels < 1 || channels > 2 || head[18] != 0)
       throw std::runtime_error("unsupported opus channel mapping");
-
-    int error = 0;
 
     const std::unique_ptr<OpusDecoder, OpusDecoderDeleter> decoder(
       opus_decoder_create(opus_sample_rate, channels, &error)
@@ -139,14 +126,12 @@ namespace wheel_of_fear {
     if(error != OPUS_OK)
       throw std::runtime_error("unable to create the opus decoder");
 
-    DecodedAudioProps audio;
-
     audio.channels    = static_cast<std::uint32_t>(channels);
     audio.sample_rate = opus_sample_rate;
 
     std::vector<float> frame(
-      static_cast<std::size_t>(maximum_frame_samples) *
-      static_cast<std::size_t>(channels)
+      static_cast<std::size_t>(maximum_frame_samples)
+      * static_cast<std::size_t>(channels)
     );
 
     for(std::size_t index = 1; index < packets.size(); ++index) {
@@ -161,6 +146,7 @@ namespace wheel_of_fear {
         maximum_frame_samples,
         0
       );
+
       if(decoded < 0) throw std::runtime_error("corrupt opus packet");
 
       audio.samples.insert(
@@ -176,15 +162,15 @@ namespace wheel_of_fear {
 
     audio.samples.erase(
       audio.samples.begin(),
-      audio.samples.begin() +
-        static_cast<std::ptrdiff_t>(skipped * channel_count)
+      audio.samples.begin()
+        + static_cast<std::ptrdiff_t>(skipped * channel_count)
     );
 
     frame_count -= skipped;
 
     if(std::cmp_greater(final_granule_position, pre_skip)) {
-      const auto playable_frames =
-        static_cast<std::size_t>(final_granule_position) - pre_skip;
+      const auto playable_frames
+        = static_cast<std::size_t>(final_granule_position) - pre_skip;
 
       if(playable_frames < frame_count)
         audio.samples.resize(playable_frames * channel_count);

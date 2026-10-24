@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/math/Vec2Props.hpp"
 #include "core/render/RenderConfig.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class TrackerConfig final {

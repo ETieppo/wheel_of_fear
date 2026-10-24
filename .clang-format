@@ -7,6 +7,8 @@ AccessModifierOffset: -2
 NamespaceIndentation: All
 BinPackParameters: AlwaysOnePerLine
 AllowAllParametersOfDeclarationOnNextLine: false
+BreakFunctionDeclarationParameters: false
+BreakFunctionDefinitionParameters: false
 BinPackArguments: false
 AllowAllArgumentsOnNextLine: false
 AlignAfterOpenBracket: BlockIndent
@@ -25,7 +27,7 @@ AlignConsecutiveTableGenBreakingDAGArgColons: Consecutive
 AlignConsecutiveTableGenCondOperatorColons: Consecutive
 AlignConsecutiveTableGenDefinitionColons: Consecutive
 AlignEscapedNewlines: Right
-AlignOperands: AlignAfterOperator
+AlignOperands: DontAlign
 AlignTrailingComments:
   Kind: Always
   OverEmptyLines: 10
@@ -73,7 +75,7 @@ BreakAfterOpenBracketLoop: true
 BreakAfterOpenBracketSwitch: false
 BreakAfterReturnType: None
 BreakArrays: true
-BreakBeforeBinaryOperators: None
+BreakBeforeBinaryOperators: All
 BreakBeforeBraces: Attach
 BreakBeforeCloseBracketBracedList: true
 BreakBeforeCloseBracketFunction: true
@@ -87,8 +89,6 @@ BreakBeforeTemplateCloser: true
 BreakBeforeTernaryOperators: true
 BreakBinaryOperations: OnePerLine
 BreakConstructorInitializers: BeforeComma
-BreakFunctionDeclarationParameters: true
-BreakFunctionDefinitionParameters: true
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: false
 BreakTemplateDeclarations: "No"

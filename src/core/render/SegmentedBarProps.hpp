@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/math/ColorProps.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   struct SegmentedBarProps {

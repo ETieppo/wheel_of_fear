@@ -1,14 +1,12 @@
 #include "mods/director/demos/WalkDemoScenario.hpp"
-
-#include <format>
-#include <optional>
-
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
+#include <optional>
 
 namespace wheel_of_fear {
   void WalkDemoScenario::run(
@@ -18,7 +16,6 @@ namespace wheel_of_fear {
     WorldSystem     &world  = context.world;
     PlayerEntity    &player = context.player;
     InputController &input  = context.input;
-
     context.mobs.setGraceSeconds(1000);
 
     const std::size_t        start_room = world.startRoomIndex();
@@ -26,9 +23,8 @@ namespace wheel_of_fear {
 
     for(const DoorwayProps &doorway : world.map().doorways()) {
       if(!doorway.connects(start_room) || !doorway.is_open) continue;
-
-      const Vec2Props other_center =
-        world.map().rooms()[doorway.otherRoom(start_room)].center();
+      const Vec2Props other_center
+        = world.map().rooms()[doorway.otherRoom(start_room)].center();
 
       target = doorway.center().add(
         other_center.sub(doorway.center()).normalized().scale(90)
@@ -46,8 +42,8 @@ namespace wheel_of_fear {
       }
     )
       input.simulateHold(action, false);
-    if(!target) return;
 
+    if(!target) return;
     const bool reached = player.distanceTo(*target) < 12;
 
     if(!reached && step() == 0) {
@@ -59,8 +55,8 @@ namespace wheel_of_fear {
       );
 
       const Vec2Props steer = direction.length() < 0.5F
-                              ? target->sub(player.position()).normalized()
-                              : direction;
+        ? target->sub(player.position()).normalized()
+        : direction;
 
       input.simulateHold(InputActionEnum::move_left, steer.x < -0.38F);
       input.simulateHold(InputActionEnum::move_right, steer.x > 0.38F);
@@ -76,8 +72,8 @@ namespace wheel_of_fear {
         ? Vec2Props::of(200, 0)
         : Vec2Props::of(0, 0)
     );
-    if(!tick.should_log) return;
 
+    if(!tick.should_log) return;
     const CameraSystem &camera = context.camera;
 
     logLine(

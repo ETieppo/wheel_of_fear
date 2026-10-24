@@ -1,25 +1,20 @@
 #pragma once
 
+#include "core/platform/SharedLibrary.hpp"
 #include <cstdint>
 #include <filesystem>
 #include <memory>
 
-#include "core/platform/SharedLibrary.hpp"
-
 namespace wheel_of_fear {
   class SharedLibraryWatcher {
     public:
+      ~SharedLibraryWatcher();
+      SharedLibraryWatcher(const SharedLibraryWatcher &)             = delete;
+      SharedLibraryWatcher &operator =(const SharedLibraryWatcher &) = delete;
       SharedLibraryWatcher(
         std::filesystem::path library_path,
         std::filesystem::path stamp_path
       );
-      ~SharedLibraryWatcher();
-      SharedLibraryWatcher(
-        const SharedLibraryWatcher &
-      ) = delete;
-      SharedLibraryWatcher &operator =(
-        const SharedLibraryWatcher &
-      ) = delete;
 
       [[nodiscard]]
       bool                           hasUpdate() const;
@@ -29,7 +24,6 @@ namespace wheel_of_fear {
       [[nodiscard]]
       std::filesystem::file_time_type readStampTime() const;
       std::filesystem::path           nextCopyPath();
-
       std::filesystem::path           library_path_;
       std::filesystem::path           stamp_path_;
       std::filesystem::path           copies_directory_;

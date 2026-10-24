@@ -1,15 +1,12 @@
 #pragma once
 
-#include <cstdint>
-
 #include "mods/director/demos/DemoScenario.hpp"
+#include <cstdint>
 
 namespace wheel_of_fear {
   class PatrolDemoScenario final: public DemoScenario {
     public:
-      explicit PatrolDemoScenario(
-        std::uint32_t starting_phase
-      )
+      explicit PatrolDemoScenario(std::uint32_t starting_phase)
           : starting_phase_(starting_phase) {
       }
 

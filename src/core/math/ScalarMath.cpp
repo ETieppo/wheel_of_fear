@@ -1,5 +1,4 @@
 #include "core/math/ScalarMath.hpp"
-
 #include <cmath>
 
 namespace wheel_of_fear {

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstddef>
-
 #include "core/entity/Entity.hpp"
 #include "game/dtos/GameContextDto.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class ExitDoorEntity final: public Entity {
@@ -33,20 +32,17 @@ namespace wheel_of_fear {
         return has_player_exited_;
       }
 
-      void reset(
-        Vec2Props doorway_position
-      );
-      void unlock(
-        GameContextDto &context
-      );
+      void reset(Vec2Props doorway_position);
+
+      void unlock(GameContextDto &context);
+
       void update(
         GameContextDto &context,
         std::size_t     online_count,
         std::size_t     generator_count
       );
-      void draw(
-        GameContextDto &context
-      ) const;
+
+      void draw(GameContextDto &context) const;
 
     private:
       [[nodiscard]]

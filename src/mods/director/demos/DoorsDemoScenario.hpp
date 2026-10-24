@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstddef>
-
 #include "mods/director/demos/DemoScenario.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class DoorsDemoScenario final: public DemoScenario {

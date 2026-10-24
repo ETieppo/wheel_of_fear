@@ -1,9 +1,8 @@
 #pragma once
 
-#include <vector>
-
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/tracker/GhostEchoProps.hpp"
+#include <vector>
 
 namespace wheel_of_fear {
   class TrackerGhostField {
@@ -13,14 +12,10 @@ namespace wheel_of_fear {
         return ghosts_;
       }
 
-      void update(
-        GameContextDto &context
-      );
+      void update(GameContextDto &context);
 
     private:
-      void driftAndExpire(
-        float delta_seconds
-      );
+      void driftAndExpire(float delta_seconds);
       void maybeSpawnGhost(
         GameContextDto &context,
         float           delta_seconds

@@ -6,9 +6,7 @@ namespace wheel_of_fear {
   class GeneratorBrokenState final: public GeneratorState {
     public:
       [[nodiscard]]
-      ColorProps statusColor(
-        const GeneratorEntity &generator
-      ) const override;
+      ColorProps statusColor(const GeneratorEntity &generator) const override;
 
       [[nodiscard]]
       bool canBeRepaired() const override {
@@ -19,6 +17,7 @@ namespace wheel_of_fear {
         GeneratorEntity &generator,
         GameContextDto  &context
       );
+
       void update(
         GeneratorEntity          &generator,
         GameContextDto           &context,
@@ -33,10 +32,12 @@ namespace wheel_of_fear {
         GameContextDto  &context,
         float            delta_seconds
       );
+
       static void emitFaultLight(
         const GeneratorEntity &generator,
         GameContextDto        &context
       );
+
       void rewire(
         GeneratorEntity &generator,
         GameContextDto  &context,

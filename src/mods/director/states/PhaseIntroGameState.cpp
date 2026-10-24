@@ -1,5 +1,4 @@
 #include "mods/director/states/PhaseIntroGameState.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/render/Renderer.hpp"
@@ -16,10 +15,8 @@ namespace wheel_of_fear {
     context.clock.setRunning(false);
     context.hud.setVisible(true);
 
-    const bool is_skipped =
-      context.input.wasPressed(InputActionEnum::confirm) ||
-      (director.demo().isActive() && director.stateSeconds() > 0.5F);
-
+    const bool is_skipped = context.input.wasPressed(InputActionEnum::confirm)
+      || (director.demo().isActive() && director.stateSeconds() > 0.5F);
     if(director.stateSeconds() <= Director::intro_seconds && !is_skipped)
       return;
 
@@ -27,9 +24,7 @@ namespace wheel_of_fear {
     context.clock.setRunning(true);
   }
 
-  void PhaseIntroGameState::mixMusic(
-    GameContextDto &context
-  ) const {
+  void PhaseIntroGameState::mixMusic(GameContextDto &context) const {
     context.sound_player.setMusicMix(0, 0.8F, 0);
   }
 

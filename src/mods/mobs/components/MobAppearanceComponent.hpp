@@ -10,9 +10,7 @@ namespace wheel_of_fear {
 
   class MobAppearanceComponent {
     public:
-      explicit MobAppearanceComponent(
-        MobEntity &owner
-      )
+      explicit MobAppearanceComponent(MobEntity &owner)
           : owner_(owner) {
       }
 
@@ -21,9 +19,7 @@ namespace wheel_of_fear {
         return opacity_;
       }
 
-      void setOpacity(
-        float opacity
-      ) {
+      void setOpacity(float opacity) {
         opacity_ = opacity;
       }
 
@@ -32,9 +28,7 @@ namespace wheel_of_fear {
         return visibility_;
       }
 
-      void setVisibility(
-        float visibility
-      ) {
+      void setVisibility(float visibility) {
         visibility_ = visibility;
       }
 
@@ -43,9 +37,8 @@ namespace wheel_of_fear {
         return opacity_ * visibility_;
       }
 
-      void refreshVisibility(
-        const GameContextDto &context
-      );
+      void refreshVisibility(const GameContextDto &context);
+
       void drawBody(
         GameContextDto         &context,
         const AtlasRegionProps &body,

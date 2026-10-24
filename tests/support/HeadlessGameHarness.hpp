@@ -1,27 +1,21 @@
 #pragma once
 
+#include "game/GameSimulation.hpp"
 #include <cstdint>
 #include <cstdlib>
 #include <span>
 #include <string>
 
-#include "game/GameSimulation.hpp"
-
 namespace wheel_of_fear {
   class DemoModeEnvironmentGuard {
     public:
-      explicit DemoModeEnvironmentGuard(
-        const std::string &demo_mode
-      ) {
+      explicit DemoModeEnvironmentGuard(const std::string &demo_mode) {
         setenv("ENGRENAGEM_DEMO", demo_mode.c_str(), 1);
       }
 
-      DemoModeEnvironmentGuard(
-        const DemoModeEnvironmentGuard &
-      ) = delete;
-      DemoModeEnvironmentGuard &operator =(
-        const DemoModeEnvironmentGuard &
-      ) = delete;
+      DemoModeEnvironmentGuard(const DemoModeEnvironmentGuard &) = delete;
+      DemoModeEnvironmentGuard &operator =(const DemoModeEnvironmentGuard &)
+        = delete;
 
       ~DemoModeEnvironmentGuard() {
         unsetenv("ENGRENAGEM_DEMO");
@@ -32,9 +26,7 @@ namespace wheel_of_fear {
     public:
       static constexpr float frame_seconds = 1.0F / 60.0F;
 
-      explicit HeadlessGameHarness(
-        const std::string &demo_mode
-      )
+      explicit HeadlessGameHarness(const std::string &demo_mode)
           : demo_mode_guard_(demo_mode) {
       }
 
@@ -52,9 +44,7 @@ namespace wheel_of_fear {
         return fingerprint;
       }
 
-      void advanceFrames(
-        int frame_count
-      ) {
+      void advanceFrames(int frame_count) {
         for(int frame = 0; frame < frame_count; ++frame) runFrame();
       }
 
@@ -97,18 +87,14 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      std::uint64_t mixFrame(
-        std::uint64_t hash
-      ) const {
+      std::uint64_t mixFrame(std::uint64_t hash) const {
         const FrameProps &current = frame();
 
         hash = mixSpan(hash, current.world.used());
         hash = mixSpan(hash, current.glow.used());
         hash = mixSpan(hash, current.ui.used());
-
-        hash =
-          mixSpan(hash, std::span(current.lights).first(current.light_count));
-
+        hash
+          = mixSpan(hash, std::span(current.lights).first(current.light_count));
         hash = mixBytes(hash, std::as_bytes(std::span(&current.post, 1)));
         hash = mixSpan(hash, std::span(current.map_texels));
 

@@ -8,8 +8,8 @@ namespace wheel_of_fear {
     public:
       static constexpr MobTraitsProps species_traits {
         .display_name = "Melter",
-        .introduction =
-          "MELTER  -  an acid slug. Slow, but walls mean nothing to "
+        .introduction
+        = "MELTER  -  an acid slug. Slow, but walls mean nothing to "
           "it. Listen for the hiss.",
         .speed                   = 18,
         .collision_radius        = 8,
@@ -25,9 +25,7 @@ namespace wheel_of_fear {
         .spawn_weight            = 0.45F,
       };
 
-      explicit MelterMob(
-        Vec2Props position
-      )
+      explicit MelterMob(Vec2Props position)
           : MobEntity(
               position,
               species_traits
@@ -44,18 +42,13 @@ namespace wheel_of_fear {
         return species_traits;
       }
 
-      void emitLights(
-        GameContextDto &context
-      ) override;
-      void think(
-        GameContextDto &context
-      ) override;
-      void onContact(
-        GameContextDto &context
-      ) override;
-      void draw(
-        GameContextDto &context
-      ) const override;
+      void emitLights(GameContextDto &context) override;
+
+      void think(GameContextDto &context) override;
+
+      void onContact(GameContextDto &context) override;
+
+      void draw(GameContextDto &context) const override;
 
     private:
       static constexpr float seconds_to_dissolve_wall = 1.8F;
@@ -70,9 +63,8 @@ namespace wheel_of_fear {
         TileCoordinateProps tile,
         Vec2Props           contact_point
       );
-      void leaveAcidTrail(
-        GameContextDto &context
-      );
+
+      void leaveAcidTrail(GameContextDto &context);
 
       float dissolve_seconds_ = 0;
       float trail_seconds_    = 0;

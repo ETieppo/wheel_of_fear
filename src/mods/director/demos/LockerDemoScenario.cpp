@@ -1,12 +1,10 @@
 #include "mods/director/demos/LockerDemoScenario.hpp"
-
-#include <format>
-
 #include "core/input/InputController.hpp"
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void LockerDemoScenario::run(
@@ -18,17 +16,15 @@ namespace wheel_of_fear {
 
     context.mobs.setGraceSeconds(has_witness_ ? 0.0F : 1000.0F);
     if(has_witness_) aimAtWorldOffset(context, Vec2Props::of(0, -200));
-
     if(step() == 0 && !world.lockers().empty()) {
       setStep(1);
-
       std::size_t nearest = 0;
       const auto &lockers = world.lockers();
 
       for(std::size_t index = 0; index < lockers.size(); ++index)
         if(
-          lockers[index].position().distance(player.position()) <
-          lockers[nearest].position().distance(player.position())
+          lockers[index].position().distance(player.position())
+          < lockers[nearest].position().distance(player.position())
         )
           nearest = index;
 
@@ -50,6 +46,7 @@ namespace wheel_of_fear {
       setStep(3);
       context.input.simulatePress(InputActionEnum::interact);
     }
+
     if(!tick.should_log) return;
 
     logLine(

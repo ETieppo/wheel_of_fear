@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstddef>
-#include <memory>
-#include <vector>
-
 #include "core/math/Vec2Props.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/mobs/MobEntity.hpp"
+#include <cstddef>
+#include <memory>
+#include <vector>
 
 namespace wheel_of_fear {
   class MobExplosionHandler {
@@ -22,6 +21,7 @@ namespace wheel_of_fear {
         Vec2Props       center,
         float           radius
       );
+
       void detonate(
         GameContextDto &context,
         MobEntity      &bomb
@@ -36,10 +36,12 @@ namespace wheel_of_fear {
         GameContextDto &context,
         Vec2Props       center
       );
+
       static void breakSurroundingWalls(
         GameContextDto &context,
         Vec2Props       center
       );
+
       void blastNearbyMobs(
         GameContextDto &context,
         Vec2Props       center

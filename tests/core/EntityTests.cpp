@@ -1,15 +1,10 @@
+#include "core/entity/Entity.hpp"
 #include <cmath>
-
 #include <doctest/doctest.h>
 
-#include "core/entity/Entity.hpp"
-
 namespace wheel_of_fear {
-  TEST_CASE(
-    "turning converges on the target angle through the shortest arc"
-  ) {
+  TEST_CASE("turning converges on the target angle through the shortest arc") {
     Entity entity(Vec2Props::of(0, 0), 4);
-
     entity.setHeading(3.0F);
 
     for(int step = 0; step < 120; ++step)

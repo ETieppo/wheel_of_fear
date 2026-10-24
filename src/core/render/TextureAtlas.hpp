@@ -1,10 +1,9 @@
 #pragma once
 
+#include "core/render/Canvas.hpp"
 #include <cstdint>
 #include <span>
 #include <vector>
-
-#include "core/render/Canvas.hpp"
 
 namespace wheel_of_fear {
   class TextureAtlas {

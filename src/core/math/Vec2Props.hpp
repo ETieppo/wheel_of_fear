@@ -14,37 +14,27 @@ namespace wheel_of_fear {
         return Vec2Props {.x = x_value, .y = y_value};
       }
 
-      static Vec2Props fromAngle(
-        float radians
-      ) {
+      static Vec2Props fromAngle(float radians) {
         return Vec2Props {.x = std::cos(radians), .y = std::sin(radians)};
       }
 
       [[nodiscard]]
-      constexpr Vec2Props add(
-        Vec2Props other
-      ) const {
+      constexpr Vec2Props add(Vec2Props other) const {
         return Vec2Props {.x = x + other.x, .y = y + other.y};
       }
 
       [[nodiscard]]
-      constexpr Vec2Props sub(
-        Vec2Props other
-      ) const {
+      constexpr Vec2Props sub(Vec2Props other) const {
         return Vec2Props {.x = x - other.x, .y = y - other.y};
       }
 
       [[nodiscard]]
-      constexpr Vec2Props scale(
-        float factor
-      ) const {
+      constexpr Vec2Props scale(float factor) const {
         return Vec2Props {.x = x * factor, .y = y * factor};
       }
 
       [[nodiscard]]
-      constexpr float dot(
-        Vec2Props other
-      ) const {
+      constexpr float dot(Vec2Props other) const {
         return (x * other.x) + (y * other.y);
       }
 
@@ -54,9 +44,7 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      float distance(
-        Vec2Props other
-      ) const {
+      float distance(Vec2Props other) const {
         return sub(other).length();
       }
 

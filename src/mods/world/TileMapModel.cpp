@@ -1,5 +1,5 @@
 #include "mods/world/TileMapModel.hpp"
-
+#include "core/render/RenderConfig.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -8,15 +8,13 @@
 #include <stdexcept>
 #include <utility>
 
-#include "core/render/RenderConfig.hpp"
-
 namespace wheel_of_fear {
   void TileMapModel::reset(
     int width,
     int height
   ) {
-    const auto cell_count =
-      static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
+    const auto cell_count
+      = static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
 
     width_  = width;
     height_ = height;
@@ -33,10 +31,9 @@ namespace wheel_of_fear {
     std::size_t room_index
   ) {
     const std::size_t cell = cellIndex(x, y);
-
-    walls_[cell]        = 0;
-    structural_[cell]   = 0;
-    room_indices_[cell] = static_cast<std::int16_t>(room_index);
+    walls_[cell]           = 0;
+    structural_[cell]      = 0;
+    room_indices_[cell]    = static_cast<std::int16_t>(room_index);
   }
 
   void TileMapModel::raiseWall(
@@ -51,15 +48,12 @@ namespace wheel_of_fear {
     int y
   ) {
     const std::size_t cell = cellIndex(x, y);
-
-    walls_[cell]        = 1;
-    structural_[cell]   = 1;
-    room_indices_[cell] = -1;
+    walls_[cell]           = 1;
+    structural_[cell]      = 1;
+    room_indices_[cell]    = -1;
   }
 
-  void TileMapModel::setRooms(
-    std::vector<RoomProps> rooms
-  ) {
+  void TileMapModel::setRooms(std::vector<RoomProps> rooms) {
     rooms_ = std::move(rooms);
   }
 
@@ -128,7 +122,6 @@ namespace wheel_of_fear {
         blocked_[cellIndex(fill_x, fill_y)] = 1;
 
     markChanged();
-
     return true;
   }
 
@@ -146,9 +139,8 @@ namespace wheel_of_fear {
     markChanged();
   }
 
-  std::optional<TileCoordinateProps> TileMapModel::nearestOpenTile(
-    TileCoordinateProps origin
-  ) const {
+  std::optional<TileCoordinateProps>
+  TileMapModel::nearestOpenTile(TileCoordinateProps origin) const {
     if(!isBlocked(origin.x, origin.y)) return origin;
 
     for(int radius = 1; radius <= 8; ++radius) {
@@ -161,9 +153,7 @@ namespace wheel_of_fear {
     return std::nullopt;
   }
 
-  Vec2Props TileMapModel::nearestFloor(
-    Vec2Props point
-  ) const {
+  Vec2Props TileMapModel::nearestFloor(Vec2Props point) const {
     const TileCoordinateProps origin = tileAt(point);
     if(!isBlocked(origin.x, origin.y)) return point;
 
@@ -174,7 +164,6 @@ namespace wheel_of_fear {
       for(int y = origin.y - radius; y <= origin.y + radius; ++y) {
         for(int x = origin.x - radius; x <= origin.x + radius; ++x) {
           if(isBlocked(x, y)) continue;
-
           const Vec2Props candidate = tileCenter(x, y);
           const float     distance  = candidate.distance(point);
 
@@ -208,8 +197,8 @@ namespace wheel_of_fear {
     int x,
     int y
   ) const {
-    return (static_cast<std::size_t>(y) * static_cast<std::size_t>(width_)) +
-           static_cast<std::size_t>(x);
+    return (static_cast<std::size_t>(y) * static_cast<std::size_t>(width_))
+      + static_cast<std::size_t>(x);
   }
 
   bool TileMapModel::isWall(
@@ -233,15 +222,11 @@ namespace wheel_of_fear {
     int y
   ) const {
     if(!contains(x, y)) return true;
-
     const std::size_t cell = cellIndex(x, y);
-
     return walls_[cell] != 0 || blocked_[cell] != 0;
   }
 
-  TileCoordinateProps TileMapModel::tileAt(
-    Vec2Props point
-  ) {
+  TileCoordinateProps TileMapModel::tileAt(Vec2Props point) {
     return TileCoordinateProps {
       .x = static_cast<int>(std::floor(point.x / RenderConfig::tile_size)),
       .y = static_cast<int>(std::floor(point.y / RenderConfig::tile_size)),
@@ -258,16 +243,12 @@ namespace wheel_of_fear {
     );
   }
 
-  bool TileMapModel::isSolidAt(
-    Vec2Props point
-  ) const {
+  bool TileMapModel::isSolidAt(Vec2Props point) const {
     const TileCoordinateProps tile = tileAt(point);
     return isBlocked(tile.x, tile.y);
   }
 
-  bool TileMapModel::isWallAt(
-    Vec2Props point
-  ) const {
+  bool TileMapModel::isWallAt(Vec2Props point) const {
     const TileCoordinateProps tile = tileAt(point);
     return isWall(tile.x, tile.y);
   }
@@ -291,16 +272,10 @@ namespace wheel_of_fear {
     Vec2Props center,
     float     half_size
   ) const {
-    return isSolidAt(
-             Vec2Props::of(center.x - half_size, center.y - half_size)
-           ) ||
-           isSolidAt(
-             Vec2Props::of(center.x + half_size, center.y - half_size)
-           ) ||
-           isSolidAt(
-             Vec2Props::of(center.x - half_size, center.y + half_size)
-           ) ||
-           isSolidAt(Vec2Props::of(center.x + half_size, center.y + half_size));
+    return isSolidAt(Vec2Props::of(center.x - half_size, center.y - half_size))
+      || isSolidAt(Vec2Props::of(center.x + half_size, center.y - half_size))
+      || isSolidAt(Vec2Props::of(center.x - half_size, center.y + half_size))
+      || isSolidAt(Vec2Props::of(center.x + half_size, center.y + half_size));
   }
 
   Vec2Props TileMapModel::slide(
@@ -310,11 +285,10 @@ namespace wheel_of_fear {
   ) const {
     Vec2Props current = position;
 
-    const auto step_count =
-      static_cast<std::size_t>(std::ceil(displacement.length() / 4.0F) + 1);
-
-    const Vec2Props step =
-      displacement.scale(1.0F / static_cast<float>(step_count));
+    const auto step_count
+      = static_cast<std::size_t>(std::ceil(displacement.length() / 4.0F) + 1);
+    const Vec2Props step
+      = displacement.scale(1.0F / static_cast<float>(step_count));
 
     for(std::size_t index = 0; index < step_count; ++index) {
       const Vec2Props horizontal = Vec2Props::of(current.x + step.x, current.y);
@@ -331,9 +305,8 @@ namespace wheel_of_fear {
     Vec2Props from,
     Vec2Props to
   ) const {
-    const auto step_count =
-      static_cast<std::size_t>(std::max(to.distance(from) / 5.0F, 1.0F));
-
+    const auto step_count
+      = static_cast<std::size_t>(std::max(to.distance(from) / 5.0F, 1.0F));
     const TileCoordinateProps destination_tile = tileAt(to);
 
     for(std::size_t step = 1; step < step_count; ++step) {
@@ -352,18 +325,17 @@ namespace wheel_of_fear {
     const RoomProps &room
   ) const {
     for(int attempt = 0; attempt < 60; ++attempt) {
-      const int x =
-        random.intInclusive(room.left + 1, room.left + room.width - 2);
-
-      const int y =
-        random.intInclusive(room.top + 1, room.top + room.height - 2);
+      const int x
+        = random.intInclusive(room.left + 1, room.left + room.width - 2);
+      const int y
+        = random.intInclusive(room.top + 1, room.top + room.height - 2);
 
       if(
-        !isBlocked(x, y) &&
-        !isBlocked(x + 1, y) &&
-        !isBlocked(x - 1, y) &&
-        !isBlocked(x, y + 1) &&
-        !isBlocked(x, y - 1)
+        !isBlocked(x, y)
+        && !isBlocked(x + 1, y)
+        && !isBlocked(x - 1, y)
+        && !isBlocked(x, y + 1)
+        && !isBlocked(x, y - 1)
       )
         return tileCenter(x, y);
     }
@@ -376,16 +348,13 @@ namespace wheel_of_fear {
     int y
   ) const {
     if(!contains(x, y)) return std::nullopt;
-
     const std::int16_t room_index = room_indices_[cellIndex(x, y)];
-    if(room_index < 0) return std::nullopt;
 
+    if(room_index < 0) return std::nullopt;
     return static_cast<std::size_t>(room_index);
   }
 
-  std::optional<std::size_t> TileMapModel::roomIndexAt(
-    Vec2Props point
-  ) const {
+  std::optional<std::size_t> TileMapModel::roomIndexAt(Vec2Props point) const {
     const TileCoordinateProps tile = tileAt(point);
     return roomIndexAtTile(tile.x, tile.y);
   }

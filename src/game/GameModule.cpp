@@ -1,39 +1,27 @@
-#include <cstring>
-
-#include <SDL3/SDL_log.h>
-
 #include "core/platform/ModuleExport.hpp"
 #include "game/GameApplication.hpp"
 #include "game/GameModuleApiProps.hpp"
+#include <SDL3/SDL_log.h>
+#include <cstring>
 
 namespace wheel_of_fear {
   namespace {
-    GameApplication* createGame(
-      Window &window
-    ) {
+    GameApplication* createGame(Window &window) {
       return new GameApplication(window);
     }
 
-    void destroyGame(
-      GameApplication* game
-    ) {
+    void destroyGame(GameApplication* game) {
       delete game;
     }
 
-    bool runGameFrame(
-      GameApplication &game
-    ) {
+    bool runGameFrame(GameApplication &game) {
       return game.runFrame();
     }
 
-    std::vector<std::byte> saveGameSnapshot(
-      const GameApplication &game
-    ) {
+    std::vector<std::byte> saveGameSnapshot(const GameApplication &game) {
       const GameSnapshotProps snapshot = game.snapshot();
       std::vector<std::byte>  bytes(sizeof(GameSnapshotProps));
-
       std::memcpy(bytes.data(), &snapshot, sizeof(GameSnapshotProps));
-
       return bytes;
     }
 
@@ -47,17 +35,16 @@ namespace wheel_of_fear {
       }
 
       GameSnapshotProps snapshot;
-
       std::memcpy(&snapshot, bytes.data(), sizeof(GameSnapshotProps));
       game.resume(snapshot);
     }
 
     constexpr GameModuleApiProps game_module_api {
-      createGame,
-      destroyGame,
-      runGameFrame,
-      saveGameSnapshot,
-      restoreGameSnapshot
+      .create          = createGame,
+      .destroy         = destroyGame,
+      .runFrame        = runGameFrame,
+      .saveSnapshot    = saveGameSnapshot,
+      .restoreSnapshot = restoreGameSnapshot
     };
   } // namespace
 } // namespace wheel_of_fear

@@ -7,9 +7,7 @@ namespace wheel_of_fear {
   class GeneratorChargingState final: public GeneratorState {
     public:
       [[nodiscard]]
-      ColorProps statusColor(
-        const GeneratorEntity &generator
-      ) const override;
+      ColorProps statusColor(const GeneratorEntity &generator) const override;
 
       [[nodiscard]]
       bool canBeRepaired() const override {
@@ -34,29 +32,35 @@ namespace wheel_of_fear {
         GameContextDto           &context,
         const GeneratorUpdateDto &update
       );
+
       void charge(
         GeneratorEntity          &generator,
         GameContextDto           &context,
         const GeneratorUpdateDto &update
       );
+
       void playRatchet(
         GeneratorEntity &generator,
         GameContextDto  &context,
         float            delta_seconds
       );
+
       void regressWhileUnattended(
         GeneratorEntity &generator,
         GameContextDto  &context
       );
+
       static void updateSkillCheck(
         GeneratorEntity &generator,
         GameContextDto  &context
       );
+
       static void resolveSkillCheck(
         GeneratorEntity     &generator,
         GameContextDto      &context,
         SkillCheckResultEnum result
       );
+
       static void shortCircuit(
         GeneratorEntity &generator,
         GameContextDto  &context

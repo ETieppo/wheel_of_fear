@@ -9,19 +9,16 @@ namespace wheel_of_fear {
 
   class GeneratorState {
     public:
-      GeneratorState() = default;
-      GeneratorState(
-        const GeneratorState &
-      ) = default;
-      GeneratorState &operator =(
-        const GeneratorState &
-      )                         = default;
+      GeneratorState()                       = default;
+      GeneratorState(const GeneratorState &) = default;
+
+      GeneratorState &operator =(const GeneratorState &) = default;
+
       virtual ~GeneratorState() = default;
 
       [[nodiscard]]
-      virtual ColorProps statusColor(
-        const GeneratorEntity &generator
-      ) const = 0;
+      virtual ColorProps statusColor(const GeneratorEntity &generator) const
+        = 0;
 
       [[nodiscard]]
       virtual bool canBeRepaired() const {

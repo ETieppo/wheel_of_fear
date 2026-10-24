@@ -1,8 +1,5 @@
 #pragma once
 
-#include <array>
-#include <cstddef>
-
 #include "core/audio/enums/SoundEnum.hpp"
 #include "core/entity/Entity.hpp"
 #include "core/math/ColorProps.hpp"
@@ -15,6 +12,8 @@
 #include "mods/generators/states/GeneratorChargingState.hpp"
 #include "mods/generators/states/GeneratorJammedState.hpp"
 #include "mods/generators/states/GeneratorOnlineState.hpp"
+#include <array>
+#include <cstddef>
 
 namespace wheel_of_fear {
   class GeneratorEntity final: public Entity {
@@ -23,8 +22,8 @@ namespace wheel_of_fear {
       static constexpr float                repair_noise_radius  = 230;
       static constexpr float                failure_noise_radius = 430;
 
-      using PlannedIncidents =
-        std::array<GeneratorIncidentEnum, incident_thresholds.size()>;
+      using PlannedIncidents
+        = std::array<GeneratorIncidentEnum, incident_thresholds.size()>;
 
       GeneratorEntity(
         Vec2Props               position,
@@ -48,9 +47,7 @@ namespace wheel_of_fear {
         return progress_;
       }
 
-      void setProgress(
-        float progress
-      ) {
+      void setProgress(float progress) {
         progress_ = progress;
       }
 
@@ -107,9 +104,9 @@ namespace wheel_of_fear {
         GameContextDto &context,
         float           seconds_to_charge
       );
-      void draw(
-        GameContextDto &context
-      ) const;
+
+      void draw(GameContextDto &context) const;
+
       void playSound(
         GameContextDto &context,
         SoundEnum       sound,
@@ -125,16 +122,15 @@ namespace wheel_of_fear {
         GameContextDto       &context,
         GeneratorIncidentEnum incident
       );
+
       void triggerCrossedIncidents(
         GameContextDto &context,
         float           previous_progress
       );
-      void bringOnline(
-        GameContextDto &context
-      );
-      void forceOnline(
-        GameContextDto &context
-      );
+
+      void bringOnline(GameContextDto &context);
+
+      void forceOnline(GameContextDto &context);
 
     private:
       static constexpr float interaction_distance = 36;
@@ -143,24 +139,26 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       const GeneratorState &currentState() const;
+
       [[nodiscard]]
       GeneratorState &currentState();
-      void            refreshRepairStatus(
+
+      void refreshRepairStatus(
         const GameContextDto &context,
         bool                  is_player_near
       );
-      void emitChargeLight(
-        GameContextDto &context
-      ) const;
+
+      void emitChargeLight(GameContextDto &context) const;
+
       void drawProgressRing(
         GameContextDto &context,
         ColorProps      color
       ) const;
 
       std::size_t                                  room_index_;
+      std::array<bool, incident_thresholds.size()> triggered_incidents_ {};
       char                                         label_;
       PlannedIncidents                             planned_incidents_;
-      std::array<bool, incident_thresholds.size()> triggered_incidents_ {};
       float                                        progress_ = 0;
       GeneratorStateEnum      state_             = GeneratorStateEnum::offline;
       GeneratorMachineryProps machinery_         = {};

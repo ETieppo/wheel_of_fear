@@ -1,7 +1,4 @@
 #include "mods/director/states/TitleGameState.hpp"
-
-#include <cmath>
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/render/Renderer.hpp"
@@ -12,6 +9,7 @@
 #include "mods/director/screens/TitleScreen.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <cmath>
 
 namespace wheel_of_fear {
   void TitleGameState::update(
@@ -23,8 +21,8 @@ namespace wheel_of_fear {
     panCamera(director, context);
 
     if(
-      !context.input.wasPressed(InputActionEnum::confirm) &&
-      !director.demo().isActive()
+      !context.input.wasPressed(InputActionEnum::confirm)
+      && !director.demo().isActive()
     )
       return;
 
@@ -32,9 +30,7 @@ namespace wheel_of_fear {
     director.startPhase(context, director.demo().startingPhase());
   }
 
-  void TitleGameState::mixMusic(
-    GameContextDto &context
-  ) const {
+  void TitleGameState::mixMusic(GameContextDto &context) const {
     context.sound_player.setMusicMix(1, 0, 0);
   }
 
@@ -52,14 +48,11 @@ namespace wheel_of_fear {
     const auto &rooms = context.world.map().rooms();
     if(rooms.empty()) return;
 
-    const float state_seconds = director.stateSeconds();
-
-    const std::size_t room_index =
-      static_cast<std::size_t>(state_seconds / 9) % rooms.size();
-
-    const RoomProps &room = rooms[room_index];
-
-    const Vec2Props drift = Vec2Props::of(
+    const float       state_seconds = director.stateSeconds();
+    const std::size_t room_index
+      = static_cast<std::size_t>(state_seconds / 9) % rooms.size();
+    const RoomProps &room  = rooms[room_index];
+    const Vec2Props  drift = Vec2Props::of(
       std::cos(state_seconds * 0.3F) * 50,
       std::sin(state_seconds * 0.4F) * 30
     );

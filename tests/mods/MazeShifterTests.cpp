@@ -1,21 +1,15 @@
-#include <vector>
-
-#include <doctest/doctest.h>
-
 #include "mods/world/MazeShifter.hpp"
 #include "mods/world/TileMapConnectivityAnalyzer.hpp"
 #include "mods/world/TileMapGenerator.hpp"
+#include <doctest/doctest.h>
+#include <vector>
 
 namespace wheel_of_fear {
-  TEST_CASE(
-    "shifting doorways never disconnects the rooms"
-  ) {
+  TEST_CASE("shifting doorways never disconnects the rooms") {
     for(std::uint64_t seed = 0; seed < 6; ++seed) {
       RandomGenerator random(seed + 100);
       TileMapModel    map;
-
       TileMapGenerator(map, random).generate(5, 6);
-
       MazeShifter     shifter;
       const Vec2Props far_away = Vec2Props::of(-10000, -10000);
 
@@ -29,22 +23,18 @@ namespace wheel_of_fear {
           doorway.seconds_since_change += 20;
 
         REQUIRE(TileMapConnectivityAnalyzer::isRoomGraphConnected(map));
-
         if(step % 10 == 0)
           REQUIRE(TileMapConnectivityAnalyzer::isEveryFloorConnected(map));
       }
     }
   }
 
-  TEST_CASE(
-    "doorways inside the view are never moved"
-  ) {
+  TEST_CASE("doorways inside the view are never moved") {
     RandomGenerator random(77);
     TileMapModel    map;
-
     TileMapGenerator(map, random).generate(4, 4);
+    MazeShifter shifter;
 
-    MazeShifter           shifter;
     constexpr std::size_t focus       = 5;
     const Vec2Props       view_center = map.rooms()[focus].center();
     std::vector<bool>     before;

@@ -1,8 +1,4 @@
 #include "mods/world/WorldPainter.hpp"
-
-#include <cmath>
-#include <cstdint>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/Renderer.hpp"
@@ -10,6 +6,8 @@
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <cmath>
+#include <cstdint>
 
 namespace wheel_of_fear {
   WorldPainter::WorldPainter(
@@ -32,6 +30,7 @@ namespace wheel_of_fear {
       map.version()
     );
 
+    world_.power().paintRoomGlow(renderer_);
     paintFloorLiquids();
     paintScorchMarks();
     paintVents();
@@ -48,8 +47,7 @@ namespace wheel_of_fear {
     const TileMapModel       &map    = world_.map();
     const Vec2Props           origin = renderer_.viewOrigin();
     const TileCoordinateProps first  = TileMapModel::tileAt(origin);
-
-    const TileCoordinateProps last = TileMapModel::tileAt(origin.add(
+    const TileCoordinateProps last   = TileMapModel::tileAt(origin.add(
       Vec2Props::of(
         static_cast<float>(RenderConfig::view_width),
         static_cast<float>(RenderConfig::view_height)
@@ -62,11 +60,9 @@ namespace wheel_of_fear {
 
         const std::size_t cell   = map.cellIndex(x, y);
         const Vec2Props   center = TileMapModel::tileCenter(x, y);
-
-        const float ripple =
-          1 + (0.06F *
-               std::sin((real_seconds_ * 3) + static_cast<float>((x * 7) + y)));
-
+        const float       ripple = 1
+          + (0.06F
+             * std::sin((real_seconds_ * 3) + static_cast<float>((x * 7) + y)));
         const float acid = map.fluids().acidSeconds()[cell];
 
         if(acid > 0) {
@@ -92,25 +88,21 @@ namespace wheel_of_fear {
         const float neon = map.fluids().neonSeconds()[cell];
         if(neon <= 0) continue;
 
-        const float strength = ScalarMath::clamp(neon / 6, 0, 1);
-
-        const std::uint32_t seed = (static_cast<std::uint32_t>(x) * 73856093U) ^
-                                   (static_cast<std::uint32_t>(y) * 19349663U);
-
-        const Vec2Props jitter = Vec2Props::of(
-                                   ScalarMath::hashToUnit(seed) - 0.5F,
-                                   ScalarMath::hashToUnit(seed + 1) - 0.5F
+        const float         strength = ScalarMath::clamp(neon / 6, 0, 1);
+        const std::uint32_t seed = (static_cast<std::uint32_t>(x) * 73856093U)
+          ^ (static_cast<std::uint32_t>(y) * 19349663U);
+        const Vec2Props jitter  = Vec2Props::of(
+                                    ScalarMath::hashToUnit(seed) - 0.5F,
+                                    ScalarMath::hashToUnit(seed + 1) - 0.5F
         )
-                                   .scale(9);
-
-        const float shimmer =
-          0.8F + (0.2F * std::sin(
-                           (real_seconds_ * 2.5F) +
-                           (ScalarMath::hashToUnit(seed + 2) * 6.28F)
-                         ));
-
-        const Vec2Props blob = center.add(jitter);
-
+                                    .scale(9);
+        const float     shimmer = 0.8F
+          + (0.2F
+             * std::sin(
+               (real_seconds_ * 2.5F)
+               + (ScalarMath::hashToUnit(seed + 2) * 6.28F)
+             ));
+        const Vec2Props  blob = center.add(jitter);
         const ColorProps tint = Palette::neon_magenta.mix(
           Palette::neon_violet,
           ScalarMath::hashToUnit(seed + 3) * 0.5F
@@ -121,8 +113,8 @@ namespace wheel_of_fear {
           blob,
           SpriteDrawDto {
             .color = tint.withAlpha(0.32F * strength),
-            .scale =
-              (1.5F + (ScalarMath::hashToUnit(seed + 4) * 0.5F)) * ripple,
+            .scale
+            = (1.5F + (ScalarMath::hashToUnit(seed + 4) * 0.5F)) * ripple,
           }
         );
 
@@ -166,18 +158,13 @@ namespace wheel_of_fear {
         renderer_.drawSprite(sprites_.vent, vent);
   }
 
-  void WorldPainter::paintDoorway(
-    const DoorwayProps &doorway
-  ) const {
+  void WorldPainter::paintDoorway(const DoorwayProps &doorway) const {
     const Vec2Props center = doorway.center();
     const float rotation   = doorway.is_vertical ? ScalarMath::pi / 2.0F : 0.0F;
-
-    const Vec2Props along =
-      doorway.is_vertical ? Vec2Props::of(0, 1) : Vec2Props::of(1, 0);
-
-    const float span =
-      RenderConfig::tile_size * static_cast<float>(DoorwayProps::length);
-
+    const Vec2Props along
+      = doorway.is_vertical ? Vec2Props::of(0, 1) : Vec2Props::of(1, 0);
+    const float span
+      = RenderConfig::tile_size * static_cast<float>(DoorwayProps::length);
     const float slide = doorway.open_amount * span * 0.5F;
 
     renderer_.drawSprite(

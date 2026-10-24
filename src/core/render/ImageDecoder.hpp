@@ -1,8 +1,7 @@
 #pragma once
 
-#include <filesystem>
-
 #include "core/render/DecodedImageProps.hpp"
+#include <filesystem>
 
 namespace wheel_of_fear {
   class ImageDecoder final {

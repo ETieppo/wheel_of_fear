@@ -1,15 +1,13 @@
 #include "mods/director/screens/TitleScreen.hpp"
-
+#include "core/math/ScalarMath.hpp"
+#include "core/render/RenderConfig.hpp"
+#include "core/render/UiPainter.hpp"
+#include "core/theme/Palette.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <string_view>
 #include <utility>
-
-#include "core/math/ScalarMath.hpp"
-#include "core/render/RenderConfig.hpp"
-#include "core/render/UiPainter.hpp"
-#include "core/theme/Palette.hpp"
 
 namespace wheel_of_fear {
   void TitleScreen::draw(
@@ -34,8 +32,8 @@ namespace wheel_of_fear {
       ColorProps::black().withAlpha(0.35F)
     );
 
-    const float glitch_intensity =
-      ScalarMath::hashTime(real_seconds, 5) > 0.82F ? 1.0F : 0.15F;
+    const float glitch_intensity
+      = ScalarMath::hashTime(real_seconds, 5) > 0.82F ? 1.0F : 0.15F;
 
     UiPainter::drawGlitchTitle(
       renderer,
@@ -48,8 +46,8 @@ namespace wheel_of_fear {
       glitch_intensity
     );
 
-    const float flicker =
-      ScalarMath::hashTime(real_seconds, 11) > 0.93F ? 0.3F : 1.0F;
+    const float flicker
+      = ScalarMath::hashTime(real_seconds, 11) > 0.93F ? 0.3F : 1.0F;
 
     renderer.drawDisplayText(
       "OF FEAR",
@@ -100,7 +98,6 @@ namespace wheel_of_fear {
 
     for(std::size_t index = 0; index < controls.size(); ++index) {
       const auto &[key, text] = controls[index];
-
       const float y = panel_top + 14 + (static_cast<float>(index) * 23.5F);
       const float key_width = renderer.measureText(key, 13) + 11.7F;
 

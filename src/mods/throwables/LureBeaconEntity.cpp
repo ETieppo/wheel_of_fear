@@ -1,5 +1,4 @@
 #include "mods/throwables/LureBeaconEntity.hpp"
-
 #include "core/audio/SoundPlayer.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
@@ -9,11 +8,8 @@
 #include "mods/world/WorldSystem.hpp"
 
 namespace wheel_of_fear {
-  void LureBeaconEntity::update(
-    GameContextDto &context
-  ) {
+  void LureBeaconEntity::update(GameContextDto &context) {
     const float delta = context.clock.deltaSeconds();
-
     remaining_seconds_ -= delta;
     pulse_timer_ -= delta;
     pulse_age_seconds_ += delta;
@@ -37,9 +33,7 @@ namespace wheel_of_fear {
         .emitSparks(context.world, position_, 4, Palette::neon_lime);
   }
 
-  void LureBeaconEntity::emitLight(
-    LightingSystem &lighting
-  ) const {
+  void LureBeaconEntity::emitLight(LightingSystem &lighting) const {
     LightProps light;
 
     light.position      = position_;
@@ -55,12 +49,10 @@ namespace wheel_of_fear {
     const SpriteSheetProps &sprites
   ) const {
     renderer.drawSprite(sprites.lure_beacon, position_);
-
     const float glow = pulse_age_seconds_ < 0.15F ? 1.0F : 0.25F;
 
     renderer
       .drawGlowDisc(position_, 4, Palette::neon_lime.withAlpha(glow), 1.3F);
-
     const float ring = pulse_age_seconds_ / pulse_seconds;
 
     renderer.drawGlowSprite(

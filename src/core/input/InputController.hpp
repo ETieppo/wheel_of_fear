@@ -1,29 +1,22 @@
 #pragma once
 
-#include <array>
-#include <optional>
-
-#include <SDL3/SDL_events.h>
-
 #include "core/input/enums/InputActionEnum.hpp"
 #include "core/math/Vec2Props.hpp"
+#include <SDL3/SDL_events.h>
+#include <array>
+#include <optional>
 
 namespace wheel_of_fear {
   class InputController {
     public:
       void beginFrame();
-      void handleEvent(
-        const SDL_Event &event
-      );
+      void handleEvent(const SDL_Event &event);
 
       [[nodiscard]]
-      bool isHeld(
-        InputActionEnum action
-      ) const;
+      bool isHeld(InputActionEnum action) const;
+
       [[nodiscard]]
-      bool wasPressed(
-        InputActionEnum action
-      ) const;
+      bool wasPressed(InputActionEnum action) const;
 
       [[nodiscard]]
       bool isQuitRequested() const {
@@ -32,8 +25,10 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       Vec2Props movementDirection() const;
+
       [[nodiscard]]
       Vec2Props mouseInView() const;
+
       [[nodiscard]]
       Vec2Props mouseInUi() const;
 
@@ -42,29 +37,22 @@ namespace wheel_of_fear {
         return window_size_;
       }
 
-      void setWindowSize(
-        Vec2Props window_size
-      ) {
+      void setWindowSize(Vec2Props window_size) {
         window_size_ = window_size;
       }
 
-      void simulateMousePosition(
-        Vec2Props mouse_position
-      ) {
+      void simulateMousePosition(Vec2Props mouse_position) {
         mouse_position_ = mouse_position;
       }
 
-      void simulatePress(
-        InputActionEnum action
-      );
+      void simulatePress(InputActionEnum action);
+
       void simulateHold(
         InputActionEnum action,
         bool            is_held
       );
 
-      static std::optional<InputActionEnum> actionForKey(
-        SDL_Keycode key
-      );
+      static std::optional<InputActionEnum> actionForKey(SDL_Keycode key);
 
     private:
       [[nodiscard]]
@@ -72,12 +60,9 @@ namespace wheel_of_fear {
         float width,
         float height
       ) const;
-      void press(
-        InputActionEnum action
-      );
-      void release(
-        InputActionEnum action
-      );
+
+      void press(InputActionEnum action);
+      void release(InputActionEnum action);
 
       std::array<bool, input_action_count> held_ {};
       std::array<bool, input_action_count> pressed_ {};

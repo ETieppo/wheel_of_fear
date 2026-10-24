@@ -1,5 +1,4 @@
 #include "core/render/Utf8Decoder.hpp"
-
 #include <cstdint>
 
 namespace wheel_of_fear {
@@ -31,8 +30,8 @@ namespace wheel_of_fear {
     }
 
     for(std::size_t offset = 1; offset < sequence_length; ++offset) {
-      const auto continuation =
-        static_cast<std::uint8_t>(text[cursor + offset]);
+      const auto continuation
+        = static_cast<std::uint8_t>(text[cursor + offset]);
 
       if((continuation & 0xC0U) != 0x80U) {
         cursor += sequence_length;
@@ -43,7 +42,6 @@ namespace wheel_of_fear {
     }
 
     cursor += sequence_length;
-
     return codepoint;
   }
 } // namespace wheel_of_fear

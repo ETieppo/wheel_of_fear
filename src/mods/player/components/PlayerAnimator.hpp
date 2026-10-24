@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cstddef>
-
 #include "mods/art/SpriteSheetProps.hpp"
 #include "mods/player/dtos/PlayerPoseDto.hpp"
 #include "mods/player/enums/PlayerActivityEnum.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class PlayerAnimator final {

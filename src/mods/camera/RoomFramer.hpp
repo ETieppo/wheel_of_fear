@@ -9,11 +9,12 @@ namespace wheel_of_fear {
     public:
       RoomFramer() = delete;
 
+      static constexpr float wall_margin = RenderConfig::tile_size;
+
       static constexpr Vec2Props half_view = Vec2Props {
         .x = static_cast<float>(RenderConfig::view_width) / 2,
         .y = static_cast<float>(RenderConfig::view_height) / 2,
       };
-      static constexpr float wall_margin = RenderConfig::tile_size;
 
       static Vec2Props clampToRoom(
         const RoomProps &room,

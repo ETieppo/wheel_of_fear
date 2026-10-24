@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstddef>
-
 #include "mods/world/scenery/Scenery.hpp"
+#include <cstddef>
 
 namespace wheel_of_fear {
   class NeonSignScenery final: public Scenery {
@@ -32,9 +31,8 @@ namespace wheel_of_fear {
 
     protected:
       [[nodiscard]]
-      const AtlasRegionProps &sprite(
-        const SpriteSheetProps &sprites
-      ) const override {
+      const AtlasRegionProps &
+      sprite(const SpriteSheetProps &sprites) const override {
         return sprites.neon_signs[variant_];
       }
 
@@ -42,9 +40,7 @@ namespace wheel_of_fear {
       static constexpr float light_radius = 42;
 
       [[nodiscard]]
-      float brightness(
-        const SceneryViewDto &view
-      ) const;
+      float brightness(const SceneryViewDto &view) const;
 
       std::size_t variant_;
   };

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstdint>
-
 #include "core/render/gpu/GpuHandle.hpp"
 #include "core/render/gpu/GpuOwnedTextureProps.hpp"
+#include <cstdint>
 
 namespace wheel_of_fear {
   struct SizedRenderTargetsProps {

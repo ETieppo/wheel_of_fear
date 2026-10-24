@@ -12,9 +12,7 @@ namespace wheel_of_fear {
     online,
   };
 
-  constexpr std::string_view nameOf(
-    GeneratorStateEnum value
-  ) {
+  constexpr std::string_view nameOf(GeneratorStateEnum value) {
     switch(value) {
       case GeneratorStateEnum::offline:  return "offline";
       case GeneratorStateEnum::charging: return "charging";

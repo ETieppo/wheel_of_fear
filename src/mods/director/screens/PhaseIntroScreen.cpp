@@ -1,11 +1,9 @@
 #include "mods/director/screens/PhaseIntroScreen.hpp"
-
-#include <format>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
+#include <format>
 
 namespace wheel_of_fear {
   void PhaseIntroScreen::draw(
@@ -18,10 +16,8 @@ namespace wheel_of_fear {
   ) {
     constexpr float center_x = RenderConfig::ui_width / 2;
     const float     appear   = ScalarMath::clamp(state_seconds * 2, 0, 1);
-
-    const float vanish =
-      ScalarMath::clamp((intro_seconds - state_seconds) * 2, 0, 1);
-
+    const float     vanish
+      = ScalarMath::clamp((intro_seconds - state_seconds) * 2, 0, 1);
     const float alpha  = appear * vanish;
     const float height = 150 + (static_cast<float>(introductions.size()) * 24);
 

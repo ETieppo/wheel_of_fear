@@ -7,22 +7,16 @@ namespace wheel_of_fear {
 
   class GameState {
     public:
-      GameState() = default;
-      GameState(
-        const GameState &
-      ) = delete;
-      GameState &operator =(
-        const GameState &
-      )                    = delete;
-      virtual ~GameState() = default;
+      GameState()                                          = default;
+      GameState(const GameState &)                         = delete;
+      GameState &operator =(const GameState &)             = delete;
+      virtual ~GameState()                                 = default;
+      virtual void mixMusic(GameContextDto &context) const = 0;
 
       virtual void update(
         Director       &director,
         GameContextDto &context
       ) = 0;
-      virtual void mixMusic(
-        GameContextDto &context
-      ) const = 0;
 
       virtual void draw(
         [[maybe_unused]] const Director &director,

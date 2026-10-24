@@ -1,13 +1,11 @@
 #include "mods/hud/widgets/SkillCheckDialWidget.hpp"
-
-#include <cmath>
-#include <string_view>
-
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/generators/SkillCheckMinigame.hpp"
+#include <cmath>
+#include <string_view>
 
 namespace wheel_of_fear {
   namespace {
@@ -25,8 +23,8 @@ namespace wheel_of_fear {
     float                     real_seconds
   ) {
     if(check.resultSeconds() <= 0) return;
-
     const float alpha = ScalarMath::clamp(check.resultSeconds() / 0.4F, 0, 1);
+
     std::string_view label;
     ColorProps       color = Palette::success;
 
@@ -35,16 +33,19 @@ namespace wheel_of_fear {
         label = "PERFECT SYNC";
         color = Palette::neon_cyan;
         break;
+
       case SkillCheckResultEnum::good: label = "SYNCED"; break;
+
       case SkillCheckResultEnum::failed:
         label = "SHORT CIRCUIT";
         color = Palette::danger;
         break;
+
       case SkillCheckResultEnum::none: break;
     }
 
-    const float intensity =
-      check.lastResult() == SkillCheckResultEnum::failed ? 1.0F : 0.2F;
+    const float intensity
+      = check.lastResult() == SkillCheckResultEnum::failed ? 1.0F : 0.2F;
 
     UiPainter::drawGlitchTitle(
       renderer,
@@ -68,8 +69,8 @@ namespace wheel_of_fear {
       return;
     }
 
-    const float warning_alpha =
-      check.isWarning() ? 0.5F + (0.5F * std::sin(real_seconds * 40)) : 1.0F;
+    const float warning_alpha
+      = check.isWarning() ? 0.5F + (0.5F * std::sin(real_seconds * 40)) : 1.0F;
 
     renderer.drawUiShape(
       QuadKindEnum::soft_disc,
@@ -81,25 +82,22 @@ namespace wheel_of_fear {
     );
 
     for(int dot = 0; dot < ring_dots; ++dot) {
-      const float angle = static_cast<float>(dot) /
-                          static_cast<float>(ring_dots) *
-                          ScalarMath::tau;
-
-      const bool in_zone =
-        angle >= check.zoneStart() && angle <= check.zoneEnd();
-
-      const bool in_perfect = angle >=
-                              check.perfectStart() &&
-                              angle <=
-                              check.perfectStart() +
-                              check.perfectWidth();
+      const float angle = static_cast<float>(dot)
+        / static_cast<float>(ring_dots)
+        * ScalarMath::tau;
+      const bool in_zone
+        = angle >= check.zoneStart() && angle <= check.zoneEnd();
+      const bool in_perfect = angle
+        >= check.perfectStart()
+        && angle
+        <= check.perfectStart()
+        + check.perfectWidth();
 
       ColorProps color = ColorProps::hex(0x2a3448);
       if(in_zone) color = Palette::neon_cyan;
       if(in_perfect) color = ColorProps::white();
 
-      const float size = in_zone ? 4.0F : 2.5F;
-
+      const float     size  = in_zone ? 4.0F : 2.5F;
       const Vec2Props point = ring_center.add(
         Vec2Props::fromAngle(angle - (ScalarMath::pi / 2.0F)).scale(ring_radius)
       );

@@ -15,9 +15,8 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
-      ColorProps statusColor(
-        const GeneratorEntity &generator
-      ) const override;
+      ColorProps statusColor(const GeneratorEntity &generator) const override;
+
       void update(
         GeneratorEntity          &generator,
         GameContextDto           &context,

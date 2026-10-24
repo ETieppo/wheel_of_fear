@@ -1,23 +1,20 @@
+#include "support/HeadlessGameHarness.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <doctest/doctest.h>
 #include <memory>
 #include <unordered_map>
 
-#include <doctest/doctest.h>
-
-#include "support/HeadlessGameHarness.hpp"
-
 namespace wheel_of_fear {
-  TEST_CASE(
-    "light holds a mob steadily instead of flickering its freeze"
-  ) {
-    const auto    harness     = std::make_unique<HeadlessGameHarness>("freeze");
-    constexpr int frame_count = 60 * 12;
+  TEST_CASE("light holds a mob steadily instead of flickering its freeze") {
+    int           most_releases     = 0;
+    constexpr int frame_count       = 60 * 12;
     constexpr int aim_window_frames = 120;
     constexpr int allowed_releases  = (frame_count / aim_window_frames) + 1;
+
+    const auto harness = std::make_unique<HeadlessGameHarness>("freeze");
     std::unordered_map<const MobEntity*, bool> was_frozen;
     std::unordered_map<const MobEntity*, int>  releases;
-    int                                        most_releases = 0;
 
     for(int frame = 0; frame < frame_count; ++frame) {
       harness->advanceFrames(1);

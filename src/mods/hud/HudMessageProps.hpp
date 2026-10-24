@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string>
-
 #include "core/math/ColorProps.hpp"
+#include <string>
 
 namespace wheel_of_fear {
   struct HudMessageProps {

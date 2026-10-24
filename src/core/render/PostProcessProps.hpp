@@ -1,9 +1,8 @@
 #pragma once
 
-#include <array>
-
 #include "core/render/GpuLightProps.hpp"
 #include "core/render/RenderConfig.hpp"
+#include <array>
 
 namespace wheel_of_fear {
   struct PostProcessProps {
@@ -21,7 +20,5 @@ namespace wheel_of_fear {
       std::array<GpuLightProps, RenderConfig::max_gpu_lights> lights {};
   };
 
-  static_assert(
-    sizeof(PostProcessProps) == 2176
-  );
+  static_assert(sizeof(PostProcessProps) == 2176);
 } // namespace wheel_of_fear

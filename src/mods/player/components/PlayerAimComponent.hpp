@@ -18,13 +18,11 @@ namespace wheel_of_fear {
         Vec2Props holder_position,
         Vec2Props mouse_world_position
       );
-      void pointAt(
-        Vec2Props direction
-      );
+
+      void pointAt(Vec2Props direction);
 
     private:
       static constexpr float minimum_mouse_distance = 2;
-
-      Vec2Props direction_ = Vec2Props::of(1, 0);
+      Vec2Props              direction_             = Vec2Props::of(1, 0);
   };
 } // namespace wheel_of_fear

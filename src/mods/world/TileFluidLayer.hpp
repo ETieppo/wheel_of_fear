@@ -1,19 +1,16 @@
 #pragma once
 
+#include "core/math/Vec2Props.hpp"
 #include <cstddef>
 #include <span>
 #include <vector>
-
-#include "core/math/Vec2Props.hpp"
 
 namespace wheel_of_fear {
   class TileMapModel;
 
   class TileFluidLayer {
     public:
-      explicit TileFluidLayer(
-        const TileMapModel &map
-      )
+      explicit TileFluidLayer(const TileMapModel &map)
           : map_(map) {
       }
 
@@ -27,24 +24,16 @@ namespace wheel_of_fear {
         return neon_seconds_;
       }
 
-      void reset(
-        std::size_t cell_count
-      );
-      void clearCell(
-        std::size_t cell
-      );
+      void reset(std::size_t cell_count);
+      void clearCell(std::size_t cell);
       [[nodiscard]]
-      float acidAt(
-        Vec2Props point
-      ) const;
-      void spillAcid(
+      float acidAt(Vec2Props point) const;
+      void  spillAcid(
         Vec2Props point,
         float     seconds
       );
       [[nodiscard]]
-      float neonAt(
-        Vec2Props point
-      ) const;
+      float neonAt(Vec2Props point) const;
       [[nodiscard]]
       float neonAtTile(
         int x,
@@ -55,9 +44,7 @@ namespace wheel_of_fear {
         int   y,
         float seconds
       );
-      void evaporate(
-        float seconds
-      );
+      void evaporate(float seconds);
 
     private:
       const TileMapModel &map_;

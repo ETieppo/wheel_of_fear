@@ -13,9 +13,8 @@ namespace wheel_of_fear {
         cooldown_seconds_ = 0;
       }
 
-      void tick(
-        float delta_seconds
-      );
+      void tick(float delta_seconds);
+
       void tryThrow(
         GameContextDto     &context,
         InventoryComponent &inventory,
@@ -26,7 +25,6 @@ namespace wheel_of_fear {
 
     private:
       static constexpr float cooldown_after_throw_seconds = 0.45F;
-
-      float cooldown_seconds_ = 0;
+      float                  cooldown_seconds_            = 0;
   };
 } // namespace wheel_of_fear
