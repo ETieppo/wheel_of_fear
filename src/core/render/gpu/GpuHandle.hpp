@@ -9,7 +9,9 @@ namespace wheel_of_fear {
     public:
       GpuHandle() = default;
 
-      explicit GpuHandle(Handle handle)
+      explicit GpuHandle(
+        Handle handle
+      )
           : handle_(handle) {
       }
 
@@ -17,10 +19,16 @@ namespace wheel_of_fear {
         reset();
       }
 
-      GpuHandle(const GpuHandle &)             = delete;
-      GpuHandle &operator =(const GpuHandle &) = delete;
+      GpuHandle(
+        const GpuHandle &
+      ) = delete;
+      GpuHandle &operator =(
+        const GpuHandle &
+      ) = delete;
 
-      GpuHandle(GpuHandle &&other) noexcept
+      GpuHandle(
+        GpuHandle &&other
+      ) noexcept
           : handle_(
               std::exchange(
                 other.handle_,
@@ -29,7 +37,9 @@ namespace wheel_of_fear {
             ) {
       }
 
-      GpuHandle &operator =(GpuHandle &&other) noexcept {
+      GpuHandle &operator =(
+        GpuHandle &&other
+      ) noexcept {
         if(this != &other) {
           reset();
           handle_ = std::exchange(other.handle_, nullptr);
@@ -45,7 +55,9 @@ namespace wheel_of_fear {
         return handle_ != nullptr;
       }
 
-      void reset(Handle handle = nullptr) {
+      void reset(
+        Handle handle = nullptr
+      ) {
         if(handle_ != nullptr) Release(handle_);
         handle_ = handle;
       }

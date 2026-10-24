@@ -22,14 +22,18 @@ namespace wheel_of_fear {
       }
 
       void restore();
-      void tick(float delta_seconds);
+      void tick(
+        float delta_seconds
+      );
       bool absorbHit();
 
       void dropGuard() {
         invulnerable_seconds_ = 0;
       }
 
-      void grantInvulnerability(float seconds) {
+      void grantInvulnerability(
+        float seconds
+      ) {
         invulnerable_seconds_ = seconds;
       }
 

@@ -48,7 +48,9 @@ namespace wheel_of_fear {
     breath_ = 1;
     locker.swingDoor();
     context.noise.emit(
-      locker.position(), locker_noise_radius, NoiseSourceEnum::locker_door
+      locker.position(),
+      locker_noise_radius,
+      NoiseSourceEnum::locker_door
     );
     context.sound_player.play(SoundEnum::locker_door, 0.7F, 0, 1);
   }
@@ -63,7 +65,9 @@ namespace wheel_of_fear {
     hidden_locker_index_.reset();
     body.setPosition(context.world.map().nearestFloor(locker.entryPoint()));
     context.noise.emit(
-      locker.position(), locker_noise_radius, NoiseSourceEnum::locker_door
+      locker.position(),
+      locker_noise_radius,
+      NoiseSourceEnum::locker_door
     );
     context.sound_player.play(SoundEnum::locker_door, 0.7F, 0, 0.9F);
   }
@@ -83,9 +87,8 @@ namespace wheel_of_fear {
     if(is_holding_breath_) {
       breath_ = std::max(0.0F, breath_ - delta / breath_hold_seconds);
       if(breath_ > 0) return;
-      context.noise.emit(
-        body.position(), gasp_noise_radius, NoiseSourceEnum::breathing
-      );
+      context.noise
+        .emit(body.position(), gasp_noise_radius, NoiseSourceEnum::breathing);
       context.sound_player.play(SoundEnum::breathing, 0.9F, 0, 1.25F);
       breathing_timer_ = breathing_interval_seconds;
       return;
@@ -95,10 +98,15 @@ namespace wheel_of_fear {
     if(breathing_timer_ > 0) return;
     breathing_timer_ = breathing_interval_seconds;
     context.noise.emit(
-      body.position(), breathing_noise_radius, NoiseSourceEnum::breathing
+      body.position(),
+      breathing_noise_radius,
+      NoiseSourceEnum::breathing
     );
     context.sound_player.play(
-      SoundEnum::breathing, 0.3F, 0, context.world.random().range(0.95F, 1.05F)
+      SoundEnum::breathing,
+      0.3F,
+      0,
+      context.world.random().range(0.95F, 1.05F)
     );
   }
 } // namespace wheel_of_fear

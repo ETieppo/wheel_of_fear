@@ -9,16 +9,24 @@ namespace wheel_of_fear {
     public:
       void restock();
 
-      int count(ItemEnum item) const {
+      int count(
+        ItemEnum item
+      ) const {
         return counts_[indexOf(item)];
       }
 
-      bool has(ItemEnum item) const {
+      bool has(
+        ItemEnum item
+      ) const {
         return count(item) > 0;
       }
 
-      bool receive(ItemEnum item);
-      bool consume(ItemEnum item);
+      bool receive(
+        ItemEnum item
+      );
+      bool consume(
+        ItemEnum item
+      );
 
     private:
       static constexpr int starting_lures    = 2;

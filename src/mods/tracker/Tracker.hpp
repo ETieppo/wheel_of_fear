@@ -23,13 +23,19 @@ namespace wheel_of_fear {
         return open_amount_;
       }
 
-      void forceOpen(bool is_open) {
+      void forceOpen(
+        bool is_open
+      ) {
         is_open_ = is_open;
       }
 
       void close();
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context) const;
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
 
     private:
       static constexpr std::size_t signal_capacity = 48;
@@ -37,26 +43,37 @@ namespace wheel_of_fear {
       static constexpr float       scan_range      = 760;
       static constexpr float       radar_radius    = 215;
       static constexpr Vec2        radar_center {
-        RenderConfig::ui_width / 2, RenderConfig::ui_height / 2 + 14
+        RenderConfig::ui_width / 2,
+        RenderConfig::ui_height / 2 + 14
       };
       static constexpr float sweep_speed       = 2.4F;
       static constexpr float opening_speed     = 9;
       static constexpr float blip_fade_seconds = 1.6F;
       static constexpr float beep_noise_radius = 110;
 
-      static
-      bool crossedAngle(
+      static bool crossedAngle(
         float previous,
         float current,
         float target
       );
-      static
-      Vec2 worldToRadar(Vec2 offset);
-      void addSignal(const SignalProps &signal);
-      void collectSignals(const GameContextDto &context);
-      void updateGhosts(GameContextDto &context);
-      void sweep(GameContextDto &context);
-      void drawWallEchoes(GameContextDto &context) const;
+      static Vec2 worldToRadar(
+        Vec2 offset
+      );
+      void addSignal(
+        const SignalProps &signal
+      );
+      void collectSignals(
+        const GameContextDto &context
+      );
+      void updateGhosts(
+        GameContextDto &context
+      );
+      void sweep(
+        GameContextDto &context
+      );
+      void drawWallEchoes(
+        GameContextDto &context
+      ) const;
       void drawSignal(
         GameContextDto    &context,
         const SignalProps &signal,

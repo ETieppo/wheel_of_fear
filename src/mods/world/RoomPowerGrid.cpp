@@ -1,10 +1,8 @@
 #include "mods/world/RoomPowerGrid.hpp"
-
-#include <algorithm>
-#include <cmath>
-
 #include "core/math/Scalar.hpp"
 #include "core/render/RenderConfig.hpp"
+#include <algorithm>
+#include <cmath>
 
 namespace wheel_of_fear {
   void RoomPowerGrid::addRoom(
@@ -22,19 +20,27 @@ namespace wheel_of_fear {
     rooms_[room_index].is_powered = is_powered;
   }
 
-  bool RoomPowerGrid::isPowered(std::size_t room_index) const {
+  bool RoomPowerGrid::isPowered(
+    std::size_t room_index
+  ) const {
     return room_index < rooms_.size() && rooms_[room_index].is_powered;
   }
 
-  bool RoomPowerGrid::isFullyLit(std::size_t room_index) const {
+  bool RoomPowerGrid::isFullyLit(
+    std::size_t room_index
+  ) const {
     return room_index < rooms_.size() && rooms_[room_index].isFullyLit();
   }
 
-  float RoomPowerGrid::litAmount(std::size_t room_index) const {
+  float RoomPowerGrid::litAmount(
+    std::size_t room_index
+  ) const {
     return room_index < rooms_.size() ? rooms_[room_index].lit_amount : 0.0F;
   }
 
-  float RoomPowerGrid::perimeterOf(const RoomProps &room) {
+  float RoomPowerGrid::perimeterOf(
+    const RoomProps &room
+  ) {
     return 2 *
            (static_cast<float>(room.width) + static_cast<float>(room.height)) *
            RenderConfig::tile_size;
@@ -67,7 +73,8 @@ namespace wheel_of_fear {
   ) {
     const float offset = std::abs(
       Scalar::floorModulo(
-        distance_along - power.conduit_offset + perimeter * 1.5F, perimeter
+        distance_along - power.conduit_offset + perimeter * 1.5F,
+        perimeter
       ) -
       perimeter *
       0.5F
@@ -75,7 +82,9 @@ namespace wheel_of_fear {
     return perimeter * 0.5F - offset <= power.lit_amount * perimeter * 0.5F;
   }
 
-  void RoomPowerGrid::advance(float delta_seconds) {
+  void RoomPowerGrid::advance(
+    float delta_seconds
+  ) {
     for(RoomPowerProps &power : rooms_) {
       const float rate = power.is_powered ? 1 / strip_power_up_seconds
                                           : -1 / strip_power_down_seconds;
@@ -129,45 +138,65 @@ namespace wheel_of_fear {
       const RoomProps      &room    = map.rooms()[room_index];
       const Vec2            minimum = room.worldMinimum();
       const Vec2            maximum = room.worldMaximum();
+
       if(!renderer.isVisible(
-           room.center(), std::max(maximum.x - minimum.x, maximum.y - minimum.y)
+           room.center(),
+           std::max(maximum.x - minimum.x, maximum.y - minimum.y)
          ))
         continue;
+
       const float perimeter     = perimeterOf(room);
       const float head_distance = power.lit_amount * perimeter * 0.5F;
-      for(float distance_along = 0; distance_along < perimeter;
-          distance_along += strip_led_spacing) {
+
+      for(
+        float distance_along = 0; distance_along < perimeter;
+        distance_along += strip_led_spacing
+      ) {
         const Vec2 point = perimeterPoint(room, distance_along);
         if(!renderer.isVisible(point, 8)) continue;
         if(map.isWallAt(point)) continue;
+
         if(!isStripLitAt(power, perimeter, distance_along)) {
           renderer.drawGlowRectangle(
-            point, Vec2::of(1.5F, 1.5F), Color::hex(0x10141c).withAlpha(0.35F)
+            point,
+            Vec2::of(1.5F, 1.5F),
+            Color::hex(0x10141c).withAlpha(0.35F)
           );
           continue;
         }
+
         const float offset = std::abs(
           Scalar::floorModulo(
-            distance_along - power.conduit_offset + perimeter * 1.5F, perimeter
+            distance_along - power.conduit_offset + perimeter * 1.5F,
+            perimeter
           ) -
           perimeter *
           0.5F
         );
+
         const float head_glow =
           Scalar::clamp(
-            1 - std::abs((perimeter * 0.5F - offset) - head_distance) / 24, 0, 1
+            1 - std::abs((perimeter * 0.5F - offset) - head_distance) / 24,
+            0,
+            1
           ) *
           (1 - power.lit_amount * power.lit_amount);
+
         renderer.drawGlowRectangle(
           point,
           Vec2::of(3, 3),
           power.color.mix(Color::white(), 0.3F + head_glow * 0.6F)
         );
+
         if(head_glow > 0.05F)
           renderer.drawGlowDisc(
-            point, 10, Color::white().withAlpha(head_glow * 0.6F), 1.4F
+            point,
+            10,
+            Color::white().withAlpha(head_glow * 0.6F),
+            1.4F
           );
       }
+
       if(power.lit_amount > 0)
         renderer.drawGlowDisc(
           perimeterPoint(room, power.conduit_offset),

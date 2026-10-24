@@ -10,18 +10,17 @@ namespace wheel_of_fear {
       float b = 1;
       float a = 1;
 
-      static constexpr
-      Color white() {
+      static constexpr Color white() {
         return Color {};
       }
 
-      static constexpr
-      Color black() {
+      static constexpr Color black() {
         return Color {0, 0, 0, 1};
       }
 
-      static constexpr
-      Color hex(std::uint32_t value) {
+      static constexpr Color hex(
+        std::uint32_t value
+      ) {
         return Color {
           static_cast<float>((value >> 16) & 0xffU) / 255.0F,
           static_cast<float>((value >> 8) & 0xffU) / 255.0F,
@@ -30,13 +29,13 @@ namespace wheel_of_fear {
         };
       }
 
-      constexpr
-      Color withAlpha(float alpha) const {
+      constexpr Color withAlpha(
+        float alpha
+      ) const {
         return Color {r, g, b, alpha};
       }
 
-      constexpr
-      Color mix(
+      constexpr Color mix(
         Color other,
         float amount
       ) const {
@@ -48,16 +47,17 @@ namespace wheel_of_fear {
         };
       }
 
-      constexpr
-      Color scaled(float factor) const {
+      constexpr Color scaled(
+        float factor
+      ) const {
         return Color {r * factor, g * factor, b * factor, a};
       }
 
-      constexpr
-      std::array<
+      constexpr std::array<
         float,
         4
-      > toArray() const {
+      >
+      toArray() const {
         return {r, g, b, a};
       }
   };

@@ -19,7 +19,9 @@ namespace wheel_of_fear {
         return position_;
       }
 
-      void setPosition(Vec2 position) {
+      void setPosition(
+        Vec2 position
+      ) {
         position_ = position;
       }
 
@@ -27,7 +29,9 @@ namespace wheel_of_fear {
         return heading_;
       }
 
-      void setHeading(float heading) {
+      void setHeading(
+        float heading
+      ) {
         heading_ = heading;
       }
 
@@ -43,7 +47,9 @@ namespace wheel_of_fear {
         return is_alive_;
       }
 
-      void setAlive(bool is_alive) {
+      void setAlive(
+        bool is_alive
+      ) {
         is_alive_ = is_alive;
       }
 
@@ -51,21 +57,33 @@ namespace wheel_of_fear {
         return is_moving_;
       }
 
-      void setMoving(bool is_moving) {
+      void setMoving(
+        bool is_moving
+      ) {
         is_moving_ = is_moving;
       }
 
-      void  respawnAt(Vec2 position);
-      void  advanceAnimation(float delta_seconds);
+      void respawnAt(
+        Vec2 position
+      );
+      void advanceAnimation(
+        float delta_seconds
+      );
       Vec2  facing() const;
-      float distanceTo(Vec2 point) const;
-      Vec2  directionTo(Vec2 point) const;
-      void  turnToward(
+      float distanceTo(
+        Vec2 point
+      ) const;
+      Vec2 directionTo(
+        Vec2 point
+      ) const;
+      void turnToward(
         float angle,
         float delta_seconds,
         float turn_rate
       );
-      void faceToward(Vec2 point);
+      void faceToward(
+        Vec2 point
+      );
       void slide(
         const Collider &collider,
         Vec2            displacement

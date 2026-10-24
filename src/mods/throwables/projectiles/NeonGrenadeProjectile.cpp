@@ -70,9 +70,14 @@ namespace wheel_of_fear {
     }
   }
 
-  void NeonGrenadeProjectile::drawTrail(Renderer &renderer) const {
+  void NeonGrenadeProjectile::drawTrail(
+    Renderer &renderer
+  ) const {
     renderer.drawGlowDisc(
-      airPosition(), 5, Palette::neon_magenta.withAlpha(0.6F), 1.4F
+      airPosition(),
+      5,
+      Palette::neon_magenta.withAlpha(0.6F),
+      1.4F
     );
   }
 } // namespace wheel_of_fear

@@ -35,7 +35,9 @@ namespace wheel_of_fear {
         return frame_;
       }
 
-      void setGroundMaterials(GroundMaterialsDto materials) {
+      void setGroundMaterials(
+        GroundMaterialsDto materials
+      ) {
         pending_ground_materials_ = std::move(materials);
       }
 
@@ -92,7 +94,9 @@ namespace wheel_of_fear {
         float width,
         Color color
       );
-      void addLight(const GpuLightProps &light);
+      void addLight(
+        const GpuLightProps &light
+      );
       void setWallMap(
         std::uint32_t                 width,
         std::uint32_t                 height,
@@ -158,8 +162,7 @@ namespace wheel_of_fear {
       );
 
     private:
-      static
-      QuadProps makeQuad(
+      static QuadProps makeQuad(
         Vec2 center,
         Vec2 size,
         std::array<
@@ -171,8 +174,7 @@ namespace wheel_of_fear {
         float        rotation,
         float        parameter
       );
-      static
-      std::array<
+      static std::array<
         float,
         4
       >

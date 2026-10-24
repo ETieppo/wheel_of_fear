@@ -6,7 +6,9 @@
 #include "core/math/Scalar.hpp"
 
 namespace wheel_of_fear {
-  Scenery::Scenery(const SceneryPlacementDto &placement)
+  Scenery::Scenery(
+    const SceneryPlacementDto &placement
+  )
       : position_(placement.position)
       , mirrored_(placement.mirrored)
       , room_index_(placement.room_index)
@@ -14,11 +16,15 @@ namespace wheel_of_fear {
       , flicker_seed_(placement.flicker_seed) {
   }
 
-  void Scenery::update(float delta_seconds) {
+  void Scenery::update(
+    float delta_seconds
+  ) {
     wobble_seconds_ = std::max(0.0F, wobble_seconds_ - delta_seconds);
   }
 
-  void Scenery::bump(RandomGenerator &random) {
+  void Scenery::bump(
+    RandomGenerator &random
+  ) {
     wobble_seconds_ = wobble_duration_seconds;
     reactToBump(random);
   }
@@ -31,7 +37,10 @@ namespace wheel_of_fear {
     const float wobble =
       std::sin(wobble_seconds_ * 40) * wobble_seconds_ * 0.6F;
     renderer.drawShadowDisc(
-      position_.add(Vec2::of(1, 3)), 9, Color::black().withAlpha(0.45F), 1.3F
+      position_.add(Vec2::of(1, 3)),
+      9,
+      Color::black().withAlpha(0.45F),
+      1.3F
     );
     renderer.drawSprite(
       sprite(sprites),

@@ -28,7 +28,9 @@ namespace wheel_of_fear {
         return item_;
       }
 
-      void settleOn(Vec2 floor) {
+      void settleOn(
+        Vec2 floor
+      ) {
         position_ = floor;
       }
 

@@ -7,8 +7,7 @@ namespace wheel_of_fear {
     public:
       TitleScreen() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer &renderer,
         float     real_seconds
       );

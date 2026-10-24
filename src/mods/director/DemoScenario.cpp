@@ -24,15 +24,21 @@
 
 namespace wheel_of_fear {
   namespace {
-    void logLine(const std::string &line) {
+    void logLine(
+      const std::string &line
+    ) {
       SDL_Log("info(demo): %s", line.c_str());
     }
 
-    std::string optionalIndex(std::optional<std::size_t> value) {
+    std::string optionalIndex(
+      std::optional<std::size_t> value
+    ) {
       return value ? std::to_string(*value) : std::string("null");
     }
 
-    std::string_view kindName(MobKindEnum kind) {
+    std::string_view kindName(
+      MobKindEnum kind
+    ) {
       switch(kind) {
         case MobKindEnum::crawler:  return "crawler";
         case MobKindEnum::bloater:  return "bloater";
@@ -45,7 +51,9 @@ namespace wheel_of_fear {
       return "";
     }
 
-    std::string_view stateName(GeneratorStateEnum state) {
+    std::string_view stateName(
+      GeneratorStateEnum state
+    ) {
       switch(state) {
         case GeneratorStateEnum::offline:  return "offline";
         case GeneratorStateEnum::charging: return "charging";
@@ -56,7 +64,9 @@ namespace wheel_of_fear {
       return "";
     }
 
-    std::string_view resultName(SkillCheckResultEnum result) {
+    std::string_view resultName(
+      SkillCheckResultEnum result
+    ) {
       switch(result) {
         case SkillCheckResultEnum::none:    return "none";
         case SkillCheckResultEnum::perfect: return "perfect";
@@ -171,7 +181,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void DemoScenario::runSectors(GameContextDto &context) {
+  void DemoScenario::runSectors(
+    GameContextDto &context
+  ) {
     World      &world      = context.world;
     Generators &generators = context.generators;
     if(world.phase() != last_phase_) {
@@ -199,7 +211,9 @@ namespace wheel_of_fear {
       context.player.setPosition(world.exitPosition().add(Vec2::of(0, 8)));
   }
 
-  void DemoScenario::runShowcase(GameContextDto &context) {
+  void DemoScenario::runShowcase(
+    GameContextDto &context
+  ) {
     context.mobs.setGraceSeconds(1000);
     aimAtWorldOffset(context, Vec2::of(0, -100));
     if(step_ != 0) return;
@@ -270,7 +284,8 @@ namespace wheel_of_fear {
       step_ = 1;
       context.mobs.clear();
       context.mobs.spawn(
-        MobKindEnum::moth, player.position().add(Vec2::of(8, 0))
+        MobKindEnum::moth,
+        player.position().add(Vec2::of(8, 0))
       );
       spawnInSight(context, MobKindEnum::crawler, 160);
     }
@@ -314,8 +329,10 @@ namespace wheel_of_fear {
       std::size_t nearest = 0;
       const auto &lockers = world.lockers();
       for(std::size_t index = 0; index < lockers.size(); ++index)
-        if(lockers[index].position().distance(player.position()) <
-           lockers[nearest].position().distance(player.position()))
+        if(
+          lockers[index].position().distance(player.position()) <
+          lockers[nearest].position().distance(player.position())
+        )
           nearest = index;
       player.setPosition(
         world.map().nearestFloor(lockers[nearest].entryPoint())
@@ -374,13 +391,15 @@ namespace wheel_of_fear {
     }
     context.input.simulateHold(InputActionEnum::interact, seconds < 40);
     const SkillCheck &check = generator.skillCheck();
-    if(check.isActive() &&
-       !check.isWarning() &&
-       check.needleAngle() >=
-       check.perfectStart() +
-       check.perfectWidth() *
-       0.5F &&
-       seconds < 12) {
+    if(
+      check.isActive() &&
+      !check.isWarning() &&
+      check.needleAngle() >=
+      check.perfectStart() +
+      check.perfectWidth() *
+      0.5F &&
+      seconds < 12
+    ) {
       context.input.simulatePress(InputActionEnum::hold_breath);
     }
     if(should_log) {
@@ -414,7 +433,8 @@ namespace wheel_of_fear {
       generator.skillCheck().postpone(100);
     }
     context.input.simulateHold(
-      InputActionEnum::interact, !generator.isOnline()
+      InputActionEnum::interact,
+      !generator.isOnline()
     );
     if(!should_log) return;
     logLine(
@@ -572,17 +592,22 @@ namespace wheel_of_fear {
       );
       break;
     }
-    for(const InputActionEnum action :
-        {InputActionEnum::move_left,
-         InputActionEnum::move_right,
-         InputActionEnum::move_up,
-         InputActionEnum::move_down})
+    for(
+      const InputActionEnum action :
+      {InputActionEnum::move_left,
+       InputActionEnum::move_right,
+       InputActionEnum::move_up,
+       InputActionEnum::move_down}
+    )
       input.simulateHold(action, false);
     if(!target) return;
     const bool reached = player.distanceTo(*target) < 12;
     if(!reached && step_ == 0) {
       const Vec2 direction = world.navigation().directionToward(
-        world.map(), player.position(), *target, world.elapsedSeconds()
+        world.map(),
+        player.position(),
+        *target,
+        world.elapsedSeconds()
       );
       const Vec2 steer = direction.length() < 0.5F
                          ? target->sub(player.position()).normalized()

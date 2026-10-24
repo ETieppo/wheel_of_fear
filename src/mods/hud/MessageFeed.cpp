@@ -15,7 +15,9 @@ namespace wheel_of_fear {
     messages_.push_back(HudMessageProps {std::move(text), color, 0});
   }
 
-  void MessageFeed::age(float delta_seconds) {
+  void MessageFeed::age(
+    float delta_seconds
+  ) {
     for(HudMessageProps &message : messages_)
       message.age_seconds += delta_seconds;
     std::erase_if(messages_, [](const HudMessageProps &message) {
@@ -23,7 +25,9 @@ namespace wheel_of_fear {
     });
   }
 
-  void MessageFeed::draw(Renderer &renderer) const {
+  void MessageFeed::draw(
+    Renderer &renderer
+  ) const {
     constexpr float line_height = 20;
     constexpr float right       = RenderConfig::ui_width - 18;
     for(std::size_t index = 0; index < messages_.size(); ++index) {
@@ -39,7 +43,8 @@ namespace wheel_of_fear {
       const float       alpha   = fade_out * fade_in;
       const float       y       = 96 + static_cast<float>(index) * line_height;
       const std::size_t visible_length = std::min(
-        message.text.size(), static_cast<std::size_t>(message.age_seconds * 90)
+        message.text.size(),
+        static_cast<std::size_t>(message.age_seconds * 90)
       );
       const float width = renderer.measureText(message.text, 14);
       renderer.drawUiRectangle(
@@ -50,7 +55,11 @@ namespace wheel_of_fear {
         Palette::panel_deep.withAlpha(0.65F * alpha)
       );
       renderer.drawUiRectangle(
-        right - width - 22, y - 2, 2, 18, message.color.withAlpha(alpha)
+        right - width - 22,
+        y - 2,
+        2,
+        18,
+        message.color.withAlpha(alpha)
       );
       renderer.drawText(
         std::string_view(message.text).substr(0, visible_length),

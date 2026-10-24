@@ -11,8 +11,7 @@ namespace wheel_of_fear {
     public:
       UiKit() = delete;
 
-      static
-      void drawPanel(
+      static void drawPanel(
         Renderer &renderer,
         float     x,
         float     y,
@@ -21,8 +20,7 @@ namespace wheel_of_fear {
         Color     accent,
         float     alpha
       );
-      static
-      float drawKeycap(
+      static float drawKeycap(
         Renderer        &renderer,
         std::string_view label,
         float            x,
@@ -30,8 +28,7 @@ namespace wheel_of_fear {
         float            size,
         Color            color
       );
-      static
-      void drawSegmentedBar(
+      static void drawSegmentedBar(
         Renderer   &renderer,
         float       x,
         float       y,
@@ -42,8 +39,7 @@ namespace wheel_of_fear {
         Color       color,
         Color       empty_color
       );
-      static
-      void drawGlitchTitle(
+      static void drawGlitchTitle(
         Renderer        &renderer,
         std::string_view text,
         float            x,
@@ -53,8 +49,7 @@ namespace wheel_of_fear {
         float            seconds,
         float            intensity
       );
-      static
-      void drawScanlines(
+      static void drawScanlines(
         Renderer &renderer,
         float     width,
         float     height,

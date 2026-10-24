@@ -25,7 +25,11 @@ namespace wheel_of_fear {
       Palette::panel_deep.withAlpha(0.55F)
     );
     renderer.drawUiRectangle(
-      0, 74, RenderConfig::ui_width, 150, Color::black().withAlpha(0.35F)
+      0,
+      74,
+      RenderConfig::ui_width,
+      150,
+      Color::black().withAlpha(0.35F)
     );
     const float glitch_intensity =
       Scalar::hashTime(real_seconds, 5) > 0.82F ? 1.0F : 0.15F;
@@ -75,7 +79,13 @@ namespace wheel_of_fear {
     };
     constexpr float panel_top = 252;
     UiKit::drawPanel(
-      renderer, center_x - 300, panel_top, 600, 232, Palette::panel_edge, 1
+      renderer,
+      center_x - 300,
+      panel_top,
+      600,
+      232,
+      Palette::panel_edge,
+      1
     );
     for(std::size_t index = 0; index < controls.size(); ++index) {
       const auto &[key, text] = controls[index];
@@ -90,7 +100,12 @@ namespace wheel_of_fear {
         Palette::neon_cyan
       );
       renderer.drawText(
-        text, center_x - 146, y + 1, 15, Palette::text, TextAlignEnum::left
+        text,
+        center_x - 146,
+        y + 1,
+        15,
+        Palette::text,
+        TextAlignEnum::left
       );
     }
     const float pulse = 0.45F + 0.55F * std::sin(real_seconds * 3);
@@ -103,7 +118,10 @@ namespace wheel_of_fear {
       TextAlignEnum::center
     );
     UiKit::drawScanlines(
-      renderer, RenderConfig::ui_width, RenderConfig::ui_height, 0.12F
+      renderer,
+      RenderConfig::ui_width,
+      RenderConfig::ui_height,
+      0.12F
     );
   }
 } // namespace wheel_of_fear

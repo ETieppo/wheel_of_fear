@@ -9,7 +9,8 @@ namespace wheel_of_fear {
     public:
       KeyLabels() = delete;
 
-      static
-      std::string_view labelFor(InputActionEnum action);
+      static std::string_view labelFor(
+        InputActionEnum action
+      );
   };
 } // namespace wheel_of_fear

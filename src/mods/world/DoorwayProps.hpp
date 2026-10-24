@@ -19,7 +19,9 @@ namespace wheel_of_fear {
       float       open_amount          = 0;
       float       seconds_since_change = 100;
 
-      TileCoordinateProps tileAt(int step) const {
+      TileCoordinateProps tileAt(
+        int step
+      ) const {
         return is_vertical ? TileCoordinateProps {first_x, first_y + step}
                            : TileCoordinateProps {first_x + step, first_y};
       }
@@ -39,11 +41,15 @@ namespace wheel_of_fear {
         );
       }
 
-      bool connects(std::size_t room_index) const {
+      bool connects(
+        std::size_t room_index
+      ) const {
         return room_a == room_index || room_b == room_index;
       }
 
-      std::size_t otherRoom(std::size_t room_index) const {
+      std::size_t otherRoom(
+        std::size_t room_index
+      ) const {
         return room_a == room_index ? room_b : room_a;
       }
   };

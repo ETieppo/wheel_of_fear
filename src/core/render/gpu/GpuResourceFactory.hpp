@@ -73,34 +73,34 @@ namespace wheel_of_fear {
         std::span<const std::uint8_t> pixels
       ) const;
 
-      static
-      WGPUBindGroupLayoutEntry uniformEntry(std::uint32_t binding);
-      static
-      WGPUBindGroupLayoutEntry storageEntry(std::uint32_t binding);
-      static
-      WGPUBindGroupLayoutEntry textureEntry(std::uint32_t binding);
-      static
-      WGPUBindGroupLayoutEntry samplerEntry(std::uint32_t binding);
-      static
-      WGPUBindGroupEntry bufferBinding(
+      static WGPUBindGroupLayoutEntry uniformEntry(
+        std::uint32_t binding
+      );
+      static WGPUBindGroupLayoutEntry storageEntry(
+        std::uint32_t binding
+      );
+      static WGPUBindGroupLayoutEntry textureEntry(
+        std::uint32_t binding
+      );
+      static WGPUBindGroupLayoutEntry samplerEntry(
+        std::uint32_t binding
+      );
+      static WGPUBindGroupEntry bufferBinding(
         std::uint32_t binding,
         WGPUBuffer    buffer,
         std::uint64_t size
       );
-      static
-      WGPUBindGroupEntry textureBinding(
+      static WGPUBindGroupEntry textureBinding(
         std::uint32_t   binding,
         WGPUTextureView view
       );
-      static
-      WGPUBindGroupEntry samplerBinding(
+      static WGPUBindGroupEntry samplerBinding(
         std::uint32_t binding,
         WGPUSampler   sampler
       );
 
     private:
-      static
-      std::vector<std::uint8_t> downsample(
+      static std::vector<std::uint8_t> downsample(
         std::span<const std::uint8_t> pixels,
         std::uint32_t                 width,
         std::uint32_t                 height

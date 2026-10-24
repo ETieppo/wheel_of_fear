@@ -16,7 +16,11 @@ namespace wheel_of_fear {
       static constexpr Color                neon_lime    = Color::hex(0x7dff4a);
       static constexpr Color                neon_red     = Color::hex(0xff2a4a);
       static constexpr std::array<Color, 5> room_neon_colors {
-        neon_cyan, neon_magenta, neon_violet, neon_amber, neon_lime
+        neon_cyan,
+        neon_magenta,
+        neon_violet,
+        neon_amber,
+        neon_lime
       };
 
       static constexpr Color flashlight_white  = Color::hex(0xdff6ff);

@@ -5,6 +5,8 @@ namespace wheel_of_fear {
       int x = 0;
       int y = 0;
 
-      bool operator ==(const TileCoordinateProps &) const = default;
+      bool operator ==(
+        const TileCoordinateProps &
+      ) const = default;
   };
 } // namespace wheel_of_fear

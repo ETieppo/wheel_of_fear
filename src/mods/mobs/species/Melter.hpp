@@ -25,7 +25,9 @@ namespace wheel_of_fear {
         .spawn_weight            = 0.45F,
       };
 
-      explicit Melter(Vec2 position)
+      explicit Melter(
+        Vec2 position
+      )
           : Mob(
               position,
               species_traits
@@ -40,10 +42,18 @@ namespace wheel_of_fear {
         return species_traits;
       }
 
-      void emitLights(GameContextDto &context) override;
-      void think(GameContextDto &context) override;
-      void onContact(GameContextDto &context) override;
-      void draw(GameContextDto &context) const override;
+      void emitLights(
+        GameContextDto &context
+      ) override;
+      void think(
+        GameContextDto &context
+      ) override;
+      void onContact(
+        GameContextDto &context
+      ) override;
+      void draw(
+        GameContextDto &context
+      ) const override;
 
     private:
       static constexpr float seconds_to_dissolve_wall = 1.8F;
@@ -58,7 +68,9 @@ namespace wheel_of_fear {
         TileCoordinateProps tile,
         Vec2                contact_point
       );
-      void leaveAcidTrail(GameContextDto &context);
+      void leaveAcidTrail(
+        GameContextDto &context
+      );
 
       float dissolve_seconds_ = 0;
       float trail_seconds_    = 0;

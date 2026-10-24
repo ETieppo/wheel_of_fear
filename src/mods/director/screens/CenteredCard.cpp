@@ -22,13 +22,28 @@ namespace wheel_of_fear {
     );
     UiKit::drawPanel(renderer, center_x - 280, 190, 560, 130, color, 1);
     UiKit::drawGlitchTitle(
-      renderer, title, center_x, 210, 40, color, real_seconds, 0.25F
+      renderer,
+      title,
+      center_x,
+      210,
+      40,
+      color,
+      real_seconds,
+      0.25F
     );
     renderer.drawText(
-      subtitle, center_x, 276, 15, Palette::text, TextAlignEnum::center
+      subtitle,
+      center_x,
+      276,
+      15,
+      Palette::text,
+      TextAlignEnum::center
     );
     UiKit::drawScanlines(
-      renderer, RenderConfig::ui_width, RenderConfig::ui_height, 0.08F
+      renderer,
+      RenderConfig::ui_width,
+      RenderConfig::ui_height,
+      0.08F
     );
   }
 } // namespace wheel_of_fear

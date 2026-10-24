@@ -15,11 +15,15 @@ namespace wheel_of_fear {
 
       bool isFinished() const;
 
-      void advance(float delta_seconds) {
+      void advance(
+        float delta_seconds
+      ) {
         elapsed_seconds_ += delta_seconds;
       }
 
-      void emitFlash(Lighting &lighting) const;
+      void emitFlash(
+        Lighting &lighting
+      ) const;
 
     private:
       float flashStrength() const;

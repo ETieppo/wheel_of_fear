@@ -8,8 +8,7 @@ namespace wheel_of_fear {
     public:
       Utf8Decoder() = delete;
 
-      static
-      char32_t nextCodepoint(
+      static char32_t nextCodepoint(
         std::string_view text,
         std::size_t     &cursor
       );

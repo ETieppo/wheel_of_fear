@@ -3,7 +3,9 @@
 #include "mods/world/DistanceField.hpp"
 
 namespace wheel_of_fear {
-  TEST_CASE("every room is reachable from the first room") {
+  TEST_CASE(
+    "every room is reachable from the first room"
+  ) {
     RandomGenerator random(42);
     TileMap         map;
     map.generate(random, 5, 4);

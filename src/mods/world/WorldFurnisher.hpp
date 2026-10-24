@@ -11,7 +11,9 @@ namespace wheel_of_fear {
 
   class WorldFurnisher {
     public:
-      explicit WorldFurnisher(World &world)
+      explicit WorldFurnisher(
+        World &world
+      )
           : world_(world) {
       }
 
@@ -38,10 +40,13 @@ namespace wheel_of_fear {
         SceneryKindEnum  kind,
         Color            color
       );
-      int interiorX(const RoomProps &room);
-      int interiorY(const RoomProps &room);
-      static
-      bool isInClearing(
+      int interiorX(
+        const RoomProps &room
+      );
+      int interiorY(
+        const RoomProps &room
+      );
+      static bool isInClearing(
         const RoomProps &room,
         int              x,
         int              y

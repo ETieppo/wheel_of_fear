@@ -3,7 +3,9 @@
 #include "mods/world/TileMap.hpp"
 
 namespace wheel_of_fear {
-  void Noise::update(float delta_seconds) {
+  void Noise::update(
+    float delta_seconds
+  ) {
     std::size_t index = 0;
     while(index < events_.size()) {
       events_[index].remaining_seconds -= delta_seconds;

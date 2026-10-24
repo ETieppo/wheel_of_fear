@@ -47,7 +47,11 @@ namespace wheel_of_fear {
       0
     );
     renderer.drawUiRectangle(
-      x + width - 18, y + height - 3, 14, 2, accent.withAlpha(0.9F * alpha)
+      x + width - 18,
+      y + height - 3,
+      14,
+      2,
+      accent.withAlpha(0.9F * alpha)
     );
   }
 
@@ -64,15 +68,18 @@ namespace wheel_of_fear {
     const float height = size * 1.45F;
     renderer.drawUiRectangle(x, y, width, height, color.withAlpha(0.16F));
     renderer.drawUiRectangle(x, y, width, 1, color.withAlpha(0.9F));
-    renderer.drawUiRectangle(
-      x, y + height - 2, width, 2, color.withAlpha(0.9F)
-    );
+    renderer
+      .drawUiRectangle(x, y + height - 2, width, 2, color.withAlpha(0.9F));
     renderer.drawUiRectangle(x, y, 1, height, color.withAlpha(0.6F));
-    renderer.drawUiRectangle(
-      x + width - 1, y, 1, height, color.withAlpha(0.6F)
-    );
+    renderer
+      .drawUiRectangle(x + width - 1, y, 1, height, color.withAlpha(0.6F));
     renderer.drawText(
-      label, x + width / 2, y + size * 0.12F, size, color, TextAlignEnum::center
+      label,
+      x + width / 2,
+      y + size * 0.12F,
+      size,
+      color,
+      TextAlignEnum::center
     );
     return width;
   }

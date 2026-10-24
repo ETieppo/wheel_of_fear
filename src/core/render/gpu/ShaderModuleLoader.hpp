@@ -9,8 +9,7 @@ namespace wheel_of_fear {
     public:
       ShaderModuleLoader() = delete;
 
-      static
-      GpuShaderModule loadWgsl(
+      static GpuShaderModule loadWgsl(
         WGPUDevice       device,
         std::string_view file_name
       );

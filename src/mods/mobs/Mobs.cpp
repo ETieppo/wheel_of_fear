@@ -29,11 +29,15 @@ namespace wheel_of_fear {
     constexpr float witness_distance            = 260;
     constexpr float chasing_witness_distance    = 340;
 
-    float spawnIntervalSeconds(std::uint32_t phase) {
+    float spawnIntervalSeconds(
+      std::uint32_t phase
+    ) {
       return std::max(10.0F, 28 - static_cast<float>(phase) * 2.5F);
     }
 
-    std::size_t populationCap(std::uint32_t phase) {
+    std::size_t populationCap(
+      std::uint32_t phase
+    ) {
       return 5 + 3 * static_cast<std::size_t>(std::min(phase, 8U));
     }
   } // namespace
@@ -42,7 +46,9 @@ namespace wheel_of_fear {
 
   Mobs::~Mobs() = default;
 
-  void Mobs::populatePhase(World &world) {
+  void Mobs::populatePhase(
+    World &world
+  ) {
     mobs_.clear();
     spawn_timer_                    = spawnIntervalSeconds(world.phase());
     grace_seconds_                  = phase_grace_seconds;
@@ -51,8 +57,10 @@ namespace wheel_of_fear {
     const auto              &rooms  = world.map().rooms();
     std::vector<std::size_t> distant_rooms;
     for(std::size_t room_index = 0; room_index < rooms.size(); ++room_index)
-      if(world.map().roomGridDistance(room_index, world.startRoomIndex()) >=
-         minimum_spawn_grid_distance)
+      if(
+        world.map().roomGridDistance(room_index, world.startRoomIndex()) >=
+        minimum_spawn_grid_distance
+      )
         distant_rooms.push_back(room_index);
     if(distant_rooms.empty()) {
       for(std::size_t room_index = 0; room_index < rooms.size(); ++room_index)
@@ -91,7 +99,9 @@ namespace wheel_of_fear {
     }
   }
 
-  std::optional<MobKindEnum> Mobs::pickSpawnKind(World &world) {
+  std::optional<MobKindEnum> Mobs::pickSpawnKind(
+    World &world
+  ) {
     float total_weight = 0;
     for(const MobKindEnum kind : all_mob_kinds) {
       const MobTraitsProps &traits = MobCatalog::traitsOf(kind);
@@ -117,8 +127,9 @@ namespace wheel_of_fear {
     mobs_.push_back(MobCatalog::create(kind, position));
   }
 
-  std::vector<std::string_view>
-  Mobs::introductionsForPhase(std::uint32_t phase) {
+  std::vector<std::string_view> Mobs::introductionsForPhase(
+    std::uint32_t phase
+  ) {
     std::vector<std::string_view> introductions;
     for(const MobKindEnum kind : all_mob_kinds) {
       const MobTraitsProps &traits = MobCatalog::traitsOf(kind);
@@ -145,9 +156,9 @@ namespace wheel_of_fear {
         continue;
       const Vec2  offset   = mob->position().sub(position);
       const float distance = offset.length();
-      if(distance >=
-         closest_distance ||
-         offset.normalized().dot(facing) < -0.3F)
+      if(
+        distance >= closest_distance || offset.normalized().dot(facing) < -0.3F
+      )
         continue;
       closest_distance = distance;
       closest          = mob.get();
@@ -161,7 +172,9 @@ namespace wheel_of_fear {
     for(const auto &mob : mobs_) mob->setBeingHugged(false);
   }
 
-  void Mobs::onGeneratorOnline(GameContextDto &context) {
+  void Mobs::onGeneratorOnline(
+    GameContextDto &context
+  ) {
     for(const auto &mob : mobs_) mob->onGeneratorOnline(context);
   }
 
@@ -172,11 +185,13 @@ namespace wheel_of_fear {
     float frenzy_seconds
   ) {
     for(const auto &mob : mobs_) {
-      if(!mob->isAlive() ||
-         !mob->traits().is_hostile ||
-         mob->kind() ==
-         MobKindEnum::shepherd ||
-         mob->isDisguised())
+      if(
+        !mob->isAlive() ||
+        !mob->traits().is_hostile ||
+        mob->kind() ==
+        MobKindEnum::shepherd ||
+        mob->isDisguised()
+      )
         continue;
       if(mob->distanceTo(caller) > radius) continue;
       mob->frenzy(frenzy_seconds);
@@ -220,9 +235,8 @@ namespace wheel_of_fear {
     world.shake(
       Scalar::clamp(1.2F - center.distance(player_position) / 260, 0.2F, 1)
     );
-    context.noise.emit(
-      center, explosion_noise_radius, NoiseSourceEnum::explosion
-    );
+    context.noise
+      .emit(center, explosion_noise_radius, NoiseSourceEnum::explosion);
     LightProps flash;
     flash.position          = center;
     flash.radius            = 150;
@@ -236,19 +250,24 @@ namespace wheel_of_fear {
     for(int offset_y = -1; offset_y <= 1; ++offset_y)
       for(int offset_x = -1; offset_x <= 1; ++offset_x)
         world.map().dissolveWall(
-          center_tile.x + offset_x, center_tile.y + offset_y
+          center_tile.x + offset_x,
+          center_tile.y + offset_y
         );
     for(const auto &victim : mobs_) {
-      if(!victim->isAlive() ||
-         !victim->traits().is_hostile ||
-         victim->isDisguised())
+      if(
+        !victim->isAlive() ||
+        !victim->traits().is_hostile ||
+        victim->isDisguised()
+      )
         continue;
       if(victim->distanceTo(center) > explosion_radius) continue;
       victim->catchBlast(context);
     }
   }
 
-  void Mobs::update(GameContextDto &context) {
+  void Mobs::update(
+    GameContextDto &context
+  ) {
     if(!context.clock.isRunning()) return;
     const float delta = context.clock.deltaSeconds();
     grace_seconds_    = std::max(0.0F, grace_seconds_ - delta);
@@ -285,7 +304,9 @@ namespace wheel_of_fear {
     const auto filter = mob.traits().frozen_by;
     if(!filter) return false;
     return context.lighting.freezingLightAt(
-             context.world.map(), mob.position(), *filter
+             context.world.map(),
+             mob.position(),
+             *filter
            ) > freeze_threshold;
   }
 
@@ -296,10 +317,12 @@ namespace wheel_of_fear {
     const World &world           = context.world;
     const Vec2   locker_position = world.lockers()[locker_index].position();
     for(const auto &mob : mobs_) {
-      if(mob->isBusy() ||
-         !mob->traits().is_hostile ||
-         !mob->traits().canSee() ||
-         mob->isDisguised())
+      if(
+        mob->isBusy() ||
+        !mob->traits().is_hostile ||
+        !mob->traits().canSee() ||
+        mob->isDisguised()
+      )
         continue;
       const float distance     = mob->distanceTo(locker_position);
       const bool  was_tracking = mob->intent() ==
@@ -314,7 +337,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void Mobs::updateSpawner(GameContextDto &context) {
+  void Mobs::updateSpawner(
+    GameContextDto &context
+  ) {
     World &world = context.world;
     spawn_timer_ -= context.clock.deltaSeconds();
     if(spawn_timer_ > 0) return;
@@ -334,9 +359,11 @@ namespace wheel_of_fear {
       if(vent.distance(player_position) < minimum_spawn_view_distance) continue;
       const auto vent_room = world.map().roomIndexAt(vent);
       if(!vent_room || world.isRoomPowered(*vent_room)) continue;
-      if(player_room &&
-         world.map().roomGridDistance(*player_room, *vent_room) <
-         minimum_spawn_grid_distance)
+      if(
+        player_room &&
+        world.map().roomGridDistance(*player_room, *vent_room) <
+        minimum_spawn_grid_distance
+      )
         continue;
       const auto kind = pickSpawnKind(world);
       if(!kind) return;
@@ -345,14 +372,18 @@ namespace wheel_of_fear {
     }
   }
 
-  void Mobs::updateDanger(GameContextDto &context) {
+  void Mobs::updateDanger(
+    GameContextDto &context
+  ) {
     float      nearest         = std::numeric_limits<float>::infinity();
     const Vec2 player_position = context.player.position();
     for(const auto &mob : mobs_) {
-      if(!mob->traits().is_hostile ||
-         !mob->canAct() ||
-         !mob->isHunting() ||
-         mob->isDisguised())
+      if(
+        !mob->traits().is_hostile ||
+        !mob->canAct() ||
+        !mob->isHunting() ||
+        mob->isDisguised()
+      )
         continue;
       nearest = std::min(nearest, mob->distanceTo(player_position));
     }
@@ -364,27 +395,32 @@ namespace wheel_of_fear {
     heartbeat_timer_ -= delta;
     if(heartbeat_timer_ > 0) return;
     heartbeat_timer_ = 0.95F - danger_level_ * 0.45F;
-    context.sound_player.play(
-      SoundEnum::heartbeat, 0.4F + danger_level_ * 0.5F, 0, 1
-    );
+    context.sound_player
+      .play(SoundEnum::heartbeat, 0.4F + danger_level_ * 0.5F, 0, 1);
   }
 
   float Mobs::visibilityOf(
     const Mob            &mob,
     const GameContextDto &context
   ) {
-    if(mob.isBurning() ||
-       mob.isCrumbling() ||
-       mob.isBeingHugged() ||
-       mob.isDisguised())
+    if(
+      mob.isBurning() ||
+      mob.isCrumbling() ||
+      mob.isBeingHugged() ||
+      mob.isDisguised()
+    )
       return 1;
     const float light = context.lighting.visibilityAt(
-      context.world.map(), mob.position(), mob.traits().visible_under
+      context.world.map(),
+      mob.position(),
+      mob.traits().visible_under
     );
     return Scalar::clamp(light * visibility_gain, 0, 1);
   }
 
-  void Mobs::draw(GameContextDto &context) {
+  void Mobs::draw(
+    GameContextDto &context
+  ) {
     if(context.world.map().width() == 0) return;
     for(const auto &mob : mobs_) {
       if(!context.renderer.isVisible(mob->position(), 30)) continue;

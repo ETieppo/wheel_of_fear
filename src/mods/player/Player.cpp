@@ -22,7 +22,9 @@ namespace wheel_of_fear {
     respawn(Vec2 {});
   }
 
-  void Player::respawn(Vec2 position) {
+  void Player::respawn(
+    Vec2 position
+  ) {
     respawnAt(position);
     aim_direction_ = Vec2::of(1, 0);
     activity_      = PlayerActivityEnum::exploring;
@@ -49,7 +51,9 @@ namespace wheel_of_fear {
     return FlashlightGripDto {position(), aim_direction_, repair_target_};
   }
 
-  void Player::update(GameContextDto &context) {
+  void Player::update(
+    GameContextDto &context
+  ) {
     hiding_.clearHideEvent();
     if(context.world.map().width() > 0 && !isDead()) emitLights(context);
     if(!context.clock.isRunning()) return;
@@ -98,26 +102,33 @@ namespace wheel_of_fear {
     handleExplorationActions(context);
   }
 
-  void Player::aimAtMouse(GameContextDto &context) {
+  void Player::aimAtMouse(
+    GameContextDto &context
+  ) {
     const Vec2 toward_mouse =
       context.camera.mouseWorldPosition(context.input).sub(position());
     if(toward_mouse.length() > 2) aim_direction_ = toward_mouse.normalized();
     turnToward(aim_direction_.angle(), 1.0F / 30.0F, aim_turn_rate);
   }
 
-  void Player::handleExplorationActions(GameContextDto &context) {
+  void Player::handleExplorationActions(
+    GameContextDto &context
+  ) {
     const Input &input = context.input;
     if(input.wasPressed(InputActionEnum::switch_light_mode))
       flashlight_.cycleMode(context.sound_player);
     const Vec2 target   = context.camera.mouseWorldPosition(input);
     const Vec2 lamp_tip = Flashlight::lampTip(position(), aim_direction_);
     if(input.wasPressed(InputActionEnum::throw_lure))
-      throwing_arm_.tryThrow(
-        context, inventory_, ItemEnum::lure_beacon, lamp_tip, target
-      );
+      throwing_arm_
+        .tryThrow(context, inventory_, ItemEnum::lure_beacon, lamp_tip, target);
     if(input.wasPressed(InputActionEnum::throw_grenade))
       throwing_arm_.tryThrow(
-        context, inventory_, ItemEnum::neon_grenade, lamp_tip, target
+        context,
+        inventory_,
+        ItemEnum::neon_grenade,
+        lamp_tip,
+        target
       );
     const auto locker_index = hiding_.nearestLocker(context.world, position());
     if(!locker_index) return;
@@ -128,19 +139,22 @@ namespace wheel_of_fear {
     activity_ = PlayerActivityEnum::hiding;
   }
 
-  void Player::updateFlashlight(GameContextDto &context) {
+  void Player::updateFlashlight(
+    GameContextDto &context
+  ) {
     FlashlightConditionsDto conditions;
     conditions.delta_seconds       = context.clock.deltaSeconds();
     conditions.is_held_in_mouth    = isRepairing();
     conditions.is_tracker_open     = context.tracker.isOpen();
     conditions.is_holder_hidden    = isHidden();
     conditions.is_in_burning_light = context.world.isBurningLightAt(position());
-    flashlight_.update(
-      conditions, context.world.random(), context.sound_player
-    );
+    flashlight_
+      .update(conditions, context.world.random(), context.sound_player);
   }
 
-  void Player::beginRepair(Vec2 target) {
+  void Player::beginRepair(
+    Vec2 target
+  ) {
     if(isHidden() || isDead()) return;
     repair_target_ = target;
     activity_      = PlayerActivityEnum::repairing;
@@ -155,20 +169,27 @@ namespace wheel_of_fear {
     repair_target_.reset();
     context.world.shake(1);
     context.sound_player.play(
-      SoundEnum::player_hurt, 0.9F, 0, context.world.random().range(0.9F, 1.1F)
+      SoundEnum::player_hurt,
+      0.9F,
+      0,
+      context.world.random().range(0.9F, 1.1F)
     );
     if(vitality_.isDead())
       context.sound_player.play(SoundEnum::player_death, 1.0F, 0, 1);
   }
 
-  void Player::dragOutOfLocker(GameContextDto &context) {
+  void Player::dragOutOfLocker(
+    GameContextDto &context
+  ) {
     hiding_.leave(context, *this);
     activity_ = PlayerActivityEnum::exploring;
     vitality_.dropGuard();
     context.world.shake(0.8F);
   }
 
-  void Player::emitLights(GameContextDto &context) const {
+  void Player::emitLights(
+    GameContextDto &context
+  ) const {
     if(isHidden()) return;
     LightProps aura;
     aura.position      = position();
@@ -180,7 +201,9 @@ namespace wheel_of_fear {
     flashlight_.emitLights(context.lighting, grip());
   }
 
-  void Player::draw(GameContextDto &context) const {
+  void Player::draw(
+    GameContextDto &context
+  ) const {
     if(context.world.map().width() == 0 || isHidden()) return;
     const float real_seconds = context.clock.realSeconds();
     const bool  is_blinking  = vitality_.isInvulnerable() &&
@@ -200,10 +223,16 @@ namespace wheel_of_fear {
       1.4F
     );
     const PlayerPoseDto pose = PlayerAnimator::currentPose(
-      sprites, activity_, isMoving(), movement_.strideDistance(), real_seconds
+      sprites,
+      activity_,
+      isMoving(),
+      movement_.strideDistance(),
+      real_seconds
     );
     renderer.drawSprite(
-      pose.body, position(), SpriteDrawDto {.rotation = rotation, .color = tint}
+      pose.body,
+      position(),
+      SpriteDrawDto {.rotation = rotation, .color = tint}
     );
     if(!isDead())
       renderer.drawGlowSprite(

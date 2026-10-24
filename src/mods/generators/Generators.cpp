@@ -13,7 +13,9 @@ namespace wheel_of_fear {
     constexpr std::string_view generator_labels = "ABCDEFGHIJ";
   }
 
-  void Generators::generatePhase(World &world) {
+  void Generators::generatePhase(
+    World &world
+  ) {
     generators_.clear();
     fabricators_.clear();
     exit_door_.reset(world.exitPosition());
@@ -34,8 +36,10 @@ namespace wheel_of_fear {
       std::min<std::size_t>(2 + world.phase(), 6);
     const float incident_chance =
       std::min(0.35F + 0.1F * static_cast<float>(world.phase()), 0.85F);
-    for(std::size_t generator_index = 0; generator_index < generator_count;
-        ++generator_index) {
+    for(
+      std::size_t generator_index = 0; generator_index < generator_count;
+      ++generator_index
+    ) {
       const auto room_index = pickDistantRoom(world, occupied_rooms);
       if(!room_index) break;
       occupied_rooms[*room_index] = true;
@@ -44,7 +48,8 @@ namespace wheel_of_fear {
       const int        corner_y   = room.centerTileY() - 1;
       if(!world.map().reserveProp(corner_x, corner_y, 2, 2)) continue;
       Generator::PlannedIncidents incidents {
-        GeneratorIncidentEnum::none, GeneratorIncidentEnum::none
+        GeneratorIncidentEnum::none,
+        GeneratorIncidentEnum::none
       };
       for(GeneratorIncidentEnum &incident : incidents)
         if(random.chance(incident_chance))
@@ -57,7 +62,10 @@ namespace wheel_of_fear {
         static_cast<float>(corner_y + 1) * RenderConfig::tile_size
       );
       generators_.emplace_back(
-        center, *room_index, generator_labels[generators_.size()], incidents
+        center,
+        *room_index,
+        generator_labels[generators_.size()],
+        incidents
       );
     }
   }
@@ -69,9 +77,10 @@ namespace wheel_of_fear {
     RandomGenerator  &random           = world.random();
     const auto       &rooms            = world.map().rooms();
     const std::size_t fabricator_count = 3 + world.phase() / 2;
-    for(int attempt = 0;
-        fabricators_.size() < fabricator_count && attempt < 300;
-        ++attempt) {
+    for(
+      int attempt = 0; fabricators_.size() < fabricator_count && attempt < 300;
+      ++attempt
+    ) {
       const std::size_t room_index = random.index(rooms.size());
       if(room_index == world.exitRoomIndex()) continue;
       if(occupied_rooms[room_index] && attempt < 200) continue;
@@ -128,13 +137,17 @@ namespace wheel_of_fear {
 
   const Generator* Generators::activeRepair() const {
     for(const Generator &generator : generators_)
-      if(generator.isBeingRepaired() ||
-         generator.skillCheck().resultSeconds() > 0)
+      if(
+        generator.isBeingRepaired() ||
+        generator.skillCheck().resultSeconds() > 0
+      )
         return &generator;
     return nullptr;
   }
 
-  void Generators::update(GameContextDto &context) {
+  void Generators::update(
+    GameContextDto &context
+  ) {
     if(!context.clock.isRunning()) return;
     const float seconds_to_charge =
       16.0F + 2.5F * static_cast<float>(std::min(context.world.phase(), 6U));
@@ -149,7 +162,9 @@ namespace wheel_of_fear {
     exit_door_.update(context, online_count, generators_.size());
   }
 
-  void Generators::rollForOverload(GameContextDto &context) {
+  void Generators::rollForOverload(
+    GameContextDto &context
+  ) {
     overload_cooldown_ -= context.clock.deltaSeconds();
     if(overload_cooldown_ > 0 || exit_door_.isUnlocked()) return;
     const float phase_pressure =
@@ -157,10 +172,12 @@ namespace wheel_of_fear {
     const float chance_per_generator =
       context.clock.deltaSeconds() / (160.0F - phase_pressure);
     for(Generator &generator : generators_) {
-      if(!generator.isOnline() ||
-         generator.secondsOnline() <
-         20 ||
-         context.world.random().unit() >= chance_per_generator)
+      if(
+        !generator.isOnline() ||
+        generator.secondsOnline() <
+        20 ||
+        context.world.random().unit() >= chance_per_generator
+      )
         continue;
       overload_cooldown_ = overload_cooldown_seconds;
       generator.overload(context);
@@ -168,7 +185,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void Generators::draw(GameContextDto &context) const {
+  void Generators::draw(
+    GameContextDto &context
+  ) const {
     if(context.world.map().width() == 0) return;
     Renderer &renderer = context.renderer;
     for(const Fabricator &fabricator : fabricators_)

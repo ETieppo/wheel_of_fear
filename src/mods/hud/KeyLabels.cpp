@@ -1,7 +1,9 @@
 #include "mods/hud/KeyLabels.hpp"
 
 namespace wheel_of_fear {
-  std::string_view KeyLabels::labelFor(InputActionEnum action) {
+  std::string_view KeyLabels::labelFor(
+    InputActionEnum action
+  ) {
     switch(action) {
       case InputActionEnum::interact:          return "E";
       case InputActionEnum::hold_breath:       return "SPACE";

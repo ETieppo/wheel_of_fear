@@ -12,7 +12,9 @@
 namespace wheel_of_fear {
   class Hud {
     public:
-      void beginFrame(float real_delta_seconds);
+      void beginFrame(
+        float real_delta_seconds
+      );
 
       void clearMessages() {
         messages_.clear();
@@ -32,11 +34,15 @@ namespace wheel_of_fear {
         prompt_.show(key, std::move(text));
       }
 
-      void setVisible(bool is_visible) {
+      void setVisible(
+        bool is_visible
+      ) {
         is_visible_ = is_visible;
       }
 
-      void draw(GameContextDto &context) const;
+      void draw(
+        GameContextDto &context
+      ) const;
 
     private:
       MessageFeed messages_;

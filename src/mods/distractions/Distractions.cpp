@@ -14,15 +14,19 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void Distractions::update(GameContextDto &context) {
+  void Distractions::update(
+    GameContextDto &context
+  ) {
     if(!context.clock.isRunning()) return;
     const auto &mobs = context.mobs.all();
     for(std::size_t index = 0; index < mobs.size(); ++index) {
       Mob &mob = *mobs[index];
-      if(!mob.isMoving() ||
-         mob.isBusy() ||
-         !mob.traits().is_hostile ||
-         mob.incidentCooldown() > 0)
+      if(
+        !mob.isMoving() ||
+        mob.isBusy() ||
+        !mob.traits().is_hostile ||
+        mob.incidentCooldown() > 0
+      )
         continue;
       if(checkSceneryContact(context, mob)) continue;
       checkMobFight(context, mob, index + 1);
@@ -35,8 +39,10 @@ namespace wheel_of_fear {
     Mob            &mob
   ) {
     for(const auto &item : context.world.scenery()) {
-      if(item->isBroken() ||
-         item->position().distance(mob.position()) > scenery_contact_distance)
+      if(
+        item->isBroken() ||
+        item->position().distance(mob.position()) > scenery_contact_distance
+      )
         continue;
       const auto kind = item->bumpDistraction();
       if(!kind) continue;
@@ -56,14 +62,16 @@ namespace wheel_of_fear {
     const auto &mobs = context.mobs.all();
     for(std::size_t index = first_other_index; index < mobs.size(); ++index) {
       Mob &other = *mobs[index];
-      if(other.kind() ==
-         mob.kind() ||
-         other.isFrozen() ||
-         other.isBusy() ||
-         !other.traits().is_hostile ||
-         other.incidentCooldown() >
-         0 ||
-         other.isDisguised())
+      if(
+        other.kind() ==
+        mob.kind() ||
+        other.isFrozen() ||
+        other.isBusy() ||
+        !other.traits().is_hostile ||
+        other.incidentCooldown() >
+        0 ||
+        other.isDisguised()
+      )
         continue;
       const Vec2 offset = other.position().sub(mob.position());
       if(offset.length() > fight_contact_distance) continue;
@@ -95,16 +103,20 @@ namespace wheel_of_fear {
       position,
       traits.pitch * context.world.random().range(0.85F, 1.1F)
     );
-    context.noise.emit(
-      position, traits.noise_radius, NoiseSourceEnum::mob_incident
-    );
+    context.noise
+      .emit(position, traits.noise_radius, NoiseSourceEnum::mob_incident);
     if(traits.spark_count > 0 && traits.flash_color)
       context.effects.emitSparks(
-        context.world, position, traits.spark_count, *traits.flash_color
+        context.world,
+        position,
+        traits.spark_count,
+        *traits.flash_color
       );
   }
 
-  void Distractions::advanceFlashes(GameContextDto &context) {
+  void Distractions::advanceFlashes(
+    GameContextDto &context
+  ) {
     for(Distraction &distraction : active_) {
       distraction.advance(context.clock.deltaSeconds());
       distraction.emitFlash(context.lighting);

@@ -17,23 +17,33 @@ namespace wheel_of_fear {
       Throwables();
       ~Throwables();
 
-      void generatePhase(World &world);
+      void generatePhase(
+        World &world
+      );
       void launch(
         ItemEnum item,
         Vec2     from,
         Vec2     toward
       );
 
-      void deployBeacon(Vec2 landing) {
+      void deployBeacon(
+        Vec2 landing
+      ) {
         beacons_.emplace_back(landing);
       }
 
-      void spillPuddle(Vec2 landing) {
+      void spillPuddle(
+        Vec2 landing
+      ) {
         puddles_.emplace_back(landing);
       }
 
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context) const;
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
 
       const std::vector<LureBeacon> &beacons() const {
         return beacons_;
@@ -46,11 +56,21 @@ namespace wheel_of_fear {
     private:
       static constexpr float maximum_throw_distance = 190;
 
-      void emitLights(GameContextDto &context) const;
-      void advanceProjectiles(GameContextDto &context);
-      void advanceBeacons(GameContextDto &context);
-      void advancePuddles(float delta_seconds);
-      void collectPickups(GameContextDto &context);
+      void emitLights(
+        GameContextDto &context
+      ) const;
+      void advanceProjectiles(
+        GameContextDto &context
+      );
+      void advanceBeacons(
+        GameContextDto &context
+      );
+      void advancePuddles(
+        float delta_seconds
+      );
+      void collectPickups(
+        GameContextDto &context
+      );
 
       std::vector<std::unique_ptr<Projectile>> projectiles_;
       std::vector<LureBeacon>                  beacons_;

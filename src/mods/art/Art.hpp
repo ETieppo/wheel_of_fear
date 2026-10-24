@@ -9,17 +9,25 @@
 namespace wheel_of_fear {
   class Art {
     public:
-      explicit Art(Renderer &renderer);
+      explicit Art(
+        Renderer &renderer
+      );
 
       const SpriteSheetProps &sprites() const {
         return sprites_;
       }
 
     private:
-      SpriteFrames     loadStrip(const SpriteStripProps &strip);
-      SpriteFrames     loadParticleStrip(const SpriteStripProps &strip);
-      AtlasRegionProps loadSingle(const SpriteStripProps &strip);
-      SpriteFrames     copyFrames(
+      SpriteFrames loadStrip(
+        const SpriteStripProps &strip
+      );
+      SpriteFrames loadParticleStrip(
+        const SpriteStripProps &strip
+      );
+      AtlasRegionProps loadSingle(
+        const SpriteStripProps &strip
+      );
+      SpriteFrames copyFrames(
         const SpriteStripProps  &strip,
         const DecodedImageProps &image
       );

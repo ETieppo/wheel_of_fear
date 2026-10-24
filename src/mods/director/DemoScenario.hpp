@@ -29,25 +29,26 @@ namespace wheel_of_fear {
       static constexpr float         log_interval_seconds = 0.5F;
       static constexpr std::uint32_t deep_sector          = 6;
 
-      static
-      void logPatrols(
+      static void logPatrols(
         GameContextDto &context,
         float           seconds
       );
-      static
-      void spawnInSight(
+      static void spawnInSight(
         GameContextDto &context,
         MobKindEnum     kind,
         float           distance
       );
-      static
-      void aimAtWorldOffset(
+      static void aimAtWorldOffset(
         GameContextDto &context,
         Vec2            offset
       );
 
-      void runSectors(GameContextDto &context);
-      void runShowcase(GameContextDto &context);
+      void runSectors(
+        GameContextDto &context
+      );
+      void runShowcase(
+        GameContextDto &context
+      );
       void runFreeze(
         GameContextDto &context,
         float           seconds,

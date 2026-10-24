@@ -5,7 +5,9 @@
 #include <SDL3/SDL_error.h>
 
 namespace wheel_of_fear {
-  SharedLibrary::SharedLibrary(const std::filesystem::path &path)
+  SharedLibrary::SharedLibrary(
+    const std::filesystem::path &path
+  )
       : handle_(SDL_LoadObject(path.string().c_str())) {
     if(handle_ == nullptr)
       throw std::runtime_error(
@@ -17,7 +19,9 @@ namespace wheel_of_fear {
     SDL_UnloadObject(handle_);
   }
 
-  SDL_FunctionPointer SharedLibrary::function(const std::string &name) const {
+  SDL_FunctionPointer SharedLibrary::function(
+    const std::string &name
+  ) const {
     const SDL_FunctionPointer pointer = SDL_LoadFunction(handle_, name.c_str());
     if(pointer == nullptr)
       throw std::runtime_error(

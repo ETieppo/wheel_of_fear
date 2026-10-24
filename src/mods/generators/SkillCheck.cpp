@@ -19,11 +19,13 @@ namespace wheel_of_fear {
     if(needle_angle_ < zone_start_ || needle_angle_ > zoneEnd())
       return SkillCheckResultEnum::failed;
     const float perfect_start = perfectStart();
-    if(needle_angle_ >=
-       perfect_start &&
-       needle_angle_ <=
-       perfect_start +
-       perfect_width_)
+    if(
+      needle_angle_ >=
+      perfect_start &&
+      needle_angle_ <=
+      perfect_start +
+      perfect_width_
+    )
       return SkillCheckResultEnum::perfect;
     return SkillCheckResultEnum::good;
   }
@@ -32,11 +34,15 @@ namespace wheel_of_fear {
     return needle_angle_ > zoneEnd() + 0.05F || needle_angle_ >= Scalar::tau;
   }
 
-  void SkillCheck::tickResult(float delta_seconds) {
+  void SkillCheck::tickResult(
+    float delta_seconds
+  ) {
     result_seconds_ = std::max(0.0F, result_seconds_ - delta_seconds);
   }
 
-  bool SkillCheck::tickCountdown(float delta_seconds) {
+  bool SkillCheck::tickCountdown(
+    float delta_seconds
+  ) {
     countdown_seconds_ -= delta_seconds;
     return countdown_seconds_ <= 0;
   }

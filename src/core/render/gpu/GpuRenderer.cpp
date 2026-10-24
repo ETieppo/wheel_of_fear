@@ -44,7 +44,9 @@ namespace wheel_of_fear {
     }
   } // namespace
 
-  GpuRenderer::GpuRenderer(GpuContext &context)
+  GpuRenderer::GpuRenderer(
+    GpuContext &context
+  )
       : context_(context)
       , factory_(
           context.device(),
@@ -52,13 +54,21 @@ namespace wheel_of_fear {
         ) {
   }
 
-  void GpuRenderer::createPersistentResources(Renderer &renderer) {
+  void GpuRenderer::createPersistentResources(
+    Renderer &renderer
+  ) {
     auto resources   = std::make_unique<PersistentGpuResourcesProps>();
     resources->atlas = factory_.createSampledTexture(
-      "atlas", RenderConfig::atlas_size, RenderConfig::atlas_size, 1
+      "atlas",
+      RenderConfig::atlas_size,
+      RenderConfig::atlas_size,
+      1
     );
     resources->wall_map = factory_.createSampledTexture(
-      "wall map", RenderConfig::max_map_size, RenderConfig::max_map_size, 1
+      "wall map",
+      RenderConfig::max_map_size,
+      RenderConfig::max_map_size,
+      1
     );
     resources->clamp_sampler =
       factory_.createSampler("clamp linear", WGPUAddressMode_ClampToEdge, 1);
@@ -71,13 +81,16 @@ namespace wheel_of_fear {
     resources->post_buffer =
       factory_.createUniformBuffer("post process", sizeof(PostProcessProps));
     resources->world_quad_buffer = factory_.createStorageBuffer(
-      "world quads", sizeof(QuadProps) * RenderConfig::world_quad_capacity
+      "world quads",
+      sizeof(QuadProps) * RenderConfig::world_quad_capacity
     );
     resources->glow_quad_buffer = factory_.createStorageBuffer(
-      "glow quads", sizeof(QuadProps) * RenderConfig::glow_quad_capacity
+      "glow quads",
+      sizeof(QuadProps) * RenderConfig::glow_quad_capacity
     );
     resources->ui_quad_buffer = factory_.createStorageBuffer(
-      "ui quads", sizeof(QuadProps) * RenderConfig::ui_quad_capacity
+      "ui quads",
+      sizeof(QuadProps) * RenderConfig::ui_quad_capacity
     );
 
     using Factory = GpuResourceFactory;
@@ -90,7 +103,8 @@ namespace wheel_of_fear {
     resources->quad_layout =
       factory_.createBindGroupLayout("quad layout", quad_entries);
     const std::array light_entries {
-      Factory::uniformEntry(0), Factory::textureEntry(1)
+      Factory::uniformEntry(0),
+      Factory::textureEntry(1)
     };
     resources->light_layout =
       factory_.createBindGroupLayout("light layout", light_entries);
@@ -147,29 +161,42 @@ namespace wheel_of_fear {
       colorTarget(context_.surfaceFormat(), &premultiplied_blend)
     };
     const std::array light_targets {
-      colorTarget(hdr_format, nullptr), colorTarget(hdr_format, nullptr)
+      colorTarget(hdr_format, nullptr),
+      colorTarget(hdr_format, nullptr)
     };
     const std::array hdr_targets {colorTarget(hdr_format, nullptr)};
     const std::array surface_targets {
       colorTarget(context_.surfaceFormat(), nullptr)
     };
     resources->world_pipeline = factory_.createPipeline(
-      resources->quad_layout.get(), quad_shader.get(), world_targets
+      resources->quad_layout.get(),
+      quad_shader.get(),
+      world_targets
     );
     resources->ui_pipeline = factory_.createPipeline(
-      resources->quad_layout.get(), quad_shader.get(), ui_targets
+      resources->quad_layout.get(),
+      quad_shader.get(),
+      ui_targets
     );
     resources->light_pipeline = factory_.createPipeline(
-      resources->light_layout.get(), light_shader.get(), light_targets
+      resources->light_layout.get(),
+      light_shader.get(),
+      light_targets
     );
     resources->composite_pipeline = factory_.createPipeline(
-      resources->composite_layout.get(), composite_shader.get(), hdr_targets
+      resources->composite_layout.get(),
+      composite_shader.get(),
+      hdr_targets
     );
     resources->bloom_pipeline = factory_.createPipeline(
-      resources->bloom_layout.get(), bloom_shader.get(), hdr_targets
+      resources->bloom_layout.get(),
+      bloom_shader.get(),
+      hdr_targets
     );
     resources->post_pipeline = factory_.createPipeline(
-      resources->post_layout.get(), post_shader.get(), surface_targets
+      resources->post_layout.get(),
+      post_shader.get(),
+      surface_targets
     );
 
     std::optional<GroundMaterialsDto> materials =
@@ -177,11 +204,13 @@ namespace wheel_of_fear {
     for(std::size_t index = 0; index < ground_texture_count; ++index) {
       if(materials) {
         resources->ground_materials[index] = factory_.uploadMipmappedTexture(
-          "ground material", *materials->inBindingOrder()[index]
+          "ground material",
+          *materials->inBindingOrder()[index]
         );
       } else {
         resources->ground_materials[index] = factory_.uploadMipmappedTexture(
-          "ground placeholder", placeholderImage()
+          "ground placeholder",
+          placeholderImage()
         );
       }
     }
@@ -198,9 +227,8 @@ namespace wheel_of_fear {
         Factory::samplerBinding(2, resources->clamp_sampler.get()),
         Factory::textureBinding(3, resources->atlas.view.get()),
       };
-      return factory_.createBindGroup(
-        label, resources->quad_layout.get(), entries
-      );
+      return factory_
+        .createBindGroup(label, resources->quad_layout.get(), entries);
     };
     resources->world_bind_group = quad_bind_group(
       "world quads",
@@ -222,12 +250,16 @@ namespace wheel_of_fear {
     );
     const std::array light_bindings {
       Factory::bufferBinding(
-        0, resources->post_buffer.get(), sizeof(PostProcessProps)
+        0,
+        resources->post_buffer.get(),
+        sizeof(PostProcessProps)
       ),
       Factory::textureBinding(1, resources->wall_map.view.get()),
     };
     resources->light_bind_group = factory_.createBindGroup(
-      "light bind group", resources->light_layout.get(), light_bindings
+      "light bind group",
+      resources->light_layout.get(),
+      light_bindings
     );
     persistent_ = std::move(resources);
   }
@@ -269,10 +301,16 @@ namespace wheel_of_fear {
     const std::uint32_t light_height =
       height / RenderConfig::light_resolution_divisor;
     targets->irradiance = factory_.createRenderTarget(
-      "irradiance", light_width, light_height, hdr_format
+      "irradiance",
+      light_width,
+      light_height,
+      hdr_format
     );
     targets->direction = factory_.createRenderTarget(
-      "light direction", light_width, light_height, hdr_format
+      "light direction",
+      light_width,
+      light_height,
+      hdr_format
     );
     targets->lit =
       factory_.createRenderTarget("lit", width, height, hdr_format);
@@ -286,7 +324,9 @@ namespace wheel_of_fear {
     using Factory                                 = GpuResourceFactory;
     const PersistentGpuResourcesProps &resources  = *persistent_;
     const WGPUBindGroupEntry           post_entry = Factory::bufferBinding(
-      0, resources.post_buffer.get(), sizeof(PostProcessProps)
+      0,
+      resources.post_buffer.get(),
+      sizeof(PostProcessProps)
     );
     const std::array composite_bindings {
       post_entry,
@@ -315,7 +355,9 @@ namespace wheel_of_fear {
       Factory::samplerBinding(2, resources.clamp_sampler.get())
     };
     targets->bloom_bind_group = factory_.createBindGroup(
-      "bloom bind group", resources.bloom_layout.get(), bloom_bindings
+      "bloom bind group",
+      resources.bloom_layout.get(),
+      bloom_bindings
     );
     const std::array post_bindings {
       post_entry,
@@ -324,12 +366,16 @@ namespace wheel_of_fear {
       Factory::samplerBinding(3, resources.clamp_sampler.get()),
     };
     targets->post_bind_group = factory_.createBindGroup(
-      "post bind group", resources.post_layout.get(), post_bindings
+      "post bind group",
+      resources.post_layout.get(),
+      post_bindings
     );
     targets_ = std::move(targets);
   }
 
-  void GpuRenderer::uploadFrame(Renderer &renderer) {
+  void GpuRenderer::uploadFrame(
+    Renderer &renderer
+  ) {
     PersistentGpuResourcesProps &resources = *persistent_;
     FrameProps                  &frame     = renderer.frame();
     const WGPUQueue              queue     = context_.queue();
@@ -399,16 +445,28 @@ namespace wheel_of_fear {
       sizeof(world_view)
     );
     wgpuQueueWriteBuffer(
-      queue, resources.ui_view_buffer.get(), 0, &ui_view, sizeof(ui_view)
+      queue,
+      resources.ui_view_buffer.get(),
+      0,
+      &ui_view,
+      sizeof(ui_view)
     );
     wgpuQueueWriteBuffer(
-      queue, resources.post_buffer.get(), 0, &frame.post, sizeof(frame.post)
+      queue,
+      resources.post_buffer.get(),
+      0,
+      &frame.post,
+      sizeof(frame.post)
     );
     const auto write_quads =
       [queue](WGPUBuffer buffer, const QuadBatch &batch) {
         if(batch.count() > 0)
           wgpuQueueWriteBuffer(
-            queue, buffer, 0, batch.used().data(), batch.used().size_bytes()
+            queue,
+            buffer,
+            0,
+            batch.used().data(),
+            batch.used().size_bytes()
           );
       };
     write_quads(resources.world_quad_buffer.get(), frame.world);
@@ -416,7 +474,9 @@ namespace wheel_of_fear {
     write_quads(resources.ui_quad_buffer.get(), frame.ui);
   }
 
-  void GpuRenderer::render(Renderer &renderer) {
+  void GpuRenderer::render(
+    Renderer &renderer
+  ) {
     if(!persistent_) createPersistentResources(renderer);
     ensureSizedTargets(context_.surfaceWidth(), context_.surfaceHeight());
     uploadFrame(renderer);
@@ -538,7 +598,11 @@ namespace wheel_of_fear {
       wgpuRenderPassEncoderSetPipeline(pass.get(), pipeline);
       wgpuRenderPassEncoderSetBindGroup(pass.get(), 0, bind_group, 0, nullptr);
       wgpuRenderPassEncoderDraw(
-        pass.get(), static_cast<std::uint32_t>(vertex_count), 1, 0, 0
+        pass.get(),
+        static_cast<std::uint32_t>(vertex_count),
+        1,
+        0,
+        0
       );
     }
     wgpuRenderPassEncoderEnd(pass.get());

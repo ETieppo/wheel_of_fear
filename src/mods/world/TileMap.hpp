@@ -89,9 +89,13 @@ namespace wheel_of_fear {
         int area_width,
         int area_height
       );
-      bool isRoomOpenAreaConnected(const RoomProps &room) const;
+      bool isRoomOpenAreaConnected(
+        const RoomProps &room
+      ) const;
       bool isEveryFloorConnected() const;
-      Vec2 nearestFloor(Vec2 point) const;
+      Vec2 nearestFloor(
+        Vec2 point
+      ) const;
 
       bool contains(
         int x,
@@ -113,14 +117,22 @@ namespace wheel_of_fear {
         int x,
         int y
       ) const;
-      bool  isSolidAt(Vec2 point) const;
-      bool  isWallAt(Vec2 point) const;
-      float acidAt(Vec2 point) const;
-      void  spillAcid(
+      bool isSolidAt(
+        Vec2 point
+      ) const;
+      bool isWallAt(
+        Vec2 point
+      ) const;
+      float acidAt(
+        Vec2 point
+      ) const;
+      void spillAcid(
         Vec2  point,
         float seconds
       );
-      float neonAt(Vec2 point) const;
+      float neonAt(
+        Vec2 point
+      ) const;
       float neonAtTile(
         int x,
         int y
@@ -134,7 +146,9 @@ namespace wheel_of_fear {
         int x,
         int y
       );
-      void evaporate(float seconds);
+      void evaporate(
+        float seconds
+      );
       Vec2 slide(
         Vec2  position,
         Vec2  displacement,
@@ -152,24 +166,32 @@ namespace wheel_of_fear {
         int x,
         int y
       ) const;
-      std::optional<std::size_t> roomIndexAt(Vec2 point) const;
-      int                        roomGridDistance(
+      std::optional<std::size_t> roomIndexAt(
+        Vec2 point
+      ) const;
+      int roomGridDistance(
         std::size_t first_room,
         std::size_t second_room
       ) const;
 
-      static
-      TileCoordinateProps tileAt(Vec2 point);
-      static
-      Vec2 tileCenter(
+      static TileCoordinateProps tileAt(
+        Vec2 point
+      );
+      static Vec2 tileCenter(
         int x,
         int y
       );
 
     private:
-      void carveRooms(RandomGenerator &random);
-      void placeDoorways(RandomGenerator &random);
-      void openSpanningDoorways(RandomGenerator &random);
+      void carveRooms(
+        RandomGenerator &random
+      );
+      void placeDoorways(
+        RandomGenerator &random
+      );
+      void openSpanningDoorways(
+        RandomGenerator &random
+      );
       void furnishRoom(
         RandomGenerator &random,
         std::size_t      room_index
@@ -181,9 +203,12 @@ namespace wheel_of_fear {
         int              block_width,
         int              block_height
       );
-      void sealUnreachableFloor(const RoomProps &room);
-      std::optional<TileCoordinateProps>
-           nearestOpenTile(TileCoordinateProps origin) const;
+      void sealUnreachableFloor(
+        const RoomProps &room
+      );
+      std::optional<TileCoordinateProps> nearestOpenTile(
+        TileCoordinateProps origin
+      ) const;
       bool isInterior(
         int x,
         int y
@@ -197,25 +222,21 @@ namespace wheel_of_fear {
         version_ += 1;
       }
 
-      static
-      bool isInClearing(
+      static bool isInClearing(
         const RoomProps &room,
         int              x,
         int              y
       );
-      static
-      bool isInsideFurnishableArea(
+      static bool isInsideFurnishableArea(
         const RoomProps &room,
         int              x,
         int              y
       );
-      static
-      int randomInteriorX(
+      static int randomInteriorX(
         const RoomProps &room,
         RandomGenerator &random
       );
-      static
-      int randomInteriorY(
+      static int randomInteriorY(
         const RoomProps &room,
         RandomGenerator &random
       );

@@ -21,7 +21,9 @@ namespace wheel_of_fear {
         .spawn_weight            = 0.3F,
       };
 
-      explicit Shepherd(Vec2 position)
+      explicit Shepherd(
+        Vec2 position
+      )
           : Mob(
               position,
               species_traits
@@ -36,8 +38,12 @@ namespace wheel_of_fear {
         return species_traits;
       }
 
-      void think(GameContextDto &context) override;
-      void draw(GameContextDto &context) const override;
+      void think(
+        GameContextDto &context
+      ) override;
+      void draw(
+        GameContextDto &context
+      ) const override;
 
     private:
       static constexpr float preferred_distance    = 135;
@@ -47,7 +53,9 @@ namespace wheel_of_fear {
       static constexpr float call_frenzy_seconds   = 5;
       static constexpr float call_ripple_seconds   = 1.4F;
 
-      void call(GameContextDto &context);
+      void call(
+        GameContextDto &context
+      );
 
       float seconds_since_call_ = call_interval_seconds;
   };

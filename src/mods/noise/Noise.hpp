@@ -20,7 +20,9 @@ namespace wheel_of_fear {
         events_.clear();
       }
 
-      void update(float delta_seconds);
+      void update(
+        float delta_seconds
+      );
       void emit(
         Vec2            position,
         float           radius,

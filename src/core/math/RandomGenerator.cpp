@@ -4,7 +4,9 @@
 
 namespace wheel_of_fear {
   namespace {
-    std::uint64_t splitMix(std::uint64_t &seed) {
+    std::uint64_t splitMix(
+      std::uint64_t &seed
+    ) {
       seed += 0x9E3779B97F4A7C15ULL;
       std::uint64_t mixed = seed;
       mixed               = (mixed ^ (mixed >> 30)) * 0xBF58476D1CE4E5B9ULL;
@@ -20,7 +22,9 @@ namespace wheel_of_fear {
     }
   } // namespace
 
-  RandomGenerator::RandomGenerator(std::uint64_t seed) {
+  RandomGenerator::RandomGenerator(
+    std::uint64_t seed
+  ) {
     for(auto &word : state_) word = splitMix(seed);
   }
 
@@ -37,7 +41,9 @@ namespace wheel_of_fear {
     return result;
   }
 
-  std::uint64_t RandomGenerator::below(std::uint64_t bound) {
+  std::uint64_t RandomGenerator::below(
+    std::uint64_t bound
+  ) {
     if(bound == 0) return 0;
     const std::uint64_t threshold = (0 - bound) % bound;
     while(true) {
@@ -68,11 +74,15 @@ namespace wheel_of_fear {
     return low + static_cast<int>(below(span));
   }
 
-  std::size_t RandomGenerator::index(std::size_t count) {
+  std::size_t RandomGenerator::index(
+    std::size_t count
+  ) {
     return static_cast<std::size_t>(below(count));
   }
 
-  bool RandomGenerator::chance(float probability) {
+  bool RandomGenerator::chance(
+    float probability
+  ) {
     return unit() < probability;
   }
 

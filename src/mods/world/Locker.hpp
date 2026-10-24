@@ -35,7 +35,9 @@ namespace wheel_of_fear {
         door_open_amount_ = 1;
       }
 
-      void update(float delta_seconds);
+      void update(
+        float delta_seconds
+      );
       void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites

@@ -17,16 +17,22 @@ namespace wheel_of_fear {
     constexpr int         maximum_frame_samples = 5760;
 
     struct OpusDecoderDeleter {
-        void operator ()(OpusDecoder* decoder) const {
+        void operator ()(
+          OpusDecoder* decoder
+        ) const {
           opus_decoder_destroy(decoder);
         }
     };
 
-    std::uint16_t readLittleEndian16(const std::uint8_t* data) {
+    std::uint16_t readLittleEndian16(
+      const std::uint8_t* data
+    ) {
       return static_cast<std::uint16_t>(data[0] | (data[1] << 8));
     }
 
-    std::int64_t readLittleEndian64(const std::uint8_t* data) {
+    std::int64_t readLittleEndian64(
+      const std::uint8_t* data
+    ) {
       std::uint64_t value = 0;
       for(int index = 7; index >= 0; --index)
         value = (value << 8) | data[index];
@@ -43,8 +49,9 @@ namespace wheel_of_fear {
     }
   } // namespace
 
-  DecodedAudioProps
-  OggOpusDecoder::decodeFile(const std::filesystem::path &path) {
+  DecodedAudioProps OggOpusDecoder::decodeFile(
+    const std::filesystem::path &path
+  ) {
     const std::vector<std::uint8_t> bytes = AssetLocator::readBytes(path);
     return decode(bytes);
   }
@@ -87,8 +94,9 @@ namespace wheel_of_fear {
     return packets;
   }
 
-  DecodedAudioProps
-  OggOpusDecoder::decode(std::span<const std::uint8_t> bytes) {
+  DecodedAudioProps OggOpusDecoder::decode(
+    std::span<const std::uint8_t> bytes
+  ) {
     std::int64_t final_granule_position = -1;
     const auto   packets = extractPackets(bytes, final_granule_position);
     if(packets.size() < 2 || !startsWith(packets[0], "OpusHead"))

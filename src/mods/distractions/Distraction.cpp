@@ -27,7 +27,9 @@ namespace wheel_of_fear {
     return elapsed_seconds_ > std::max(traits_.flash_seconds, 0.1F);
   }
 
-  void Distraction::emitFlash(Lighting &lighting) const {
+  void Distraction::emitFlash(
+    Lighting &lighting
+  ) const {
     const float strength = flashStrength();
     if(strength <= 0) return;
     LightProps flash;

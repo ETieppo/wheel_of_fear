@@ -27,9 +27,11 @@ namespace wheel_of_fear {
   ) {
     const int map_width  = grid_columns * room_cell_width + 1;
     const int map_height = grid_rows * room_cell_height + 1;
-    if(map_width >
-       static_cast<int>(RenderConfig::max_map_size) ||
-       map_height > static_cast<int>(RenderConfig::max_map_size)) {
+    if(
+      map_width >
+      static_cast<int>(RenderConfig::max_map_size) ||
+      map_height > static_cast<int>(RenderConfig::max_map_size)
+    ) {
       throw std::runtime_error("map too large");
     }
     const auto cell_count = static_cast<std::size_t>(map_width * map_height);
@@ -52,7 +54,9 @@ namespace wheel_of_fear {
     markChanged();
   }
 
-  void TileMap::carveRooms(RandomGenerator &random) {
+  void TileMap::carveRooms(
+    RandomGenerator &random
+  ) {
     rooms_.clear();
     for(int row = 0; row < grid_rows_; ++row) {
       for(int column = 0; column < grid_columns_; ++column) {
@@ -79,7 +83,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMap::placeDoorways(RandomGenerator &random) {
+  void TileMap::placeDoorways(
+    RandomGenerator &random
+  ) {
     doorways_.clear();
     for(int row = 0; row < grid_rows_; ++row) {
       for(int column = 0; column < grid_columns_; ++column) {
@@ -120,7 +126,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void TileMap::openSpanningDoorways(RandomGenerator &random) {
+  void TileMap::openSpanningDoorways(
+    RandomGenerator &random
+  ) {
     const std::size_t        room_count = rooms_.size();
     std::vector<bool>        visited(room_count, false);
     std::vector<std::size_t> stack;
@@ -131,8 +139,10 @@ namespace wheel_of_fear {
       const std::size_t          current = stack.back();
       std::array<std::size_t, 4> options {};
       std::size_t                option_count = 0;
-      for(std::size_t doorway_index = 0; doorway_index < doorways_.size();
-          ++doorway_index) {
+      for(
+        std::size_t doorway_index = 0; doorway_index < doorways_.size();
+        ++doorway_index
+      ) {
         const DoorwayProps &doorway = doorways_[doorway_index];
         if(!doorway.connects(current) || visited[doorway.otherRoom(current)])
           continue;
@@ -232,8 +242,10 @@ namespace wheel_of_fear {
   ) {
     for(int check_y = y; check_y < y + block_height; ++check_y) {
       for(int check_x = x; check_x < x + block_width; ++check_x)
-        if(!isInsideFurnishableArea(room, check_x, check_y) ||
-           isWall(check_x, check_y))
+        if(
+          !isInsideFurnishableArea(room, check_x, check_y) ||
+          isWall(check_x, check_y)
+        )
           return false;
     }
     for(int fill_y = y; fill_y < y + block_height; ++fill_y)
@@ -247,7 +259,8 @@ namespace wheel_of_fear {
     RandomGenerator &random
   ) {
     return random.intInclusive(
-      room.left + free_border, room.left + room.width - free_border - 1
+      room.left + free_border,
+      room.left + room.width - free_border - 1
     );
   }
 
@@ -256,7 +269,8 @@ namespace wheel_of_fear {
     RandomGenerator &random
   ) {
     return random.intInclusive(
-      room.top + free_border, room.top + room.height - free_border - 1
+      room.top + free_border,
+      room.top + room.height - free_border - 1
     );
   }
 
@@ -267,12 +281,16 @@ namespace wheel_of_fear {
     const RoomProps room = rooms_[room_index];
     switch(room.layout) {
       case RoomLayoutEnum::hall:
-        for(int y = room.top + free_border + 1;
-            y < room.top + room.height - free_border - 1;
-            y += 5) {
-          for(int x = room.left + free_border + 1;
-              x < room.left + room.width - free_border - 1;
-              x += 6) {
+        for(
+          int y = room.top + free_border + 1;
+          y < room.top + room.height - free_border - 1;
+          y += 5
+        ) {
+          for(
+            int x = room.left + free_border + 1;
+            x < room.left + room.width - free_border - 1;
+            x += 6
+          ) {
             if(random.chance(0.75F)) placeWallBlock(room, x, y, 2, 2);
           }
         }
@@ -284,7 +302,11 @@ namespace wheel_of_fear {
           const int  x             = randomInteriorX(room, random);
           const int  y             = randomInteriorY(room, random);
           placeWallBlock(
-            room, x, y, is_horizontal ? span : 1, is_horizontal ? 1 : span
+            room,
+            x,
+            y,
+            is_horizontal ? span : 1,
+            is_horizontal ? 1 : span
           );
         }
         break;
@@ -314,9 +336,12 @@ namespace wheel_of_fear {
     sealUnreachableFloor(room);
   }
 
-  void TileMap::sealUnreachableFloor(const RoomProps &room) {
+  void TileMap::sealUnreachableFloor(
+    const RoomProps &room
+  ) {
     std::vector<bool> reached(
-      static_cast<std::size_t>(room.width * room.height), false
+      static_cast<std::size_t>(room.width * room.height),
+      false
     );
     std::vector<TileCoordinateProps> queue {
       {room.left, room.top}
@@ -406,9 +431,12 @@ namespace wheel_of_fear {
     markChanged();
   }
 
-  bool TileMap::isRoomOpenAreaConnected(const RoomProps &room) const {
+  bool TileMap::isRoomOpenAreaConnected(
+    const RoomProps &room
+  ) const {
     std::vector<bool> reached(
-      static_cast<std::size_t>(room.width * room.height), false
+      static_cast<std::size_t>(room.width * room.height),
+      false
     );
     std::vector<TileCoordinateProps> queue;
     std::size_t                      open_count = 0;
@@ -468,8 +496,9 @@ namespace wheel_of_fear {
     return open_count == queue.size();
   }
 
-  std::optional<TileCoordinateProps>
-  TileMap::nearestOpenTile(TileCoordinateProps origin) const {
+  std::optional<TileCoordinateProps> TileMap::nearestOpenTile(
+    TileCoordinateProps origin
+  ) const {
     if(!isBlocked(origin.x, origin.y)) return origin;
     for(int radius = 1; radius <= 8; ++radius) {
       for(int y = origin.y - radius; y <= origin.y + radius; ++y) {
@@ -480,7 +509,9 @@ namespace wheel_of_fear {
     return std::nullopt;
   }
 
-  Vec2 TileMap::nearestFloor(Vec2 point) const {
+  Vec2 TileMap::nearestFloor(
+    Vec2 point
+  ) const {
     const TileCoordinateProps origin = tileAt(point);
     if(!isBlocked(origin.x, origin.y)) return point;
     for(int radius = 1; radius <= 8; ++radius) {
@@ -548,7 +579,9 @@ namespace wheel_of_fear {
     return walls_[cell] != 0 || blocked_[cell] != 0;
   }
 
-  TileCoordinateProps TileMap::tileAt(Vec2 point) {
+  TileCoordinateProps TileMap::tileAt(
+    Vec2 point
+  ) {
     return TileCoordinateProps {
       static_cast<int>(std::floor(point.x / RenderConfig::tile_size)),
       static_cast<int>(std::floor(point.y / RenderConfig::tile_size))
@@ -565,17 +598,23 @@ namespace wheel_of_fear {
     );
   }
 
-  bool TileMap::isSolidAt(Vec2 point) const {
+  bool TileMap::isSolidAt(
+    Vec2 point
+  ) const {
     const TileCoordinateProps tile = tileAt(point);
     return isBlocked(tile.x, tile.y);
   }
 
-  bool TileMap::isWallAt(Vec2 point) const {
+  bool TileMap::isWallAt(
+    Vec2 point
+  ) const {
     const TileCoordinateProps tile = tileAt(point);
     return isWall(tile.x, tile.y);
   }
 
-  float TileMap::acidAt(Vec2 point) const {
+  float TileMap::acidAt(
+    Vec2 point
+  ) const {
     const TileCoordinateProps tile = tileAt(point);
     if(!contains(tile.x, tile.y)) return 0;
     return acid_seconds_[cellIndex(tile.x, tile.y)];
@@ -591,7 +630,9 @@ namespace wheel_of_fear {
     cell        = std::max(cell, seconds);
   }
 
-  float TileMap::neonAt(Vec2 point) const {
+  float TileMap::neonAt(
+    Vec2 point
+  ) const {
     const TileCoordinateProps tile = tileAt(point);
     return neonAtTile(tile.x, tile.y);
   }
@@ -626,7 +667,9 @@ namespace wheel_of_fear {
     return true;
   }
 
-  void TileMap::evaporate(float seconds) {
+  void TileMap::evaporate(
+    float seconds
+  ) {
     for(float &acid : acid_seconds_)
       if(acid > 0) acid = std::max(0.0F, acid - seconds);
     for(float &neon : neon_seconds_)
@@ -687,11 +730,13 @@ namespace wheel_of_fear {
         random.intInclusive(room.left + 1, room.left + room.width - 2);
       const int y =
         random.intInclusive(room.top + 1, room.top + room.height - 2);
-      if(!isBlocked(x, y) &&
-         !isBlocked(x + 1, y) &&
-         !isBlocked(x - 1, y) &&
-         !isBlocked(x, y + 1) &&
-         !isBlocked(x, y - 1))
+      if(
+        !isBlocked(x, y) &&
+        !isBlocked(x + 1, y) &&
+        !isBlocked(x - 1, y) &&
+        !isBlocked(x, y + 1) &&
+        !isBlocked(x, y - 1)
+      )
         return tileCenter(x, y);
     }
     return nearestFloor(room.center());
@@ -707,7 +752,9 @@ namespace wheel_of_fear {
     return static_cast<std::size_t>(room_index);
   }
 
-  std::optional<std::size_t> TileMap::roomIndexAt(Vec2 point) const {
+  std::optional<std::size_t> TileMap::roomIndexAt(
+    Vec2 point
+  ) const {
     const TileCoordinateProps tile = tileAt(point);
     return roomIndexAtTile(tile.x, tile.y);
   }

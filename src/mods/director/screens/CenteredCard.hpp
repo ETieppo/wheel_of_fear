@@ -10,8 +10,7 @@ namespace wheel_of_fear {
     public:
       CenteredCard() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer        &renderer,
         std::string_view title,
         std::string_view subtitle,

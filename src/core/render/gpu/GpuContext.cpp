@@ -11,7 +11,9 @@
 
 namespace wheel_of_fear {
   namespace {
-    std::string toString(WGPUStringView view) {
+    std::string toString(
+      WGPUStringView view
+    ) {
       if(view.data == nullptr) return {};
       if(view.length == WGPU_STRLEN) return std::string(view.data);
       return std::string(view.data, view.length);
@@ -25,7 +27,9 @@ namespace wheel_of_fear {
       void*
     ) {
       SDL_Log(
-        "wgpu error %d: %s", static_cast<int>(type), toString(message).c_str()
+        "wgpu error %d: %s",
+        static_cast<int>(type),
+        toString(message).c_str()
       );
     }
 
@@ -36,9 +40,11 @@ namespace wheel_of_fear {
       void*,
       void*
     ) {
-      if(reason ==
-         WGPUDeviceLostReason_Destroyed ||
-         reason == WGPUDeviceLostReason_CallbackCancelled)
+      if(
+        reason ==
+        WGPUDeviceLostReason_Destroyed ||
+        reason == WGPUDeviceLostReason_CallbackCancelled
+      )
         return;
       SDL_Log(
         "wgpu device lost %d: %s",
@@ -86,7 +92,9 @@ namespace wheel_of_fear {
     }
   } // namespace
 
-  GpuContext::GpuContext(const Window &window) {
+  GpuContext::GpuContext(
+    const Window &window
+  ) {
     WGPUInstanceDescriptor instance_descriptor = WGPU_INSTANCE_DESCRIPTOR_INIT;
     instance_.reset(wgpuCreateInstance(&instance_descriptor));
     if(!instance_)
@@ -105,7 +113,9 @@ namespace wheel_of_fear {
     if(surface_) wgpuSurfaceUnconfigure(surface_.get());
   }
 
-  void GpuContext::createSurface(const Window &window) {
+  void GpuContext::createSurface(
+    const Window &window
+  ) {
     WGPUSurfaceDescriptor descriptor = WGPU_SURFACE_DESCRIPTOR_INIT;
 #if defined(__APPLE__)
     WGPUSurfaceSourceMetalLayer source = WGPU_SURFACE_SOURCE_METAL_LAYER_INIT;
@@ -116,10 +126,14 @@ namespace wheel_of_fear {
       SDL_GetWindowProperties(window.handle());
     WGPUSurfaceSourceWindowsHWND source = WGPU_SURFACE_SOURCE_WINDOWS_HWND_INIT;
     source.hwnd                         = SDL_GetPointerProperty(
-      properties, SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr
+      properties,
+      SDL_PROP_WINDOW_WIN32_HWND_POINTER,
+      nullptr
     );
     source.hinstance = SDL_GetPointerProperty(
-      properties, SDL_PROP_WINDOW_WIN32_INSTANCE_POINTER, nullptr
+      properties,
+      SDL_PROP_WINDOW_WIN32_INSTANCE_POINTER,
+      nullptr
     );
     descriptor.nextInChain = &source.chain;
 #else
@@ -129,17 +143,25 @@ namespace wheel_of_fear {
       WGPU_SURFACE_SOURCE_WAYLAND_SURFACE_INIT;
     WGPUSurfaceSourceXlibWindow xlib_source =
       WGPU_SURFACE_SOURCE_XLIB_WINDOW_INIT;
-    if(void* wayland_surface = SDL_GetPointerProperty(
-         properties, SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, nullptr
-       )) {
+    if(
+      void* wayland_surface = SDL_GetPointerProperty(
+        properties,
+        SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER,
+        nullptr
+      )
+    ) {
       wayland_source.display = SDL_GetPointerProperty(
-        properties, SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER, nullptr
+        properties,
+        SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER,
+        nullptr
       );
       wayland_source.surface = wayland_surface;
       descriptor.nextInChain = &wayland_source.chain;
     } else {
       xlib_source.display = SDL_GetPointerProperty(
-        properties, SDL_PROP_WINDOW_X11_DISPLAY_POINTER, nullptr
+        properties,
+        SDL_PROP_WINDOW_X11_DISPLAY_POINTER,
+        nullptr
       );
       xlib_source.window = static_cast<std::uint64_t>(
         SDL_GetNumberProperty(properties, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0)
@@ -191,21 +213,28 @@ namespace wheel_of_fear {
 
   void GpuContext::chooseSurfaceFormat() {
     WGPUSurfaceCapabilities capabilities = WGPU_SURFACE_CAPABILITIES_INIT;
-    if(wgpuSurfaceGetCapabilities(
-         surface_.get(), adapter_.get(), &capabilities
-       ) != WGPUStatus_Success) {
+    if(
+      wgpuSurfaceGetCapabilities(
+        surface_.get(),
+        adapter_.get(),
+        &capabilities
+      ) != WGPUStatus_Success
+    ) {
       throw std::runtime_error("unable to query the surface capabilities");
     }
     constexpr std::array<WGPUTextureFormat, 2> preferred {
-      WGPUTextureFormat_BGRA8Unorm, WGPUTextureFormat_RGBA8Unorm
+      WGPUTextureFormat_BGRA8Unorm,
+      WGPUTextureFormat_RGBA8Unorm
     };
     surface_format_ = capabilities.formatCount > 0
                       ? capabilities.formats[0]
                       : WGPUTextureFormat_BGRA8Unorm;
     bool found      = false;
     for(const WGPUTextureFormat candidate : preferred) {
-      for(std::size_t index = 0; index < capabilities.formatCount && !found;
-          ++index) {
+      for(
+        std::size_t index = 0; index < capabilities.formatCount && !found;
+        ++index
+      ) {
         if(capabilities.formats[index] == candidate) {
           surface_format_ = candidate;
           found           = true;
@@ -232,11 +261,13 @@ namespace wheel_of_fear {
     std::uint32_t width,
     std::uint32_t height
   ) {
-    if(width ==
-       surface_width_ &&
-       height ==
-       surface_height_ &&
-       !needs_reconfigure_)
+    if(
+      width ==
+      surface_width_ &&
+      height ==
+      surface_height_ &&
+      !needs_reconfigure_
+    )
       return;
     surface_width_  = width;
     surface_height_ = height;

@@ -17,8 +17,12 @@ namespace wheel_of_fear {
         Color       color,
         std::string text
       );
-      void age(float delta_seconds);
-      void draw(Renderer &renderer) const;
+      void age(
+        float delta_seconds
+      );
+      void draw(
+        Renderer &renderer
+      ) const;
 
     private:
       static constexpr std::size_t capacity         = 5;

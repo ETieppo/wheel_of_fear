@@ -23,7 +23,9 @@ namespace wheel_of_fear {
         .spawn_weight            = 0.55F,
       };
 
-      explicit Bloater(Vec2 position)
+      explicit Bloater(
+        Vec2 position
+      )
           : Mob(
               position,
               species_traits
@@ -38,11 +40,21 @@ namespace wheel_of_fear {
         return species_traits;
       }
 
-      void think(GameContextDto &context) override;
-      void onContact(GameContextDto &context) override;
-      void ignite(GameContextDto &context) override;
-      void catchBlast(GameContextDto &context) override;
-      void draw(GameContextDto &context) const override;
+      void think(
+        GameContextDto &context
+      ) override;
+      void onContact(
+        GameContextDto &context
+      ) override;
+      void ignite(
+        GameContextDto &context
+      ) override;
+      void catchBlast(
+        GameContextDto &context
+      ) override;
+      void draw(
+        GameContextDto &context
+      ) const override;
 
     private:
       static constexpr float fuse_limit_seconds             = 1.3F;
@@ -53,7 +65,9 @@ namespace wheel_of_fear {
         return fuse_seconds_ > 0;
       }
 
-      void lightFuse(float minimum_fuse_seconds);
+      void lightFuse(
+        float minimum_fuse_seconds
+      );
 
       float fuse_seconds_ = 0;
   };

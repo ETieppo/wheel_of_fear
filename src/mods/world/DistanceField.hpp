@@ -37,7 +37,9 @@ namespace wheel_of_fear {
         return last_used_seconds_;
       }
 
-      void markUsed(float seconds) {
+      void markUsed(
+        float seconds
+      ) {
         last_used_seconds_ = seconds;
       }
 

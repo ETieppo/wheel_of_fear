@@ -5,7 +5,9 @@
 #include <SDL3/SDL_events.h>
 
 namespace wheel_of_fear {
-  Game::Game(Window &window)
+  Game::Game(
+    Window &window
+  )
       : window_(window)
       , gpu_context_(window_)
       , gpu_renderer_(gpu_context_)
@@ -46,7 +48,9 @@ namespace wheel_of_fear {
     return GameSnapshotProps {director_.snapshot()};
   }
 
-  void Game::resume(const GameSnapshotProps &snapshot) {
+  void Game::resume(
+    const GameSnapshotProps &snapshot
+  ) {
     director_.resume(context_, snapshot.director);
   }
 

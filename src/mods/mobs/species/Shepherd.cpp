@@ -8,7 +8,9 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void Shepherd::think(GameContextDto &context) {
+  void Shepherd::think(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     seconds_since_call_ += delta;
     if(!canAct()) return;
@@ -25,7 +27,9 @@ namespace wheel_of_fear {
     }
     if(canSeePlayerNow() && distanceToPlayer(context) < preferred_distance) {
       moveAlong(
-        context, position().sub(player_position).normalized(), currentSpeed()
+        context,
+        position().sub(player_position).normalized(),
+        currentSpeed()
       );
       faceToward(player_position);
       return;
@@ -33,7 +37,9 @@ namespace wheel_of_fear {
     thinkAsHunter(context);
   }
 
-  void Shepherd::call(GameContextDto &context) {
+  void Shepherd::call(
+    GameContextDto &context
+  ) {
     seconds_since_call_ = 0;
     changeIntent(MobIntentEnum::calling, position());
     playSound(
@@ -42,15 +48,19 @@ namespace wheel_of_fear {
       1.0F,
       context.world.random().range(0.9F, 1.1F)
     );
-    context.noise.emit(
-      position(), call_radius * 0.5F, NoiseSourceEnum::shepherd_call
-    );
+    context.noise
+      .emit(position(), call_radius * 0.5F, NoiseSourceEnum::shepherd_call);
     context.mobs.answerShepherd(
-      position(), context.player.position(), call_radius, call_frenzy_seconds
+      position(),
+      context.player.position(),
+      call_radius,
+      call_frenzy_seconds
     );
   }
 
-  void Shepherd::draw(GameContextDto &context) const {
+  void Shepherd::draw(
+    GameContextDto &context
+  ) const {
     const SpriteSheetProps &sprites = context.art.sprites();
     const std::size_t       frame =
       animationFrame(isMoving() ? 8.0F : 2.0F, sprites.shepherd_walk.size());

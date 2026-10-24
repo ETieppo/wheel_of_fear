@@ -20,7 +20,9 @@ namespace wheel_of_fear {
         .spawn_weight         = 0.35F,
       };
 
-      explicit Shade(Vec2 position)
+      explicit Shade(
+        Vec2 position
+      )
           : Mob(
               position,
               species_traits
@@ -35,9 +37,15 @@ namespace wheel_of_fear {
         return species_traits;
       }
 
-      void think(GameContextDto &context) override;
-      void onContact(GameContextDto &context) override;
-      void draw(GameContextDto &context) const override;
+      void think(
+        GameContextDto &context
+      ) override;
+      void onContact(
+        GameContextDto &context
+      ) override;
+      void draw(
+        GameContextDto &context
+      ) const override;
 
     private:
       static constexpr float strike_retreat_seconds = 1.6F;

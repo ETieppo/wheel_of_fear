@@ -13,7 +13,9 @@ namespace wheel_of_fear {
     return viewCenter().sub(RoomFraming::half_view);
   }
 
-  Vec2 Camera::mouseWorldPosition(const Input &input) const {
+  Vec2 Camera::mouseWorldPosition(
+    const Input &input
+  ) const {
     return viewOrigin().add(input.mouseInView());
   }
 
@@ -35,7 +37,9 @@ namespace wheel_of_fear {
     focus_ = focus_.lerp(point, Scalar::clamp(delta_seconds * 1.5F, 0, 1));
   }
 
-  void Camera::update(GameContextDto &context) {
+  void Camera::update(
+    GameContextDto &context
+  ) {
     const World &world        = context.world;
     const float  real_seconds = context.clock.realSeconds();
     const float  shake        = world.cameraShake();
@@ -63,7 +67,9 @@ namespace wheel_of_fear {
     focus_ = focus_.lerp(target, Scalar::clamp(delta * rate, 0, 1));
   }
 
-  Vec2 Camera::mouseOffset(const Input &input) {
+  Vec2 Camera::mouseOffset(
+    const Input &input
+  ) {
     const Vec2 from_center = input.mouseInView().sub(RoomFraming::half_view);
     return Vec2::of(
       Scalar::clamp(

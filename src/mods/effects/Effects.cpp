@@ -136,7 +136,9 @@ namespace wheel_of_fear {
     spawn<AcidDrop>(state);
   }
 
-  void Effects::update(GameContextDto &context) {
+  void Effects::update(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.realDeltaSeconds();
     flash_strength_   = std::max(0.0F, flash_strength_ - delta * 3);
     if(flash_strength_ > 0) {
@@ -159,7 +161,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void Effects::draw(GameContextDto &context) const {
+  void Effects::draw(
+    GameContextDto &context
+  ) const {
     const SpriteSheetProps &sprites = context.art.sprites();
     for(const auto &particle : particles_)
       if(context.renderer.isVisible(particle->position(), 16))

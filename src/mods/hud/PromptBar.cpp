@@ -21,7 +21,9 @@ namespace wheel_of_fear {
     key_  = key;
   }
 
-  void PromptBar::draw(Renderer &renderer) const {
+  void PromptBar::draw(
+    Renderer &renderer
+  ) const {
     if(text_.empty()) return;
     constexpr float        text_size = 16;
     const std::string_view key_label =
@@ -33,16 +35,32 @@ namespace wheel_of_fear {
     const float left  = RenderConfig::ui_width / 2 - width / 2;
     constexpr float top = RenderConfig::ui_height - 82;
     UiKit::drawPanel(
-      renderer, left, top, width, 34, Palette::panel_edge, 0.95F
+      renderer,
+      left,
+      top,
+      width,
+      34,
+      Palette::panel_edge,
+      0.95F
     );
     float cursor = left + 16;
     if(key_)
       cursor += UiKit::drawKeycap(
-                  renderer, key_label, cursor, top + 7, 14, Palette::neon_cyan
+                  renderer,
+                  key_label,
+                  cursor,
+                  top + 7,
+                  14,
+                  Palette::neon_cyan
                 ) +
                 10;
     renderer.drawText(
-      text_, cursor, top + 7, text_size, Palette::text, TextAlignEnum::left
+      text_,
+      cursor,
+      top + 7,
+      text_size,
+      Palette::text,
+      TextAlignEnum::left
     );
   }
 } // namespace wheel_of_fear

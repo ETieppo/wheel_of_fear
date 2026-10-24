@@ -24,7 +24,9 @@ namespace wheel_of_fear {
         return start_;
       }
 
-      void advance(float delta_seconds);
+      void advance(
+        float delta_seconds
+      );
 
       bool hasLanded() const {
         return flight_seconds_ >= total_seconds_;
@@ -38,18 +40,19 @@ namespace wheel_of_fear {
         const SpriteSheetProps &sprites
       ) const;
 
-      virtual
-      void land(
+      virtual void land(
         GameContextDto &context,
         Vec2            landing
       ) = 0;
 
     protected:
-      virtual
-      const AtlasRegionProps &sprite(const SpriteSheetProps &sprites) const = 0;
+      virtual const AtlasRegionProps &sprite(
+        const SpriteSheetProps &sprites
+      ) const = 0;
 
-      virtual
-      void drawTrail(Renderer &) const {
+      virtual void drawTrail(
+        Renderer &
+      ) const {
       }
 
     private:

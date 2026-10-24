@@ -17,7 +17,9 @@ namespace wheel_of_fear {
 
       void reset();
 
-      void push(Vec2 impulse) {
+      void push(
+        Vec2 impulse
+      ) {
         knockback_ = impulse;
       }
 

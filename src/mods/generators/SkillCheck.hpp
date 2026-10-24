@@ -55,11 +55,15 @@ namespace wheel_of_fear {
       SkillCheckResultEnum judge() const;
       bool                 hasMissed() const;
 
-      void setNeedleAngle(float needle_angle) {
+      void setNeedleAngle(
+        float needle_angle
+      ) {
         needle_angle_ = needle_angle;
       }
 
-      void postpone(float seconds) {
+      void postpone(
+        float seconds
+      ) {
         countdown_seconds_ = seconds;
       }
 
@@ -67,8 +71,12 @@ namespace wheel_of_fear {
         is_active_ = false;
       }
 
-      void tickResult(float delta_seconds);
-      bool tickCountdown(float delta_seconds);
+      void tickResult(
+        float delta_seconds
+      );
+      bool tickCountdown(
+        float delta_seconds
+      );
       void begin(
         std::uint32_t    phase,
         RandomGenerator &random

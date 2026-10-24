@@ -11,8 +11,7 @@ namespace wheel_of_fear {
     public:
       PlayerAnimator() = delete;
 
-      static
-      PlayerPoseDto currentPose(
+      static PlayerPoseDto currentPose(
         const SpriteSheetProps &sprites,
         PlayerActivityEnum      activity,
         bool                    is_moving,
@@ -23,8 +22,7 @@ namespace wheel_of_fear {
     private:
       static constexpr float stride_length = 30;
 
-      static
-      PlayerPoseDto pick(
+      static PlayerPoseDto pick(
         const SpriteFrames &bodies,
         const SpriteFrames &glows,
         std::size_t         frame

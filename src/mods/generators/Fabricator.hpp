@@ -30,13 +30,23 @@ namespace wheel_of_fear {
 
       Vec2 frontPoint() const;
 
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context) const;
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
 
     private:
-      void interrupt(GameContextDto &context);
-      void work(GameContextDto &context);
-      void deliver(GameContextDto &context);
+      void interrupt(
+        GameContextDto &context
+      );
+      void work(
+        GameContextDto &context
+      );
+      void deliver(
+        GameContextDto &context
+      );
 
       std::size_t room_index_;
       ItemEnum    produced_item_;

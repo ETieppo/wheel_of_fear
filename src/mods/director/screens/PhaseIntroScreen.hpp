@@ -11,8 +11,7 @@ namespace wheel_of_fear {
     public:
       PhaseIntroScreen() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer                         &renderer,
         std::uint32_t                     phase,
         std::span<const std::string_view> introductions,

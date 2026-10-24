@@ -6,7 +6,9 @@
 
 namespace wheel_of_fear {
   namespace {
-    WGPUStringView viewOf(std::string_view text) {
+    WGPUStringView viewOf(
+      std::string_view text
+    ) {
       return WGPUStringView {text.data(), text.size()};
     }
   } // namespace
@@ -86,7 +88,12 @@ namespace wheel_of_fear {
     layout.rowsPerImage                  = height;
     const WGPUExtent3D extent {width, height, 1};
     wgpuQueueWriteTexture(
-      queue_, &destination, pixels.data(), pixels.size(), &layout, &extent
+      queue_,
+      &destination,
+      pixels.data(),
+      pixels.size(),
+      &layout,
+      &extent
     );
   }
 
@@ -223,8 +230,9 @@ namespace wheel_of_fear {
     );
   }
 
-  WGPUBindGroupLayoutEntry
-  GpuResourceFactory::uniformEntry(std::uint32_t binding) {
+  WGPUBindGroupLayoutEntry GpuResourceFactory::uniformEntry(
+    std::uint32_t binding
+  ) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
     entry.binding                  = binding;
     entry.visibility  = WGPUShaderStage_Vertex | WGPUShaderStage_Fragment;
@@ -232,8 +240,9 @@ namespace wheel_of_fear {
     return entry;
   }
 
-  WGPUBindGroupLayoutEntry
-  GpuResourceFactory::storageEntry(std::uint32_t binding) {
+  WGPUBindGroupLayoutEntry GpuResourceFactory::storageEntry(
+    std::uint32_t binding
+  ) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
     entry.binding                  = binding;
     entry.visibility               = WGPUShaderStage_Vertex;
@@ -241,8 +250,9 @@ namespace wheel_of_fear {
     return entry;
   }
 
-  WGPUBindGroupLayoutEntry
-  GpuResourceFactory::textureEntry(std::uint32_t binding) {
+  WGPUBindGroupLayoutEntry GpuResourceFactory::textureEntry(
+    std::uint32_t binding
+  ) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
     entry.binding                  = binding;
     entry.visibility               = WGPUShaderStage_Fragment;
@@ -251,8 +261,9 @@ namespace wheel_of_fear {
     return entry;
   }
 
-  WGPUBindGroupLayoutEntry
-  GpuResourceFactory::samplerEntry(std::uint32_t binding) {
+  WGPUBindGroupLayoutEntry GpuResourceFactory::samplerEntry(
+    std::uint32_t binding
+  ) {
     WGPUBindGroupLayoutEntry entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
     entry.binding                  = binding;
     entry.visibility               = WGPUShaderStage_Fragment;

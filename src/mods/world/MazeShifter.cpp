@@ -18,7 +18,9 @@ namespace wheel_of_fear {
     constexpr int         neighborhood_grid_distance   = 1;
     constexpr std::size_t candidate_capacity           = 64;
 
-    float sign(float value) {
+    float sign(
+      float value
+    ) {
       if(value > 0) return 1;
       if(value < 0) return -1;
       return 0;
@@ -46,9 +48,11 @@ namespace wheel_of_fear {
         0,
         1
       );
-      if(std::abs(target - doorway.open_amount) <=
-         delta_seconds *
-         door_travel_per_second)
+      if(
+        std::abs(target - doorway.open_amount) <=
+        delta_seconds *
+        door_travel_per_second
+      )
         next = target;
       const bool tiles_are_passable =
         !map.isWall(doorway.first_x, doorway.first_y);
@@ -118,21 +122,27 @@ namespace wheel_of_fear {
   ) {
     std::vector<std::size_t> candidates;
     const auto              &doorways = map.doorways();
-    for(std::size_t doorway_index = 0; doorway_index < doorways.size();
-        ++doorway_index) {
+    for(
+      std::size_t doorway_index = 0; doorway_index < doorways.size();
+      ++doorway_index
+    ) {
       if(candidates.size() >= candidate_capacity) break;
       const DoorwayProps &doorway = doorways[doorway_index];
-      if(doorway.is_open !=
-         wants_open ||
-         doorway.seconds_since_change < recent_change_seconds)
+      if(
+        doorway.is_open !=
+        wants_open ||
+        doorway.seconds_since_change < recent_change_seconds
+      )
         continue;
       const int nearest_distance = std::min(
         map.roomGridDistance(doorway.room_a, focus_room),
         map.roomGridDistance(doorway.room_b, focus_room)
       );
       if(nearest_distance > neighborhood_grid_distance) continue;
-      if(isInsideView(doorway.center(), view_center) ||
-         isOccupied(doorway, occupants))
+      if(
+        isInsideView(doorway.center(), view_center) ||
+        isOccupied(doorway, occupants)
+      )
         continue;
       candidates.push_back(doorway_index);
     }

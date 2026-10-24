@@ -14,8 +14,12 @@ namespace wheel_of_fear {
         std::filesystem::path stamp_path
       );
       ~SharedLibraryWatcher();
-      SharedLibraryWatcher(const SharedLibraryWatcher &)             = delete;
-      SharedLibraryWatcher &operator =(const SharedLibraryWatcher &) = delete;
+      SharedLibraryWatcher(
+        const SharedLibraryWatcher &
+      ) = delete;
+      SharedLibraryWatcher &operator =(
+        const SharedLibraryWatcher &
+      ) = delete;
 
       bool                           hasUpdate() const;
       std::unique_ptr<SharedLibrary> loadLatest();

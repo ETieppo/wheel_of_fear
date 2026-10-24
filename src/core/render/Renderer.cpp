@@ -10,9 +10,8 @@ namespace wheel_of_fear {
   namespace {
     constexpr float blank_texel =
       1.5F / static_cast<float>(RenderConfig::atlas_size);
-    constexpr std::array<float, 4> blank_region {
-      blank_texel, blank_texel, blank_texel, blank_texel
-    };
+    constexpr std::array<float, 4>
+      blank_region {blank_texel, blank_texel, blank_texel, blank_texel};
   } // namespace
 
   Renderer::Renderer() {
@@ -106,7 +105,10 @@ namespace wheel_of_fear {
     const SpriteDrawDto    &options
   ) {
     drawSpriteSized(
-      region, center, region.worldSize().scale(options.scale), options
+      region,
+      center,
+      region.worldSize().scale(options.scale),
+      options
     );
   }
 
@@ -218,7 +220,9 @@ namespace wheel_of_fear {
     ));
   }
 
-  void Renderer::addLight(const GpuLightProps &light) {
+  void Renderer::addLight(
+    const GpuLightProps &light
+  ) {
     if(frame_.light_count >= RenderConfig::max_gpu_lights) return;
     frame_.lights[frame_.light_count] = light;
     frame_.light_count += 1;
@@ -238,7 +242,9 @@ namespace wheel_of_fear {
     };
     if(frame_.map_version == version) return;
     std::fill(
-      frame_.map_texels.begin(), frame_.map_texels.end(), std::uint8_t {0}
+      frame_.map_texels.begin(),
+      frame_.map_texels.end(),
+      std::uint8_t {0}
     );
     for(std::uint32_t y = 0; y < height; ++y) {
       for(std::uint32_t x = 0; x < width; ++x) {

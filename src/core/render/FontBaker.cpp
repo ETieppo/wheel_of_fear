@@ -15,13 +15,17 @@
 namespace wheel_of_fear {
   namespace {
     struct FreeTypeLibraryDeleter {
-        void operator ()(FT_Library library) const {
+        void operator ()(
+          FT_Library library
+        ) const {
           FT_Done_FreeType(library);
         }
     };
 
     struct FreeTypeFaceDeleter {
-        void operator ()(FT_Face face) const {
+        void operator ()(
+          FT_Face face
+        ) const {
           FT_Done_Face(face);
         }
     };
@@ -44,13 +48,15 @@ namespace wheel_of_fear {
       throw std::runtime_error("unable to initialize FreeType");
     const FreeTypeLibrary library(raw_library);
     FT_Face               raw_face = nullptr;
-    if(FT_New_Memory_Face(
-         library.get(),
-         bytes.data(),
-         static_cast<FT_Long>(bytes.size()),
-         0,
-         &raw_face
-       ) != 0) {
+    if(
+      FT_New_Memory_Face(
+        library.get(),
+        bytes.data(),
+        static_cast<FT_Long>(bytes.size()),
+        0,
+        &raw_face
+      ) != 0
+    ) {
       throw std::runtime_error("unable to load font " + font_path.string());
     }
     const FreeTypeFace face(raw_face);

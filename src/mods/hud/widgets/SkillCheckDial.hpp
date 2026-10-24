@@ -9,16 +9,14 @@ namespace wheel_of_fear {
     public:
       SkillCheckDial() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer         &renderer,
         const SkillCheck &check,
         float             real_seconds
       );
 
     private:
-      static
-      void drawResult(
+      static void drawResult(
         Renderer         &renderer,
         const SkillCheck &check,
         float             real_seconds

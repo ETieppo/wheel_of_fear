@@ -30,15 +30,18 @@ namespace wheel_of_fear {
       ) const override;
 
     protected:
-      const AtlasRegionProps &
-      sprite(const SpriteSheetProps &sprites) const override {
+      const AtlasRegionProps &sprite(
+        const SpriteSheetProps &sprites
+      ) const override {
         return sprites.neon_signs[variant_];
       }
 
     private:
       static constexpr float light_radius = 42;
 
-      float brightness(const SceneryViewDto &view) const;
+      float brightness(
+        const SceneryViewDto &view
+      ) const;
 
       std::size_t variant_;
   };

@@ -4,12 +4,17 @@
 #include "mods/world/TileMap.hpp"
 
 namespace wheel_of_fear {
-  TEST_CASE("sliding never ends inside a wall or prop") {
+  TEST_CASE(
+    "sliding never ends inside a wall or prop"
+  ) {
     RandomGenerator random(7);
     TileMap         map;
     map.generate(random, 4, 3);
     map.reserveProp(
-      map.rooms()[0].centerTileX(), map.rooms()[0].centerTileY(), 2, 2
+      map.rooms()[0].centerTileX(),
+      map.rooms()[0].centerTileY(),
+      2,
+      2
     );
     Vec2 position = map.randomFloorInRoom(random, map.rooms()[0]);
     for(int step = 0; step < 3000; ++step) {
@@ -19,7 +24,9 @@ namespace wheel_of_fear {
     }
   }
 
-  TEST_CASE("generated maps keep every floor tile and every room reachable") {
+  TEST_CASE(
+    "generated maps keep every floor tile and every room reachable"
+  ) {
     for(std::uint64_t seed = 0; seed < 8; ++seed) {
       RandomGenerator random(seed + 31);
       TileMap         map;
@@ -31,7 +38,9 @@ namespace wheel_of_fear {
     }
   }
 
-  TEST_CASE("room boundary walls cannot be dissolved") {
+  TEST_CASE(
+    "room boundary walls cannot be dissolved"
+  ) {
     RandomGenerator random(5);
     TileMap         map;
     map.generate(random, 3, 3);

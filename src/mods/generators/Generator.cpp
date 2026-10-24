@@ -84,9 +84,11 @@ namespace wheel_of_fear {
         break;
       case GeneratorStateEnum::online: updateOnline(context); break;
     }
-    if(state_ !=
-       GeneratorStateEnum::online &&
-       (is_being_repaired_ || progress_ > 0)) {
+    if(
+      state_ !=
+      GeneratorStateEnum::online &&
+      (is_being_repaired_ || progress_ > 0)
+    ) {
       LightProps light;
       light.position      = position();
       light.radius        = 46;
@@ -98,20 +100,20 @@ namespace wheel_of_fear {
     }
   }
 
-  void Generator::overload(GameContextDto &context) {
+  void Generator::overload(
+    GameContextDto &context
+  ) {
     state_                 = GeneratorStateEnum::charging;
     progress_              = overload_restart_progress;
     seconds_online_        = 0;
     seconds_unattended_    = 0;
     has_warned_regression_ = false;
     context.world.powerRoom(room_index_, false);
-    context.effects.emitSparks(
-      context.world, position(), 22, Palette::spark_blue
-    );
+    context.effects
+      .emitSparks(context.world, position(), 22, Palette::spark_blue);
     playSound(context, SoundEnum::generator_breakdown, 0.9F, 0.8F);
-    context.noise.emit(
-      position(), failure_noise_radius, NoiseSourceEnum::mob_incident
-    );
+    context.noise
+      .emit(position(), failure_noise_radius, NoiseSourceEnum::mob_incident);
     context.hud.announce(
       Palette::danger,
       std::format("GENERATOR {} OVERLOADED  -  POWER IS DRAINING", label_)
@@ -124,9 +126,8 @@ namespace wheel_of_fear {
     float           volume,
     float           pitch
   ) const {
-    context.sound_player.playAt(
-      sound, volume, context.player.position(), position(), pitch
-    );
+    context.sound_player
+      .playAt(sound, volume, context.player.position(), position(), pitch);
   }
 
   void Generator::updateCharging(
@@ -160,11 +161,13 @@ namespace wheel_of_fear {
     if(ratchet_timer_ <= 0) {
       ratchet_timer_ = 0.34F;
       playSound(
-        context, SoundEnum::generator_tick, 0.5F, 0.85F + progress_ * 0.5F
+        context,
+        SoundEnum::generator_tick,
+        0.5F,
+        0.85F + progress_ * 0.5F
       );
-      context.noise.emit(
-        position(), repair_noise_radius, NoiseSourceEnum::repairing
-      );
+      context.noise
+        .emit(position(), repair_noise_radius, NoiseSourceEnum::repairing);
     }
     updateSkillCheck(context);
     if(state_ != GeneratorStateEnum::charging) return;
@@ -177,7 +180,9 @@ namespace wheel_of_fear {
       bringOnline(context);
   }
 
-  void Generator::regressWhileUnattended(GameContextDto &context) {
+  void Generator::regressWhileUnattended(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     seconds_unattended_ += delta;
     if(seconds_unattended_ <= regression_delay_seconds) return;
@@ -203,21 +208,27 @@ namespace wheel_of_fear {
     GameContextDto &context,
     float           previous_progress
   ) {
-    for(std::size_t incident_index = 0;
-        incident_index < incident_thresholds.size();
-        ++incident_index) {
+    for(
+      std::size_t incident_index = 0;
+      incident_index < incident_thresholds.size();
+      ++incident_index
+    ) {
       const float threshold = incident_thresholds[incident_index];
-      if(triggered_incidents_[incident_index] ||
-         previous_progress >=
-         threshold ||
-         progress_ < threshold)
+      if(
+        triggered_incidents_[incident_index] ||
+        previous_progress >=
+        threshold ||
+        progress_ < threshold
+      )
         continue;
       triggered_incidents_[incident_index] = true;
       triggerIncident(context, planned_incidents_[incident_index]);
     }
   }
 
-  void Generator::updateSkillCheck(GameContextDto &context) {
+  void Generator::updateSkillCheck(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     if(!skill_check_.isActive()) {
       if(!skill_check_.tickCountdown(delta)) return;
@@ -226,7 +237,8 @@ namespace wheel_of_fear {
       return;
     }
     const auto result = skill_check_.advanceNeedle(
-      delta, context.input.wasPressed(InputActionEnum::hold_breath)
+      delta,
+      context.input.wasPressed(InputActionEnum::hold_breath)
     );
     if(result) resolveSkillCheck(context, *result);
   }
@@ -248,16 +260,19 @@ namespace wheel_of_fear {
         progress_ = std::max(0.0F, progress_ - failure_regression);
         context.sound_player.play(SoundEnum::qte_fail, 0.9F, 0, 1);
         playSound(context, SoundEnum::electric_buzz, 0.7F, 1.2F);
-        context.effects.emitSparks(
-          context.world, position(), 16, Palette::spark_blue
-        );
+        context.effects
+          .emitSparks(context.world, position(), 16, Palette::spark_blue);
         context.noise.emit(
-          position(), failure_noise_radius, NoiseSourceEnum::repair_failure
+          position(),
+          failure_noise_radius,
+          NoiseSourceEnum::repair_failure
         );
         context.world.shake(0.4F);
-        if(progress_ >
-           0.1F &&
-           context.world.random().chance(failure_breakdown_chance)) {
+        if(
+          progress_ >
+          0.1F &&
+          context.world.random().chance(failure_breakdown_chance)
+        ) {
           triggerIncident(context, GeneratorIncidentEnum::breakdown);
         } else {
           context.hud.announce(
@@ -295,7 +310,9 @@ namespace wheel_of_fear {
       context.hud.showPrompt(
         std::nullopt,
         std::format(
-          "GENERATOR {} NEEDS A {}  -  FIND A FABRICATOR", label_, item_name
+          "GENERATOR {} NEEDS A {}  -  FIND A FABRICATOR",
+          label_,
+          item_name
         )
       );
       return;
@@ -310,7 +327,8 @@ namespace wheel_of_fear {
     playSound(context, SoundEnum::part_pickup, 0.7F, 0.8F);
     playSound(context, SoundEnum::generator_tick, 0.8F, 0.6F);
     context.hud.announce(
-      Palette::success, std::format("GENERATOR {} UNJAMMED", label_)
+      Palette::success,
+      std::format("GENERATOR {} UNJAMMED", label_)
     );
   }
 
@@ -334,7 +352,10 @@ namespace wheel_of_fear {
       );
       if(random.chance(0.3F))
         playSound(
-          context, SoundEnum::electric_buzz, 0.4F, random.range(0.8F, 1.3F)
+          context,
+          SoundEnum::electric_buzz,
+          0.4F,
+          random.range(0.8F, 1.3F)
         );
     }
     LightProps light;
@@ -358,11 +379,13 @@ namespace wheel_of_fear {
     if(repair_sound_timer_ <= 0) {
       repair_sound_timer_ = 0.5F;
       playSound(
-        context, SoundEnum::generator_tick, 0.7F, 0.6F + wiring_progress_
+        context,
+        SoundEnum::generator_tick,
+        0.7F,
+        0.6F + wiring_progress_
       );
-      context.noise.emit(
-        position(), repair_noise_radius, NoiseSourceEnum::repairing
-      );
+      context.noise
+        .emit(position(), repair_noise_radius, NoiseSourceEnum::repairing);
     }
     context.hud.showPrompt(
       std::nullopt,
@@ -376,12 +399,15 @@ namespace wheel_of_fear {
     wiring_progress_ = 0;
     state_           = GeneratorStateEnum::charging;
     context.hud.announce(
-      Palette::success, std::format("GENERATOR {} REWIRED", label_)
+      Palette::success,
+      std::format("GENERATOR {} REWIRED", label_)
     );
     playSound(context, SoundEnum::part_pickup, 0.5F, 0.6F);
   }
 
-  void Generator::updateOnline(GameContextDto &context) {
+  void Generator::updateOnline(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     seconds_online_ += delta;
     rotor_speed_        = Scalar::approach(rotor_speed_, 9, delta * 2);
@@ -408,9 +434,8 @@ namespace wheel_of_fear {
           state_           = GeneratorStateEnum::jammed;
           const auto parts = ItemCatalog::generatorParts();
           required_item_   = parts[context.world.random().index(parts.size())];
-          context.effects.emitSparks(
-            context.world, position(), 10, Palette::spark_yellow
-          );
+          context.effects
+            .emitSparks(context.world, position(), 10, Palette::spark_yellow);
           playSound(context, SoundEnum::generator_request, 0.9F, 1);
           context.hud.announce(
             Palette::spark_yellow,
@@ -427,12 +452,13 @@ namespace wheel_of_fear {
         progress_        = std::max(0.0F, progress_ - 0.12F);
         wiring_progress_ = 0;
         context.world.shake(0.4F);
-        context.effects.emitSparks(
-          context.world, position(), 24, Palette::spark_blue
-        );
+        context.effects
+          .emitSparks(context.world, position(), 24, Palette::spark_blue);
         playSound(context, SoundEnum::generator_breakdown, 1.0F, 1);
         context.noise.emit(
-          position(), failure_noise_radius, NoiseSourceEnum::repair_failure
+          position(),
+          failure_noise_radius,
+          NoiseSourceEnum::repair_failure
         );
         context.hud.announce(
           Palette::danger,
@@ -442,15 +468,16 @@ namespace wheel_of_fear {
     }
   }
 
-  void Generator::bringOnline(GameContextDto &context) {
+  void Generator::bringOnline(
+    GameContextDto &context
+  ) {
     state_          = GeneratorStateEnum::online;
     seconds_online_ = 0;
     skill_check_.cancel();
     context.world.powerRoom(room_index_, true);
     context.world.shake(0.35F);
-    context.effects.emitSparks(
-      context.world, position(), 30, Palette::neon_cyan
-    );
+    context.effects
+      .emitSparks(context.world, position(), 30, Palette::neon_cyan);
     playSound(context, SoundEnum::generator_online, 1.0F, 1);
     context.sound_player.playAt(
       SoundEnum::led_power_up,
@@ -466,7 +493,9 @@ namespace wheel_of_fear {
     context.mobs.onGeneratorOnline(context);
   }
 
-  void Generator::forceOnline(GameContextDto &context) {
+  void Generator::forceOnline(
+    GameContextDto &context
+  ) {
     progress_ = 1;
     state_    = GeneratorStateEnum::online;
     context.world.powerRoom(room_index_, true);
@@ -483,24 +512,33 @@ namespace wheel_of_fear {
     return Palette::neon_red;
   }
 
-  void Generator::draw(GameContextDto &context) const {
+  void Generator::draw(
+    GameContextDto &context
+  ) const {
     Renderer               &renderer     = context.renderer;
     const SpriteSheetProps &sprites      = context.art.sprites();
     const float             real_seconds = context.clock.realSeconds();
     const Vec2              center       = position();
     renderer.drawShadowDisc(
-      center.add(Vec2::of(2, 4)), 22, Color::black().withAlpha(0.6F), 1.2F
+      center.add(Vec2::of(2, 4)),
+      22,
+      Color::black().withAlpha(0.6F),
+      1.2F
     );
     renderer.drawSprite(sprites.generator_base, center);
     renderer.drawSprite(
-      sprites.generator_rotor, center, SpriteDrawDto {.rotation = rotor_angle_}
+      sprites.generator_rotor,
+      center,
+      SpriteDrawDto {.rotation = rotor_angle_}
     );
     const Color status_color = statusColor();
     const float core_level   = isOnline() ? 0.8F : 0.12F + progress_ * 0.35F;
     const float pulse =
       0.85F + 0.15F * std::sin(real_seconds * (3 + rotor_speed_));
     renderer.drawGlowSprite(
-      sprites.generator_glow, center, status_color.withAlpha(core_level * pulse)
+      sprites.generator_glow,
+      center,
+      status_color.withAlpha(core_level * pulse)
     );
     renderer.drawGlowSprite(
       sprites.generator_rotor_glow,
@@ -510,7 +548,10 @@ namespace wheel_of_fear {
     );
     if(is_being_repaired_)
       renderer.drawGlowDisc(
-        center, 26, Palette::flashlight_white.withAlpha(0.12F), 1.5F
+        center,
+        26,
+        Palette::flashlight_white.withAlpha(0.12F),
+        1.5F
       );
     if(!isOnline()) drawProgressRing(context, status_color);
     if(state_ != GeneratorStateEnum::jammed) return;
@@ -548,7 +589,9 @@ namespace wheel_of_fear {
       if(is_threshold) dot_color = Palette::spark_yellow.withAlpha(0.6F);
       if(is_lit) dot_color = color;
       context.renderer.drawGlowRectangle(
-        point, Vec2::of(2.2F, 2.2F), dot_color.withAlpha(is_lit ? 1.0F : 0.85F)
+        point,
+        Vec2::of(2.2F, 2.2F),
+        dot_color.withAlpha(is_lit ? 1.0F : 0.85F)
       );
     }
   }

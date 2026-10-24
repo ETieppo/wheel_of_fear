@@ -10,8 +10,7 @@ namespace wheel_of_fear {
     public:
       InventoryBar() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites,
         const Inventory        &inventory

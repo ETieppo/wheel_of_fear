@@ -7,8 +7,7 @@ namespace wheel_of_fear {
     public:
       virtual ~Collider() = default;
 
-      virtual
-      Vec2 slide(
+      virtual Vec2 slide(
         Vec2  position,
         Vec2  displacement,
         float half_size

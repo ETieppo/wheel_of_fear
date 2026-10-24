@@ -5,7 +5,9 @@
 #include <utility>
 
 namespace wheel_of_fear {
-  DemoModeEnum DemoModeParser::parse(std::string_view name) {
+  DemoModeEnum DemoModeParser::parse(
+    std::string_view name
+  ) {
     constexpr std::array<std::pair<std::string_view, DemoModeEnum>, 16> modes {
       {
        {"none", DemoModeEnum::none},

@@ -25,7 +25,9 @@ namespace wheel_of_fear {
         ) {
   }
 
-  void Projectile::advance(float delta_seconds) {
+  void Projectile::advance(
+    float delta_seconds
+  ) {
     flight_seconds_ = std::min(total_seconds_, flight_seconds_ + delta_seconds);
     setHeading(heading() + delta_seconds * 16);
     setPosition(groundPosition());
@@ -49,10 +51,15 @@ namespace wheel_of_fear {
     const SpriteSheetProps &sprites
   ) const {
     renderer.drawShadowDisc(
-      groundPosition(), 3, Color::black().withAlpha(0.4F), 1.2F
+      groundPosition(),
+      3,
+      Color::black().withAlpha(0.4F),
+      1.2F
     );
     renderer.drawSprite(
-      sprite(sprites), airPosition(), SpriteDrawDto {.rotation = heading()}
+      sprite(sprites),
+      airPosition(),
+      SpriteDrawDto {.rotation = heading()}
     );
     drawTrail(renderer);
   }

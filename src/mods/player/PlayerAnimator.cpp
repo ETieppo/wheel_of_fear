@@ -4,7 +4,9 @@
 
 namespace wheel_of_fear {
   namespace {
-    std::size_t frameAt(float value) {
+    std::size_t frameAt(
+      float value
+    ) {
       return static_cast<std::size_t>(std::max(value, 0.0F));
     }
   } // namespace
@@ -45,11 +47,15 @@ namespace wheel_of_fear {
                           stride_length *
                           static_cast<float>(sprites.player_walk.size());
       return pick(
-        sprites.player_walk, sprites.player_walk_glow, frameAt(frame)
+        sprites.player_walk,
+        sprites.player_walk_glow,
+        frameAt(frame)
       );
     }
     return pick(
-      sprites.player_idle, sprites.player_idle_glow, frameAt(real_seconds * 7)
+      sprites.player_idle,
+      sprites.player_idle_glow,
+      frameAt(real_seconds * 7)
     );
   }
 } // namespace wheel_of_fear

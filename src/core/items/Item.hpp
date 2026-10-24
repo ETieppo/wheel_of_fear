@@ -26,13 +26,11 @@ namespace wheel_of_fear {
         return carry_limit_;
       }
 
-      virtual
-      bool isGeneratorPart() const {
+      virtual bool isGeneratorPart() const {
         return false;
       }
 
-      virtual
-      bool isThrowable() const {
+      virtual bool isThrowable() const {
         return false;
       }
 

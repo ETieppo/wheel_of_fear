@@ -18,12 +18,16 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void Hud::beginFrame(float real_delta_seconds) {
+  void Hud::beginFrame(
+    float real_delta_seconds
+  ) {
     prompt_.clear();
     messages_.age(real_delta_seconds);
   }
 
-  void Hud::draw(GameContextDto &context) const {
+  void Hud::draw(
+    GameContextDto &context
+  ) const {
     if(!is_visible_) return;
     Renderer     &renderer     = context.renderer;
     const Player &player       = context.player;
@@ -52,7 +56,10 @@ namespace wheel_of_fear {
                                   ? Palette::ultraviolet_light
                                   : Palette::neon_cyan;
     Crosshair::draw(
-      renderer, context.input.mouseInUi(), crosshair_color, real_seconds
+      renderer,
+      context.input.mouseInUi(),
+      crosshair_color,
+      real_seconds
     );
   }
 } // namespace wheel_of_fear

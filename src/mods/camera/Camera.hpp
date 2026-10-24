@@ -17,7 +17,9 @@ namespace wheel_of_fear {
         return focus_;
       }
 
-      void setFocus(Vec2 focus) {
+      void setFocus(
+        Vec2 focus
+      ) {
         focus_ = focus;
       }
 
@@ -38,7 +40,9 @@ namespace wheel_of_fear {
       }
 
       Vec2 viewOrigin() const;
-      Vec2 mouseWorldPosition(const Input &input) const;
+      Vec2 mouseWorldPosition(
+        const Input &input
+      ) const;
       void snapToPlayer(
         const World  &world,
         const Player &player
@@ -47,7 +51,9 @@ namespace wheel_of_fear {
         Vec2  point,
         float delta_seconds
       );
-      void update(GameContextDto &context);
+      void update(
+        GameContextDto &context
+      );
 
     private:
       static constexpr Vec2  mouse_influence {0.42F, 0.42F};
@@ -57,10 +63,10 @@ namespace wheel_of_fear {
       static constexpr float room_transition_seconds = 0.7F;
       static constexpr float shake_amplitude         = 9;
 
-      static
-      Vec2 mouseOffset(const Input &input);
-      static
-      Vec2 framedTarget(
+      static Vec2 mouseOffset(
+        const Input &input
+      );
+      static Vec2 framedTarget(
         std::optional<std::size_t> room_index,
         const World               &world,
         Vec2                       anchor,

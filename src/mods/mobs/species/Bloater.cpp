@@ -10,23 +10,33 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void Bloater::lightFuse(float minimum_fuse_seconds) {
+  void Bloater::lightFuse(
+    float minimum_fuse_seconds
+  ) {
     fuse_seconds_ = std::max(fuse_seconds_, minimum_fuse_seconds);
   }
 
-  void Bloater::ignite(GameContextDto &) {
+  void Bloater::ignite(
+    GameContextDto &
+  ) {
     lightFuse(chained_fuse_seconds);
   }
 
-  void Bloater::catchBlast(GameContextDto &) {
+  void Bloater::catchBlast(
+    GameContextDto &
+  ) {
     lightFuse(chained_fuse_seconds);
   }
 
-  void Bloater::think(GameContextDto &context) {
+  void Bloater::think(
+    GameContextDto &context
+  ) {
     if(isBusy()) return;
     const float delta       = context.clock.deltaSeconds();
     const float ultraviolet = context.lighting.visibilityAt(
-      context.world.map(), position(), LightFilterEnum::ultraviolet_only
+      context.world.map(),
+      position(),
+      LightFilterEnum::ultraviolet_only
     );
     if(ultraviolet > ultraviolet_ignition_threshold) fuse_seconds_ += delta;
     else if(fuse_seconds_ < fuse_limit_seconds * 0.9F)
@@ -42,11 +52,15 @@ namespace wheel_of_fear {
     thinkAsHunter(context);
   }
 
-  void Bloater::onContact(GameContextDto &context) {
+  void Bloater::onContact(
+    GameContextDto &context
+  ) {
     context.mobs.detonate(context, *this);
   }
 
-  void Bloater::draw(GameContextDto &context) const {
+  void Bloater::draw(
+    GameContextDto &context
+  ) const {
     const SpriteSheetProps &sprites = context.art.sprites();
     const std::size_t       frame =
       animationFrame(6 + fuse_seconds_ * 20, sprites.bloater_drift.size());

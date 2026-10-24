@@ -7,7 +7,9 @@
 
 namespace wheel_of_fear {
   namespace {
-    std::size_t slotOf(InputActionEnum action) {
+    std::size_t slotOf(
+      InputActionEnum action
+    ) {
       return static_cast<std::size_t>(action);
     }
   } // namespace
@@ -16,7 +18,9 @@ namespace wheel_of_fear {
     pressed_.fill(false);
   }
 
-  std::optional<InputActionEnum> Input::actionForKey(SDL_Keycode key) {
+  std::optional<InputActionEnum> Input::actionForKey(
+    SDL_Keycode key
+  ) {
     switch(key) {
       case SDLK_W:
       case SDLK_UP:     return InputActionEnum::move_up;
@@ -42,7 +46,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void Input::handleEvent(const SDL_Event &event) {
+  void Input::handleEvent(
+    const SDL_Event &event
+  ) {
     switch(event.type) {
       case SDL_EVENT_QUIT:
       case SDL_EVENT_WINDOW_CLOSE_REQUESTED: is_quit_requested_ = true; break;
@@ -78,16 +84,22 @@ namespace wheel_of_fear {
     }
   }
 
-  void Input::press(InputActionEnum action) {
+  void Input::press(
+    InputActionEnum action
+  ) {
     held_[slotOf(action)]    = true;
     pressed_[slotOf(action)] = true;
   }
 
-  void Input::release(InputActionEnum action) {
+  void Input::release(
+    InputActionEnum action
+  ) {
     held_[slotOf(action)] = false;
   }
 
-  void Input::simulatePress(InputActionEnum action) {
+  void Input::simulatePress(
+    InputActionEnum action
+  ) {
     pressed_[slotOf(action)] = true;
   }
 
@@ -98,11 +110,15 @@ namespace wheel_of_fear {
     held_[slotOf(action)] = is_held;
   }
 
-  bool Input::isHeld(InputActionEnum action) const {
+  bool Input::isHeld(
+    InputActionEnum action
+  ) const {
     return held_[slotOf(action)];
   }
 
-  bool Input::wasPressed(InputActionEnum action) const {
+  bool Input::wasPressed(
+    InputActionEnum action
+  ) const {
     return pressed_[slotOf(action)];
   }
 

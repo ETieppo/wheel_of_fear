@@ -68,15 +68,23 @@ namespace wheel_of_fear {
         GameContextDto &context,
         float           seconds_to_charge
       );
-      void overload(GameContextDto &context);
-      void draw(GameContextDto &context) const;
-      void forceOnline(GameContextDto &context);
+      void overload(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
+      void forceOnline(
+        GameContextDto &context
+      );
 
       void cancelPlannedIncidents() {
         planned_incidents_.fill(GeneratorIncidentEnum::none);
       }
 
-      void setProgress(float progress) {
+      void setProgress(
+        float progress
+      ) {
         progress_ = progress;
       }
 
@@ -92,12 +100,16 @@ namespace wheel_of_fear {
         bool            is_player_near,
         float           seconds_to_charge
       );
-      void regressWhileUnattended(GameContextDto &context);
+      void regressWhileUnattended(
+        GameContextDto &context
+      );
       void triggerCrossedIncidents(
         GameContextDto &context,
         float           previous_progress
       );
-      void updateSkillCheck(GameContextDto &context);
+      void updateSkillCheck(
+        GameContextDto &context
+      );
       void resolveSkillCheck(
         GameContextDto      &context,
         SkillCheckResultEnum result
@@ -110,12 +122,16 @@ namespace wheel_of_fear {
         GameContextDto &context,
         bool            is_player_near
       );
-      void updateOnline(GameContextDto &context);
+      void updateOnline(
+        GameContextDto &context
+      );
       void triggerIncident(
         GameContextDto       &context,
         GeneratorIncidentEnum incident
       );
-      void bringOnline(GameContextDto &context);
+      void bringOnline(
+        GameContextDto &context
+      );
       void drawProgressRing(
         GameContextDto &context,
         Color           color

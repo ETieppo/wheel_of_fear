@@ -15,15 +15,13 @@ namespace wheel_of_fear {
       };
       static constexpr float wall_margin = RenderConfig::tile_size;
 
-      static
-      Vec2 clampToRoom(
+      static Vec2 clampToRoom(
         const RoomProps &room,
         Vec2             desired
       );
 
     private:
-      static
-      float clampAxis(
+      static float clampAxis(
         float value,
         float minimum,
         float maximum,

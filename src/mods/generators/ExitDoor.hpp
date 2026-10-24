@@ -27,14 +27,20 @@ namespace wheel_of_fear {
         return has_player_exited_;
       }
 
-      void reset(Vec2 doorway_position);
-      void unlock(GameContextDto &context);
+      void reset(
+        Vec2 doorway_position
+      );
+      void unlock(
+        GameContextDto &context
+      );
       void update(
         GameContextDto &context,
         std::size_t     online_count,
         std::size_t     generator_count
       );
-      void draw(GameContextDto &context) const;
+      void draw(
+        GameContextDto &context
+      ) const;
 
     private:
       Vec2 entryPoint() const {

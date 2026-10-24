@@ -10,5 +10,7 @@ namespace wheel_of_fear {
       std::array<float, 4> animation {};
   };
 
-  static_assert(sizeof(GpuLightProps) == 64);
+  static_assert(
+    sizeof(GpuLightProps) == 64
+  );
 } // namespace wheel_of_fear

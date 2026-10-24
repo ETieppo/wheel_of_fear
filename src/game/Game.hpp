@@ -28,13 +28,21 @@
 namespace wheel_of_fear {
   class Game {
     public:
-      explicit Game(Window &window);
-      Game(const Game &)             = delete;
-      Game &operator =(const Game &) = delete;
+      explicit Game(
+        Window &window
+      );
+      Game(
+        const Game &
+      ) = delete;
+      Game &operator =(
+        const Game &
+      ) = delete;
 
       bool              runFrame();
       GameSnapshotProps snapshot() const;
-      void              resume(const GameSnapshotProps &snapshot);
+      void              resume(
+        const GameSnapshotProps &snapshot
+      );
 
     private:
       static constexpr float maximum_frame_seconds = 1.0F / 20.0F;

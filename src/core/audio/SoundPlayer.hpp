@@ -42,19 +42,24 @@ namespace wheel_of_fear {
         Vec2      source,
         float     pitch
       );
-      void stop(VoiceId voice);
-      bool isPlaying(VoiceId voice) const;
+      void stop(
+        VoiceId voice
+      );
+      bool isPlaying(
+        VoiceId voice
+      ) const;
       void toggleMute();
       void setMusicMix(
         float title,
         float ambience,
         float tension
       );
-      void updateMusic(float delta_seconds);
+      void updateMusic(
+        float delta_seconds
+      );
       void releaseFinished();
 
-      static
-      float spatialGain(
+      static float spatialGain(
         Vec2 listener,
         Vec2 source
       );
@@ -64,23 +69,22 @@ namespace wheel_of_fear {
       static constexpr float       hearing_distance = 420;
       static constexpr float       stereo_width     = 160;
 
-      static
-      float spatialPan(
+      static float spatialPan(
         Vec2 listener,
         Vec2 source
       );
-      static
-      std::vector<float> toMono(
+      static std::vector<float> toMono(
         const std::vector<float> &samples,
         std::uint32_t             channels
       );
-      static
-      std::vector<float> toStereo(
+      static std::vector<float> toStereo(
         const std::vector<float> &samples,
         std::uint32_t             channels
       );
-      MusicLayer &layer(MusicLayerEnum which);
-      VoiceId     startVoice(
+      MusicLayer &layer(
+        MusicLayerEnum which
+      );
+      VoiceId startVoice(
         SoundEnum sound,
         float     volume,
         float     pan,

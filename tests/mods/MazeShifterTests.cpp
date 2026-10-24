@@ -5,7 +5,9 @@
 #include "mods/world/MazeShifter.hpp"
 
 namespace wheel_of_fear {
-  TEST_CASE("shifting doorways never disconnects the rooms") {
+  TEST_CASE(
+    "shifting doorways never disconnects the rooms"
+  ) {
     for(std::uint64_t seed = 0; seed < 6; ++seed) {
       RandomGenerator random(seed + 100);
       TileMap         map;
@@ -24,7 +26,9 @@ namespace wheel_of_fear {
     }
   }
 
-  TEST_CASE("doorways inside the view are never moved") {
+  TEST_CASE(
+    "doorways inside the view are never moved"
+  ) {
     RandomGenerator random(77);
     TileMap         map;
     map.generate(random, 4, 4);

@@ -14,7 +14,9 @@ namespace wheel_of_fear {
         std::optional<InputActionEnum> key,
         std::string                    text
       );
-      void draw(Renderer &renderer) const;
+      void draw(
+        Renderer &renderer
+      ) const;
 
     private:
       std::string                    text_;

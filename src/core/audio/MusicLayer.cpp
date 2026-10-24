@@ -9,7 +9,9 @@ namespace wheel_of_fear {
     float       mix_volume
   ) {
     volume_ = Scalar::approach(
-      volume_, target_volume_, delta_seconds * fade_per_second
+      volume_,
+      target_volume_,
+      delta_seconds * fade_per_second
     );
     if(volume_ <= 0.001F) {
       mixer.stop(voice_);

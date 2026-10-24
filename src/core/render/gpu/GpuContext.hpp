@@ -9,10 +9,16 @@
 namespace wheel_of_fear {
   class GpuContext {
     public:
-      explicit GpuContext(const Window &window);
+      explicit GpuContext(
+        const Window &window
+      );
       ~GpuContext();
-      GpuContext(const GpuContext &)             = delete;
-      GpuContext &operator =(const GpuContext &) = delete;
+      GpuContext(
+        const GpuContext &
+      ) = delete;
+      GpuContext &operator =(
+        const GpuContext &
+      ) = delete;
 
       WGPUDevice device() const {
         return device_.get();
@@ -42,7 +48,9 @@ namespace wheel_of_fear {
       void                      present();
 
     private:
-      void createSurface(const Window &window);
+      void createSurface(
+        const Window &window
+      );
       void requestAdapter();
       void requestDevice();
       void chooseSurfaceFormat();

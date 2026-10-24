@@ -12,17 +12,24 @@
 namespace wheel_of_fear {
   class HotReloadGameRunner final: public GameRunner {
     public:
-      explicit HotReloadGameRunner(Window &window);
+      explicit HotReloadGameRunner(
+        Window &window
+      );
       ~HotReloadGameRunner() override;
-      HotReloadGameRunner(const HotReloadGameRunner &)             = delete;
-      HotReloadGameRunner &operator =(const HotReloadGameRunner &) = delete;
+      HotReloadGameRunner(
+        const HotReloadGameRunner &
+      ) = delete;
+      HotReloadGameRunner &operator =(
+        const HotReloadGameRunner &
+      ) = delete;
 
       bool runFrame() override;
 
     private:
-      static
-      const GameModuleApiProps &resolveApi(const SharedLibrary &library);
-      Game*                     startGame(
+      static const GameModuleApiProps &resolveApi(
+        const SharedLibrary &library
+      );
+      Game* startGame(
         const GameModuleApiProps  &api,
         std::span<const std::byte> snapshot
       ) const;

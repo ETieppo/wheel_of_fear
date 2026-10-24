@@ -10,7 +10,9 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void Melter::emitLights(GameContextDto &context) {
+  void Melter::emitLights(
+    GameContextDto &context
+  ) {
     flash_seconds_ =
       std::max(0.0F, flash_seconds_ - context.clock.deltaSeconds());
     if(flash_seconds_ <= 0) return;
@@ -22,7 +24,9 @@ namespace wheel_of_fear {
     context.lighting.add(flash);
   }
 
-  void Melter::think(GameContextDto &context) {
+  void Melter::think(
+    GameContextDto &context
+  ) {
     if(!canAct()) return;
     if(isHunting()) {
       const Vec2 direction = directionTo(destination());
@@ -39,7 +43,9 @@ namespace wheel_of_fear {
     if(isMoving()) leaveAcidTrail(context);
   }
 
-  void Melter::leaveAcidTrail(GameContextDto &context) {
+  void Melter::leaveAcidTrail(
+    GameContextDto &context
+  ) {
     trail_seconds_ -= context.clock.deltaSeconds();
     if(trail_seconds_ > 0) return;
     trail_seconds_ = acid_trail_interval;
@@ -61,20 +67,27 @@ namespace wheel_of_fear {
     dissolve_seconds_ = 0;
     if(!world.map().dissolveWall(tile.x, tile.y)) return;
     world.map().spillAcid(
-      TileMap::tileCenter(tile.x, tile.y), acid_trail_seconds
+      TileMap::tileCenter(tile.x, tile.y),
+      acid_trail_seconds
     );
     flash_seconds_ = dissolve_flash_seconds;
     playSound(context, SoundEnum::acid_sizzle, 0.9F, 1);
     context.noise.emit(
-      contact_point, dissolve_noise_radius, NoiseSourceEnum::mob_incident
+      contact_point,
+      dissolve_noise_radius,
+      NoiseSourceEnum::mob_incident
     );
   }
 
-  void Melter::onContact(GameContextDto &context) {
+  void Melter::onContact(
+    GameContextDto &context
+  ) {
     strikeAndRetreat(context, strike_retreat_seconds);
   }
 
-  void Melter::draw(GameContextDto &context) const {
+  void Melter::draw(
+    GameContextDto &context
+  ) const {
     const SpriteSheetProps &sprites    = context.art.sprites();
     const bool              is_working = isMoving() || dissolve_seconds_ > 0;
     const std::size_t       frame =

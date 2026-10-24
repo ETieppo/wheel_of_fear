@@ -21,9 +21,8 @@ namespace wheel_of_fear {
       Color::black().withAlpha(0.5F),
       1.2F
     );
-    renderer.drawSprite(
-      sprite, position_, SpriteDrawDto {.rotation = order * 1.7F}
-    );
+    renderer
+      .drawSprite(sprite, position_, SpriteDrawDto {.rotation = order * 1.7F});
     const float glint = 0.5F + 0.5F * std::sin(real_seconds * 3 + order);
     renderer.drawGlowDisc(
       position_,

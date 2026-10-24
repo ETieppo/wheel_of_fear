@@ -16,8 +16,12 @@ namespace wheel_of_fear {
         int              height
       );
       ~Window();
-      Window(const Window &)             = delete;
-      Window &operator =(const Window &) = delete;
+      Window(
+        const Window &
+      ) = delete;
+      Window &operator =(
+        const Window &
+      ) = delete;
 
       SDL_Window* handle() const {
         return window_;

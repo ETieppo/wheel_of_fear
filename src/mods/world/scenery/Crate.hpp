@@ -12,12 +12,15 @@ namespace wheel_of_fear {
       }
 
     protected:
-      const AtlasRegionProps &
-      sprite(const SpriteSheetProps &sprites) const override {
+      const AtlasRegionProps &sprite(
+        const SpriteSheetProps &sprites
+      ) const override {
         return sprites.crate;
       }
 
-      void reactToBump(RandomGenerator &random) override {
+      void reactToBump(
+        RandomGenerator &random
+      ) override {
         tilt(random.range(-0.35F, 0.35F));
       }
   };

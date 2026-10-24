@@ -9,14 +9,18 @@ namespace wheel_of_fear {
     counts_[indexOf(ItemEnum::neon_grenade)] = starting_grenades;
   }
 
-  bool Inventory::receive(ItemEnum item) {
+  bool Inventory::receive(
+    ItemEnum item
+  ) {
     int &slot = counts_[indexOf(item)];
     if(slot >= ItemCatalog::of(item).carryLimit()) return false;
     slot += 1;
     return true;
   }
 
-  bool Inventory::consume(ItemEnum item) {
+  bool Inventory::consume(
+    ItemEnum item
+  ) {
     if(!has(item)) return false;
     counts_[indexOf(item)] -= 1;
     return true;

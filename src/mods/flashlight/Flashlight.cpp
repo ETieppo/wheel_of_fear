@@ -13,7 +13,9 @@ namespace wheel_of_fear {
     battery_.refill();
   }
 
-  void Flashlight::cycleMode(SoundPlayer &sound_player) {
+  void Flashlight::cycleMode(
+    SoundPlayer &sound_player
+  ) {
     if(!is_enabled_) {
       is_enabled_ = true;
       mode_       = FlashlightModeEnum::normal;
@@ -22,9 +24,8 @@ namespace wheel_of_fear {
     } else {
       is_enabled_ = false;
     }
-    sound_player.play(
-      SoundEnum::switch_click, 0.6F, 0, isUltraviolet() ? 0.8F : 1.1F
-    );
+    sound_player
+      .play(SoundEnum::switch_click, 0.6F, 0, isUltraviolet() ? 0.8F : 1.1F);
   }
 
   void Flashlight::update(
@@ -35,9 +36,9 @@ namespace wheel_of_fear {
     const bool wants_light      = is_enabled_ || conditions.is_held_in_mouth;
     float      seconds_to_drain = isUltraviolet() ? 75.0F : 190.0F;
     if(conditions.is_held_in_mouth) seconds_to_drain = 240;
-    if(wants_light &&
-       !conditions.is_tracker_open &&
-       !conditions.is_holder_hidden)
+    if(
+      wants_light && !conditions.is_tracker_open && !conditions.is_holder_hidden
+    )
       battery_.drain(conditions.delta_seconds, seconds_to_drain);
 
     const bool can_charge =
@@ -74,23 +75,32 @@ namespace wheel_of_fear {
     );
   }
 
-  bool Flashlight::usesUltraviolet(const FlashlightGripDto &grip) const {
+  bool Flashlight::usesUltraviolet(
+    const FlashlightGripDto &grip
+  ) const {
     return isUltraviolet() && !grip.repair_target;
   }
 
-  Color Flashlight::beamColor(const FlashlightGripDto &grip) const {
+  Color Flashlight::beamColor(
+    const FlashlightGripDto &grip
+  ) const {
     return usesUltraviolet(grip) ? Palette::ultraviolet_light
                                  : Palette::flashlight_white;
   }
 
-  FlashlightBeamDto Flashlight::beamShape(const FlashlightGripDto &grip) const {
+  FlashlightBeamDto Flashlight::beamShape(
+    const FlashlightGripDto &grip
+  ) const {
     if(grip.repair_target) {
       const Vec2  toward   = grip.repair_target->sub(grip.holder_position);
       const float distance = std::max(toward.length(), 1.0F);
       const Vec2 mouth = grip.holder_position.add(toward.normalized().scale(5));
       const float half_angle = std::atan2(22.0F, distance) + 0.1F;
       return FlashlightBeamDto {
-        mouth, toward.normalized(), distance + 40, std::cos(half_angle)
+        mouth,
+        toward.normalized(),
+        distance + 40,
+        std::cos(half_angle)
       };
     }
     const Vec2 origin = lampTip(grip.holder_position, grip.aim_direction);
@@ -152,9 +162,8 @@ namespace wheel_of_fear {
         34,
         color.withAlpha(0.13F)
       );
-      renderer.drawGlowDisc(
-        *grip.repair_target, 20, color.withAlpha(0.1F), 1.6F
-      );
+      renderer
+        .drawGlowDisc(*grip.repair_target, 20, color.withAlpha(0.1F), 1.6F);
       return;
     }
     renderer.drawGlowBeam(

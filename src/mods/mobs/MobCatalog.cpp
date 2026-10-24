@@ -9,7 +9,9 @@
 #include "mods/mobs/species/Shepherd.hpp"
 
 namespace wheel_of_fear {
-  const MobTraitsProps &MobCatalog::traitsOf(MobKindEnum kind) {
+  const MobTraitsProps &MobCatalog::traitsOf(
+    MobKindEnum kind
+  ) {
     switch(kind) {
       case MobKindEnum::crawler:  return Crawler::species_traits;
       case MobKindEnum::bloater:  return Bloater::species_traits;

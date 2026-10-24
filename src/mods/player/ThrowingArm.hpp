@@ -13,7 +13,9 @@ namespace wheel_of_fear {
         cooldown_seconds_ = 0;
       }
 
-      void tick(float delta_seconds);
+      void tick(
+        float delta_seconds
+      );
       void tryThrow(
         GameContextDto &context,
         Inventory      &inventory,

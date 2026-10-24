@@ -40,14 +40,19 @@ namespace wheel_of_fear {
         World &world,
         Vec2   origin
       );
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context) const;
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
 
     private:
       static constexpr std::size_t capacity = 1024;
 
-      template<typename ParticleType>
-      void spawn(const ParticleProps &state) {
+      template<typename ParticleType> void spawn(
+        const ParticleProps &state
+      ) {
         if(particles_.size() >= capacity) return;
         particles_.push_back(std::make_unique<ParticleType>(state));
       }

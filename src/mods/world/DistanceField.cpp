@@ -76,8 +76,10 @@ namespace wheel_of_fear {
       const int neighbor_y = tile.y + offset.y;
       if(map.isBlocked(neighbor_x, neighbor_y)) continue;
       const bool is_diagonal = offset.x != 0 && offset.y != 0;
-      if(is_diagonal && (map.isBlocked(tile.x + offset.x, tile.y) ||
-                         map.isBlocked(tile.x, tile.y + offset.y)))
+      if(
+        is_diagonal && (map.isBlocked(tile.x + offset.x, tile.y) ||
+                        map.isBlocked(tile.x, tile.y + offset.y))
+      )
         continue;
       const std::uint16_t distance =
         distances_[map.cellIndex(neighbor_x, neighbor_y)];

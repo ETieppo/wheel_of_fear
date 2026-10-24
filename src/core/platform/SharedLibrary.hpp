@@ -8,12 +8,20 @@
 namespace wheel_of_fear {
   class SharedLibrary {
     public:
-      explicit SharedLibrary(const std::filesystem::path &path);
+      explicit SharedLibrary(
+        const std::filesystem::path &path
+      );
       ~SharedLibrary();
-      SharedLibrary(const SharedLibrary &)             = delete;
-      SharedLibrary &operator =(const SharedLibrary &) = delete;
+      SharedLibrary(
+        const SharedLibrary &
+      ) = delete;
+      SharedLibrary &operator =(
+        const SharedLibrary &
+      ) = delete;
 
-      SDL_FunctionPointer function(const std::string &name) const;
+      SDL_FunctionPointer function(
+        const std::string &name
+      ) const;
 
     private:
       SDL_SharedObject* handle_ = nullptr;

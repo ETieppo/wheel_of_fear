@@ -9,7 +9,9 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void LureBeacon::update(GameContextDto &context) {
+  void LureBeacon::update(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     remaining_seconds_ -= delta;
     pulse_timer_ -= delta;
@@ -19,16 +21,21 @@ namespace wheel_of_fear {
       pulse_age_seconds_ = 0;
       context.noise.emit(position_, noise_radius, NoiseSourceEnum::lure_beacon);
       context.sound_player.playAt(
-        SoundEnum::lure_beep, 0.7F, context.player.position(), position_, 1
+        SoundEnum::lure_beep,
+        0.7F,
+        context.player.position(),
+        position_,
+        1
       );
     }
     if(isExpired())
-      context.effects.emitSparks(
-        context.world, position_, 4, Palette::neon_lime
-      );
+      context.effects
+        .emitSparks(context.world, position_, 4, Palette::neon_lime);
   }
 
-  void LureBeacon::emitLight(Lighting &lighting) const {
+  void LureBeacon::emitLight(
+    Lighting &lighting
+  ) const {
     LightProps light;
     light.position      = position_;
     light.radius        = 34;
@@ -44,9 +51,8 @@ namespace wheel_of_fear {
   ) const {
     renderer.drawSprite(sprites.lure_beacon, position_);
     const float glow = pulse_age_seconds_ < 0.15F ? 1.0F : 0.25F;
-    renderer.drawGlowDisc(
-      position_, 4, Palette::neon_lime.withAlpha(glow), 1.3F
-    );
+    renderer
+      .drawGlowDisc(position_, 4, Palette::neon_lime.withAlpha(glow), 1.3F);
     const float ring = pulse_age_seconds_ / pulse_seconds;
     renderer.drawGlowSprite(
       sprites.soft_circle,

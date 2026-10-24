@@ -9,7 +9,9 @@
 #include "mods/world/World.hpp"
 
 namespace wheel_of_fear {
-  void Mimic::think(GameContextDto &context) {
+  void Mimic::think(
+    GameContextDto &context
+  ) {
     if(isBusy()) return;
     switch(stance_) {
       case MimicStanceEnum::disguised: waitInDisguise(context); break;
@@ -18,11 +20,15 @@ namespace wheel_of_fear {
     }
   }
 
-  void Mimic::waitInDisguise(GameContextDto &context) {
+  void Mimic::waitInDisguise(
+    GameContextDto &context
+  ) {
     setFrozen(false);
-    if(distanceToPlayer(context) >
-       wake_distance ||
-       !context.player.canBeTargeted())
+    if(
+      distanceToPlayer(context) >
+      wake_distance ||
+      !context.player.canBeTargeted()
+    )
       return;
     stance_        = MimicStanceEnum::lunging;
     lunge_seconds_ = lunge_duration;
@@ -31,7 +37,9 @@ namespace wheel_of_fear {
     context.world.shake(0.35F);
   }
 
-  void Mimic::lunge(GameContextDto &context) {
+  void Mimic::lunge(
+    GameContextDto &context
+  ) {
     if(isFrozen()) {
       stance_ = MimicStanceEnum::hunting;
       return;
@@ -45,16 +53,23 @@ namespace wheel_of_fear {
     }
   }
 
-  void Mimic::onContact(GameContextDto &context) {
+  void Mimic::onContact(
+    GameContextDto &context
+  ) {
     strikeAndRetreat(context, strike_retreat_seconds);
   }
 
-  void Mimic::draw(GameContextDto &context) const {
+  void Mimic::draw(
+    GameContextDto &context
+  ) const {
     const SpriteSheetProps &sprites  = context.art.sprites();
     Renderer               &renderer = context.renderer;
     if(isDisguised()) {
       renderer.drawShadowDisc(
-        position().add(Vec2::of(1, 4)), 12, Color::black().withAlpha(0.5F), 1.3F
+        position().add(Vec2::of(1, 4)),
+        12,
+        Color::black().withAlpha(0.5F),
+        1.3F
       );
       renderer.drawSprite(sprites.fabricator, position());
       const float blink =

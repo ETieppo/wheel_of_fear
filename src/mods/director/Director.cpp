@@ -31,11 +31,15 @@ namespace wheel_of_fear {
     constexpr Color title_ambient {0.05F, 0.055F, 0.09F, 1};
   } // namespace
 
-  void Director::initialize(GameContextDto &context) {
+  void Director::initialize(
+    GameContextDto &context
+  ) {
     World &world = context.world;
     world.generatePhase(1, title_seed);
-    for(std::size_t room_index = 0; room_index < world.map().rooms().size();
-        ++room_index) {
+    for(
+      std::size_t room_index = 0; room_index < world.map().rooms().size();
+      ++room_index
+    ) {
       if(room_index % 3 == 0) world.powerRoom(room_index, true);
     }
     context.camera.setFocus(world.map().rooms().front().center());
@@ -43,7 +47,9 @@ namespace wheel_of_fear {
 
   DirectorSnapshotProps Director::snapshot() const {
     return DirectorSnapshotProps {
-      state_ != GameStateEnum::title, phase_, seed_counter_
+      state_ != GameStateEnum::title,
+      phase_,
+      seed_counter_
     };
   }
 
@@ -56,7 +62,9 @@ namespace wheel_of_fear {
     startPhase(context, snapshot.phase);
   }
 
-  void Director::enterState(GameStateEnum state) {
+  void Director::enterState(
+    GameStateEnum state
+  ) {
     state_         = state;
     state_seconds_ = 0;
   }
@@ -86,7 +94,9 @@ namespace wheel_of_fear {
     context.sound_player.play(SoundEnum::phase_start, 0.9F, 0, 1);
   }
 
-  void Director::update(GameContextDto &context) {
+  void Director::update(
+    GameContextDto &context
+  ) {
     state_seconds_ += context.clock.realDeltaSeconds();
     if(context.input.wasPressed(InputActionEnum::toggle_mute))
       context.sound_player.toggleMute();
@@ -102,7 +112,9 @@ namespace wheel_of_fear {
     updateFade(context.clock.realDeltaSeconds());
   }
 
-  void Director::updateTitle(GameContextDto &context) {
+  void Director::updateTitle(
+    GameContextDto &context
+  ) {
     context.clock.setRunning(false);
     context.hud.setVisible(false);
     panTitleCamera(context);
@@ -112,7 +124,9 @@ namespace wheel_of_fear {
     startPhase(context, demo_.startingPhase());
   }
 
-  void Director::updatePhaseIntro(GameContextDto &context) {
+  void Director::updatePhaseIntro(
+    GameContextDto &context
+  ) {
     context.clock.setRunning(false);
     context.hud.setVisible(true);
     const bool is_skipped =
@@ -123,7 +137,9 @@ namespace wheel_of_fear {
     context.clock.setRunning(true);
   }
 
-  void Director::updatePlaying(GameContextDto &context) {
+  void Director::updatePlaying(
+    GameContextDto &context
+  ) {
     context.clock.setRunning(true);
     if(demo_.isActive()) demo_.run(context, state_seconds_);
     if(context.input.wasPressed(InputActionEnum::back)) {
@@ -145,10 +161,14 @@ namespace wheel_of_fear {
     }
   }
 
-  void Director::updatePaused(GameContextDto &context) {
+  void Director::updatePaused(
+    GameContextDto &context
+  ) {
     context.clock.setRunning(false);
-    if(context.input.wasPressed(InputActionEnum::back) ||
-       context.input.wasPressed(InputActionEnum::confirm)) {
+    if(
+      context.input.wasPressed(InputActionEnum::back) ||
+      context.input.wasPressed(InputActionEnum::confirm)
+    ) {
       enterState(GameStateEnum::playing);
       context.clock.setRunning(true);
     }
@@ -156,10 +176,14 @@ namespace wheel_of_fear {
       startPhase(context, phase_);
   }
 
-  void Director::updateGameOver(GameContextDto &context) {
+  void Director::updateGameOver(
+    GameContextDto &context
+  ) {
     context.clock.setRunning(false);
-    if(context.input.wasPressed(InputActionEnum::restart) ||
-       context.input.wasPressed(InputActionEnum::confirm))
+    if(
+      context.input.wasPressed(InputActionEnum::restart) ||
+      context.input.wasPressed(InputActionEnum::confirm)
+    )
       startPhase(context, phase_);
     if(context.input.wasPressed(InputActionEnum::back)) {
       enterState(GameStateEnum::title);
@@ -167,12 +191,16 @@ namespace wheel_of_fear {
     }
   }
 
-  void Director::updatePhaseCleared(GameContextDto &context) {
+  void Director::updatePhaseCleared(
+    GameContextDto &context
+  ) {
     context.clock.setRunning(false);
     if(state_seconds_ > cleared_seconds) startPhase(context, phase_ + 1);
   }
 
-  void Director::updateFade(float real_delta_seconds) {
+  void Director::updateFade(
+    float real_delta_seconds
+  ) {
     float target_fade = 0;
     if(state_ == GameStateEnum::phase_cleared)
       target_fade = Scalar::clamp(state_seconds_ / cleared_seconds, 0, 1);
@@ -182,14 +210,17 @@ namespace wheel_of_fear {
       Scalar::approach(fade_amount_, target_fade, real_delta_seconds * 3);
   }
 
-  void Director::panTitleCamera(GameContextDto &context) const {
+  void Director::panTitleCamera(
+    GameContextDto &context
+  ) const {
     const auto &rooms = context.world.map().rooms();
     if(rooms.empty()) return;
     const std::size_t room_index =
       static_cast<std::size_t>(state_seconds_ / 9) % rooms.size();
     const RoomProps &room  = rooms[room_index];
     const Vec2       drift = Vec2::of(
-      std::cos(state_seconds_ * 0.3F) * 50, std::sin(state_seconds_ * 0.4F) * 30
+      std::cos(state_seconds_ * 0.3F) * 50,
+      std::sin(state_seconds_ * 0.4F) * 30
     );
     context.camera.glideTo(
       RoomFraming::clampToRoom(room, room.center().add(drift)),
@@ -197,7 +228,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void Director::mixMusic(GameContextDto &context) const {
+  void Director::mixMusic(
+    GameContextDto &context
+  ) const {
     SoundPlayer &sound_player = context.sound_player;
     switch(state_) {
       case GameStateEnum::title:       sound_player.setMusicMix(1, 0, 0); break;
@@ -208,7 +241,9 @@ namespace wheel_of_fear {
       case GameStateEnum::playing:
       case GameStateEnum::paused:
         sound_player.setMusicMix(
-          0, 0.8F, Scalar::clamp(context.mobs.dangerLevel() * 1.4F, 0, 1)
+          0,
+          0.8F,
+          Scalar::clamp(context.mobs.dangerLevel() * 1.4F, 0, 1)
         );
         break;
       case GameStateEnum::game_over:
@@ -218,7 +253,9 @@ namespace wheel_of_fear {
     sound_player.updateMusic(context.clock.realDeltaSeconds());
   }
 
-  void Director::configurePostProcess(GameContextDto &context) const {
+  void Director::configurePostProcess(
+    GameContextDto &context
+  ) const {
     const Player     &player     = context.player;
     const Flashlight &flashlight = player.flashlight();
     const float       ultraviolet_tint =
@@ -246,7 +283,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void Director::draw(GameContextDto &context) const {
+  void Director::draw(
+    GameContextDto &context
+  ) const {
     configurePostProcess(context);
     Renderer   &renderer     = context.renderer;
     const float real_seconds = context.clock.realSeconds();

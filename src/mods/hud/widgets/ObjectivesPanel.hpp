@@ -11,8 +11,7 @@ namespace wheel_of_fear {
     public:
       ObjectivesPanel() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer         &renderer,
         std::uint32_t     phase,
         const Generators &generators

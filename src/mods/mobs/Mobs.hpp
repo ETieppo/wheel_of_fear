@@ -25,7 +25,9 @@ namespace wheel_of_fear {
         return danger_level_;
       }
 
-      void setGraceSeconds(float seconds) {
+      void setGraceSeconds(
+        float seconds
+      ) {
         grace_seconds_ = seconds;
       }
 
@@ -33,7 +35,9 @@ namespace wheel_of_fear {
         mobs_.clear();
       }
 
-      void populatePhase(World &world);
+      void populatePhase(
+        World &world
+      );
       void spawn(
         MobKindEnum kind,
         Vec2        position
@@ -44,7 +48,9 @@ namespace wheel_of_fear {
         Vec2 facing
       );
       void cancelHug();
-      void onGeneratorOnline(GameContextDto &context);
+      void onGeneratorOnline(
+        GameContextDto &context
+      );
       void answerShepherd(
         Vec2  caller,
         Vec2  target,
@@ -60,16 +66,22 @@ namespace wheel_of_fear {
         GameContextDto &context,
         Mob            &bomb
       );
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context);
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      );
 
-      static
-      std::vector<std::string_view> introductionsForPhase(std::uint32_t phase);
+      static std::vector<std::string_view> introductionsForPhase(
+        std::uint32_t phase
+      );
 
     private:
-      static
-      std::optional<MobKindEnum> pickSpawnKind(World &world);
-      bool                       isHeldByLight(
+      static std::optional<MobKindEnum> pickSpawnKind(
+        World &world
+      );
+      bool isHeldByLight(
         const Mob            &mob,
         const GameContextDto &context
       ) const;
@@ -77,10 +89,13 @@ namespace wheel_of_fear {
         const GameContextDto &context,
         std::size_t           locker_index
       );
-      void updateSpawner(GameContextDto &context);
-      void updateDanger(GameContextDto &context);
-      static
-      float visibilityOf(
+      void updateSpawner(
+        GameContextDto &context
+      );
+      void updateDanger(
+        GameContextDto &context
+      );
+      static float visibilityOf(
         const Mob            &mob,
         const GameContextDto &context
       );

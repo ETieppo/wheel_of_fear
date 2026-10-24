@@ -18,63 +18,78 @@ namespace wheel_of_fear {
         const MobTraitsProps &traits
       );
 
-      virtual
-      MobKindEnum kind() const = 0;
-      virtual
-      const MobTraitsProps &traits() const = 0;
+      virtual MobKindEnum           kind() const   = 0;
+      virtual const MobTraitsProps &traits() const = 0;
 
-      virtual
-      void think(GameContextDto &context) {
+      virtual void think(
+        GameContextDto &context
+      ) {
         thinkAsHunter(context);
       }
 
-      virtual
-      void onContact(GameContextDto &context);
+      virtual void onContact(
+        GameContextDto &context
+      );
 
-      virtual
-      void onLightReleased(GameContextDto &) {
+      virtual void onLightReleased(
+        GameContextDto &
+      ) {
       }
 
-      virtual
-      void emitLights(GameContextDto &) {
+      virtual void emitLights(
+        GameContextDto &
+      ) {
       }
 
-      virtual
-      void draw(GameContextDto &context) const = 0;
+      virtual void draw(
+        GameContextDto &context
+      ) const = 0;
 
-      virtual
-      bool isDisguised() const {
+      virtual bool isDisguised() const {
         return false;
       }
 
-      virtual
-      void ignite(GameContextDto &context);
-      virtual
-      void catchBlast(GameContextDto &context);
+      virtual void ignite(
+        GameContextDto &context
+      );
+      virtual void catchBlast(
+        GameContextDto &context
+      );
 
-      virtual
-      void onGeneratorOnline(GameContextDto &) {
+      virtual void onGeneratorOnline(
+        GameContextDto &
+      ) {
       }
 
-      void update(GameContextDto &context);
+      void update(
+        GameContextDto &context
+      );
       void perceive(
         GameContextDto &context,
         bool            can_notice
       );
 
-      void witnessHiding(std::size_t locker_index) {
+      void witnessHiding(
+        std::size_t locker_index
+      ) {
         memory_.known_locker_index = locker_index;
       }
 
-      void hearShepherd(Vec2 target);
+      void hearShepherd(
+        Vec2 target
+      );
       void playSound(
         GameContextDto &context,
         SoundEnum       sound,
         float           volume,
         float           pitch
       ) const;
-      void advanceBurning(GameContextDto &context);
-      void advanceHugAndCrumble(GameContextDto &context);
+      void advanceBurning(
+        GameContextDto &context
+      );
+      void advanceHugAndCrumble(
+        GameContextDto &context
+      );
 
       MobIntentEnum intent() const {
         return intent_;
@@ -88,7 +103,9 @@ namespace wheel_of_fear {
         return is_frozen_;
       }
 
-      void setFrozen(bool is_frozen) {
+      void setFrozen(
+        bool is_frozen
+      ) {
         is_frozen_ = is_frozen;
       }
 
@@ -96,7 +113,9 @@ namespace wheel_of_fear {
         return is_being_hugged_;
       }
 
-      void setBeingHugged(bool is_being_hugged) {
+      void setBeingHugged(
+        bool is_being_hugged
+      ) {
         is_being_hugged_ = is_being_hugged;
       }
 
@@ -122,7 +141,9 @@ namespace wheel_of_fear {
         return incident_cooldown_;
       }
 
-      void setIncidentCooldown(float seconds) {
+      void setIncidentCooldown(
+        float seconds
+      ) {
         incident_cooldown_ = seconds;
       }
 
@@ -130,14 +151,20 @@ namespace wheel_of_fear {
         return frenzy_seconds_;
       }
 
-      void frenzy(float seconds);
-      void calmFrenzy(float delta_seconds);
+      void frenzy(
+        float seconds
+      );
+      void calmFrenzy(
+        float delta_seconds
+      );
 
       float petrifyAmount() const {
         return petrify_amount_;
       }
 
-      void setVisibility(float visibility) {
+      void setVisibility(
+        float visibility
+      ) {
         visibility_ = visibility;
       }
 
@@ -145,10 +172,14 @@ namespace wheel_of_fear {
         return opacity_ * visibility_;
       }
 
-      float distanceToPlayer(const GameContextDto &context) const;
+      float distanceToPlayer(
+        const GameContextDto &context
+      ) const;
 
     protected:
-      void thinkAsHunter(GameContextDto &context);
+      void thinkAsHunter(
+        GameContextDto &context
+      );
       void changeIntent(
         MobIntentEnum intent,
         Vec2          destination
@@ -157,7 +188,9 @@ namespace wheel_of_fear {
         const GameContextDto &context,
         float                 reach
       ) const;
-      void startSearching(Vec2 anchor);
+      void startSearching(
+        Vec2 anchor
+      );
       bool navigateTo(
         GameContextDto &context,
         Vec2            destination,
@@ -172,8 +205,12 @@ namespace wheel_of_fear {
         GameContextDto &context,
         float           retreat_seconds
       );
-      void strikePlayer(GameContextDto &context);
-      void exposeHiddenPlayer(GameContextDto &context);
+      void strikePlayer(
+        GameContextDto &context
+      );
+      void exposeHiddenPlayer(
+        GameContextDto &context
+      );
       void vocalize(
         GameContextDto &context,
         float           chance
@@ -190,7 +227,9 @@ namespace wheel_of_fear {
         return intent_seconds_;
       }
 
-      void addIntentSeconds(float seconds) {
+      void addIntentSeconds(
+        float seconds
+      ) {
         intent_seconds_ += seconds;
       }
 
@@ -206,11 +245,15 @@ namespace wheel_of_fear {
         return vocal_cooldown_;
       }
 
-      void setVocalCooldown(float seconds) {
+      void setVocalCooldown(
+        float seconds
+      ) {
         vocal_cooldown_ = seconds;
       }
 
-      void setRetreatSeconds(float seconds) {
+      void setRetreatSeconds(
+        float seconds
+      ) {
         retreat_seconds_ = seconds;
       }
 
@@ -218,7 +261,9 @@ namespace wheel_of_fear {
         return opacity_;
       }
 
-      void setOpacity(float opacity) {
+      void setOpacity(
+        float opacity
+      ) {
         opacity_ = opacity;
       }
 
@@ -227,19 +272,45 @@ namespace wheel_of_fear {
       }
 
     private:
-      bool canSeePlayer(const GameContextDto &context) const;
-      void chooseIntent(GameContextDto &context);
-      void pursueIntent(GameContextDto &context);
-      void trackProgress(GameContextDto &context);
-      void patrol(GameContextDto &context);
-      void investigate(GameContextDto &context);
-      void search(GameContextDto &context);
-      void chase(GameContextDto &context);
-      void lurk(GameContextDto &context);
-      void lookAround(GameContextDto &context);
-      void fleeFromPlayer(GameContextDto &context);
-      void playMovementSound(GameContextDto &context);
-      Vec2 trembleOffset(float world_seconds) const;
+      bool canSeePlayer(
+        const GameContextDto &context
+      ) const;
+      void chooseIntent(
+        GameContextDto &context
+      );
+      void pursueIntent(
+        GameContextDto &context
+      );
+      void trackProgress(
+        GameContextDto &context
+      );
+      void patrol(
+        GameContextDto &context
+      );
+      void investigate(
+        GameContextDto &context
+      );
+      void search(
+        GameContextDto &context
+      );
+      void chase(
+        GameContextDto &context
+      );
+      void lurk(
+        GameContextDto &context
+      );
+      void lookAround(
+        GameContextDto &context
+      );
+      void fleeFromPlayer(
+        GameContextDto &context
+      );
+      void playMovementSound(
+        GameContextDto &context
+      );
+      Vec2 trembleOffset(
+        float world_seconds
+      ) const;
 
       MobIntentEnum              intent_         = MobIntentEnum::patrolling;
       float                      intent_seconds_ = 0;

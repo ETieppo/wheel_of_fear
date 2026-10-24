@@ -14,7 +14,9 @@ namespace wheel_of_fear {
           : samples_(std::move(stereo_samples)) {
       }
 
-      void setTargetVolume(float target_volume) {
+      void setTargetVolume(
+        float target_volume
+      ) {
         target_volume_ = target_volume;
       }
 

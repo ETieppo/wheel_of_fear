@@ -9,8 +9,7 @@ namespace wheel_of_fear {
     public:
       VitalsPanel() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer     &renderer,
         const Player &player,
         float         real_seconds

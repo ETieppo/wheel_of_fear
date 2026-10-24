@@ -27,7 +27,9 @@ namespace wheel_of_fear {
         int,
         2
       >
-      gridSizeForPhase(std::uint32_t phase) {
+      gridSizeForPhase(
+        std::uint32_t phase
+      ) {
       switch(std::min(phase, 6U)) {
         case 1:  return {4, 3};
         case 2:  return {4, 4};
@@ -69,7 +71,8 @@ namespace wheel_of_fear {
                                     .index(Palette::room_neon_colors.size())];
       const float perimeter = RoomPowerGrid::perimeterOf(room);
       power_.addRoom(
-        color, perimeter * 0.125F + random_.range(0, perimeter * 0.25F)
+        color,
+        perimeter * 0.125F + random_.range(0, perimeter * 0.25F)
       );
       furnisher.placeLockers(room, room_index);
       furnisher.furnishRoom(room, room_index, color);
@@ -96,7 +99,8 @@ namespace wheel_of_fear {
     }
     const RoomProps &start_room = rooms[start_room_index_];
     player_start_               = TileMap::tileCenter(
-      start_room.centerTileX(), start_room.centerTileY() + 3
+      start_room.centerTileX(),
+      start_room.centerTileY() + 3
     );
     const RoomProps &exit_room = rooms[exit_room_index_];
     exit_position_ =
@@ -113,19 +117,25 @@ namespace wheel_of_fear {
            point.distance(player_start_) < 28;
   }
 
-  void World::addScorchMark(Vec2 position) {
+  void World::addScorchMark(
+    Vec2 position
+  ) {
     const float rotation = random_.range(0, Scalar::tau);
     scorch_marks_.push_back(
       ScorchMarkProps {position, rotation, random_.index(3)}
     );
   }
 
-  bool World::isBurningLightAt(Vec2 point) const {
+  bool World::isBurningLightAt(
+    Vec2 point
+  ) const {
     const auto room_index = map_.roomIndexAt(point);
     return room_index && isRoomFullyLit(*room_index);
   }
 
-  bool World::isHazardAt(Vec2 point) const {
+  bool World::isHazardAt(
+    Vec2 point
+  ) const {
     return isBurningLightAt(point) || map_.neonAt(point) > 0;
   }
 
@@ -135,8 +145,9 @@ namespace wheel_of_fear {
   ) {
     std::size_t best_room  = from_room;
     float       best_score = -std::numeric_limits<float>::infinity();
-    for(std::size_t room_index = 0; room_index < map_.rooms().size();
-        ++room_index) {
+    for(
+      std::size_t room_index = 0; room_index < map_.rooms().size(); ++room_index
+    ) {
       if(room_index == from_room || isRoomFullyLit(room_index)) continue;
       const auto travel =
         static_cast<float>(map_.roomGridDistance(from_room, room_index));
@@ -153,16 +164,21 @@ namespace wheel_of_fear {
     return best_room;
   }
 
-  Vec2 World::conduitPoint(std::size_t room_index) const {
+  Vec2 World::conduitPoint(
+    std::size_t room_index
+  ) const {
     return power_.conduitPoint(map_.rooms()[room_index], room_index);
   }
 
-  void World::shake(float amount) {
+  void World::shake(
+    float amount
+  ) {
     camera_shake_ = std::max(camera_shake_, amount);
   }
 
-  std::vector<Vec2>
-  World::collectOccupants(const GameContextDto &context) const {
+  std::vector<Vec2> World::collectOccupants(
+    const GameContextDto &context
+  ) const {
     std::vector<Vec2> occupants {context.player.position()};
     for(const auto &mob : context.mobs.all()) {
       if(occupants.size() >= occupant_capacity) break;
@@ -171,7 +187,9 @@ namespace wheel_of_fear {
     return occupants;
   }
 
-  void World::update(GameContextDto &context) {
+  void World::update(
+    GameContextDto &context
+  ) {
     power_.advance(context.clock.realDeltaSeconds());
     power_.emitLights(map_, context.lighting);
     const SceneryViewDto view {context.clock.realSeconds(), false};
@@ -217,9 +235,8 @@ namespace wheel_of_fear {
     for(const auto &moved : maze_shifter_.movedDoorwayIndices()) {
       if(!moved) continue;
       const Vec2 position = map_.doorways()[*moved].center();
-      context.noise.emit(
-        position, door_shift_noise_radius, NoiseSourceEnum::maze_shift
-      );
+      context.noise
+        .emit(position, door_shift_noise_radius, NoiseSourceEnum::maze_shift);
       context.sound_player.playAt(
         SoundEnum::blast_door,
         door_shift_volume,
@@ -231,7 +248,9 @@ namespace wheel_of_fear {
     shake(0.15F);
   }
 
-  void World::draw(GameContextDto &context) const {
+  void World::draw(
+    GameContextDto &context
+  ) const {
     if(map_.width() == 0) return;
     WorldPainter(*this, context).paint();
   }

@@ -113,7 +113,8 @@ namespace wheel_of_fear {
       "audio/sfx/switch_click_4.opus"
     };
     constexpr std::array<std::string_view, 2> acid_sizzle_files {
-      "audio/sfx/acid_sizzle_0.opus", "audio/sfx/acid_sizzle_1.opus"
+      "audio/sfx/acid_sizzle_0.opus",
+      "audio/sfx/acid_sizzle_1.opus"
     };
     constexpr std::array<std::string_view, 1> shepherd_call_files {
       "audio/sfx/shepherd_call_0.opus"
@@ -136,7 +137,8 @@ namespace wheel_of_fear {
       "audio/sfx/phase_start_0.opus"
     };
     constexpr std::array<std::string_view, 2> whisper_files {
-      "audio/sfx/whisper_0.opus", "audio/sfx/whisper_1.opus"
+      "audio/sfx/whisper_0.opus",
+      "audio/sfx/whisper_1.opus"
     };
     constexpr std::array<std::string_view, 5> jaws_files {
       "audio/sfx/jaws_0.opus",
@@ -178,7 +180,8 @@ namespace wheel_of_fear {
       "audio/sfx/glass_shatter_4.opus"
     };
     constexpr std::array<std::string_view, 2> decoy_throw_files {
-      "audio/sfx/decoy_throw_0.opus", "audio/sfx/decoy_throw_1.opus"
+      "audio/sfx/decoy_throw_0.opus",
+      "audio/sfx/decoy_throw_1.opus"
     };
     constexpr std::array<std::string_view, 5> decoy_impact_files {
       "audio/sfx/decoy_impact_0.opus",
@@ -222,7 +225,8 @@ namespace wheel_of_fear {
       "generated/audio/mimic_clank_2.opus"
     };
     constexpr std::array<std::string_view, 2> blast_door_files {
-      "generated/audio/blast_door_0.opus", "generated/audio/blast_door_1.opus"
+      "generated/audio/blast_door_0.opus",
+      "generated/audio/blast_door_1.opus"
     };
     constexpr std::array<std::string_view, 1> led_power_up_files {
       "generated/audio/led_power_up_0.opus"
@@ -234,10 +238,12 @@ namespace wheel_of_fear {
       "generated/audio/qte_success_0.opus"
     };
     constexpr std::array<std::string_view, 2> qte_fail_files {
-      "generated/audio/qte_fail_0.opus", "generated/audio/qte_fail_1.opus"
+      "generated/audio/qte_fail_0.opus",
+      "generated/audio/qte_fail_1.opus"
     };
     constexpr std::array<std::string_view, 2> neon_burst_files {
-      "generated/audio/neon_burst_0.opus", "generated/audio/neon_burst_1.opus"
+      "generated/audio/neon_burst_0.opus",
+      "generated/audio/neon_burst_1.opus"
     };
     constexpr std::array<std::string_view, 1> lure_beep_files {
       "generated/audio/lure_beep_0.opus"
@@ -246,11 +252,14 @@ namespace wheel_of_fear {
       "generated/audio/battery_charge_0.opus"
     };
     constexpr std::array<std::string_view, 2> ui_glitch_files {
-      "generated/audio/ui_glitch_0.opus", "generated/audio/ui_glitch_1.opus"
+      "generated/audio/ui_glitch_0.opus",
+      "generated/audio/ui_glitch_1.opus"
     };
   } // namespace
 
-  std::span<const std::string_view> SoundCatalog::filesFor(SoundEnum sound) {
+  std::span<const std::string_view> SoundCatalog::filesFor(
+    SoundEnum sound
+  ) {
     switch(sound) {
       case SoundEnum::footstep:              return footstep_files;
       case SoundEnum::crawler_skitter:       return crawler_skitter_files;
@@ -304,7 +313,9 @@ namespace wheel_of_fear {
     return footstep_files;
   }
 
-  std::string_view SoundCatalog::musicFor(MusicLayerEnum layer) {
+  std::string_view SoundCatalog::musicFor(
+    MusicLayerEnum layer
+  ) {
     switch(layer) {
       case MusicLayerEnum::ambience: return "audio/music/ambience.opus";
       case MusicLayerEnum::tension:  return "audio/music/tension.opus";

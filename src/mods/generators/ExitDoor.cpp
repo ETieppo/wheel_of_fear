@@ -21,21 +21,26 @@ namespace wheel_of_fear {
     constexpr Color locked_light_color = Color::hex(0xff2a4a);
   } // namespace
 
-  void ExitDoor::reset(Vec2 doorway_position) {
+  void ExitDoor::reset(
+    Vec2 doorway_position
+  ) {
     respawnAt(doorway_position);
     is_unlocked_       = false;
     open_amount_       = 0;
     has_player_exited_ = false;
   }
 
-  void ExitDoor::unlock(GameContextDto &context) {
+  void ExitDoor::unlock(
+    GameContextDto &context
+  ) {
     if(is_unlocked_) return;
     is_unlocked_ = true;
     context.sound_player.play(SoundEnum::door_open, 0.9F, 0, 1);
     context.world.shake(0.6F);
     context.world.powerRoom(context.world.exitRoomIndex(), true);
     context.hud.announce(
-      Palette::success, "ALL GENERATORS ONLINE  -  THE EXIT IS OPEN"
+      Palette::success,
+      "ALL GENERATORS ONLINE  -  THE EXIT IS OPEN"
     );
   }
 
@@ -69,29 +74,35 @@ namespace wheel_of_fear {
       return;
     }
     open_amount_ = std::min(
-      1.0F, open_amount_ + context.clock.deltaSeconds() * opening_speed
+      1.0F,
+      open_amount_ + context.clock.deltaSeconds() * opening_speed
     );
     light.radius    = 80;
     light.intensity = 0.9F;
     light.color     = Palette::success;
     light.flicker   = 0.1F;
     context.lighting.add(light);
-    if(open_amount_ >
-       0.6F &&
-       context.player.position().distance(entryPoint()) < entry_radius)
+    if(
+      open_amount_ >
+      0.6F &&
+      context.player.position().distance(entryPoint()) < entry_radius
+    )
       has_player_exited_ = true;
     if(player_distance < 64)
       context.hud.showPrompt(std::nullopt, "STEP INTO THE EXIT");
   }
 
-  void ExitDoor::draw(GameContextDto &context) const {
+  void ExitDoor::draw(
+    GameContextDto &context
+  ) const {
     Renderer               &renderer = context.renderer;
     const SpriteSheetProps &sprites  = context.art.sprites();
     const float             slide    = open_amount_ * slide_distance;
     const Vec2              center   = position();
     renderer.drawSprite(sprites.exit_frame, center.add(Vec2::of(0, -4)));
     renderer.drawSprite(
-      sprites.blast_door_panel, center.add(Vec2::of(-12 - slide, -2))
+      sprites.blast_door_panel,
+      center.add(Vec2::of(-12 - slide, -2))
     );
     renderer.drawSprite(
       sprites.blast_door_panel,
@@ -100,7 +111,9 @@ namespace wheel_of_fear {
     );
     const Color status = is_unlocked_ ? Palette::success : locked_light_color;
     renderer.drawGlowSprite(
-      sprites.exit_frame_glow, center.add(Vec2::of(0, -4)), status
+      sprites.exit_frame_glow,
+      center.add(Vec2::of(0, -4)),
+      status
     );
     if(is_unlocked_)
       renderer.drawGlowDisc(

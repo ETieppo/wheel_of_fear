@@ -16,7 +16,9 @@ namespace wheel_of_fear {
         active_.clear();
       }
 
-      void update(GameContextDto &context);
+      void update(
+        GameContextDto &context
+      );
       void provoke(
         GameContextDto     &context,
         DistractionKindEnum kind,
@@ -38,7 +40,9 @@ namespace wheel_of_fear {
         Mob            &mob,
         std::size_t     first_other_index
       );
-      void advanceFlashes(GameContextDto &context);
+      void advanceFlashes(
+        GameContextDto &context
+      );
 
       std::vector<Distraction> active_;
   };

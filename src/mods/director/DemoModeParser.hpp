@@ -9,9 +9,9 @@ namespace wheel_of_fear {
     public:
       DemoModeParser() = delete;
 
-      static
-      DemoModeEnum parse(std::string_view name);
-      static
-      DemoModeEnum fromEnvironment();
+      static DemoModeEnum parse(
+        std::string_view name
+      );
+      static DemoModeEnum fromEnvironment();
   };
 } // namespace wheel_of_fear

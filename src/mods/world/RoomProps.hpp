@@ -54,7 +54,9 @@ namespace wheel_of_fear {
         );
       }
 
-      int gridDistance(const RoomProps &other) const {
+      int gridDistance(
+        const RoomProps &other
+      ) const {
         return std::abs(column - other.column) + std::abs(row - other.row);
       }
   };

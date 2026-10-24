@@ -11,8 +11,7 @@ namespace wheel_of_fear {
     public:
       FontBaker() = delete;
 
-      static
-      std::uint32_t bake(
+      static std::uint32_t bake(
         const std::filesystem::path &font_path,
         FontProps                   &font,
         Canvas                       atlas,

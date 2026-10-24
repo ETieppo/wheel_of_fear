@@ -30,11 +30,15 @@ namespace wheel_of_fear {
     open_amount_ = 0;
   }
 
-  void Tracker::update(GameContextDto &context) {
+  void Tracker::update(
+    GameContextDto &context
+  ) {
     if(!context.clock.isRunning()) return;
     const float delta = context.clock.deltaSeconds();
-    if(context.input.wasPressed(InputActionEnum::toggle_tracker) &&
-       !context.player.isDead()) {
+    if(
+      context.input.wasPressed(InputActionEnum::toggle_tracker) &&
+      !context.player.isDead()
+    ) {
       is_open_ = !is_open_;
       context.sound_player.play(
         is_open_ ? SoundEnum::tracker_open : SoundEnum::tracker_close,
@@ -44,17 +48,22 @@ namespace wheel_of_fear {
       );
     }
     open_amount_ = Scalar::approach(
-      open_amount_, is_open_ ? 1.0F : 0.0F, delta * opening_speed
+      open_amount_,
+      is_open_ ? 1.0F : 0.0F,
+      delta * opening_speed
     );
     collectSignals(context);
     updateGhosts(context);
     if(is_open_) sweep(context);
   }
 
-  void Tracker::sweep(GameContextDto &context) {
+  void Tracker::sweep(
+    GameContextDto &context
+  ) {
     const float previous_angle = sweep_angle_;
     sweep_angle_               = Scalar::floorModulo(
-      sweep_angle_ + context.clock.deltaSeconds() * sweep_speed, Scalar::tau
+      sweep_angle_ + context.clock.deltaSeconds() * sweep_speed,
+      Scalar::tau
     );
     const Vec2 player_position = context.player.position();
     for(std::size_t index = 0; index < signals_.size(); ++index) {
@@ -74,7 +83,9 @@ namespace wheel_of_fear {
         pitch
       );
       context.noise.emit(
-        player_position, beep_noise_radius, NoiseSourceEnum::tracker_beep
+        player_position,
+        beep_noise_radius,
+        NoiseSourceEnum::tracker_beep
       );
     }
   }
@@ -88,21 +99,27 @@ namespace wheel_of_fear {
     return target > previous || target <= current;
   }
 
-  void Tracker::addSignal(const SignalProps &signal) {
+  void Tracker::addSignal(
+    const SignalProps &signal
+  ) {
     if(signals_.size() >= signal_capacity) return;
     signals_.push_back(signal);
   }
 
-  void Tracker::collectSignals(const GameContextDto &context) {
+  void Tracker::collectSignals(
+    const GameContextDto &context
+  ) {
     signals_.clear();
     const Generators &generators     = context.generators;
     const auto       &all_generators = generators.all();
     for(std::size_t index = 0; index < all_generators.size(); ++index) {
       const Generator &generator = all_generators[index];
       Color            color     = Palette::tracker_green;
-      if(generator.state() ==
-         GeneratorStateEnum::jammed ||
-         generator.state() == GeneratorStateEnum::broken)
+      if(
+        generator.state() ==
+        GeneratorStateEnum::jammed ||
+        generator.state() == GeneratorStateEnum::broken
+      )
         color = Palette::spark_yellow;
       if(generator.isOnline()) color = Palette::success;
       addSignal(
@@ -172,7 +189,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void Tracker::updateGhosts(GameContextDto &context) {
+  void Tracker::updateGhosts(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     for(GhostEchoProps &ghost : ghosts_) {
       ghost.remaining_seconds -= delta;
@@ -197,11 +216,15 @@ namespace wheel_of_fear {
     ghosts_.push_back(ghost);
   }
 
-  Vec2 Tracker::worldToRadar(Vec2 offset) {
+  Vec2 Tracker::worldToRadar(
+    Vec2 offset
+  ) {
     return radar_center.add(offset.scale(radar_radius / scan_range));
   }
 
-  void Tracker::draw(GameContextDto &context) const {
+  void Tracker::draw(
+    GameContextDto &context
+  ) const {
     if(open_amount_ <= 0.01F) return;
     Renderer   &renderer = context.renderer;
     const Color green    = Palette::tracker_green;
@@ -297,7 +320,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void Tracker::drawWallEchoes(GameContextDto &context) const {
+  void Tracker::drawWallEchoes(
+    GameContextDto &context
+  ) const {
     const TileMap &map             = context.world.map();
     const Vec2     player_position = context.player.position();
     const auto reach = static_cast<int>(scan_range / RenderConfig::tile_size);
@@ -342,7 +367,9 @@ namespace wheel_of_fear {
       )
         .scale(jitter_strength);
     const float glow = Scalar::clamp(
-      1 - (real_seconds - last_ping) / blip_fade_seconds, 0.25F, 1
+      1 - (real_seconds - last_ping) / blip_fade_seconds,
+      0.25F,
+      1
     );
     if(distance > scan_range) {
       const Vec2 edge =

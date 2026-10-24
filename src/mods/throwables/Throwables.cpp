@@ -18,7 +18,9 @@ namespace wheel_of_fear {
 
   Throwables::~Throwables() = default;
 
-  void Throwables::generatePhase(World &world) {
+  void Throwables::generatePhase(
+    World &world
+  ) {
     projectiles_.clear();
     beacons_.clear();
     puddles_.clear();
@@ -54,7 +56,9 @@ namespace wheel_of_fear {
     }
   }
 
-  void Throwables::update(GameContextDto &context) {
+  void Throwables::update(
+    GameContextDto &context
+  ) {
     emitLights(context);
     if(!context.clock.isRunning()) return;
     advanceProjectiles(context);
@@ -63,14 +67,17 @@ namespace wheel_of_fear {
     collectPickups(context);
   }
 
-  void Throwables::advanceProjectiles(GameContextDto &context) {
+  void Throwables::advanceProjectiles(
+    GameContextDto &context
+  ) {
     const TileMap &map   = context.world.map();
     std::size_t    index = 0;
     while(index < projectiles_.size()) {
       Projectile &projectile = *projectiles_[index];
       projectile.advance(context.clock.deltaSeconds());
-      if(!map.isSolidAt(projectile.groundPosition()) &&
-         !projectile.hasLanded()) {
+      if(
+        !map.isSolidAt(projectile.groundPosition()) && !projectile.hasLanded()
+      ) {
         index += 1;
         continue;
       }
@@ -86,27 +93,35 @@ namespace wheel_of_fear {
     }
   }
 
-  void Throwables::advanceBeacons(GameContextDto &context) {
+  void Throwables::advanceBeacons(
+    GameContextDto &context
+  ) {
     for(LureBeacon &beacon : beacons_) beacon.update(context);
     std::erase_if(beacons_, [](const LureBeacon &beacon) {
       return beacon.isExpired();
     });
   }
 
-  void Throwables::advancePuddles(float delta_seconds) {
+  void Throwables::advancePuddles(
+    float delta_seconds
+  ) {
     for(NeonPuddle &puddle : puddles_) puddle.update(delta_seconds);
     std::erase_if(puddles_, [](const NeonPuddle &puddle) {
       return puddle.isDry();
     });
   }
 
-  void Throwables::emitLights(GameContextDto &context) const {
+  void Throwables::emitLights(
+    GameContextDto &context
+  ) const {
     for(const NeonPuddle &puddle : puddles_)
       puddle.emitLights(context.lighting, context.clock.realSeconds());
     for(const LureBeacon &beacon : beacons_) beacon.emitLight(context.lighting);
   }
 
-  void Throwables::collectPickups(GameContextDto &context) {
+  void Throwables::collectPickups(
+    GameContextDto &context
+  ) {
     Player &player = context.player;
     if(!player.canBeTargeted()) return;
     const TileMap &map   = context.world.map();
@@ -116,9 +131,11 @@ namespace wheel_of_fear {
       if(map.isSolidAt(pickup.position()))
         pickup.settleOn(map.nearestFloor(pickup.position()));
       const ItemEnum item = pickup.item();
-      if(pickup.position().distance(player.position()) >=
-         Pickup::reach ||
-         !player.inventory().receive(item)) {
+      if(
+        pickup.position().distance(player.position()) >=
+        Pickup::reach ||
+        !player.inventory().receive(item)
+      ) {
         index += 1;
         continue;
       }
@@ -138,14 +155,15 @@ namespace wheel_of_fear {
     }
   }
 
-  void Throwables::draw(GameContextDto &context) const {
+  void Throwables::draw(
+    GameContextDto &context
+  ) const {
     Renderer               &renderer = context.renderer;
     const SpriteSheetProps &sprites  = context.art.sprites();
     for(std::size_t index = 0; index < pickups_.size(); ++index)
       if(renderer.isVisible(pickups_[index].position(), 12))
-        pickups_[index].draw(
-          renderer, sprites, index, context.clock.realSeconds()
-        );
+        pickups_[index]
+          .draw(renderer, sprites, index, context.clock.realSeconds());
     for(const LureBeacon &beacon : beacons_)
       if(renderer.isVisible(beacon.position(), 40))
         beacon.draw(renderer, sprites);

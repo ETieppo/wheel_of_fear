@@ -12,9 +12,15 @@
 namespace wheel_of_fear {
   class Generators {
     public:
-      void generatePhase(World &world);
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context) const;
+      void generatePhase(
+        World &world
+      );
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
 
       std::vector<Generator> &all() {
         return generators_;
@@ -60,7 +66,9 @@ namespace wheel_of_fear {
         World                   &world,
         const std::vector<bool> &occupied_rooms
       ) const;
-      void rollForOverload(GameContextDto &context);
+      void rollForOverload(
+        GameContextDto &context
+      );
 
       std::vector<Generator>  generators_;
       std::vector<Fabricator> fabricators_;

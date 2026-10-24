@@ -8,11 +8,15 @@
 #include <SDL3/SDL_log.h>
 
 namespace wheel_of_fear {
-  std::unique_ptr<GameRunner> GameRunner::create(Window &window) {
+  std::unique_ptr<GameRunner> GameRunner::create(
+    Window &window
+  ) {
     return std::make_unique<HotReloadGameRunner>(window);
   }
 
-  HotReloadGameRunner::HotReloadGameRunner(Window &window)
+  HotReloadGameRunner::HotReloadGameRunner(
+    Window &window
+  )
       : window_(window)
       , watcher_(
           WHEEL_OF_FEAR_GAME_MODULE_PATH,
@@ -32,8 +36,9 @@ namespace wheel_of_fear {
     return api_->runFrame(*game_);
   }
 
-  const GameModuleApiProps &
-  HotReloadGameRunner::resolveApi(const SharedLibrary &library) {
+  const GameModuleApiProps &HotReloadGameRunner::resolveApi(
+    const SharedLibrary &library
+  ) {
     const auto entry_point = reinterpret_cast<GameModuleApiEntryPoint>(
       library.function(game_module_api_symbol)
     );

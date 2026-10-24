@@ -30,7 +30,11 @@ namespace wheel_of_fear {
       Palette::panel_deep.withAlpha(0.82F * alpha)
     );
     renderer.drawUiRectangle(
-      0, 140, RenderConfig::ui_width, 1, Palette::panel_edge.withAlpha(alpha)
+      0,
+      140,
+      RenderConfig::ui_width,
+      1,
+      Palette::panel_edge.withAlpha(alpha)
     );
     renderer.drawUiRectangle(
       0,

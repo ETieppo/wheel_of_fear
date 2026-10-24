@@ -10,7 +10,9 @@
 #include "core/render/RenderConfig.hpp"
 
 namespace wheel_of_fear {
-  Art::Art(Renderer &renderer)
+  Art::Art(
+    Renderer &renderer
+  )
       : renderer_(renderer)
       , packer_(
           RenderConfig::atlas_size,
@@ -97,31 +99,41 @@ namespace wheel_of_fear {
   void Art::loadGroundMaterials() {
     GroundMaterialsDto materials;
     materials.floor_color = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::floor_color), false
+      AssetLocator::assetPath(TextureCatalog::floor_color),
+      false
     );
     materials.floor_normal = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::floor_normal), false
+      AssetLocator::assetPath(TextureCatalog::floor_normal),
+      false
     );
     materials.wall_color = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::wall_color), false
+      AssetLocator::assetPath(TextureCatalog::wall_color),
+      false
     );
     materials.wall_normal = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::wall_normal), false
+      AssetLocator::assetPath(TextureCatalog::wall_normal),
+      false
     );
     materials.face_color = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::face_color), false
+      AssetLocator::assetPath(TextureCatalog::face_color),
+      false
     );
     materials.face_normal = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::face_normal), false
+      AssetLocator::assetPath(TextureCatalog::face_normal),
+      false
     );
     renderer_.setGroundMaterials(std::move(materials));
   }
 
-  AtlasRegionProps Art::loadSingle(const SpriteStripProps &strip) {
+  AtlasRegionProps Art::loadSingle(
+    const SpriteStripProps &strip
+  ) {
     return loadStrip(strip).front();
   }
 
-  SpriteFrames Art::loadParticleStrip(const SpriteStripProps &strip) {
+  SpriteFrames Art::loadParticleStrip(
+    const SpriteStripProps &strip
+  ) {
     DecodedImageProps image =
       ImageDecoder::decodeRgba(AssetLocator::assetPath(strip.path), false);
     for(std::size_t index = 0; index < image.pixels.size(); index += 4) {
@@ -137,7 +149,9 @@ namespace wheel_of_fear {
     return copyFrames(strip, image);
   }
 
-  SpriteFrames Art::loadStrip(const SpriteStripProps &strip) {
+  SpriteFrames Art::loadStrip(
+    const SpriteStripProps &strip
+  ) {
     const DecodedImageProps image =
       ImageDecoder::decodeRgba(AssetLocator::assetPath(strip.path), true);
     return copyFrames(strip, image);

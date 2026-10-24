@@ -8,14 +8,18 @@
 #include "mods/world/scenery/SceneryFactory.hpp"
 
 namespace wheel_of_fear {
-  int WorldFurnisher::interiorX(const RoomProps &room) {
+  int WorldFurnisher::interiorX(
+    const RoomProps &room
+  ) {
     return world_.random().intInclusive(
       room.left + TileMap::free_border,
       room.left + room.width - TileMap::free_border - 1
     );
   }
 
-  int WorldFurnisher::interiorY(const RoomProps &room) {
+  int WorldFurnisher::interiorY(
+    const RoomProps &room
+  ) {
     return world_.random().intInclusive(
       room.top + TileMap::free_border,
       room.top + room.height - TileMap::free_border - 1
@@ -66,15 +70,24 @@ namespace wheel_of_fear {
     RandomGenerator &random = world_.random();
     switch(room.layout) {
       case RoomLayoutEnum::server_farm:
-        for(int y = room.top + TileMap::free_border;
-            y < room.top + room.height - TileMap::free_border;
-            y += 3) {
-          for(int x = room.left + TileMap::free_border;
-              x < room.left + room.width - TileMap::free_border;
-              ++x) {
+        for(
+          int y = room.top + TileMap::free_border;
+          y < room.top + room.height - TileMap::free_border;
+          y += 3
+        ) {
+          for(
+            int x = room.left + TileMap::free_border;
+            x < room.left + room.width - TileMap::free_border;
+            ++x
+          ) {
             if((x - room.left) % 7 == 0 || isInClearing(room, x, y)) continue;
             tryReserveScenery(
-              room, room_index, x, y, SceneryKindEnum::server_rack, color
+              room,
+              room_index,
+              x,
+              y,
+              SceneryKindEnum::server_rack,
+              color
             );
           }
         }
@@ -92,7 +105,12 @@ namespace wheel_of_fear {
             const int             offset_x = random.intInclusive(-1, 1);
             const int             offset_y = random.intInclusive(-1, 1);
             tryReserveScenery(
-              room, room_index, x + offset_x, y + offset_y, kind, color
+              room,
+              room_index,
+              x + offset_x,
+              y + offset_y,
+              kind,
+              color
             );
           }
         }
@@ -103,7 +121,12 @@ namespace wheel_of_fear {
           const int y = interiorY(room);
           if(!isInClearing(room, x, y))
             tryReserveScenery(
-              room, room_index, x, y, SceneryKindEnum::terminal, color
+              room,
+              room_index,
+              x,
+              y,
+              SceneryKindEnum::terminal,
+              color
             );
         }
         break;
@@ -174,8 +197,10 @@ namespace wheel_of_fear {
     for(std::size_t sign = 0; sign < sign_count; ++sign) {
       const int x =
         random.intInclusive(room.left + 3, room.left + room.width - 4);
-      if(!world_.map().isWall(x, room.top - 1) ||
-         world_.isNearLandmark(x, room.top))
+      if(
+        !world_.map().isWall(x, room.top - 1) ||
+        world_.isNearLandmark(x, room.top)
+      )
         continue;
       SceneryPlacementDto placement;
       placement.position =

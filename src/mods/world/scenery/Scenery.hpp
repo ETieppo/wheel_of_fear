@@ -17,7 +17,9 @@
 namespace wheel_of_fear {
   class Scenery {
     public:
-      explicit Scenery(const SceneryPlacementDto &placement);
+      explicit Scenery(
+        const SceneryPlacementDto &placement
+      );
       virtual ~Scenery() = default;
 
       Vec2 position() const {
@@ -32,36 +34,40 @@ namespace wheel_of_fear {
         return is_broken_;
       }
 
-      void update(float delta_seconds);
-      void bump(RandomGenerator &random);
+      void update(
+        float delta_seconds
+      );
+      void bump(
+        RandomGenerator &random
+      );
 
-      virtual
-      std::optional<DistractionKindEnum> bumpDistraction() const = 0;
-      virtual
-      void draw(
+      virtual std::optional<DistractionKindEnum> bumpDistraction() const = 0;
+      virtual void                               draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites,
         const SceneryViewDto   &view
       ) const;
 
-      virtual
-      void emitLight(
+      virtual void emitLight(
         Lighting &,
         const SceneryViewDto &
       ) const {
       }
 
     protected:
-      virtual
-      const AtlasRegionProps &sprite(const SpriteSheetProps &sprites) const = 0;
+      virtual const AtlasRegionProps &sprite(
+        const SpriteSheetProps &sprites
+      ) const = 0;
 
-      virtual
-      const AtlasRegionProps* glowSprite(const SpriteSheetProps &) const {
+      virtual const AtlasRegionProps* glowSprite(
+        const SpriteSheetProps &
+      ) const {
         return nullptr;
       }
 
-      virtual
-      void reactToBump(RandomGenerator &) {
+      virtual void reactToBump(
+        RandomGenerator &
+      ) {
       }
 
       Color color() const {
@@ -80,7 +86,9 @@ namespace wheel_of_fear {
         is_broken_ = true;
       }
 
-      void tilt(float amount) {
+      void tilt(
+        float amount
+      ) {
         tilt_ = amount;
       }
 

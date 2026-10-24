@@ -24,7 +24,9 @@ namespace wheel_of_fear {
         .spawn_weight     = 0,
       };
 
-      explicit Moth(Vec2 position)
+      explicit Moth(
+        Vec2 position
+      )
           : Mob(
               position,
               species_traits
@@ -43,10 +45,18 @@ namespace wheel_of_fear {
         return stance_;
       }
 
-      void emitLights(GameContextDto &context) override;
-      void think(GameContextDto &context) override;
-      void onGeneratorOnline(GameContextDto &context) override;
-      void draw(GameContextDto &context) const override;
+      void emitLights(
+        GameContextDto &context
+      ) override;
+      void think(
+        GameContextDto &context
+      ) override;
+      void onGeneratorOnline(
+        GameContextDto &context
+      ) override;
+      void draw(
+        GameContextDto &context
+      ) const override;
 
     private:
       static constexpr float befriend_distance      = 40;
@@ -55,9 +65,15 @@ namespace wheel_of_fear {
       static constexpr Color light_color            = Color::hex(0xffe8a0);
 
       Vec2 flutter() const;
-      void wait(GameContextDto &context);
-      void follow(GameContextDto &context);
-      void depart(GameContextDto &context);
+      void wait(
+        GameContextDto &context
+      );
+      void follow(
+        GameContextDto &context
+      );
+      void depart(
+        GameContextDto &context
+      );
 
       MothStanceEnum      stance_            = MothStanceEnum::waiting;
       float               departure_seconds_ = 0;

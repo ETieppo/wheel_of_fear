@@ -9,8 +9,7 @@ namespace wheel_of_fear {
     public:
       HidingOverlay() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer           &renderer,
         const LockerHiding &hiding,
         float               real_seconds

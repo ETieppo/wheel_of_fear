@@ -8,7 +8,9 @@ namespace wheel_of_fear {
     public:
       static constexpr float lifetime_seconds = 60;
 
-      explicit NeonPuddle(Vec2 position)
+      explicit NeonPuddle(
+        Vec2 position
+      )
           : position_(position) {
       }
 
@@ -16,7 +18,9 @@ namespace wheel_of_fear {
         return remaining_seconds_ <= 0;
       }
 
-      void update(float delta_seconds);
+      void update(
+        float delta_seconds
+      );
       void emitLights(
         Lighting &lighting,
         float     real_seconds

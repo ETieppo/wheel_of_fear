@@ -21,8 +21,12 @@ namespace wheel_of_fear {
 
       AudioMixer();
       ~AudioMixer();
-      AudioMixer(const AudioMixer &)             = delete;
-      AudioMixer &operator =(const AudioMixer &) = delete;
+      AudioMixer(
+        const AudioMixer &
+      ) = delete;
+      AudioMixer &operator =(
+        const AudioMixer &
+      ) = delete;
 
       bool isAvailable() const {
         return stream_ != nullptr;
@@ -37,23 +41,34 @@ namespace wheel_of_fear {
         VoiceId voice,
         float   volume
       );
-      void        stop(VoiceId voice);
-      bool        isPlaying(VoiceId voice) const;
+      void stop(
+        VoiceId voice
+      );
+      bool isPlaying(
+        VoiceId voice
+      ) const;
       std::size_t activeVoiceCount() const;
-      void        setMasterVolume(float volume);
-      void        releaseFinished();
+      void        setMasterVolume(
+        float volume
+      );
+      void releaseFinished();
 
     private:
-      static
-      void SDLCALL feed(
+      static void SDLCALL feed(
         void*            userdata,
         SDL_AudioStream* stream,
         int              additional_amount,
         int              total_amount
       );
-      void                   mix(std::size_t sample_count);
-      AudioVoiceProps*       find(VoiceId voice);
-      const AudioVoiceProps* find(VoiceId voice) const;
+      void mix(
+        std::size_t sample_count
+      );
+      AudioVoiceProps* find(
+        VoiceId voice
+      );
+      const AudioVoiceProps* find(
+        VoiceId voice
+      ) const;
 
       SDL_AudioStream*             stream_ = nullptr;
       mutable std::mutex           mutex_;

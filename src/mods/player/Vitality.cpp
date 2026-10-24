@@ -10,7 +10,9 @@ namespace wheel_of_fear {
     is_dead_              = false;
   }
 
-  void Vitality::tick(float delta_seconds) {
+  void Vitality::tick(
+    float delta_seconds
+  ) {
     invulnerable_seconds_ =
       std::max(0.0F, invulnerable_seconds_ - delta_seconds);
     hurt_flash_ = std::max(0.0F, hurt_flash_ - delta_seconds * 2);

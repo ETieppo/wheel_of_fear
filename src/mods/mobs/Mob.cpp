@@ -74,15 +74,21 @@ namespace wheel_of_fear {
                                : base_speed;
   }
 
-  void Mob::frenzy(float seconds) {
+  void Mob::frenzy(
+    float seconds
+  ) {
     frenzy_seconds_ = std::max(frenzy_seconds_, seconds);
   }
 
-  void Mob::calmFrenzy(float delta_seconds) {
+  void Mob::calmFrenzy(
+    float delta_seconds
+  ) {
     frenzy_seconds_ = std::max(0.0F, frenzy_seconds_ - delta_seconds);
   }
 
-  float Mob::distanceToPlayer(const GameContextDto &context) const {
+  float Mob::distanceToPlayer(
+    const GameContextDto &context
+  ) const {
     return distanceTo(context.player.position());
   }
 
@@ -104,7 +110,9 @@ namespace wheel_of_fear {
     memory_.last_progress_position = position();
   }
 
-  void Mob::update(GameContextDto &context) {
+  void Mob::update(
+    GameContextDto &context
+  ) {
     if(!isAlive()) return;
     const float delta = context.clock.deltaSeconds();
     if(!is_frozen_) advanceAnimation(delta);
@@ -117,11 +125,15 @@ namespace wheel_of_fear {
     playMovementSound(context);
   }
 
-  void Mob::onContact(GameContextDto &context) {
+  void Mob::onContact(
+    GameContextDto &context
+  ) {
     strikeAndRetreat(context, default_retreat_seconds);
   }
 
-  void Mob::ignite(GameContextDto &context) {
+  void Mob::ignite(
+    GameContextDto &context
+  ) {
     burn_seconds_    = burn_duration_seconds;
     is_being_hugged_ = false;
     playSound(
@@ -132,7 +144,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void Mob::catchBlast(GameContextDto &context) {
+  void Mob::catchBlast(
+    GameContextDto &context
+  ) {
     setAlive(false);
     is_being_hugged_ = false;
     context.effects.emitCrumble(context.world, position(), 14);
@@ -153,14 +167,17 @@ namespace wheel_of_fear {
       memory_.seconds_since_seen = 0;
     }
     const auto heard = context.noise.loudestHeardAt(
-      context.world.map(), position(), traits().hearing_factor
+      context.world.map(),
+      position(),
+      traits().hearing_factor
     );
     if(!heard) return;
-    if(heard->event.source ==
-       NoiseSourceEnum::breathing &&
-       context.player.isHidden() &&
-       heard->event.position.distance(position()) <
-       breathing_detection_distance) {
+    if(
+      heard->event.source ==
+      NoiseSourceEnum::breathing &&
+      context.player.isHidden() &&
+      heard->event.position.distance(position()) < breathing_detection_distance
+    ) {
       exposeHiddenPlayer(context);
       return;
     }
@@ -168,7 +185,9 @@ namespace wheel_of_fear {
     memory_.seconds_since_noise = 0;
   }
 
-  bool Mob::canSeePlayer(const GameContextDto &context) const {
+  bool Mob::canSeePlayer(
+    const GameContextDto &context
+  ) const {
     const MobTraitsProps &mob_traits = traits();
     const Player         &player     = context.player;
     if(!player.canBeTargeted() || !mob_traits.canSee()) return false;
@@ -184,7 +203,9 @@ namespace wheel_of_fear {
            context.world.map().hasLineOfSight(position(), player.position());
   }
 
-  void Mob::thinkAsHunter(GameContextDto &context) {
+  void Mob::thinkAsHunter(
+    GameContextDto &context
+  ) {
     if(!canAct()) return;
     chooseIntent(context);
     pursueIntent(context);
@@ -192,7 +213,9 @@ namespace wheel_of_fear {
       onContact(context);
   }
 
-  void Mob::chooseIntent(GameContextDto &context) {
+  void Mob::chooseIntent(
+    GameContextDto &context
+  ) {
     const Vec2 player_position = context.player.position();
     if(retreat_seconds_ > 0) {
       if(intent_ != MobIntentEnum::retreating)
@@ -200,9 +223,11 @@ namespace wheel_of_fear {
       return;
     }
     if(can_see_player_) {
-      if(intent_ ==
-         MobIntentEnum::lurking &&
-         context.world.isHazardAt(player_position))
+      if(
+        intent_ ==
+        MobIntentEnum::lurking &&
+        context.world.isHazardAt(player_position)
+      )
         return;
       if(intent_ != MobIntentEnum::chasing) {
         changeIntent(MobIntentEnum::chasing, player_position);
@@ -215,27 +240,35 @@ namespace wheel_of_fear {
       startSearching(memory_.last_seen_player.value_or(position()));
       return;
     }
-    if(memory_.known_locker_index &&
-       *memory_.known_locker_index < context.world.lockers().size()) {
+    if(
+      memory_.known_locker_index &&
+      *memory_.known_locker_index < context.world.lockers().size()
+    ) {
       const Vec2 entry =
         context.world.lockers()[*memory_.known_locker_index].entryPoint();
-      if(intent_ !=
-         MobIntentEnum::investigating ||
-         destination_.distance(entry) > 1)
+      if(
+        intent_ !=
+        MobIntentEnum::investigating ||
+        destination_.distance(entry) > 1
+      )
         changeIntent(MobIntentEnum::investigating, entry);
       return;
     }
     if(memory_.seconds_since_noise == 0 && memory_.noise_position) {
       const Vec2 noise_position = *memory_.noise_position;
-      if(intent_ !=
-         MobIntentEnum::investigating ||
-         noise_position.distance(destination_) > 24)
+      if(
+        intent_ !=
+        MobIntentEnum::investigating ||
+        noise_position.distance(destination_) > 24
+      )
         vocalize(context, 0.4F);
       changeIntent(MobIntentEnum::investigating, noise_position);
     }
   }
 
-  void Mob::pursueIntent(GameContextDto &context) {
+  void Mob::pursueIntent(
+    GameContextDto &context
+  ) {
     intent_seconds_ += context.clock.deltaSeconds();
     switch(intent_) {
       case MobIntentEnum::patrolling:    patrol(context); break;
@@ -249,12 +282,16 @@ namespace wheel_of_fear {
     trackProgress(context);
   }
 
-  void Mob::trackProgress(GameContextDto &context) {
-    if(intent_ ==
-       MobIntentEnum::lurking ||
-       intent_ ==
-       MobIntentEnum::calling ||
-       linger_seconds_ > 0) {
+  void Mob::trackProgress(
+    GameContextDto &context
+  ) {
+    if(
+      intent_ ==
+      MobIntentEnum::lurking ||
+      intent_ ==
+      MobIntentEnum::calling ||
+      linger_seconds_ > 0
+    ) {
       memory_.stuck_seconds = 0;
       return;
     }
@@ -272,14 +309,18 @@ namespace wheel_of_fear {
       changeIntent(MobIntentEnum::patrolling, position());
   }
 
-  void Mob::patrol(GameContextDto &context) {
+  void Mob::patrol(
+    GameContextDto &context
+  ) {
     World &world = context.world;
     if(!patrol_room_) {
       std::optional<std::size_t> current_room =
         world.map().roomIndexAt(position());
       if(!current_room) current_room = world.map().roomIndexAt(destination_);
       const float pressure = Scalar::clamp(
-        0.35F + 0.08F * static_cast<float>(world.phase()), 0, 0.8F
+        0.35F + 0.08F * static_cast<float>(world.phase()),
+        0,
+        0.8F
       );
       const auto player_room =
         world.map().roomIndexAt(context.player.position());
@@ -289,7 +330,8 @@ namespace wheel_of_fear {
         world.randomPatrolRoom(current_room.value_or(0), toward);
       patrol_room_ = room_index;
       destination_ = world.map().randomFloorInRoom(
-        world.random(), world.map().rooms()[room_index]
+        world.random(),
+        world.map().rooms()[room_index]
       );
       memory_.last_progress_position = position();
     }
@@ -307,10 +349,14 @@ namespace wheel_of_fear {
     navigateTo(context, destination_, currentSpeed() * patrol_speed_factor);
   }
 
-  void Mob::investigate(GameContextDto &context) {
+  void Mob::investigate(
+    GameContextDto &context
+  ) {
     if(distanceTo(destination_) > arrival_distance) {
       if(!navigateTo(
-           context, destination_, currentSpeed() * investigate_speed_factor
+           context,
+           destination_,
+           currentSpeed() * investigate_speed_factor
          ))
         startSearching(position());
       return;
@@ -326,13 +372,17 @@ namespace wheel_of_fear {
     startSearching(destination_);
   }
 
-  void Mob::startSearching(Vec2 anchor) {
+  void Mob::startSearching(
+    Vec2 anchor
+  ) {
     search_anchor_  = anchor;
     linger_seconds_ = 0;
     changeIntent(MobIntentEnum::searching, anchor);
   }
 
-  void Mob::search(GameContextDto &context) {
+  void Mob::search(
+    GameContextDto &context
+  ) {
     World &world = context.world;
     if(intent_seconds_ > search_seconds) {
       patrol_room_.reset();
@@ -344,9 +394,11 @@ namespace wheel_of_fear {
       lookAround(context);
       return;
     }
-    if(distanceTo(destination_) <
-       arrival_distance ||
-       memory_.stuck_seconds > 1.2F) {
+    if(
+      distanceTo(destination_) <
+      arrival_distance ||
+      memory_.stuck_seconds > 1.2F
+    ) {
       linger_seconds_    = world.random().range(0.4F, 1.2F);
       const Vec2  wander = world.random().direction();
       const float reach  = world.random().range(12, search_radius);
@@ -357,16 +409,20 @@ namespace wheel_of_fear {
     navigateTo(context, destination_, currentSpeed() * search_speed_factor);
   }
 
-  void Mob::chase(GameContextDto &context) {
+  void Mob::chase(
+    GameContextDto &context
+  ) {
     World     &world           = context.world;
     const Vec2 player_position = context.player.position();
     const Vec2 target = can_see_player_
                         ? player_position
                         : memory_.last_seen_player.value_or(player_position);
     destination_      = target;
-    if(can_see_player_ &&
-       world.isHazardAt(player_position) &&
-       traits().avoids_hazards) {
+    if(
+      can_see_player_ &&
+      world.isHazardAt(player_position) &&
+      traits().avoids_hazards
+    ) {
       if(!navigateTo(context, target, currentSpeed()))
         changeIntent(MobIntentEnum::lurking, target);
       return;
@@ -380,7 +436,10 @@ namespace wheel_of_fear {
       can_see_player_
         ? world.navigation().directionToPlayer(world.map(), position())
         : world.navigation().directionToward(
-            world.map(), position(), target, world.elapsedSeconds()
+            world.map(),
+            position(),
+            target,
+            world.elapsedSeconds()
           );
     const Vec2 fallback =
       direction.length() < 0.5F ? directionTo(target) : direction;
@@ -388,7 +447,9 @@ namespace wheel_of_fear {
       changeIntent(MobIntentEnum::lurking, target);
   }
 
-  void Mob::lurk(GameContextDto &context) {
+  void Mob::lurk(
+    GameContextDto &context
+  ) {
     const Vec2 player_position = context.player.position();
     turnToward(
       player_position.sub(position()).angle(),
@@ -403,7 +464,9 @@ namespace wheel_of_fear {
       startSearching(position());
   }
 
-  void Mob::lookAround(GameContextDto &context) {
+  void Mob::lookAround(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     const float sweep = std::sin(animationSeconds() * 1.7F) * 1.2F;
     turnToward(heading() + sweep * delta * 3, delta, turn_rate);
@@ -416,7 +479,10 @@ namespace wheel_of_fear {
   ) {
     World     &world     = context.world;
     const Vec2 direction = world.navigation().directionToward(
-      world.map(), position(), destination, world.elapsedSeconds()
+      world.map(),
+      position(),
+      destination,
+      world.elapsedSeconds()
     );
     if(direction.length() < 0.5F)
       return moveAlong(context, directionTo(destination), speed);
@@ -445,7 +511,9 @@ namespace wheel_of_fear {
     return true;
   }
 
-  void Mob::fleeFromPlayer(GameContextDto &context) {
+  void Mob::fleeFromPlayer(
+    GameContextDto &context
+  ) {
     const Vec2 away = position().sub(context.player.position()).normalized();
     moveAlong(context, away, currentSpeed() * retreat_speed_factor);
     if(retreat_seconds_ <= 0) startSearching(position());
@@ -459,12 +527,16 @@ namespace wheel_of_fear {
     retreat_seconds_ = retreat_seconds;
   }
 
-  void Mob::strikePlayer(GameContextDto &context) {
+  void Mob::strikePlayer(
+    GameContextDto &context
+  ) {
     strike_cooldown_ = strike_cooldown_seconds;
     context.player.takeHit(context, position());
   }
 
-  void Mob::exposeHiddenPlayer(GameContextDto &context) {
+  void Mob::exposeHiddenPlayer(
+    GameContextDto &context
+  ) {
     Player &player = context.player;
     if(!player.isHidden()) return;
     player.dragOutOfLocker(context);
@@ -475,7 +547,9 @@ namespace wheel_of_fear {
     strikePlayer(context);
   }
 
-  void Mob::hearShepherd(Vec2 target) {
+  void Mob::hearShepherd(
+    Vec2 target
+  ) {
     if(intent_ == MobIntentEnum::chasing) return;
     memory_.noise_position      = target;
     memory_.seconds_since_noise = 0;
@@ -492,9 +566,8 @@ namespace wheel_of_fear {
       context.world.map().hasLineOfSight(position(), listener)
         ? 1.0F
         : occluded_sound_factor;
-    context.sound_player.playAt(
-      sound, volume * occlusion, listener, position(), pitch
-    );
+    context.sound_player
+      .playAt(sound, volume * occlusion, listener, position(), pitch);
   }
 
   void Mob::vocalize(
@@ -507,11 +580,16 @@ namespace wheel_of_fear {
     if(vocal_cooldown_ > 0 || !random.chance(chance)) return;
     vocal_cooldown_ = random.range(3, 6);
     playSound(
-      context, *sound, traits().vocal_volume, random.range(0.88F, 1.12F)
+      context,
+      *sound,
+      traits().vocal_volume,
+      random.range(0.88F, 1.12F)
     );
   }
 
-  void Mob::playMovementSound(GameContextDto &context) {
+  void Mob::playMovementSound(
+    GameContextDto &context
+  ) {
     const MobTraitsProps &mob_traits = traits();
     if(!mob_traits.movement_sound) return;
     movement_sound_cooldown_ -= context.clock.deltaSeconds();
@@ -529,7 +607,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void Mob::advanceBurning(GameContextDto &context) {
+  void Mob::advanceBurning(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     World      &world = context.world;
     if(isBurning()) {
@@ -550,7 +630,9 @@ namespace wheel_of_fear {
     context.noise.emit(position(), 200, NoiseSourceEnum::mob_incident);
   }
 
-  void Mob::advanceHugAndCrumble(GameContextDto &context) {
+  void Mob::advanceHugAndCrumble(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     World      &world = context.world;
     if(isCrumbling()) {
@@ -563,7 +645,10 @@ namespace wheel_of_fear {
       setAlive(false);
       context.effects.emitCrumble(world, position(), 26);
       playSound(
-        context, SoundEnum::crumble, 0.9F, world.random().range(0.9F, 1.1F)
+        context,
+        SoundEnum::crumble,
+        0.9F,
+        world.random().range(0.9F, 1.1F)
       );
       return;
     }
@@ -573,9 +658,9 @@ namespace wheel_of_fear {
           std::max(0.0F, petrify_amount_ - delta * petrify_recovery_per_second);
       return;
     }
-    if(distanceToPlayer(context) >
-       hug_break_distance ||
-       context.player.isDead()) {
+    if(
+      distanceToPlayer(context) > hug_break_distance || context.player.isDead()
+    ) {
       is_being_hugged_ = false;
       return;
     }
@@ -588,7 +673,9 @@ namespace wheel_of_fear {
     world.shake(0.25F);
   }
 
-  Vec2 Mob::trembleOffset(float world_seconds) const {
+  Vec2 Mob::trembleOffset(
+    float world_seconds
+  ) const {
     if(!is_frozen_ || is_being_hugged_) return Vec2 {};
     return Vec2::of(
       (Scalar::hashTime(world_seconds + destination_.x, 30) - 0.5F) * 1.2F,

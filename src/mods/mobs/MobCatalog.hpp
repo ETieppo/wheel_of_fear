@@ -12,10 +12,10 @@ namespace wheel_of_fear {
     public:
       MobCatalog() = delete;
 
-      static
-      const MobTraitsProps &traitsOf(MobKindEnum kind);
-      static
-      std::unique_ptr<Mob> create(
+      static const MobTraitsProps &traitsOf(
+        MobKindEnum kind
+      );
+      static std::unique_ptr<Mob> create(
         MobKindEnum kind,
         Vec2        position
       );

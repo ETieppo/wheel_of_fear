@@ -3,7 +3,9 @@
 #include "core/math/Scalar.hpp"
 
 namespace wheel_of_fear {
-  float NeonSign::brightness(const SceneryViewDto &view) const {
+  float NeonSign::brightness(
+    const SceneryViewDto &view
+  ) const {
     if(view.is_room_powered) return 1;
     const float sputter =
       Scalar::hashTime(view.real_seconds + flickerSeed() * 17, 9);

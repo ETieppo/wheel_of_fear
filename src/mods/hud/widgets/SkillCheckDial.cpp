@@ -12,7 +12,8 @@
 namespace wheel_of_fear {
   namespace {
     constexpr Vec2 ring_center {
-      RenderConfig::ui_width / 2, RenderConfig::ui_height / 2 + 70
+      RenderConfig::ui_width / 2,
+      RenderConfig::ui_height / 2 + 70
     };
     constexpr float ring_radius = 42;
     constexpr int   ring_dots   = 72;

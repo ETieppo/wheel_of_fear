@@ -37,11 +37,15 @@ namespace wheel_of_fear {
 
       void reset();
 
-      void setEnabled(bool is_enabled) {
+      void setEnabled(
+        bool is_enabled
+      ) {
         is_enabled_ = is_enabled;
       }
 
-      void cycleMode(SoundPlayer &sound_player);
+      void cycleMode(
+        SoundPlayer &sound_player
+      );
       void update(
         const FlashlightConditionsDto &conditions,
         RandomGenerator               &random,
@@ -58,8 +62,7 @@ namespace wheel_of_fear {
       ) const;
       float sightRangeForMobs() const;
 
-      static
-      Vec2 lampTip(
+      static Vec2 lampTip(
         Vec2 holder_position,
         Vec2 aim_direction
       );
@@ -69,9 +72,15 @@ namespace wheel_of_fear {
       static constexpr float lamp_side_offset    = 3;
       static constexpr float repair_pool_radius  = 42;
 
-      bool              usesUltraviolet(const FlashlightGripDto &grip) const;
-      Color             beamColor(const FlashlightGripDto &grip) const;
-      FlashlightBeamDto beamShape(const FlashlightGripDto &grip) const;
+      bool usesUltraviolet(
+        const FlashlightGripDto &grip
+      ) const;
+      Color beamColor(
+        const FlashlightGripDto &grip
+      ) const;
+      FlashlightBeamDto beamShape(
+        const FlashlightGripDto &grip
+      ) const;
 
       FlashlightModeEnum mode_       = FlashlightModeEnum::normal;
       bool               is_enabled_ = true;

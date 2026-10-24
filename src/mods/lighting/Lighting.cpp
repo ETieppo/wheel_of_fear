@@ -8,7 +8,9 @@
 #include "mods/world/TileMap.hpp"
 
 namespace wheel_of_fear {
-  void Lighting::add(const LightProps &light) {
+  void Lighting::add(
+    const LightProps &light
+  ) {
     if(lights_.size() >= capacity) return;
     lights_.push_back(light);
   }
@@ -48,7 +50,9 @@ namespace wheel_of_fear {
       if(light.isSpotlight()) {
         const float alignment = offset.normalized().dot(light.direction);
         const float cone      = Scalar::smoothstep(
-          light.cone_outer_cosine, light.cone_inner_cosine, alignment
+          light.cone_outer_cosine,
+          light.cone_inner_cosine,
+          alignment
         );
         const float halo =
           only_freezing ? 0.0F : Scalar::clamp(1 - distance / 10, 0, 1) * 0.6F;
@@ -62,7 +66,9 @@ namespace wheel_of_fear {
     return total;
   }
 
-  void Lighting::submitToRenderer(Renderer &renderer) const {
+  void Lighting::submitToRenderer(
+    Renderer &renderer
+  ) const {
     const Vec2 view_center = renderer.viewOrigin().add(
       Vec2::of(
         static_cast<float>(RenderConfig::view_width) / 2,
@@ -87,7 +93,9 @@ namespace wheel_of_fear {
     std::vector<std::size_t> order(visible_indices.size());
     std::iota(order.begin(), order.end(), std::size_t {0});
     std::stable_sort(
-      order.begin(), order.end(), [&](std::size_t first, std::size_t second) {
+      order.begin(),
+      order.end(),
+      [&](std::size_t first, std::size_t second) {
         return priorities[first] < priorities[second];
       }
     );

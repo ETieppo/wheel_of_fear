@@ -33,7 +33,9 @@ namespace wheel_of_fear {
         return timer_seconds_;
       }
 
-      void setTimerSeconds(float seconds) {
+      void setTimerSeconds(
+        float seconds
+      ) {
         timer_seconds_ = seconds;
       }
 
@@ -45,8 +47,7 @@ namespace wheel_of_fear {
         return moved_doorway_indices_;
       }
 
-      static
-      bool isInsideView(
+      static bool isInsideView(
         Vec2 point,
         Vec2 view_center
       );
@@ -54,16 +55,14 @@ namespace wheel_of_fear {
     private:
       static constexpr float first_shift_delay_seconds = 20;
 
-      static
-      std::vector<std::size_t> collectCandidates(
+      static std::vector<std::size_t> collectCandidates(
         const TileMap        &map,
         std::size_t           focus_room,
         Vec2                  view_center,
         std::span<const Vec2> occupants,
         bool                  wants_open
       );
-      static
-      bool isOccupied(
+      static bool isOccupied(
         const DoorwayProps   &doorway,
         std::span<const Vec2> occupants
       );

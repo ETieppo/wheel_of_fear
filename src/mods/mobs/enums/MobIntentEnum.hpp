@@ -13,8 +13,9 @@ namespace wheel_of_fear {
     calling
   };
 
-  constexpr
-  std::string_view nameOf(MobIntentEnum intent) {
+  constexpr std::string_view nameOf(
+    MobIntentEnum intent
+  ) {
     switch(intent) {
       case MobIntentEnum::patrolling:    return "patrolling";
       case MobIntentEnum::investigating: return "investigating";

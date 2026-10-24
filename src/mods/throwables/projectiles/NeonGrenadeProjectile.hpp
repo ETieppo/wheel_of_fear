@@ -24,12 +24,15 @@ namespace wheel_of_fear {
       ) override;
 
     protected:
-      const AtlasRegionProps &
-      sprite(const SpriteSheetProps &sprites) const override {
+      const AtlasRegionProps &sprite(
+        const SpriteSheetProps &sprites
+      ) const override {
         return sprites.neon_grenade;
       }
 
-      void drawTrail(Renderer &renderer) const override;
+      void drawTrail(
+        Renderer &renderer
+      ) const override;
 
     private:
       static constexpr float       noise_radius   = 520;
@@ -37,8 +40,7 @@ namespace wheel_of_fear {
       static constexpr float       spread_tiles   = 3.3F;
       static constexpr std::size_t flood_capacity = 96;
 
-      static
-      void floodNeon(
+      static void floodNeon(
         World &world,
         Vec2   origin,
         float  lifetime_seconds

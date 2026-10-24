@@ -12,10 +12,16 @@ namespace wheel_of_fear {
   class Input {
     public:
       void beginFrame();
-      void handleEvent(const SDL_Event &event);
+      void handleEvent(
+        const SDL_Event &event
+      );
 
-      bool isHeld(InputActionEnum action) const;
-      bool wasPressed(InputActionEnum action) const;
+      bool isHeld(
+        InputActionEnum action
+      ) const;
+      bool wasPressed(
+        InputActionEnum action
+      ) const;
 
       bool isQuitRequested() const {
         return is_quit_requested_;
@@ -29,26 +35,37 @@ namespace wheel_of_fear {
         return window_size_;
       }
 
-      void setWindowSize(Vec2 window_size) {
+      void setWindowSize(
+        Vec2 window_size
+      ) {
         window_size_ = window_size;
       }
 
-      void simulatePress(InputActionEnum action);
+      void simulatePress(
+        InputActionEnum action
+      );
       void simulateHold(
         InputActionEnum action,
         bool            is_held
       );
 
-      void simulateMousePosition(Vec2 mouse_position) {
+      void simulateMousePosition(
+        Vec2 mouse_position
+      ) {
         mouse_position_ = mouse_position;
       }
 
-      static
-      std::optional<InputActionEnum> actionForKey(SDL_Keycode key);
+      static std::optional<InputActionEnum> actionForKey(
+        SDL_Keycode key
+      );
 
     private:
-      void press(InputActionEnum action);
-      void release(InputActionEnum action);
+      void press(
+        InputActionEnum action
+      );
+      void release(
+        InputActionEnum action
+      );
       Vec2 mouseInLetterbox(
         float width,
         float height

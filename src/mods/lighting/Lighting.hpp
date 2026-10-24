@@ -19,7 +19,9 @@ namespace wheel_of_fear {
         lights_.clear();
       }
 
-      void  add(const LightProps &light);
+      void add(
+        const LightProps &light
+      );
       float freezingLightAt(
         const TileMap  &map,
         Vec2            point,
@@ -30,7 +32,9 @@ namespace wheel_of_fear {
         Vec2            point,
         LightFilterEnum filter
       ) const;
-      void submitToRenderer(Renderer &renderer) const;
+      void submitToRenderer(
+        Renderer &renderer
+      ) const;
 
     private:
       static constexpr std::size_t capacity                 = 160;

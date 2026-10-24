@@ -9,8 +9,7 @@ namespace wheel_of_fear {
     public:
       Crosshair() = delete;
 
-      static
-      void draw(
+      static void draw(
         Renderer &renderer,
         Vec2      mouse,
         Color     color,

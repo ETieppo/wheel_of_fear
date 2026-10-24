@@ -12,7 +12,10 @@ namespace wheel_of_fear {
       static_cast<int>(sample_rate)
     };
     stream_ = SDL_OpenAudioDeviceStream(
-      SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &specification, &AudioMixer::feed, this
+      SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,
+      &specification,
+      &AudioMixer::feed,
+      this
     );
     if(stream_ == nullptr) {
       SDL_Log("audio unavailable: %s", SDL_GetError());
@@ -43,7 +46,9 @@ namespace wheel_of_fear {
     );
   }
 
-  void AudioMixer::mix(std::size_t sample_count) {
+  void AudioMixer::mix(
+    std::size_t sample_count
+  ) {
     const std::scoped_lock lock(mutex_);
     mix_buffer_.assign(sample_count, 0.0F);
     for(AudioVoiceProps &voice : voices_) {
@@ -80,7 +85,9 @@ namespace wheel_of_fear {
     return id;
   }
 
-  AudioVoiceProps* AudioMixer::find(VoiceId voice) {
+  AudioVoiceProps* AudioMixer::find(
+    VoiceId voice
+  ) {
     const auto found = std::find_if(
       voices_.begin(),
       voices_.end(),
@@ -91,7 +98,9 @@ namespace wheel_of_fear {
     return found == voices_.end() ? nullptr : &*found;
   }
 
-  const AudioVoiceProps* AudioMixer::find(VoiceId voice) const {
+  const AudioVoiceProps* AudioMixer::find(
+    VoiceId voice
+  ) const {
     const auto found = std::find_if(
       voices_.begin(),
       voices_.end(),
@@ -110,13 +119,17 @@ namespace wheel_of_fear {
     if(AudioVoiceProps* found = find(voice)) found->volume = volume;
   }
 
-  void AudioMixer::stop(VoiceId voice) {
+  void AudioMixer::stop(
+    VoiceId voice
+  ) {
     if(voice == no_voice) return;
     const std::scoped_lock lock(mutex_);
     if(AudioVoiceProps* found = find(voice)) found->is_playing = false;
   }
 
-  bool AudioMixer::isPlaying(VoiceId voice) const {
+  bool AudioMixer::isPlaying(
+    VoiceId voice
+  ) const {
     if(voice == no_voice) return false;
     const std::scoped_lock lock(mutex_);
     const AudioVoiceProps* found = find(voice);
@@ -128,7 +141,9 @@ namespace wheel_of_fear {
     return voices_.size();
   }
 
-  void AudioMixer::setMasterVolume(float volume) {
+  void AudioMixer::setMasterVolume(
+    float volume
+  ) {
     const std::scoped_lock lock(mutex_);
     master_volume_ = volume;
   }

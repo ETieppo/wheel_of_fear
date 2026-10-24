@@ -7,7 +7,9 @@
 #include "core/theme/Palette.hpp"
 
 namespace wheel_of_fear {
-  void NeonPuddle::update(float delta_seconds) {
+  void NeonPuddle::update(
+    float delta_seconds
+  ) {
     remaining_seconds_ -= delta_seconds;
     flash_seconds_ = std::max(0.0F, flash_seconds_ - delta_seconds);
   }

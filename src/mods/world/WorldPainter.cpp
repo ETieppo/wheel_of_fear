@@ -72,7 +72,10 @@ namespace wheel_of_fear {
             }
           );
           renderer_.drawGlowDisc(
-            center, 9, Palette::neon_lime.withAlpha(0.22F * strength), 1.6F
+            center,
+            9,
+            Palette::neon_lime.withAlpha(0.22F * strength),
+            1.6F
           );
         }
         const float neon = map.neonSeconds()[cell];
@@ -80,18 +83,19 @@ namespace wheel_of_fear {
         const float         strength = Scalar::clamp(neon / 6, 0, 1);
         const std::uint32_t seed = (static_cast<std::uint32_t>(x) * 73856093U) ^
                                    (static_cast<std::uint32_t>(y) * 19349663U);
-        const Vec2          jitter =
-          Vec2::of(
-            Scalar::hashToUnit(seed) - 0.5F, Scalar::hashToUnit(seed + 1) - 0.5F
-          )
-            .scale(9);
-        const float shimmer =
+        const Vec2          jitter = Vec2::of(
+                                       Scalar::hashToUnit(seed) - 0.5F,
+                                       Scalar::hashToUnit(seed + 1) - 0.5F
+        )
+                                       .scale(9);
+        const float         shimmer =
           0.8F +
           0.2F *
           std::sin(real_seconds_ * 2.5F + Scalar::hashToUnit(seed + 2) * 6.28F);
         const Vec2  blob = center.add(jitter);
         const Color tint = Palette::neon_magenta.mix(
-          Palette::neon_violet, Scalar::hashToUnit(seed + 3) * 0.5F
+          Palette::neon_violet,
+          Scalar::hashToUnit(seed + 3) * 0.5F
         );
         renderer_.drawSprite(
           sprites_.soft_circle,
@@ -102,7 +106,10 @@ namespace wheel_of_fear {
           }
         );
         renderer_.drawGlowDisc(
-          blob, 15, tint.withAlpha(0.12F * strength * shimmer), 2.2F
+          blob,
+          15,
+          tint.withAlpha(0.12F * strength * shimmer),
+          2.2F
         );
         if(Scalar::hashToUnit(seed + 5) > 0.7F)
           renderer_.drawGlowDisc(
@@ -136,7 +143,9 @@ namespace wheel_of_fear {
         renderer_.drawSprite(sprites_.vent, vent);
   }
 
-  void WorldPainter::paintDoorway(const DoorwayProps &doorway) const {
+  void WorldPainter::paintDoorway(
+    const DoorwayProps &doorway
+  ) const {
     const Vec2  center   = doorway.center();
     const float rotation = doorway.is_vertical ? Scalar::pi / 2.0F : 0.0F;
     const Vec2  along = doorway.is_vertical ? Vec2::of(0, 1) : Vec2::of(1, 0);
@@ -144,7 +153,9 @@ namespace wheel_of_fear {
       RenderConfig::tile_size * static_cast<float>(DoorwayProps::length);
     const float slide = doorway.open_amount * span * 0.5F;
     renderer_.drawSprite(
-      sprites_.blast_door_frame, center, SpriteDrawDto {.rotation = rotation}
+      sprites_.blast_door_frame,
+      center,
+      SpriteDrawDto {.rotation = rotation}
     );
     if(doorway.open_amount < 0.98F) {
       renderer_.drawSprite(

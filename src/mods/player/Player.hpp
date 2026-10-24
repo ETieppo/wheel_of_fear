@@ -22,15 +22,25 @@ namespace wheel_of_fear {
 
       Player();
 
-      void respawn(Vec2 position);
-      void update(GameContextDto &context);
-      void draw(GameContextDto &context) const;
-      void beginRepair(Vec2 target);
+      void respawn(
+        Vec2 position
+      );
+      void update(
+        GameContextDto &context
+      );
+      void draw(
+        GameContextDto &context
+      ) const;
+      void beginRepair(
+        Vec2 target
+      );
       void takeHit(
         GameContextDto &context,
         Vec2            source
       );
-      void dragOutOfLocker(GameContextDto &context);
+      void dragOutOfLocker(
+        GameContextDto &context
+      );
 
       Flashlight &flashlight() {
         return flashlight_;
@@ -95,15 +105,23 @@ namespace wheel_of_fear {
       static constexpr float aim_turn_rate = 30;
 
       FlashlightGripDto grip() const;
-      void              emitLights(GameContextDto &context) const;
-      void              aimAtMouse(GameContextDto &context);
-      void              faceRepairTarget();
-      void              explore(
+      void              emitLights(
+        GameContextDto &context
+      ) const;
+      void aimAtMouse(
+        GameContextDto &context
+      );
+      void faceRepairTarget();
+      void explore(
         GameContextDto    &context,
         PlayerActivityEnum previous_activity
       );
-      void handleExplorationActions(GameContextDto &context);
-      void updateFlashlight(GameContextDto &context);
+      void handleExplorationActions(
+        GameContextDto &context
+      );
+      void updateFlashlight(
+        GameContextDto &context
+      );
 
       Vec2                aim_direction_ = Vec2::of(1, 0);
       PlayerActivityEnum  activity_      = PlayerActivityEnum::exploring;

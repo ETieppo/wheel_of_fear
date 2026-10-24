@@ -9,8 +9,7 @@ namespace wheel_of_fear {
     public:
       ImageDecoder() = delete;
 
-      static
-      DecodedImageProps decodeRgba(
+      static DecodedImageProps decodeRgba(
         const std::filesystem::path &path,
         bool                         premultiply
       );

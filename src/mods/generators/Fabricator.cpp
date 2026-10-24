@@ -42,7 +42,9 @@ namespace wheel_of_fear {
     return position().add(Vec2::of(0, front_offset));
   }
 
-  void Fabricator::update(GameContextDto &context) {
+  void Fabricator::update(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
     advanceAnimation(delta);
     cooldown_seconds_            = std::max(0.0F, cooldown_seconds_ - delta);
@@ -74,13 +76,19 @@ namespace wheel_of_fear {
     work(context);
   }
 
-  void Fabricator::work(GameContextDto &context) {
+  void Fabricator::work(
+    GameContextDto &context
+  ) {
     const float delta = context.clock.deltaSeconds();
-    if(work_voice_ ==
-       no_voice ||
-       !context.sound_player.isPlaying(work_voice_)) {
+    if(
+      work_voice_ == no_voice || !context.sound_player.isPlaying(work_voice_)
+    ) {
       work_voice_ = context.sound_player.playAtTracked(
-        SoundEnum::machine_work, 0.6F, context.player.position(), position(), 1
+        SoundEnum::machine_work,
+        0.6F,
+        context.player.position(),
+        position(),
+        1
       );
     }
     work_progress_ += delta;
@@ -88,7 +96,9 @@ namespace wheel_of_fear {
     if(noise_timer_ <= 0) {
       noise_timer_ = noise_interval_seconds;
       context.noise.emit(
-        position(), fabrication_noise_radius, NoiseSourceEnum::fabricating
+        position(),
+        fabrication_noise_radius,
+        NoiseSourceEnum::fabricating
       );
     }
     const std::string_view item_name =
@@ -104,7 +114,9 @@ namespace wheel_of_fear {
     if(work_progress_ >= fabrication_seconds) deliver(context);
   }
 
-  void Fabricator::deliver(GameContextDto &context) {
+  void Fabricator::deliver(
+    GameContextDto &context
+  ) {
     interrupt(context);
     const Item &item = ItemCatalog::of(produced_item_);
     if(!context.player.inventory().receive(produced_item_)) {
@@ -118,30 +130,40 @@ namespace wheel_of_fear {
     context.effects.emitSparks(context.world, position(), 10, item.color());
     context.sound_player.play(SoundEnum::part_pickup, 0.8F, 0, 1);
     context.hud.announce(
-      item.color(), std::format("FABRICATED  {}", item.displayName())
+      item.color(),
+      std::format("FABRICATED  {}", item.displayName())
     );
   }
 
-  void Fabricator::interrupt(GameContextDto &context) {
+  void Fabricator::interrupt(
+    GameContextDto &context
+  ) {
     work_progress_ = 0;
     context.sound_player.stop(work_voice_);
     work_voice_ = no_voice;
   }
 
-  void Fabricator::draw(GameContextDto &context) const {
+  void Fabricator::draw(
+    GameContextDto &context
+  ) const {
     Renderer               &renderer     = context.renderer;
     const SpriteSheetProps &sprites      = context.art.sprites();
     const float             real_seconds = context.clock.realSeconds();
     const Vec2              center       = position();
     const Color item_color = ItemCatalog::of(produced_item_).color();
     renderer.drawShadowDisc(
-      center.add(Vec2::of(1, 4)), 11, Color::black().withAlpha(0.5F), 1.3F
+      center.add(Vec2::of(1, 4)),
+      11,
+      Color::black().withAlpha(0.5F),
+      1.3F
     );
     renderer.drawSprite(sprites.fabricator, center);
     const Color screen_color = isReady() ? item_color : Palette::neon_red;
     const float flicker = 0.75F + 0.25F * std::sin(real_seconds * 7 + center.x);
     renderer.drawGlowSprite(
-      sprites.fabricator_glow, center, screen_color.withAlpha(flicker)
+      sprites.fabricator_glow,
+      center,
+      screen_color.withAlpha(flicker)
     );
     const float hover = std::sin(real_seconds * 2.5F + center.x) * 1.5F;
     renderer.drawGlowSprite(

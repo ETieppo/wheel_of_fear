@@ -10,13 +10,17 @@
 namespace wheel_of_fear {
   class TypefaceSet {
     public:
-      void bakeInto(TextureAtlas &atlas);
+      void bakeInto(
+        TextureAtlas &atlas
+      );
 
       const GlyphProps &glyphFor(
         TypefaceEnum typeface,
         char32_t     codepoint
       ) const;
-      float pixelSize(TypefaceEnum typeface) const;
+      float pixelSize(
+        TypefaceEnum typeface
+      ) const;
       float measure(
         TypefaceEnum     typeface,
         std::string_view text,
@@ -24,7 +28,9 @@ namespace wheel_of_fear {
       ) const;
 
     private:
-      const FontProps &font(TypefaceEnum typeface) const;
+      const FontProps &font(
+        TypefaceEnum typeface
+      ) const;
 
       std::array<FontProps, typeface_count> fonts_ {};
   };

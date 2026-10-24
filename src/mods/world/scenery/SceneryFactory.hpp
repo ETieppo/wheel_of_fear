@@ -11,8 +11,7 @@ namespace wheel_of_fear {
     public:
       SceneryFactory() = delete;
 
-      static
-      std::unique_ptr<Scenery> create(
+      static std::unique_ptr<Scenery> create(
         SceneryKindEnum            kind,
         const SceneryPlacementDto &placement
       );

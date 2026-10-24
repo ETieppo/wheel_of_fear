@@ -8,19 +8,27 @@
 
 namespace wheel_of_fear {
   namespace {
-    Game* createGame(Window &window) {
+    Game* createGame(
+      Window &window
+    ) {
       return new Game(window);
     }
 
-    void destroyGame(Game* game) {
+    void destroyGame(
+      Game* game
+    ) {
       delete game;
     }
 
-    bool runGameFrame(Game &game) {
+    bool runGameFrame(
+      Game &game
+    ) {
       return game.runFrame();
     }
 
-    std::vector<std::byte> saveGameSnapshot(const Game &game) {
+    std::vector<std::byte> saveGameSnapshot(
+      const Game &game
+    ) {
       const GameSnapshotProps snapshot = game.snapshot();
       std::vector<std::byte>  bytes(sizeof(GameSnapshotProps));
       std::memcpy(bytes.data(), &snapshot, sizeof(GameSnapshotProps));

@@ -13,9 +13,8 @@ namespace wheel_of_fear {
     GameContextDto &context,
     Vec2            landing
   ) {
-    context.noise.emit(
-      landing, impact_noise_radius, NoiseSourceEnum::throwable_impact
-    );
+    context.noise
+      .emit(landing, impact_noise_radius, NoiseSourceEnum::throwable_impact);
     context.sound_player.playAt(
       SoundEnum::decoy_impact,
       0.8F,

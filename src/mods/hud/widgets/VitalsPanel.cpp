@@ -14,9 +14,8 @@ namespace wheel_of_fear {
     float         real_seconds
   ) {
     UiKit::drawPanel(renderer, 14, 14, 238, 86, Palette::panel_edge, 1);
-    renderer.drawText(
-      "VITALS", 28, 20, 12, Palette::muted_text, TextAlignEnum::left
-    );
+    renderer
+      .drawText("VITALS", 28, 20, 12, Palette::muted_text, TextAlignEnum::left);
     const int health = player.vitality().health();
     for(int slot = 0; slot < Vitality::max_health; ++slot) {
       const bool  is_filled = slot < health;
@@ -37,9 +36,8 @@ namespace wheel_of_fear {
 
     const Flashlight        &flashlight = player.flashlight();
     const FlashlightBattery &battery    = flashlight.battery();
-    renderer.drawText(
-      "CELL", 28, 42, 12, Palette::muted_text, TextAlignEnum::left
-    );
+    renderer
+      .drawText("CELL", 28, 42, 12, Palette::muted_text, TextAlignEnum::left);
     const bool  is_low = battery.level() < 0.2F;
     const float blink_alpha =
       Scalar::floorModulo(real_seconds, 0.5F) < 0.25F ? 1.0F : 0.35F;

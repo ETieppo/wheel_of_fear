@@ -3,7 +3,9 @@
 #include <algorithm>
 
 namespace wheel_of_fear {
-  bool Particle::advance(float delta_seconds) {
+  bool Particle::advance(
+    float delta_seconds
+  ) {
     state_.remaining_seconds -= delta_seconds;
     if(state_.remaining_seconds <= 0) return false;
     state_.position = state_.position.add(state_.velocity.scale(delta_seconds));

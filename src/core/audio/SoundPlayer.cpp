@@ -14,8 +14,10 @@
 namespace wheel_of_fear {
   SoundPlayer::SoundPlayer() {
     for(std::size_t sound_index = 0; sound_index < sound_count; ++sound_index) {
-      for(const std::string_view file :
-          SoundCatalog::filesFor(static_cast<SoundEnum>(sound_index))) {
+      for(
+        const std::string_view file :
+        SoundCatalog::filesFor(static_cast<SoundEnum>(sound_index))
+      ) {
         try {
           const DecodedAudioProps decoded =
             OggOpusDecoder::decodeFile(AssetLocator::assetPath(file));
@@ -32,8 +34,10 @@ namespace wheel_of_fear {
         }
       }
     }
-    for(std::size_t layer_index = 0; layer_index < music_layer_count;
-        ++layer_index) {
+    for(
+      std::size_t layer_index = 0; layer_index < music_layer_count;
+      ++layer_index
+    ) {
       std::vector<float>     stereo;
       const std::string_view file =
         SoundCatalog::musicFor(static_cast<MusicLayerEnum>(layer_index));
@@ -85,7 +89,9 @@ namespace wheel_of_fear {
     return stereo;
   }
 
-  MusicLayer &SoundPlayer::layer(MusicLayerEnum which) {
+  MusicLayer &SoundPlayer::layer(
+    MusicLayerEnum which
+  ) {
     return music_layers_[static_cast<std::size_t>(which)];
   }
 
@@ -108,7 +114,9 @@ namespace wheel_of_fear {
     layer(MusicLayerEnum::tension).setTargetVolume(tension);
   }
 
-  void SoundPlayer::updateMusic(float delta_seconds) {
+  void SoundPlayer::updateMusic(
+    float delta_seconds
+  ) {
     for(MusicLayer &music_layer : music_layers_)
       music_layer.update(mixer_, delta_seconds, music_volume_ * master_volume_);
   }
@@ -173,11 +181,15 @@ namespace wheel_of_fear {
     return Scalar::clamp((source.x - listener.x) / stereo_width, -1, 1);
   }
 
-  void SoundPlayer::stop(VoiceId voice) {
+  void SoundPlayer::stop(
+    VoiceId voice
+  ) {
     mixer_.stop(voice);
   }
 
-  bool SoundPlayer::isPlaying(VoiceId voice) const {
+  bool SoundPlayer::isPlaying(
+    VoiceId voice
+  ) const {
     return mixer_.isPlaying(voice);
   }
 

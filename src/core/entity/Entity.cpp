@@ -14,7 +14,9 @@ namespace wheel_of_fear {
       , collision_half_size_(collision_half_size) {
   }
 
-  void Entity::respawnAt(Vec2 position) {
+  void Entity::respawnAt(
+    Vec2 position
+  ) {
     position_          = position;
     heading_           = 0;
     animation_seconds_ = 0;
@@ -22,7 +24,9 @@ namespace wheel_of_fear {
     is_moving_         = false;
   }
 
-  void Entity::advanceAnimation(float delta_seconds) {
+  void Entity::advanceAnimation(
+    float delta_seconds
+  ) {
     animation_seconds_ += delta_seconds;
   }
 
@@ -30,11 +34,15 @@ namespace wheel_of_fear {
     return Vec2::fromAngle(heading_);
   }
 
-  float Entity::distanceTo(Vec2 point) const {
+  float Entity::distanceTo(
+    Vec2 point
+  ) const {
     return position_.distance(point);
   }
 
-  Vec2 Entity::directionTo(Vec2 point) const {
+  Vec2 Entity::directionTo(
+    Vec2 point
+  ) const {
     return point.sub(position_).normalized();
   }
 
@@ -48,7 +56,9 @@ namespace wheel_of_fear {
     heading_ += difference * Scalar::clamp(delta_seconds * turn_rate, 0, 1);
   }
 
-  void Entity::faceToward(Vec2 point) {
+  void Entity::faceToward(
+    Vec2 point
+  ) {
     const Vec2 offset = point.sub(position_);
     if(offset.length() > 0.01F) heading_ = offset.angle();
   }

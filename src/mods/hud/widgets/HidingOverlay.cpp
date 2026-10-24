@@ -16,10 +16,18 @@ namespace wheel_of_fear {
     constexpr float width  = RenderConfig::ui_width;
     constexpr float height = RenderConfig::ui_height;
     renderer.drawUiRectangle(
-      0, 0, width, height * 0.36F, Color::black().withAlpha(0.82F)
+      0,
+      0,
+      width,
+      height * 0.36F,
+      Color::black().withAlpha(0.82F)
     );
     renderer.drawUiRectangle(
-      0, height * 0.64F, width, height * 0.36F, Color::black().withAlpha(0.82F)
+      0,
+      height * 0.64F,
+      width,
+      height * 0.36F,
+      Color::black().withAlpha(0.82F)
     );
     for(int slit = 0; slit < 5; ++slit)
       renderer.drawUiRectangle(
@@ -32,7 +40,13 @@ namespace wheel_of_fear {
 
     constexpr float center_x = width / 2;
     UiKit::drawPanel(
-      renderer, center_x - 130, height - 150, 260, 44, Palette::panel_edge, 1
+      renderer,
+      center_x - 130,
+      height - 150,
+      260,
+      44,
+      Palette::panel_edge,
+      1
     );
     renderer.drawText(
       "BREATH",
