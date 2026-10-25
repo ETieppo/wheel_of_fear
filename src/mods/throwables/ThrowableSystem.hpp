@@ -1,7 +1,9 @@
 #pragma once
 
 #include "core/items/enums/ItemEnum.hpp"
+#include "core/math/ColorProps.hpp"
 #include "core/math/Vec2Props.hpp"
+#include "core/theme/Palette.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/throwables/LureBeaconEntity.hpp"
 #include "mods/throwables/NeonPuddleHazard.hpp"
@@ -29,7 +31,12 @@ namespace wheel_of_fear {
       }
 
       void spillPuddle(Vec2Props landing) {
-        puddles_.emplace_back(landing);
+        puddles_.emplace_back(landing, grenade_color_);
+      }
+
+      [[nodiscard]]
+      ColorProps grenadeColor() const {
+        return grenade_color_;
       }
 
       void update(GameContextDto &context);
@@ -63,5 +70,6 @@ namespace wheel_of_fear {
       std::vector<LureBeaconEntity>            beacons_;
       std::vector<NeonPuddleHazard>            puddles_;
       std::vector<PickupEntity>                pickups_;
+      ColorProps grenade_color_ = Palette::grenade_neon_colors.front();
   };
 } // namespace wheel_of_fear

@@ -2,6 +2,7 @@
 
 #include "core/items/enums/ItemEnum.hpp"
 #include "core/math/ColorProps.hpp"
+#include <cstdint>
 #include <string_view>
 
 namespace wheel_of_fear {
@@ -21,6 +22,12 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       ColorProps color() const {
+        return color_;
+      }
+
+      [[nodiscard]]
+      virtual ColorProps
+      colorForPhase([[maybe_unused]] std::uint32_t phase) const {
         return color_;
       }
 

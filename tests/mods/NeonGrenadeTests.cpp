@@ -1,3 +1,5 @@
+#include "core/items/ItemCatalog.hpp"
+#include "core/theme/Palette.hpp"
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/mobs/MobEntity.hpp"
 #include "mods/mobs/MobSystem.hpp"
@@ -17,7 +19,7 @@
 namespace wheel_of_fear {
   namespace {
     float glowIntensityAfter(float elapsed_seconds) {
-      NeonPuddleHazard puddle(Vec2Props::of(0, 0));
+      NeonPuddleHazard puddle(Vec2Props::of(0, 0), Palette::neon_magenta);
       LightingSystem   lighting;
 
       puddle.update(elapsed_seconds);
@@ -95,7 +97,7 @@ namespace wheel_of_fear {
     CHECK(late > 0);
     CHECK(late < halfway);
 
-    NeonPuddleHazard puddle(Vec2Props::of(0, 0));
+    NeonPuddleHazard puddle(Vec2Props::of(0, 0), Palette::neon_magenta);
 
     puddle.update(89);
     CHECK_FALSE(puddle.isDry());
@@ -189,5 +191,19 @@ namespace wheel_of_fear {
     const bool is_burning_or_burnt = context.mobs.all().empty()
       || context.mobs.all().front()->condition().isBurning();
     CHECK(is_burning_or_burnt);
+  }
+} // namespace wheel_of_fear
+
+namespace wheel_of_fear {
+  TEST_CASE("neon grenade color changes with the phase and cycles") {
+    const Item &grenade = ItemCatalog::of(ItemEnum::neon_grenade);
+    const auto &colors  = Palette::grenade_neon_colors;
+
+    CHECK(grenade.colorForPhase(1).r == colors[0].r);
+    CHECK(grenade.colorForPhase(2).r == colors[1].r);
+    CHECK(grenade.colorForPhase(3).g == colors[2].g);
+    CHECK(
+      grenade.colorForPhase(1 + colors.size()).b == grenade.colorForPhase(1).b
+    );
   }
 } // namespace wheel_of_fear

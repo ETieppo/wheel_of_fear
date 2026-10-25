@@ -2,6 +2,7 @@
 
 #include "core/render/Renderer.hpp"
 #include "mods/art/SpriteSheetProps.hpp"
+#include <cstdint>
 
 namespace wheel_of_fear {
   class InventoryComponent;
@@ -13,7 +14,8 @@ namespace wheel_of_fear {
       static void draw(
         Renderer                 &renderer,
         const SpriteSheetProps   &sprites,
-        const InventoryComponent &inventory
+        const InventoryComponent &inventory,
+        std::uint32_t             phase
       );
   };
 } // namespace wheel_of_fear

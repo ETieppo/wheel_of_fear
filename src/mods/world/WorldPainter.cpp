@@ -108,7 +108,7 @@ namespace wheel_of_fear {
         const float shimmer
           = 0.8F + (0.2F * std::sin((real_seconds_ * 2.5F) + phase));
         const float      scale = (droplet.radius / soft_circle_radius) * ripple;
-        const ColorProps neon  = Palette::neon_magenta;
+        const ColorProps neon  = splash.color;
         const ColorProps hot
           = neon.mix(ColorProps::white(), neon_core_white_mix);
 

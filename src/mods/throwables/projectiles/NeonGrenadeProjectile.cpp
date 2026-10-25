@@ -29,7 +29,7 @@ namespace wheel_of_fear {
       world.random().range(0.92F, 1.05F)
     );
 
-    context.effects.emitNeonBurst(world, landing);
+    context.effects.emitNeonBurst(world, landing, color_);
     world.shake(
       ScalarMath::clamp(
         0.8F - (landing.distance(player_position) / 300),
@@ -44,18 +44,14 @@ namespace wheel_of_fear {
         world,
         landing,
         spread_tiles * RenderConfig::tile_size,
-        NeonPuddleHazard::lifetime_seconds
+        NeonPuddleHazard::lifetime_seconds,
+        color_
       )
     );
     context.throwables.spillPuddle(landing);
   }
 
   void NeonGrenadeProjectile::drawTrail(Renderer &renderer) const {
-    renderer.drawGlowDisc(
-      airPosition(),
-      5,
-      Palette::neon_magenta.withAlpha(0.6F),
-      1.4F
-    );
+    renderer.drawGlowDisc(airPosition(), 5, color_.withAlpha(0.6F), 1.4F);
   }
 } // namespace wheel_of_fear

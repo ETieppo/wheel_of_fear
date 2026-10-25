@@ -26,7 +26,8 @@ namespace wheel_of_fear {
     WorldSystem &world,
     Vec2Props    origin,
     float        reach,
-    float        lifetime_seconds
+    float        lifetime_seconds,
+    ColorProps   color
   ) {
     RandomGenerator              &random = world.random();
     const NeonSplashOutlineProps  core   = shapeCore(random, origin, reach);
@@ -37,7 +38,10 @@ namespace wheel_of_fear {
     addSpray(random, origin, reach, droplets);
     floodTiles(world, origin, droplets, lifetime_seconds);
 
-    NeonSplashProps splash {.lifetime_seconds = lifetime_seconds};
+    NeonSplashProps splash {
+      .lifetime_seconds = lifetime_seconds,
+      .color            = color,
+    };
 
     for(const NeonDropletProps &candidate : droplets)
       if(world.map().fluids().neonAt(candidate.position) > 0)

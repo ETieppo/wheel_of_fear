@@ -1,6 +1,5 @@
 #include "mods/throwables/NeonPuddleHazard.hpp"
 #include "core/math/ScalarMath.hpp"
-#include "core/theme/Palette.hpp"
 #include <algorithm>
 #include <cmath>
 
@@ -24,16 +23,16 @@ namespace wheel_of_fear {
     glow.position  = position_;
     glow.radius    = light_radius;
     glow.intensity = 1.1F * fade * shimmer;
-    glow.color     = Palette::neon_magenta;
+    glow.color     = color_;
     glow.flicker   = 0.05F;
     lighting.add(glow);
 
     if(flash_seconds_ <= 0) return;
 
-    flash.position  = position_;
-    flash.radius    = 170;
-    flash.intensity = 3 * flash_seconds_ / flash_duration_seconds;
-    flash.color     = Palette::neon_magenta.mix(ColorProps::white(), 0.5F);
+    flash.position          = position_;
+    flash.radius            = 170;
+    flash.intensity         = 3 * flash_seconds_ / flash_duration_seconds;
+    flash.color             = color_.mix(ColorProps::white(), 0.5F);
     flash.freezes_creatures = true;
     lighting.add(flash);
   }

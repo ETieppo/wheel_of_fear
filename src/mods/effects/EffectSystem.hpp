@@ -39,7 +39,8 @@ namespace wheel_of_fear {
 
       void emitNeonBurst(
         WorldSystem &world,
-        Vec2Props    origin
+        Vec2Props    origin,
+        ColorProps   color
       );
 
       void emitAcidDrip(

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/math/ColorProps.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "mods/lighting/LightingSystem.hpp"
 
@@ -8,8 +9,12 @@ namespace wheel_of_fear {
     public:
       static constexpr float lifetime_seconds = 90;
 
-      explicit NeonPuddleHazard(Vec2Props position)
-          : position_(position) {
+      NeonPuddleHazard(
+        Vec2Props  position,
+        ColorProps color
+      )
+          : position_(position)
+          , color_(color) {
       }
 
       [[nodiscard]]
@@ -28,8 +33,9 @@ namespace wheel_of_fear {
       static constexpr float flash_duration_seconds = 0.5F;
       static constexpr float light_radius           = 95;
 
-      Vec2Props position_;
-      float     remaining_seconds_ = lifetime_seconds;
-      float     flash_seconds_     = flash_duration_seconds;
+      Vec2Props  position_;
+      ColorProps color_;
+      float      remaining_seconds_ = lifetime_seconds;
+      float      flash_seconds_     = flash_duration_seconds;
   };
 } // namespace wheel_of_fear

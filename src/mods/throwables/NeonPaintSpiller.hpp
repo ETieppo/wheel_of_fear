@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/math/ColorProps.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "mods/throwables/NeonSplashOutlineProps.hpp"
 #include "mods/world/NeonSplashProps.hpp"
@@ -18,7 +19,8 @@ namespace wheel_of_fear {
         WorldSystem &world,
         Vec2Props    origin,
         float        reach,
-        float        lifetime_seconds
+        float        lifetime_seconds,
+        ColorProps   color
       );
 
     private:

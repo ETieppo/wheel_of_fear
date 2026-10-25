@@ -7,6 +7,7 @@
 #include "mods/mobs/MobEntity.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
 
@@ -45,8 +46,12 @@ namespace wheel_of_fear {
         = 1 - (std::max(burn_seconds_, 0.0F) / burn_duration_seconds);
 
       if(world.random().chance(delta * 30))
-        context.effects
-          .emitSparks(world, owner_.position(), 2, Palette::neon_magenta);
+        context.effects.emitSparks(
+          world,
+          owner_.position(),
+          2,
+          context.throwables.grenadeColor()
+        );
       if(burn_seconds_ > 0) return;
 
       owner_.setAlive(false);

@@ -21,6 +21,12 @@ namespace wheel_of_fear {
         neon_amber,
         neon_lime,
       };
+      static constexpr std::array<ColorProps, 4> grenade_neon_colors {
+        neon_magenta,
+        neon_violet,
+        neon_cyan,
+        neon_lime,
+      };
       static constexpr ColorProps flashlight_white  = ColorProps::hex(0xdff6ff);
       static constexpr ColorProps ultraviolet_light = ColorProps::hex(0x9a5cff);
       static constexpr ColorProps warm_light        = ColorProps::hex(0xffd9a0);

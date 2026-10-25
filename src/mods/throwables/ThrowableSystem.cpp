@@ -20,6 +20,8 @@ namespace wheel_of_fear {
     beacons_.clear();
     puddles_.clear();
     pickups_.clear();
+    grenade_color_
+      = ItemCatalog::of(ItemEnum::neon_grenade).colorForPhase(world.phase());
 
     RandomGenerator  &random        = world.random();
     const auto       &rooms         = world.map().rooms();
@@ -45,7 +47,7 @@ namespace wheel_of_fear {
 
     if(item == ItemEnum::neon_grenade) {
       projectiles_.push_back(
-        std::make_unique<NeonGrenadeProjectile>(from, target)
+        std::make_unique<NeonGrenadeProjectile>(from, target, grenade_color_)
       );
     } else {
       projectiles_.push_back(
@@ -146,7 +148,7 @@ namespace wheel_of_fear {
       context.sound_player.play(SoundEnum::part_pickup, 0.5F, 0, 1.4F);
 
       context.hud.announce(
-        details.color(),
+        details.colorForPhase(context.world.phase()),
         std::format(
           "PICKED UP  {}  ({}/{})",
           details.displayName(),
@@ -163,8 +165,14 @@ namespace wheel_of_fear {
 
     for(std::size_t index = 0; index < pickups_.size(); ++index)
       if(renderer.isVisible(pickups_[index].position(), 12))
-        pickups_[index]
-          .draw(renderer, sprites, index, context.clock.realSeconds());
+        pickups_[index].draw(
+          renderer,
+          sprites,
+          ItemCatalog::of(pickups_[index].item())
+            .colorForPhase(context.world.phase()),
+          index,
+          context.clock.realSeconds()
+        );
 
     for(const LureBeaconEntity &beacon : beacons_)
       if(renderer.isVisible(beacon.position(), 40))

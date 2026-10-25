@@ -11,7 +11,8 @@ namespace wheel_of_fear {
   void InventoryBarWidget::draw(
     Renderer                 &renderer,
     const SpriteSheetProps   &sprites,
-    const InventoryComponent &inventory
+    const InventoryComponent &inventory,
+    std::uint32_t             phase
   ) {
     constexpr float slot_size = 40;
     constexpr float top       = RenderConfig::ui_height - 14 - slot_size - 14;
@@ -19,7 +20,7 @@ namespace wheel_of_fear {
 
     for(const ItemEnum item : ItemCatalog::throwables()) {
       const int        count = inventory.count(item);
-      const ColorProps color = ItemCatalog::of(item).color();
+      const ColorProps color = ItemCatalog::of(item).colorForPhase(phase);
 
       UiPainter::drawPanel(
         renderer,

@@ -53,7 +53,8 @@ namespace wheel_of_fear {
     InventoryBarWidget::draw(
       renderer,
       context.art.sprites(),
-      player.inventory()
+      player.inventory(),
+      context.world.phase()
     );
 
     messages_.draw(renderer);

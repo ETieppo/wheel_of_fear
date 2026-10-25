@@ -112,7 +112,8 @@ namespace wheel_of_fear {
 
   void EffectSystem::emitNeonBurst(
     WorldSystem &world,
-    Vec2Props    origin
+    Vec2Props    origin,
+    ColorProps   color
   ) {
     RandomGenerator &random = world.random();
 
@@ -125,12 +126,12 @@ namespace wheel_of_fear {
                                   .scale(random.range(30, 150))
                                   .add(Vec2Props::of(0, -20));
       state.color
-        = random.chance(0.7F) ? Palette::neon_magenta : Palette::neon_cyan;
+        = random.chance(0.7F) ? color : Palette::neon_cyan;
 
       spawn<NeonDropParticle>(state);
     }
 
-    emitSparks(world, origin, 18, Palette::neon_magenta);
+    emitSparks(world, origin, 18, color);
   }
 
   void EffectSystem::emitAcidDrip(

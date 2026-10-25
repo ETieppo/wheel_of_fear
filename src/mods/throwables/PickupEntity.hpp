@@ -36,6 +36,7 @@ namespace wheel_of_fear {
       void draw(
         Renderer               &renderer,
         const SpriteSheetProps &sprites,
+        ColorProps              color,
         std::size_t             index,
         float                   real_seconds
       ) const;
