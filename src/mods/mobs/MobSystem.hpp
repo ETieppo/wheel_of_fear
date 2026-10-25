@@ -27,6 +27,9 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      const MobEntity* visibleMobAt(Vec2Props point) const;
+
+      [[nodiscard]]
       const MobDangerMonitor &danger() const {
         return danger_;
       }
@@ -72,6 +75,9 @@ namespace wheel_of_fear {
       void draw(GameContextDto &context);
 
     private:
+      static constexpr float inspect_margin       = 6;
+      static constexpr float inspect_min_presence = 0.35F;
+
       static constexpr float phase_grace_seconds = 8;
 
       void updateConditions(

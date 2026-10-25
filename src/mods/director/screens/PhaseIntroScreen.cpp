@@ -7,19 +7,18 @@
 
 namespace wheel_of_fear {
   void PhaseIntroScreen::draw(
-    Renderer                         &renderer,
-    std::uint32_t                     phase,
-    std::span<const std::string_view> introductions,
-    float                             state_seconds,
-    float                             intro_seconds,
-    float                             real_seconds
+    Renderer     &renderer,
+    std::uint32_t phase,
+    float         state_seconds,
+    float         intro_seconds,
+    float         real_seconds
   ) {
     constexpr float center_x = RenderConfig::ui_width / 2;
     const float     appear   = ScalarMath::clamp(state_seconds * 2, 0, 1);
     const float     vanish
       = ScalarMath::clamp((intro_seconds - state_seconds) * 2, 0, 1);
-    const float alpha  = appear * vanish;
-    const float height = 150 + (static_cast<float>(introductions.size()) * 24);
+    const float     alpha  = appear * vanish;
+    constexpr float height = 150;
 
     renderer.drawUiRectangle(
       0,
@@ -75,17 +74,6 @@ namespace wheel_of_fear {
       Palette::muted_text.withAlpha(alpha),
       TextAlignEnum::center
     );
-
-    for(std::size_t index = 0; index < introductions.size(); ++index) {
-      renderer.drawText(
-        introductions[index],
-        center_x,
-        280 + (static_cast<float>(index) * 24),
-        15,
-        Palette::accent.withAlpha(alpha),
-        TextAlignEnum::center
-      );
-    }
 
     renderer.drawText(
       "ENTER  SKIP",

@@ -5,13 +5,16 @@
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
+#include "mods/camera/CameraSystem.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/hud/widgets/CrosshairWidget.hpp"
 #include "mods/hud/widgets/HidingOverlayWidget.hpp"
 #include "mods/hud/widgets/InventoryBarWidget.hpp"
+#include "mods/hud/widgets/MobInspectorWidget.hpp"
 #include "mods/hud/widgets/ObjectivesPanelWidget.hpp"
 #include "mods/hud/widgets/SkillCheckDialWidget.hpp"
 #include "mods/hud/widgets/VitalsPanelWidget.hpp"
+#include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/tracker/TrackerSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
@@ -49,6 +52,13 @@ namespace wheel_of_fear {
       context.world.phase(),
       context.generators
     );
+
+    if(
+      const MobEntity* inspected_mob = context.mobs.visibleMobAt(
+        context.camera.mouseWorldPosition(context.input)
+      )
+    )
+      MobInspectorWidget::draw(renderer, inspected_mob->traits().display_name);
 
     InventoryBarWidget::draw(
       renderer,

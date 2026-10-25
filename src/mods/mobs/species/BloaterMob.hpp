@@ -6,10 +6,7 @@ namespace wheel_of_fear {
   class BloaterMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name = "Bloater",
-        .introduction
-        = "BLOATER  -  a blind gas sac that drifts toward noise. Ultraviolet "
-          "lights its fuse; it takes everything nearby with it.",
+        .display_name            = "Bloater",
         .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::bloater_gurgle,
         .first_phase             = 2,

@@ -6,10 +6,8 @@ namespace wheel_of_fear {
   class ShepherdMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name = "Shepherd",
-        .introduction = "SHEPHERD  -  an antlered signal-caller. It keeps its "
-                        "distance and calls the pack to wherever you are.",
-        .frozen_by    = LightFilterEnum::any_light,
+        .display_name            = "Shepherd",
+        .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::shepherd_step,
         .first_phase             = 3,
         .speed                   = 38,

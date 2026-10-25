@@ -16,6 +16,25 @@ namespace wheel_of_fear {
 
   MobSystem::~MobSystem() = default;
 
+  const MobEntity* MobSystem::visibleMobAt(Vec2Props point) const {
+    const MobEntity* closest          = nullptr;
+    float            closest_distance = 0;
+
+    for(const auto &mob : mobs_) {
+      if(!mob->isAlive() || mob->isDisguised()) continue;
+      if(mob->appearance().presence() < inspect_min_presence) continue;
+
+      const float distance = mob->position().distance(point);
+      if(distance > mob->traits().collision_radius + inspect_margin) continue;
+      if(closest != nullptr && distance >= closest_distance) continue;
+
+      closest          = mob.get();
+      closest_distance = distance;
+    }
+
+    return closest;
+  }
+
   void MobSystem::populatePhase(WorldSystem &world) {
     mobs_.clear();
     grace_seconds_ = phase_grace_seconds;

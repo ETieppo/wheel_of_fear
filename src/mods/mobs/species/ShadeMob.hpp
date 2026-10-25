@@ -6,13 +6,11 @@ namespace wheel_of_fear {
   class ShadeMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name = "Shade",
-        .introduction = "SHADE  -  a silent smear of dark. Only ultraviolet "
-                        "reveals it, and only ultraviolet holds it.",
+        .display_name         = "Shade",
         .frozen_by            = LightFilterEnum::ultraviolet_only,
         .vocal_sound          = SoundEnum::whisper,
         .first_phase          = 4,
-        .speed        = 44,
+        .speed                = 44,
         .collision_radius     = 7,
         .visible_under        = LightFilterEnum::ultraviolet_only,
         .field_of_view_cosine = 0,

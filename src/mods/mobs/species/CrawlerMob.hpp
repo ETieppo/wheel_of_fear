@@ -6,10 +6,8 @@ namespace wheel_of_fear {
   class CrawlerMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name = "Crawler",
-        .introduction = "CRAWLER  -  a spider-drone that skitters toward every "
-                        "sound. Light pins it in place.",
-        .frozen_by    = LightFilterEnum::any_light,
+        .display_name            = "Crawler",
+        .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::crawler_skitter,
         .vocal_sound             = SoundEnum::crawler_chitter,
         .first_phase             = 1,

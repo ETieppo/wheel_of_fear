@@ -9,7 +9,6 @@
 namespace wheel_of_fear {
   struct MobTraitsProps {
       std::string_view               display_name;
-      std::string_view               introduction;
       std::optional<LightFilterEnum> frozen_by;
       std::optional<SoundEnum>       movement_sound;
       std::optional<SoundEnum>       vocal_sound;

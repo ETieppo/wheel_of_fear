@@ -9,10 +9,7 @@ namespace wheel_of_fear {
   class MothMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name = "Lantern Moth",
-        .introduction
-        = "LANTERN MOTH  -  rare and friendly. Its glow holds the "
-          "creatures still until a generator wakes.",
+        .display_name         = "Lantern Moth",
         .frozen_by            = std::nullopt,
         .first_phase          = 1,
         .speed                = 0,

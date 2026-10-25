@@ -8,7 +8,6 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
-#include <string_view>
 #include <vector>
 
 namespace wheel_of_fear {
@@ -17,9 +16,6 @@ namespace wheel_of_fear {
       explicit MobSpawner(std::vector<std::unique_ptr<MobEntity>> &mobs)
           : mobs_(mobs) {
       }
-
-      static std::vector<std::string_view>
-      introductionsForPhase(std::uint32_t phase);
 
       void spawn(
         MobKindEnum kind,

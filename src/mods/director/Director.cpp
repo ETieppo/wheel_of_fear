@@ -93,7 +93,6 @@ namespace wheel_of_fear {
     context.tracker.close();
     context.hud.clearMessages();
     context.camera.snapToPlayer(world, context.player);
-    intro_lines_   = MobSpawner::introductionsForPhase(phase);
     death_seconds_ = 0;
     demo_.restart();
     enterState(GameStateEnum::phase_intro);

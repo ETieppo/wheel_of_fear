@@ -6,19 +6,6 @@
 #include <algorithm>
 
 namespace wheel_of_fear {
-  std::vector<std::string_view>
-  MobSpawner::introductionsForPhase(std::uint32_t phase) {
-    std::vector<std::string_view> introductions;
-
-    for(const MobKindEnum kind : all_mob_kinds) {
-      const MobTraitsProps &traits = MobCatalog::traitsOf(kind);
-      if(traits.first_phase != phase || !traits.is_hostile) continue;
-      introductions.push_back(traits.introduction);
-    }
-
-    return introductions;
-  }
-
   void MobSpawner::spawn(
     MobKindEnum kind,
     Vec2Props   position

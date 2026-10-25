@@ -35,7 +35,6 @@ namespace wheel_of_fear {
     PhaseIntroScreen::draw(
       context.renderer,
       director.phase(),
-      director.introLines(),
       director.stateSeconds(),
       Director::intro_seconds,
       context.clock.realSeconds()

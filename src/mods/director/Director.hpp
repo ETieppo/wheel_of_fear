@@ -15,9 +15,6 @@
 #include <cstdint>
 #include <filesystem>
 #include <optional>
-#include <span>
-#include <string_view>
-#include <vector>
 
 namespace wheel_of_fear {
   class Director {
@@ -54,11 +51,6 @@ namespace wheel_of_fear {
       [[nodiscard]]
       std::uint32_t phase() const {
         return phase_;
-      }
-
-      [[nodiscard]]
-      std::span<const std::string_view> introLines() const {
-        return intro_lines_;
       }
 
       [[nodiscard]]
@@ -121,17 +113,16 @@ namespace wheel_of_fear {
       std::uint32_t phase_                = 1;
       std::uint64_t seed_counter_         = 0x5EED;
       int           committed_max_health_ = VitalityComponent::base_max_health;
-      std::vector<std::string_view> intro_lines_;
-      float                         death_seconds_ = 0;
-      float                         fade_amount_   = 1;
-      DemoScenarioRunner            demo_;
-      ProgressStore                 progress_;
-      TitleGameState                title_state_;
-      PhaseIntroGameState           phase_intro_state_;
-      PlayingGameState              playing_state_;
-      PausedGameState               paused_state_;
-      GameOverGameState             game_over_state_;
-      PhaseClearedGameState         phase_cleared_state_;
-      CreditsGameState              credits_state_;
+      float         death_seconds_        = 0;
+      float         fade_amount_          = 1;
+      DemoScenarioRunner    demo_;
+      ProgressStore         progress_;
+      TitleGameState        title_state_;
+      PhaseIntroGameState   phase_intro_state_;
+      PlayingGameState      playing_state_;
+      PausedGameState       paused_state_;
+      GameOverGameState     game_over_state_;
+      PhaseClearedGameState phase_cleared_state_;
+      CreditsGameState      credits_state_;
   };
 } // namespace wheel_of_fear

@@ -7,10 +7,7 @@ namespace wheel_of_fear {
   class MelterMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name = "Melter",
-        .introduction
-        = "MELTER  -  an acid slug. Slow, but walls mean nothing to "
-          "it. Listen for the hiss.",
+        .display_name            = "Melter",
         .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::melter_slither,
         .vocal_sound             = SoundEnum::acid_sizzle,
