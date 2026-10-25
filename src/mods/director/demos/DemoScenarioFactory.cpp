@@ -14,10 +14,12 @@
 #include "mods/director/demos/WalkDemoScenario.hpp"
 
 namespace wheel_of_fear {
-  std::unique_ptr<DemoScenario> DemoScenarioFactory::create(DemoModeEnum mode) {
-    switch(mode) {
+  std::unique_ptr<DemoScenario>
+  DemoScenarioFactory::create(const DemoModeProps &demo_mode) {
+    switch(demo_mode.mode) {
       case DemoModeEnum::none: return nullptr;
-      case DemoModeEnum::play: return std::make_unique<PatrolDemoScenario>(1);
+      case DemoModeEnum::play:
+        return std::make_unique<PatrolDemoScenario>(first_sector);
       case DemoModeEnum::deep:
         return std::make_unique<PatrolDemoScenario>(deep_sector);
       case DemoModeEnum::tracker:
@@ -33,7 +35,11 @@ namespace wheel_of_fear {
       case DemoModeEnum::witness:
         return std::make_unique<LockerDemoScenario>(true);
       case DemoModeEnum::repair: return std::make_unique<RepairDemoScenario>();
-      case DemoModeEnum::power:  return std::make_unique<PowerDemoScenario>();
+      case DemoModeEnum::phase:
+        return std::make_unique<PatrolDemoScenario>(
+          demo_mode.starting_phase.value_or(first_sector)
+        );
+      case DemoModeEnum::power: return std::make_unique<PowerDemoScenario>();
       case DemoModeEnum::grenade:
         return std::make_unique<GrenadeDemoScenario>();
       case DemoModeEnum::lure:  return std::make_unique<LureDemoScenario>();

@@ -21,11 +21,15 @@
 #include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/tracker/TrackerSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <filesystem>
+#include <optional>
 
 namespace wheel_of_fear {
   class GameSimulation {
     public:
-      GameSimulation();
+      explicit GameSimulation(
+        std::optional<std::filesystem::path> progress_file_path
+      );
       GameSimulation(const GameSimulation &)             = delete;
       GameSimulation &operator =(const GameSimulation &) = delete;
       void            resume(const GameSnapshotProps &snapshot);

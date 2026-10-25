@@ -1,8 +1,12 @@
 #include "game/GameSimulation.hpp"
+#include <utility>
 
 namespace wheel_of_fear {
-  GameSimulation::GameSimulation()
+  GameSimulation::GameSimulation(
+    std::optional<std::filesystem::path> progress_file_path
+  )
       : art_(renderer_)
+      , director_(std::move(progress_file_path))
       , context_ {
           .clock        = clock_,
           .input        = input_,

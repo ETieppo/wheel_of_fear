@@ -3,11 +3,12 @@
 #include "game/GameModuleApiProps.hpp"
 #include <SDL3/SDL_log.h>
 #include <cstring>
+#include <optional>
 
 namespace wheel_of_fear {
   namespace {
     GameApplication* createGame(Window &window) {
-      return new GameApplication(window);
+      return new GameApplication(window, std::nullopt);
     }
 
     void destroyGame(GameApplication* game) {

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "core/render/Renderer.hpp"
+#include <cstdint>
+#include <optional>
 
 namespace wheel_of_fear {
   class TitleScreen final {
@@ -8,8 +10,9 @@ namespace wheel_of_fear {
       TitleScreen() = delete;
 
       static void draw(
-        Renderer &renderer,
-        float     real_seconds
+        Renderer                    &renderer,
+        float                        real_seconds,
+        std::optional<std::uint32_t> saved_phase
       );
   };
 } // namespace wheel_of_fear

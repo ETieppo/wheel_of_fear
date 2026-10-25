@@ -15,6 +15,7 @@
 #include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/tracker/TrackerSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <utility>
 
 namespace wheel_of_fear {
   namespace {
@@ -23,6 +24,12 @@ namespace wheel_of_fear {
     constexpr ColorProps
       title_ambient {.r = 0.05F, .g = 0.055F, .b = 0.09F, .a = 1};
   } // namespace
+
+  Director::Director(std::optional<std::filesystem::path> progress_file_path)
+      : progress_(
+          demo_.isActive() ? std::nullopt : std::move(progress_file_path)
+        ) {
+  }
 
   void Director::initialize(GameContextDto &context) {
     WorldSystem &world = context.world;
@@ -82,6 +89,10 @@ namespace wheel_of_fear {
     demo_.restart();
     enterState(GameStateEnum::phase_intro);
     context.sound_player.play(SoundEnum::phase_start, 0.9F, 0, 1);
+  }
+
+  void Director::saveProgress() {
+    progress_.save(snapshot());
   }
 
   void Director::update(GameContextDto &context) {

@@ -6,11 +6,16 @@
 #include "core/time/FrameTimer.hpp"
 #include "game/GameSimulation.hpp"
 #include "game/GameSnapshotProps.hpp"
+#include <filesystem>
+#include <optional>
 
 namespace wheel_of_fear {
   class GameApplication {
     public:
-      explicit GameApplication(Window &window);
+      GameApplication(
+        Window                              &window,
+        std::optional<std::filesystem::path> progress_file_path
+      );
       GameApplication(const GameApplication &)             = delete;
       GameApplication &operator =(const GameApplication &) = delete;
       bool             runFrame();

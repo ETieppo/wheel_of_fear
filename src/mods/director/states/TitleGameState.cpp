@@ -10,6 +10,7 @@
 #include "mods/hud/HudSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include <cmath>
+#include <optional>
 
 namespace wheel_of_fear {
   void TitleGameState::update(
@@ -20,13 +21,22 @@ namespace wheel_of_fear {
     context.hud.setVisible(false);
     panCamera(director, context);
 
-    if(
-      !context.input.wasPressed(InputActionEnum::confirm)
-      && !director.demo().isActive()
-    )
-      return;
+    const bool is_new_run_requested = director.progress().saved().has_value()
+      && context.input.wasPressed(InputActionEnum::restart);
+    const bool is_start_requested
+      = context.input.wasPressed(InputActionEnum::confirm)
+      || director.demo().isActive();
+
+    if(!is_new_run_requested && !is_start_requested) return;
 
     context.sound_player.play(SoundEnum::ui_glitch, 0.8F, 0, 1);
+    if(is_new_run_requested) director.progress().clear();
+
+    if(const auto &saved = director.progress().saved()) {
+      director.resume(context, *saved);
+      return;
+    }
+
     director.startPhase(context, director.demo().startingPhase());
   }
 
@@ -35,10 +45,16 @@ namespace wheel_of_fear {
   }
 
   void TitleGameState::draw(
-    [[maybe_unused]] const Director &director,
-    GameContextDto                  &context
+    const Director &director,
+    GameContextDto &context
   ) const {
-    TitleScreen::draw(context.renderer, context.clock.realSeconds());
+    const auto &saved = director.progress().saved();
+
+    TitleScreen::draw(
+      context.renderer,
+      context.clock.realSeconds(),
+      saved ? std::optional(saved->phase) : std::nullopt
+    );
   }
 
   void TitleGameState::panCamera(

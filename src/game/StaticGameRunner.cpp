@@ -1,4 +1,5 @@
 #include "game/StaticGameRunner.hpp"
+#include "core/storage/UserDataLocator.hpp"
 
 namespace wheel_of_fear {
   std::unique_ptr<GameRunner> GameRunner::create(Window &window) {
@@ -6,7 +7,10 @@ namespace wheel_of_fear {
   }
 
   StaticGameRunner::StaticGameRunner(Window &window)
-      : game_(window) {
+      : game_(
+          window,
+          UserDataLocator::filePath(progress_file_name)
+        ) {
   }
 
   bool StaticGameRunner::runFrame() {

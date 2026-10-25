@@ -3,6 +3,7 @@
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/director/DemoScenarioRunner.hpp"
 #include "mods/director/DirectorSnapshotProps.hpp"
+#include "mods/director/ProgressStore.hpp"
 #include "mods/director/enums/GameStateEnum.hpp"
 #include "mods/director/states/GameOverGameState.hpp"
 #include "mods/director/states/PausedGameState.hpp"
@@ -11,6 +12,8 @@
 #include "mods/director/states/PlayingGameState.hpp"
 #include "mods/director/states/TitleGameState.hpp"
 #include <cstdint>
+#include <filesystem>
+#include <optional>
 #include <span>
 #include <string_view>
 #include <vector>
@@ -21,10 +24,13 @@ namespace wheel_of_fear {
       static constexpr float intro_seconds           = 6;
       static constexpr float cleared_seconds         = 3;
       static constexpr float game_over_delay_seconds = 1.4F;
-      static void            initialize(GameContextDto &context);
-      void                   update(GameContextDto &context);
-      void                   draw(GameContextDto &context) const;
-      void                   enterState(GameStateEnum state);
+      explicit Director(
+        std::optional<std::filesystem::path> progress_file_path
+      );
+      static void initialize(GameContextDto &context);
+      void        update(GameContextDto &context);
+      void        draw(GameContextDto &context) const;
+      void        enterState(GameStateEnum state);
 
       [[nodiscard]]
       DirectorSnapshotProps snapshot() const;
@@ -73,10 +79,22 @@ namespace wheel_of_fear {
         return demo_;
       }
 
+      [[nodiscard]]
+      ProgressStore &progress() {
+        return progress_;
+      }
+
+      [[nodiscard]]
+      const ProgressStore &progress() const {
+        return progress_;
+      }
+
       void startPhase(
         GameContextDto &context,
         std::uint32_t   phase
       );
+
+      void saveProgress();
 
     private:
       static constexpr std::uint64_t title_seed      = 0x7171;
@@ -99,6 +117,7 @@ namespace wheel_of_fear {
       float                         death_seconds_ = 0;
       float                         fade_amount_   = 1;
       DemoScenarioRunner            demo_;
+      ProgressStore                 progress_;
       TitleGameState                title_state_;
       PhaseIntroGameState           phase_intro_state_;
       PlayingGameState              playing_state_;

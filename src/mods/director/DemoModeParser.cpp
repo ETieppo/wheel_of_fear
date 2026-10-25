@@ -1,11 +1,12 @@
 #include "mods/director/DemoModeParser.hpp"
+#include "core/text/TextNumberParser.hpp"
 #include <array>
 #include <cstdlib>
 #include <utility>
 
 namespace wheel_of_fear {
   DemoModeEnum DemoModeParser::parse(std::string_view name) {
-    constexpr std::array<std::pair<std::string_view, DemoModeEnum>, 16> modes {
+    constexpr std::array<std::pair<std::string_view, DemoModeEnum>, 17> modes {
       {
        {"none", DemoModeEnum::none},
        {"play", DemoModeEnum::play},
@@ -18,6 +19,7 @@ namespace wheel_of_fear {
        {"locker", DemoModeEnum::locker},
        {"witness", DemoModeEnum::witness},
        {"repair", DemoModeEnum::repair},
+       {"phase", DemoModeEnum::phase},
        {"power", DemoModeEnum::power},
        {"grenade", DemoModeEnum::grenade},
        {"lure", DemoModeEnum::lure},
@@ -32,9 +34,23 @@ namespace wheel_of_fear {
     return DemoModeEnum::none;
   }
 
-  DemoModeEnum DemoModeParser::fromEnvironment() {
-    const char* value = std::getenv("ENGRENAGEM_DEMO");
-    if(value == nullptr) return DemoModeEnum::none;
-    return parse(value);
+  std::optional<std::uint32_t>
+  DemoModeParser::parsePhase(std::string_view text) {
+    const std::optional<std::uint32_t> phase
+      = TextNumberParser::parse<std::uint32_t>(text);
+    if(phase == 0U) return std::nullopt;
+    return phase;
+  }
+
+  DemoModeProps DemoModeParser::fromEnvironment() {
+    const char* mode_value  = std::getenv("ENGRENAGEM_DEMO");
+    const char* phase_value = std::getenv("ENGRENAGEM_PHASE");
+    if(mode_value == nullptr) return DemoModeProps {};
+
+    return DemoModeProps {
+      .mode = parse(mode_value),
+      .starting_phase
+      = phase_value == nullptr ? std::nullopt : parsePhase(phase_value),
+    };
   }
 } // namespace wheel_of_fear

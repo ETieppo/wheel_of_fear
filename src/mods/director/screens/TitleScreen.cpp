@@ -6,13 +6,15 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <format>
 #include <string_view>
 #include <utility>
 
 namespace wheel_of_fear {
   void TitleScreen::draw(
-    Renderer &renderer,
-    float     real_seconds
+    Renderer                    &renderer,
+    float                        real_seconds,
+    std::optional<std::uint32_t> saved_phase
   ) {
     constexpr float center_x = RenderConfig::ui_width / 2;
 
@@ -122,14 +124,34 @@ namespace wheel_of_fear {
 
     const float pulse = 0.45F + (0.55F * std::sin(real_seconds * 3));
 
-    renderer.drawDisplayText(
-      "PRESS ENTER",
-      center_x,
-      500,
-      22,
-      Palette::hud_magenta.withAlpha(pulse),
-      TextAlignEnum::center
-    );
+    if(saved_phase) {
+      renderer.drawDisplayText(
+        std::format("PRESS ENTER TO CONTINUE SECTOR {:02}", *saved_phase),
+        center_x,
+        500,
+        22,
+        Palette::hud_magenta.withAlpha(pulse),
+        TextAlignEnum::center
+      );
+
+      renderer.drawText(
+        "R  -  start a new run from sector 01",
+        center_x,
+        528,
+        15,
+        Palette::muted_text,
+        TextAlignEnum::center
+      );
+    } else {
+      renderer.drawDisplayText(
+        "PRESS ENTER",
+        center_x,
+        500,
+        22,
+        Palette::hud_magenta.withAlpha(pulse),
+        TextAlignEnum::center
+      );
+    }
 
     UiPainter::drawScanlines(
       renderer,

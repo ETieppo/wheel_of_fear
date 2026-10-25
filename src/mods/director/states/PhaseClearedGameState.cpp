@@ -13,8 +13,10 @@ namespace wheel_of_fear {
     GameContextDto &context
   ) {
     context.clock.setRunning(false);
-    if(director.stateSeconds() > Director::cleared_seconds)
-      director.startPhase(context, director.phase() + 1);
+    if(director.stateSeconds() <= Director::cleared_seconds) return;
+
+    director.startPhase(context, director.phase() + 1);
+    director.saveProgress();
   }
 
   void PhaseClearedGameState::mixMusic(GameContextDto &context) const {

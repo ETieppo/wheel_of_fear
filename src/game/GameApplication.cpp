@@ -1,12 +1,17 @@
 #include "game/GameApplication.hpp"
 #include <SDL3/SDL_events.h>
 #include <algorithm>
+#include <utility>
 
 namespace wheel_of_fear {
-  GameApplication::GameApplication(Window &window)
+  GameApplication::GameApplication(
+    Window                              &window,
+    std::optional<std::filesystem::path> progress_file_path
+  )
       : window_(window)
       , gpu_context_(window_)
-      , gpu_renderer_(gpu_context_) {
+      , gpu_renderer_(gpu_context_)
+      , simulation_(std::move(progress_file_path)) {
   }
 
   bool GameApplication::runFrame() {

@@ -3,6 +3,7 @@
 #include "game/GameSimulation.hpp"
 #include <cstdint>
 #include <cstdlib>
+#include <optional>
 #include <span>
 #include <string>
 
@@ -107,6 +108,6 @@ namespace wheel_of_fear {
       }
 
       DemoModeEnvironmentGuard demo_mode_guard_;
-      GameSimulation           simulation_;
+      GameSimulation           simulation_ {std::nullopt};
   };
 } // namespace wheel_of_fear

@@ -15,6 +15,7 @@ namespace wheel_of_fear {
     locker,
     witness,
     repair,
+    phase,
     power,
     grenade,
     lure,
