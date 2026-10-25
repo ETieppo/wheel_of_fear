@@ -42,12 +42,14 @@ namespace wheel_of_fear {
     const float           delta      = context.clock.deltaSeconds();
     const Vec2Props       step       = direction.scale(speed * delta);
 
-    if(mob_traits.avoids_hazards && !world.isHazardAt(owner_.position())) {
+    if(
+      mob_traits.avoids_hazards && !world.isBurningLightAt(owner_.position())
+    ) {
       const Vec2Props probe = owner_.position().add(
         direction.scale(mob_traits.collision_radius + 4)
       );
 
-      if(world.isHazardAt(probe)) {
+      if(world.isBurningLightAt(probe)) {
         owner_.turnToward(direction.angle(), delta, turn_rate);
         return false;
       }

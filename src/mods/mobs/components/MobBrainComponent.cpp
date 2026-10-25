@@ -88,7 +88,7 @@ namespace wheel_of_fear {
       if(
         intent_
         == MobIntentEnum::lurking
-        && context.world.isHazardAt(player_position)
+        && context.world.isBurningLightAt(player_position)
       )
         return;
 
@@ -323,7 +323,7 @@ namespace wheel_of_fear {
 
     if(
       can_see_player
-      && world.isHazardAt(player_position)
+      && world.isBurningLightAt(player_position)
       && owner_.traits().avoids_hazards
     ) {
       if(!locomotion.navigateTo(context, target, locomotion.currentSpeed()))
@@ -373,7 +373,7 @@ namespace wheel_of_fear {
       MobLocomotionComponent::turn_rate
     );
 
-    if(!context.world.isHazardAt(player_position) && can_see_player) {
+    if(!context.world.isBurningLightAt(player_position) && can_see_player) {
       changeIntent(MobIntentEnum::chasing, player_position);
       return;
     }

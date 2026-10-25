@@ -1,6 +1,7 @@
 #include "mods/mobs/MobSystem.hpp"
 #include "core/render/Renderer.hpp"
 #include "core/time/GameClock.hpp"
+#include "mods/mobs/MobBodyCollisionResolver.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
@@ -61,6 +62,11 @@ namespace wheel_of_fear {
     if(const auto locker_index = context.player.hiding().hideEventLockerIndex())
       witnessHiding(context, *locker_index);
     for(const auto &mob : mobs_) mob->update(context);
+    MobBodyCollisionResolver::resolve(
+      mobs_,
+      context.player,
+      context.world.map()
+    );
 
     std::erase_if(mobs_, [](const auto &mob) { return !mob->isAlive(); });
     spawner_.update(context);

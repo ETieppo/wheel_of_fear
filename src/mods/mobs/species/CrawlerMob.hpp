@@ -22,6 +22,7 @@ namespace wheel_of_fear {
         .movement_sound_interval = 0.34F,
         .vocal_volume            = 0.55F,
         .spawn_weight            = 1.0F,
+        .has_body_collision      = true,
       };
 
       explicit CrawlerMob(Vec2Props position)
