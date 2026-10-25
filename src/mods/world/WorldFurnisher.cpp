@@ -5,6 +5,7 @@
 #include "mods/world/scenery/SceneryFactory.hpp"
 #include <array>
 #include <cstdlib>
+#include <memory>
 
 namespace wheel_of_fear {
   int WorldFurnisher::interiorX(const RoomProps &room) {
@@ -55,7 +56,10 @@ namespace wheel_of_fear {
     placement.room_index   = room_index;
     placement.color        = color;
     placement.flicker_seed = random.unit();
-    world_.addScenery(SceneryFactory::create(kind, placement));
+
+    std::unique_ptr<Scenery> scenery = SceneryFactory::create(kind, placement);
+    if(scenery->castsShadow()) map.addShadowCaster(x, y);
+    world_.addScenery(std::move(scenery));
 
     return true;
   }

@@ -19,6 +19,19 @@ namespace wheel_of_fear {
     return RoomLightingPlanProps {
       .fill_lights = planFillLights(map, room_index, strip),
       .glow_tiles  = planGlowTiles(map, room_index, strip),
+      .fill_bounds = planFillBounds(map.rooms()[room_index]),
+    };
+  }
+
+  LightBoundsProps RoomLightingPlanner::planFillBounds(const RoomProps &room) {
+    const Vec2Props margin = Vec2Props::of(
+      RenderConfig::tile_size * wall_margin_tiles,
+      RenderConfig::tile_size * wall_margin_tiles
+    );
+
+    return LightBoundsProps {
+      .minimum = room.worldMinimum().sub(margin),
+      .maximum = room.worldMaximum().add(margin),
     };
   }
 

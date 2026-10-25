@@ -127,9 +127,51 @@ namespace wheel_of_fear {
     return power.gradient.colorAt(fraction_along);
   }
 
-  void RoomPowerGrid::emitLights(LightingSystem &lighting) const {
+  void RoomPowerGrid::emitLights(
+    const TileMapModel &map,
+    LightingSystem     &lighting
+  ) const {
     for(std::size_t room_index = 0; room_index < rooms_.size(); ++room_index)
       emitRoomLights(lighting, room_index);
+
+    for(const DoorwayProps &doorway : map.doorways())
+      emitDoorwaySpill(map, lighting, doorway);
+  }
+
+  void RoomPowerGrid::emitDoorwaySpill(
+    const TileMapModel &map,
+    LightingSystem     &lighting,
+    const DoorwayProps &doorway
+  ) const {
+    if(doorway.room_a >= rooms_.size() || doorway.room_b >= rooms_.size())
+      return;
+
+    const std::size_t lit_room
+      = litAmount(doorway.room_a) >= litAmount(doorway.room_b) ? doorway.room_a
+                                                               : doorway.room_b;
+    const float spill = litAmount(lit_room) * doorway.open_amount;
+    if(spill <= 0) return;
+
+    const Vec2Props center = doorway.center();
+    const Vec2Props across
+      = doorway.is_vertical ? Vec2Props::of(1, 0) : Vec2Props::of(0, 1);
+    const float toward_lit_room
+      = across.dot(map.rooms()[lit_room].center().sub(center)) >= 0 ? 1.0F
+                                                                    : -1.0F;
+    LightProps light;
+
+    light.position
+      = center.add(across.scale(doorway_spill_setback * toward_lit_room));
+    light.reveals_area = true;
+    light.radius       = doorway_spill_radius;
+    light.intensity    = doorway_spill_intensity * spill;
+    light.color
+      = ledColorAt(lit_room, strips_[lit_room].nearestDistanceAlong(center))
+          .mix(ColorProps::white(), 0.55F);
+    light.flicker           = 0.03F;
+    light.freezes_creatures = true;
+    light.freezing_radius   = doorway_freezing_radius;
+    lighting.add(light);
   }
 
   void RoomPowerGrid::emitRoomLights(
@@ -146,12 +188,14 @@ namespace wheel_of_fear {
       if(!isStripLitAt(power, perimeter, fill.distance_along)) continue;
 
       LightProps light;
-      light.position  = fill.position;
-      light.radius    = fill.radius;
-      light.intensity = fill_light_intensity;
-      light.color     = ledColorAt(room_index, fill.distance_along)
-                          .mix(ColorProps::white(), 0.55F);
-      light.flicker   = 0.03F;
+      light.position     = fill.position;
+      light.radius       = fill.radius;
+      light.intensity    = fill_light_intensity;
+      light.color        = ledColorAt(room_index, fill.distance_along)
+                             .mix(ColorProps::white(), 0.55F);
+      light.flicker      = 0.03F;
+      light.bounds       = lighting_plans_[room_index].fill_bounds;
+      light.reveals_area = true;
       lighting.add(light);
     }
   }

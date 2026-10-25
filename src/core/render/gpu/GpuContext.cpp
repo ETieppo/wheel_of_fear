@@ -107,6 +107,24 @@ namespace wheel_of_fear {
     configureSurface();
   }
 
+  GpuContext::GpuContext(
+    std::uint32_t offscreen_width,
+    std::uint32_t offscreen_height
+  ) {
+    WGPUInstanceDescriptor instance_descriptor = WGPU_INSTANCE_DESCRIPTOR_INIT;
+    instance_.reset(wgpuCreateInstance(&instance_descriptor));
+
+    if(!instance_)
+      throw std::runtime_error("unable to create the WebGPU instance");
+
+    requestAdapter();
+    requestDevice();
+    queue_.reset(wgpuDeviceGetQueue(device_.get()));
+    surface_format_ = WGPUTextureFormat_RGBA8Unorm;
+    surface_width_  = offscreen_width;
+    surface_height_ = offscreen_height;
+  }
+
   GpuContext::~GpuContext() {
     if(surface_) wgpuSurfaceUnconfigure(surface_.get());
   }
@@ -254,6 +272,8 @@ namespace wheel_of_fear {
   }
 
   void GpuContext::configureSurface() {
+    if(!surface_) return;
+
     WGPUSurfaceConfiguration configuration = WGPU_SURFACE_CONFIGURATION_INIT;
     configuration.device                   = device_.get();
     configuration.format                   = surface_format_;
@@ -285,6 +305,7 @@ namespace wheel_of_fear {
   }
 
   std::optional<GpuTexture> GpuContext::acquireSurfaceTexture() {
+    if(!surface_) return std::nullopt;
     if(needs_reconfigure_) configureSurface();
 
     WGPUSurfaceTexture surface_texture = WGPU_SURFACE_TEXTURE_INIT;
@@ -308,6 +329,11 @@ namespace wheel_of_fear {
   }
 
   void GpuContext::present() {
-    wgpuSurfacePresent(surface_.get());
+    if(surface_) wgpuSurfacePresent(surface_.get());
+  }
+
+  void GpuContext::waitForIdle() {
+    wgpuDevicePoll(device_.get(), 1, nullptr);
+    wgpuInstanceProcessEvents(instance_.get());
   }
 } // namespace wheel_of_fear

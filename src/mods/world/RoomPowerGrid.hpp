@@ -42,7 +42,10 @@ namespace wheel_of_fear {
         bool        is_powered
       );
 
-      void emitLights(LightingSystem &lighting) const;
+      void emitLights(
+        const TileMapModel &map,
+        LightingSystem     &lighting
+      ) const;
 
       void emitRoomLights(
         LightingSystem &lighting,
@@ -75,6 +78,10 @@ namespace wheel_of_fear {
       static constexpr float strip_power_up_seconds   = 3.2F;
       static constexpr float strip_power_down_seconds = 1.4F;
       static constexpr float strip_width              = 2.5F;
+      static constexpr float doorway_spill_radius     = 170;
+      static constexpr float doorway_spill_intensity  = 4.5F;
+      static constexpr float doorway_freezing_radius  = 100;
+      static constexpr float doorway_spill_setback    = RenderConfig::tile_size;
 
       [[nodiscard]]
       static float distanceFromConduit(
@@ -96,6 +103,12 @@ namespace wheel_of_fear {
         float                 perimeter,
         float                 distance_along
       );
+
+      void emitDoorwaySpill(
+        const TileMapModel &map,
+        LightingSystem     &lighting,
+        const DoorwayProps &doorway
+      ) const;
 
       void drawPiece(
         Renderer                    &renderer,

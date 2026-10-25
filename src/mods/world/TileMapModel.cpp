@@ -1,11 +1,9 @@
 #include "mods/world/TileMapModel.hpp"
 #include "core/render/RenderConfig.hpp"
 #include <algorithm>
-#include <array>
 #include <cmath>
 #include <cstdlib>
 #include <limits>
-#include <stdexcept>
 #include <utility>
 
 namespace wheel_of_fear {
@@ -21,6 +19,7 @@ namespace wheel_of_fear {
     walls_.assign(cell_count, 1);
     structural_.assign(cell_count, 1);
     blocked_.assign(cell_count, 0);
+    shadow_casters_.assign(cell_count, 0);
     fluids_.reset(cell_count);
     room_indices_.assign(cell_count, -1);
   }
@@ -117,15 +116,45 @@ namespace wheel_of_fear {
         if(isNearDoorway(check_x, check_y, 2)) return false;
     }
 
-    for(int fill_y = y; fill_y < y + area_height; ++fill_y)
-      for(int fill_x = x; fill_x < x + area_width; ++fill_x)
-        blocked_[cellIndex(fill_x, fill_y)] = 1;
+    blockArea(x, y, area_width, area_height);
 
-    markChanged();
     return true;
   }
 
   void TileMapModel::releaseProp(
+    int x,
+    int y,
+    int area_width,
+    int area_height
+  ) {
+    unblockArea(x, y, area_width, area_height);
+  }
+
+  void TileMapModel::addShadowCaster(
+    int x,
+    int y
+  ) {
+    if(!contains(x, y)) return;
+
+    shadow_casters_[cellIndex(x, y)] = 1;
+    markChanged();
+  }
+
+  void TileMapModel::blockArea(
+    int x,
+    int y,
+    int area_width,
+    int area_height
+  ) {
+    for(int fill_y = y; fill_y < y + area_height; ++fill_y) {
+      for(int fill_x = x; fill_x < x + area_width; ++fill_x)
+        if(contains(fill_x, fill_y)) blocked_[cellIndex(fill_x, fill_y)] = 1;
+    }
+
+    markChanged();
+  }
+
+  void TileMapModel::unblockArea(
     int x,
     int y,
     int area_width,

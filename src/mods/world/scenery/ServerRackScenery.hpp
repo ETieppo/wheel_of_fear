@@ -12,6 +12,11 @@ namespace wheel_of_fear {
         return DistractionKindEnum::power_surge;
       }
 
+      [[nodiscard]]
+      bool castsShadow() const override {
+        return true;
+      }
+
     protected:
       [[nodiscard]]
       const AtlasRegionProps &

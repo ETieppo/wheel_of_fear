@@ -43,6 +43,13 @@ namespace wheel_of_fear {
       const Vec2Props offset   = point.sub(light.position);
       const float     distance = offset.length();
       if(distance > light.radius) continue;
+      if(
+        only_freezing
+        && light.freezing_radius
+        && distance
+        > *light.freezing_radius
+      )
+        continue;
 
       float strength = 1.0F - (distance / light.radius);
       strength *= strength;
@@ -63,13 +70,29 @@ namespace wheel_of_fear {
       }
 
       if(strength < 0.01F) continue;
-      if(light.casts_shadows && !map.hasLineOfSight(light.position, point))
+      if(light.bounds && !light.bounds->contains(point)) continue;
+      if(
+        !light.bounds
+        && light.casts_shadows
+        && !map.hasLineOfSight(light.position, point)
+      )
         continue;
 
       total += strength * light.intensity;
     }
 
     return total;
+  }
+
+  std::array<float, 4> LightingSystem::boundsOf(const LightProps &light) {
+    if(!light.bounds) return {};
+
+    return {
+      light.bounds->minimum.x,
+      light.bounds->minimum.y,
+      light.bounds->maximum.x,
+      light.bounds->maximum.y,
+    };
   }
 
   void LightingSystem::submitToRenderer(Renderer &renderer) const {
@@ -128,7 +151,14 @@ namespace wheel_of_fear {
                               light.color.b,
                               light.casts_shadows ? 1.0F : 0.0F,
                               },
-          .animation = {light.flicker, static_cast<float>(slot), 0, 0},
+          .animation =
+            {
+                              light.flicker,
+                              static_cast<float>(slot),
+                              light.reveals_area ? 1.0F : 0.0F,
+                              0,
+                              },
+          .bounds    = boundsOf(light),
       }
       );
     }

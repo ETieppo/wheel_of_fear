@@ -107,6 +107,7 @@ namespace wheel_of_fear {
         std::uint32_t                 width,
         std::uint32_t                 height,
         std::span<const std::uint8_t> walls,
+        std::span<const std::uint8_t> shadow_casters,
         std::uint64_t                 version
       );
 

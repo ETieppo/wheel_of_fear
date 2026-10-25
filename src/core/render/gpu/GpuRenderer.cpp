@@ -538,10 +538,6 @@ namespace wheel_of_fear {
   }
 
   void GpuRenderer::render(Renderer &renderer) {
-    if(!persistent_) createPersistentResources(renderer);
-    ensureSizedTargets(context_.surfaceWidth(), context_.surfaceHeight());
-    uploadFrame(renderer);
-
     std::optional<GpuTexture> surface_texture
       = context_.acquireSurfaceTexture();
     if(!surface_texture) return;
@@ -549,6 +545,18 @@ namespace wheel_of_fear {
     const GpuTextureView back_buffer(
       wgpuTextureCreateView(surface_texture->get(), nullptr)
     );
+
+    renderInto(renderer, back_buffer.get());
+    context_.present();
+  }
+
+  void GpuRenderer::renderInto(
+    Renderer       &renderer,
+    WGPUTextureView target
+  ) {
+    if(!persistent_) createPersistentResources(renderer);
+    ensureSizedTargets(context_.surfaceWidth(), context_.surfaceHeight());
+    uploadFrame(renderer);
 
     const GpuCommandEncoder encoder(
       wgpuDeviceCreateCommandEncoder(context_.device(), nullptr)
@@ -612,7 +620,7 @@ namespace wheel_of_fear {
 
     encodePass(
       encoder.get(),
-      {back_buffer.get()},
+      {target},
       WGPULoadOp_Clear,
       opaque_black,
       resources.post_pipeline.get(),
@@ -622,7 +630,7 @@ namespace wheel_of_fear {
 
     encodePass(
       encoder.get(),
-      {back_buffer.get()},
+      {target},
       WGPULoadOp_Load,
       transparent,
       resources.ui_pipeline.get(),
@@ -636,7 +644,6 @@ namespace wheel_of_fear {
 
     const WGPUCommandBuffer submitted = command.get();
     wgpuQueueSubmit(context_.queue(), 1, &submitted);
-    context_.present();
   }
 
   void GpuRenderer::encodePass(

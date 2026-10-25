@@ -52,6 +52,11 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      std::span<const std::uint8_t> shadowCasters() const {
+        return shadow_casters_;
+      }
+
+      [[nodiscard]]
       const std::vector<RoomProps> &rooms() const {
         return rooms_;
       }
@@ -131,6 +136,25 @@ namespace wheel_of_fear {
       );
 
       void releaseProp(
+        int x,
+        int y,
+        int area_width,
+        int area_height
+      );
+
+      void addShadowCaster(
+        int x,
+        int y
+      );
+
+      void blockArea(
+        int x,
+        int y,
+        int area_width,
+        int area_height
+      );
+
+      void unblockArea(
         int x,
         int y,
         int area_width,
@@ -238,6 +262,7 @@ namespace wheel_of_fear {
       std::vector<std::uint8_t> walls_;
       std::vector<std::uint8_t> structural_;
       std::vector<std::uint8_t> blocked_;
+      std::vector<std::uint8_t> shadow_casters_;
       std::vector<std::int16_t> room_indices_;
       std::vector<RoomProps>    rooms_;
       std::vector<DoorwayProps> doorways_;

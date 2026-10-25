@@ -15,6 +15,7 @@ namespace wheel_of_fear {
       static constexpr float       target_cell_size    = 240;
       static constexpr float       reach_per_half_cell = 4;
       static constexpr float       minimum_radius      = 180;
+      static constexpr float       wall_margin_tiles   = 1;
       static RoomLightingPlanProps plan(
         const TileMapModel &map,
         std::size_t         room_index,
@@ -33,6 +34,8 @@ namespace wheel_of_fear {
         std::size_t         room_index,
         const RoomLedStrip &strip
       );
+
+      static LightBoundsProps planFillBounds(const RoomProps &room);
 
       static int cellCount(
         float extent,

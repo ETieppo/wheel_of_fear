@@ -3,6 +3,7 @@ struct GpuLightProps {
     direction_cone: vec4<f32>,
     color: vec4<f32>,
     animation: vec4<f32>,
+    bounds: vec4<f32>,
 };
 
 struct PostProcessProps {

@@ -14,7 +14,7 @@ namespace wheel_of_fear {
   void GeneratorSystem::generatePhase(WorldSystem &world) {
     generators_.clear();
     fabricators_.clear();
-    exit_door_.reset(world.exitPosition());
+    exit_door_.reset(world.map(), world.exitPosition());
     std::vector<bool> occupied_rooms(world.map().rooms().size(), false);
 
     occupied_rooms[world.startRoomIndex()] = true;

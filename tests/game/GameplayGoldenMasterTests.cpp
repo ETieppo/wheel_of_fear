@@ -26,22 +26,22 @@ namespace wheel_of_fear {
     }
 
     constexpr std::array<GoldenMasterCaseProps, 16> golden_master_cases {
-      goldenCase("none", 2260802571275938495ULL),
-      goldenCase("play", 4606756502277195433ULL),
-      goldenCase("deep", 10354815022693644597ULL),
-      goldenCase("tracker", 6212961513808940026ULL),
-      goldenCase("sectors", 1834963208022850004ULL),
-      goldenCase("showcase", 17463417680836924264ULL),
-      goldenCase("freeze", 12816746611816117225ULL),
-      goldenCase("moth", 16308746009625321247ULL),
-      goldenCase("locker", 3388930426652436210ULL),
-      goldenCase("witness", 12222381865618191580ULL),
-      goldenCase("repair", 14430012839130274652ULL),
-      goldenCase("power", 5008915058096031097ULL),
-      goldenCase("grenade", 10929154195232234991ULL),
-      goldenCase("lure", 2627612148598187031ULL),
-      goldenCase("doors", 3889474961947922463ULL),
-      goldenCase("walk", 10134188619832363132ULL),
+      goldenCase("none", 4918380489932145272ULL),
+      goldenCase("play", 5210700163412478118ULL),
+      goldenCase("deep", 2524870939948402191ULL),
+      goldenCase("tracker", 1315644311588174912ULL),
+      goldenCase("sectors", 5288150336535492333ULL),
+      goldenCase("showcase", 2440873158419509755ULL),
+      goldenCase("freeze", 17125811141788460805ULL),
+      goldenCase("moth", 10186916260382730725ULL),
+      goldenCase("locker", 16907729882483859861ULL),
+      goldenCase("witness", 6652067478933736456ULL),
+      goldenCase("repair", 7926940296944293375ULL),
+      goldenCase("power", 4326322000128176400ULL),
+      goldenCase("grenade", 6586979219360108824ULL),
+      goldenCase("lure", 18297758343076773701ULL),
+      goldenCase("doors", 4586389178548821122ULL),
+      goldenCase("walk", 16523349908505656813ULL),
     };
 
     std::uint64_t fingerprintOf(std::string_view demo_mode) {

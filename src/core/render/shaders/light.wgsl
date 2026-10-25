@@ -3,6 +3,7 @@ struct GpuLightProps {
     direction_cone: vec4<f32>,
     color: vec4<f32>,
     animation: vec4<f32>,
+    bounds: vec4<f32>,
 };
 
 struct PostProcessProps {
@@ -58,32 +59,59 @@ fn wallAt(point: vec2<f32>) -> f32 {
     return textureLoad(wall_map, vec2<i32>(i32(tile.x), i32(tile.y)), 0).r;
 }
 
+fn isWallAt(point: vec2<f32>) -> bool {
+    return wallAt(point) > 0.5;
+}
+
+fn blocksLightAt(point: vec2<f32>) -> bool {
+    return wallAt(point) > 0.25;
+}
+
+fn isSameTile(first: vec2<f32>, second: vec2<f32>) -> bool {
+    return first.x == second.x && first.y == second.y;
+}
+
+fn rayVisibility(origin: vec2<f32>, destination: vec2<f32>, own_tile: vec2<f32>, steps: f32, includes_shadow_casters: bool) -> f32 {
+    let delta = destination - origin;
+    let destination_is_wall = isWallAt(destination);
+    let step_count = i32(steps);
+    var has_entered_wall = false;
+
+    for (var step_index = 1; step_index < step_count; step_index = step_index + 1) {
+        let sample_point = origin + delta * (f32(step_index) / steps);
+
+        if (isSameTile(floor(sample_point / post.map_info.z), own_tile)) {
+            return 1.0;
+        }
+
+        let is_wall_sample = isWallAt(sample_point);
+
+        if (includes_shadow_casters && !is_wall_sample && blocksLightAt(sample_point)) {
+            return 0.0;
+        }
+
+        if (is_wall_sample && !destination_is_wall) {
+            return 0.0;
+        }
+
+        if (is_wall_sample) {
+            has_entered_wall = true;
+        } else if (has_entered_wall) {
+            return 0.0;
+        }
+    }
+
+    return 1.0;
+}
+
 fn viewerVisibility(world: vec2<f32>, own_tile: vec2<f32>) -> f32 {
     if (post.viewer.z < 0.5) {
         return 1.0;
     }
 
-    let origin = post.viewer.xy;
-    let delta = world - origin;
-    let distance_to_viewer = length(delta);
-    let steps = clamp(distance_to_viewer / 3.0, 1.0, 160.0);
-    let step_count = i32(steps);
-    var visibility = 1.0;
-    var finished = false;
+    let steps = clamp(length(world - post.viewer.xy) / 3.0, 1.0, 160.0);
 
-    for (var step_index = 1; step_index < step_count && !finished; step_index = step_index + 1) {
-        let sample_point = origin + delta * (f32(step_index) / steps);
-        let sample_tile = floor(sample_point / post.map_info.z);
-
-        if (sample_tile.x == own_tile.x && sample_tile.y == own_tile.y) {
-            finished = true;
-        } else if (wallAt(sample_point) > 0.5) {
-            visibility = 0.0;
-            finished = true;
-        }
-    }
-
-    return visibility;
+    return rayVisibility(post.viewer.xy, world, own_tile, steps, false);
 }
 
 @fragment fn fs(input: VertexOutputProps) -> LightOutputProps {
@@ -91,9 +119,14 @@ fn viewerVisibility(world: vec2<f32>, own_tile: vec2<f32>) -> f32 {
     let world = post.view_origin + coordinate * post.view_size;
     let own_tile = floor(world / post.map_info.z);
 
-    var light = vec3<f32>(0.0, 0.0, 0.0);
-    var direction_sum = vec2<f32>(0.0, 0.0);
-    var weight_sum = 0.0;
+    var point_light = vec3<f32>(0.0, 0.0, 0.0);
+    var spot_light = vec3<f32>(0.0, 0.0, 0.0);
+    var lit_area_level = 0.0;
+    var revealed_level = 0.0;
+    var point_direction_sum = vec2<f32>(0.0, 0.0);
+    var point_weight_sum = 0.0;
+    var spot_direction_sum = vec2<f32>(0.0, 0.0);
+    var spot_weight_sum = 0.0;
     let count = i32(post.light_count);
 
     for (var index = 0; index < count; index = index + 1) {
@@ -105,7 +138,9 @@ fn viewerVisibility(world: vec2<f32>, own_tile: vec2<f32>) -> f32 {
         let falloff = clamp(1.0 - distance_to_source / radius, 0.0, 1.0);
         var attenuation = falloff * falloff * (1.0 / (1.0 + distance_to_source * distance_to_source * 0.00015));
 
-        if (source.direction_cone.z > -1.5) {
+        let is_spotlight = source.direction_cone.z > -1.5;
+
+        if (is_spotlight) {
             let direction = normalize(delta + vec2<f32>(0.0001, 0.0));
             let alignment = dot(direction, source.direction_cone.xy);
             let cone = smoothstep(source.direction_cone.z, source.direction_cone.w, alignment);
@@ -113,43 +148,54 @@ fn viewerVisibility(world: vec2<f32>, own_tile: vec2<f32>) -> f32 {
             attenuation = attenuation * max(cone, near_halo * 0.45);
         }
 
-        if (attenuation > 0.001 && source.color.a > 0.5) {
+        let has_bounds = source.bounds.z > source.bounds.x;
+
+        if (has_bounds) {
+            let is_inside_bounds = all(world >= source.bounds.xy) && all(world <= source.bounds.zw);
+            attenuation = attenuation * select(0.0, 1.0, is_inside_bounds);
+        } else if (attenuation > 0.001 && source.color.a > 0.5) {
             let steps = clamp(distance_to_source / 4.0, 2.0, 80.0);
-            let step_count = i32(steps);
-            var visibility = 1.0;
-            var finished = false;
-
-            for (var step_index = 1; step_index < step_count && !finished; step_index = step_index + 1) {
-                let sample_point = source_position + delta * (f32(step_index) / steps);
-                let sample_tile = floor(sample_point / post.map_info.z);
-
-                if (sample_tile.x == own_tile.x && sample_tile.y == own_tile.y) {
-                    finished = true;
-                } else if (wallAt(sample_point) > 0.5) {
-                    visibility = 0.0;
-                    finished = true;
-                }
-            }
-
-            attenuation = attenuation * visibility;
+            attenuation = attenuation * rayVisibility(source_position, world, own_tile, steps, is_spotlight);
         }
 
         let flicker_noise = hash2(vec2<f32>(floor(post.time * 20.0), source_position.x));
         let flicker = 1.0 - source.animation.x * (0.5 + 0.5 * sin(post.time * (13.0 + source.animation.y) + hash2(source_position) * 6.0)) * flicker_noise;
         let contribution = source.color.rgb * source.position_radius.w * attenuation * flicker;
 
-        light = light + contribution;
         let weight = dot(contribution, vec3<f32>(0.3, 0.59, 0.11));
+        var direction_toward_source = vec2<f32>(0.0, 0.0);
 
         if (distance_to_source > 0.5) {
-            direction_sum = direction_sum - normalize(delta) * weight;
+            direction_toward_source = -normalize(delta) * weight;
         }
 
-        weight_sum = weight_sum + weight;
+        if (is_spotlight) {
+            spot_light = spot_light + contribution;
+            spot_direction_sum = spot_direction_sum + direction_toward_source;
+            spot_weight_sum = spot_weight_sum + weight;
+        } else {
+            point_light = point_light + contribution;
+            point_direction_sum = point_direction_sum + direction_toward_source;
+            point_weight_sum = point_weight_sum + weight;
+        }
+
+        if (!is_spotlight && source.color.a > 0.5) {
+            lit_area_level = lit_area_level + weight;
+        }
+
+        if (source.animation.z > 0.5) {
+            revealed_level = revealed_level + weight;
+        }
     }
 
+    let spot_fade = 1.0 - smoothstep(0.05, 0.4, lit_area_level);
+    let light = point_light + spot_light * spot_fade;
+    let direction_sum = point_direction_sum + spot_direction_sum * spot_fade;
+    let weight_sum = point_weight_sum + spot_weight_sum * spot_fade;
+
     var output: LightOutputProps;
-    output.irradiance = vec4<f32>(light, viewerVisibility(world, own_tile));
+    let revealed = smoothstep(0.02, 0.12, revealed_level);
+    output.irradiance = vec4<f32>(light, max(viewerVisibility(world, own_tile), revealed));
     output.direction = vec4<f32>(direction_sum, weight_sum, 1.0);
 
     return output;

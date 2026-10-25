@@ -18,7 +18,15 @@ namespace wheel_of_fear {
       void paint() const;
 
     private:
-      void paintFloorLiquids() const;
+      static constexpr float soft_circle_radius  = 8;
+      static constexpr float neon_film_opacity   = 0.45F;
+      static constexpr float neon_glow_opacity   = 0.6F;
+      static constexpr float neon_core_opacity   = 0.5F;
+      static constexpr float neon_halo_opacity   = 0.12F;
+      static constexpr float neon_core_white_mix = 0.65F;
+
+      void paintAcidPools() const;
+      void paintNeonSplashes() const;
       void paintScorchMarks() const;
       void paintVents() const;
       void paintDoorway(const DoorwayProps &doorway) const;

@@ -9,12 +9,17 @@ namespace wheel_of_fear {
   class GpuContext {
     public:
       explicit GpuContext(const Window &window);
+      GpuContext(
+        std::uint32_t offscreen_width,
+        std::uint32_t offscreen_height
+      );
       ~GpuContext();
       GpuContext(const GpuContext &)             = delete;
       GpuContext &operator =(const GpuContext &) = delete;
 
       std::optional<GpuTexture> acquireSurfaceTexture();
       void                      present();
+      void                      waitForIdle();
 
       [[nodiscard]]
       WGPUDevice device() const {

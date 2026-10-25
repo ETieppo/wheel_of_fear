@@ -20,5 +20,5 @@ namespace wheel_of_fear {
       std::array<GpuLightProps, RenderConfig::max_gpu_lights> lights {};
   };
 
-  static_assert(sizeof(PostProcessProps) == 2176);
+  static_assert(sizeof(PostProcessProps) == 2688);
 } // namespace wheel_of_fear

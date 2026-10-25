@@ -15,6 +15,11 @@ namespace wheel_of_fear {
       explicit GpuRenderer(GpuContext &context);
       void render(Renderer &renderer);
 
+      void renderInto(
+        Renderer       &renderer,
+        WGPUTextureView target
+      );
+
     private:
       void createPersistentResources(Renderer &renderer);
       void uploadFrame(Renderer &renderer);

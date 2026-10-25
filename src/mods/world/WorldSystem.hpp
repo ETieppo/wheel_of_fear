@@ -6,6 +6,7 @@
 #include "mods/world/LockerEntity.hpp"
 #include "mods/world/MazeShifter.hpp"
 #include "mods/world/NavigationService.hpp"
+#include "mods/world/NeonSplashProps.hpp"
 #include "mods/world/RoomPowerGrid.hpp"
 #include "mods/world/ScorchMarkProps.hpp"
 #include "mods/world/TileMapModel.hpp"
@@ -14,21 +15,20 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <utility>
 #include <vector>
 
 namespace wheel_of_fear {
   class WorldSystem {
     public:
       WorldSystem();
+      void update(GameContextDto &context);
+      void draw(GameContextDto &context) const;
 
       void generatePhase(
         std::uint32_t phase,
         std::uint64_t seed
       );
-
-      void update(GameContextDto &context);
-
-      void draw(GameContextDto &context) const;
 
       TileMapModel &map() {
         return map_;
@@ -119,6 +119,11 @@ namespace wheel_of_fear {
         return scorch_marks_;
       }
 
+      [[nodiscard]]
+      const std::vector<NeonSplashProps> &neonSplashes() const {
+        return neon_splashes_;
+      }
+
       void addScenery(std::unique_ptr<Scenery> item) {
         scenery_.push_back(std::move(item));
       }
@@ -132,6 +137,10 @@ namespace wheel_of_fear {
       }
 
       void addScorchMark(Vec2Props position);
+
+      void addNeonSplash(NeonSplashProps splash) {
+        neon_splashes_.push_back(std::move(splash));
+      }
 
       void powerRoom(
         std::size_t room_index,
@@ -180,6 +189,7 @@ namespace wheel_of_fear {
       [[nodiscard]]
       LedGradientProps pickLedGradient();
       void             chooseLandmarks();
+      void             removeDryNeonSplashes();
 
       void shiftMaze(
         GameContextDto            &context,
@@ -206,6 +216,7 @@ namespace wheel_of_fear {
       std::vector<LockerEntity>             lockers_;
       std::vector<Vec2Props>                vents_;
       std::vector<ScorchMarkProps>          scorch_marks_;
+      std::vector<NeonSplashProps>          neon_splashes_;
       std::size_t                           exit_room_index_ = 0;
   };
 } // namespace wheel_of_fear

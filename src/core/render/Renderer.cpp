@@ -14,6 +14,9 @@ namespace wheel_of_fear {
     constexpr std::array<float, 4>
       blank_region {blank_texel, blank_texel, blank_texel, blank_texel};
 
+    constexpr std::uint8_t wall_texel          = 255;
+    constexpr std::uint8_t shadow_caster_texel = 96;
+
     std::uint8_t toByte(float channel) {
       return static_cast<std::uint8_t>(
         std::lround(std::clamp(channel, 0.0F, 1.0F) * 255.0F)
@@ -249,6 +252,7 @@ namespace wheel_of_fear {
     std::uint32_t                 width,
     std::uint32_t                 height,
     std::span<const std::uint8_t> walls,
+    std::span<const std::uint8_t> shadow_casters,
     std::uint64_t                 version
   ) {
     frame_.post.map_info = {
@@ -263,9 +267,14 @@ namespace wheel_of_fear {
 
     for(std::uint32_t y = 0; y < height; ++y) {
       for(std::uint32_t x = 0; x < width; ++x) {
-        frame_.map_texels
-          [((static_cast<std::size_t>(y) * RenderConfig::max_map_size) + x) * 4]
-          = walls[(static_cast<std::size_t>(y) * width) + x] != 0 ? 255 : 0;
+        const std::size_t cell = (static_cast<std::size_t>(y) * width) + x;
+        std::uint8_t     &texel
+          = frame_.map_texels
+              [((static_cast<std::size_t>(y) * RenderConfig::max_map_size) + x)
+               * 4];
+
+        if(walls[cell] != 0) texel = wall_texel;
+        else if(shadow_casters[cell] != 0) texel = shadow_caster_texel;
       }
     }
 

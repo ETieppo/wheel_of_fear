@@ -8,7 +8,8 @@ namespace wheel_of_fear {
       std::array<float, 4> direction_cone {};
       std::array<float, 4> color {};
       std::array<float, 4> animation {};
+      std::array<float, 4> bounds {};
   };
 
-  static_assert(sizeof(GpuLightProps) == 64);
+  static_assert(sizeof(GpuLightProps) == 80);
 } // namespace wheel_of_fear

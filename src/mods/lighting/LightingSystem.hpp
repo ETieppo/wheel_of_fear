@@ -3,6 +3,7 @@
 #include "core/render/Renderer.hpp"
 #include "mods/lighting/LightProps.hpp"
 #include "mods/lighting/enums/LightFilterEnum.hpp"
+#include <array>
 #include <vector>
 
 namespace wheel_of_fear {
@@ -44,6 +45,12 @@ namespace wheel_of_fear {
     private:
       static constexpr std::size_t capacity                 = 160;
       static constexpr float       spotlight_priority_bonus = 1000;
+
+      [[nodiscard]]
+      static std::array<
+        float,
+        4
+      > boundsOf(const LightProps &light);
 
       [[nodiscard]]
       float sumLight(

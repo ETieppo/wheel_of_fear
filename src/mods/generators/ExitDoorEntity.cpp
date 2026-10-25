@@ -7,6 +7,7 @@
 #include "mods/hud/HudSystem.hpp"
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include "mods/world/TileMapModel.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
 #include <format>
@@ -19,11 +20,17 @@ namespace wheel_of_fear {
     constexpr ColorProps locked_light_color = ColorProps::hex(0xff2a4a);
   } // namespace
 
-  void ExitDoorEntity::reset(Vec2Props doorway_position) {
+  void ExitDoorEntity::reset(
+    TileMapModel &map,
+    Vec2Props     doorway_position
+  ) {
     respawnAt(doorway_position);
     is_unlocked_       = false;
     open_amount_       = 0;
     has_player_exited_ = false;
+
+    setFootprintBlocked(map, true);
+    is_sealed_ = true;
   }
 
   void ExitDoorEntity::unlock(GameContextDto &context) {
@@ -79,6 +86,11 @@ namespace wheel_of_fear {
       open_amount_ + (context.clock.deltaSeconds() * opening_speed)
     );
 
+    if(is_sealed_ && open_amount_ > passable_open_amount) {
+      setFootprintBlocked(context.world.map(), false);
+      is_sealed_ = false;
+    }
+
     light.radius    = 80;
     light.intensity = 0.9F;
     light.color     = Palette::success;
@@ -87,7 +99,7 @@ namespace wheel_of_fear {
 
     if(
       open_amount_
-      > 0.6F
+      > passable_open_amount
       && context.player.position().distance(entryPoint())
       < entry_radius
     )
@@ -95,6 +107,18 @@ namespace wheel_of_fear {
 
     if(player_distance < 64)
       context.hud.showPrompt(std::nullopt, "STEP INTO THE EXIT");
+  }
+
+  void ExitDoorEntity::setFootprintBlocked(
+    TileMapModel &map,
+    bool          is_blocked
+  ) const {
+    const TileCoordinateProps tile  = TileMapModel::tileAt(position());
+    const int                 left  = tile.x - footprint_half_width;
+    const int                 width = (footprint_half_width * 2) + 1;
+
+    if(is_blocked) map.blockArea(left, tile.y, width, 1);
+    else map.unblockArea(left, tile.y, width, 1);
   }
 
   void ExitDoorEntity::draw(GameContextDto &context) const {

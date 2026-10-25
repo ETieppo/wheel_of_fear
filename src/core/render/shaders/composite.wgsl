@@ -3,6 +3,7 @@ struct GpuLightProps {
     direction_cone: vec4<f32>,
     color: vec4<f32>,
     animation: vec4<f32>,
+    bounds: vec4<f32>,
 };
 
 struct PostProcessProps {
@@ -86,7 +87,7 @@ fn wallAtTile(tile: vec2<f32>) -> f32 {
         return 1.0;
     }
 
-    return textureLoad(wall_map, vec2<i32>(i32(tile.x), i32(tile.y)), 0).r;
+    return step(0.5, textureLoad(wall_map, vec2<i32>(i32(tile.x), i32(tile.y)), 0).r);
 }
 
 fn decodeNormal(sample: vec4<f32>) -> vec3<f32> {

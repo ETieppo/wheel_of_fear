@@ -57,6 +57,7 @@ namespace wheel_of_fear {
     lockers_.clear();
     vents_.clear();
     scorch_marks_.clear();
+    neon_splashes_.clear();
     power_.clear();
     elapsed_seconds_ = 0;
     camera_shake_    = 0;
@@ -143,6 +144,17 @@ namespace wheel_of_fear {
       < 28;
   }
 
+  void WorldSystem::removeDryNeonSplashes() {
+    std::erase_if(neon_splashes_, [this](const NeonSplashProps &splash) {
+      return std::ranges::none_of(
+        splash.droplets,
+        [this](const NeonDropletProps &droplet) {
+          return map_.fluids().neonAt(droplet.position) > 0;
+        }
+      );
+    });
+  }
+
   void WorldSystem::addScorchMark(Vec2Props position) {
     const float rotation = random_.range(0, ScalarMath::tau);
 
@@ -216,7 +228,7 @@ namespace wheel_of_fear {
 
   void WorldSystem::update(GameContextDto &context) {
     power_.advance(context.clock.realDeltaSeconds());
-    power_.emitLights(context.lighting);
+    power_.emitLights(map_, context.lighting);
 
     const SceneryViewDto view {
       .real_seconds    = context.clock.realSeconds(),
@@ -241,6 +253,8 @@ namespace wheel_of_fear {
     }
 
     map_.fluids().evaporate(delta);
+    removeDryNeonSplashes();
+
     const std::vector<Vec2Props> occupants = collectOccupants(context);
     MazeShifter::animateDoorways(map_, delta, occupants);
     shiftMaze(context, occupants);

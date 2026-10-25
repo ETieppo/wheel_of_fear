@@ -18,6 +18,8 @@ namespace wheel_of_fear {
     public:
       explicit Scenery(const SceneryPlacementDto &placement);
       virtual ~Scenery() = default;
+      void update(float delta_seconds);
+      void bump(RandomGenerator &random);
 
       [[nodiscard]]
       Vec2Props position() const {
@@ -34,12 +36,13 @@ namespace wheel_of_fear {
         return is_broken_;
       }
 
-      void update(float delta_seconds);
-
-      void bump(RandomGenerator &random);
-
       [[nodiscard]]
       virtual std::optional<DistractionKindEnum> bumpDistraction() const = 0;
+
+      [[nodiscard]]
+      virtual bool castsShadow() const {
+        return false;
+      }
 
       virtual void draw(
         Renderer               &renderer,

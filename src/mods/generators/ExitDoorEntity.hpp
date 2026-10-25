@@ -5,6 +5,8 @@
 #include <cstddef>
 
 namespace wheel_of_fear {
+  class TileMapModel;
+
   class ExitDoorEntity final: public Entity {
     public:
       ExitDoorEntity()
@@ -32,7 +34,10 @@ namespace wheel_of_fear {
         return has_player_exited_;
       }
 
-      void reset(Vec2Props doorway_position);
+      void reset(
+        TileMapModel &map,
+        Vec2Props     doorway_position
+      );
 
       void unlock(GameContextDto &context);
 
@@ -45,11 +50,20 @@ namespace wheel_of_fear {
       void draw(GameContextDto &context) const;
 
     private:
+      static constexpr int   footprint_half_width = 1;
+      static constexpr float passable_open_amount = 0.6F;
+
       [[nodiscard]]
       Vec2Props entryPoint() const {
         return position().add(Vec2Props::of(0, 6));
       }
 
+      void setFootprintBlocked(
+        TileMapModel &map,
+        bool          is_blocked
+      ) const;
+
+      bool  is_sealed_         = false;
       bool  is_unlocked_       = false;
       float open_amount_       = 0;
       bool  has_player_exited_ = false;

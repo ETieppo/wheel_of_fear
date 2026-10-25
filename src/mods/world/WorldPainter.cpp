@@ -27,11 +27,13 @@ namespace wheel_of_fear {
       static_cast<std::uint32_t>(map.width()),
       static_cast<std::uint32_t>(map.height()),
       map.walls(),
+      map.shadowCasters(),
       map.version()
     );
 
     world_.power().paintRoomGlow(renderer_);
-    paintFloorLiquids();
+    paintAcidPools();
+    paintNeonSplashes();
     paintScorchMarks();
     paintVents();
     world_.power().draw(map, renderer_);
@@ -43,7 +45,7 @@ namespace wheel_of_fear {
     paintLockers();
   }
 
-  void WorldPainter::paintFloorLiquids() const {
+  void WorldPainter::paintAcidPools() const {
     const TileMapModel       &map    = world_.map();
     const Vec2Props           origin = renderer_.viewOrigin();
     const TileCoordinateProps first  = TileMapModel::tileAt(origin);
@@ -58,80 +60,87 @@ namespace wheel_of_fear {
       for(int x = first.x - 1; x <= last.x + 1; ++x) {
         if(!map.contains(x, y)) continue;
 
-        const std::size_t cell   = map.cellIndex(x, y);
-        const Vec2Props   center = TileMapModel::tileCenter(x, y);
-        const float       ripple = 1
+        const float acid = map.fluids().acidSeconds()[map.cellIndex(x, y)];
+        if(acid <= 0) continue;
+
+        const Vec2Props center   = TileMapModel::tileCenter(x, y);
+        const float     strength = ScalarMath::clamp(acid / 4, 0, 1);
+        const float     ripple   = 1
           + (0.06F
              * std::sin((real_seconds_ * 3) + static_cast<float>((x * 7) + y)));
-        const float acid = map.fluids().acidSeconds()[cell];
-
-        if(acid > 0) {
-          const float strength = ScalarMath::clamp(acid / 4, 0, 1);
-
-          renderer_.drawSprite(
-            sprites_.soft_circle,
-            center,
-            SpriteDrawDto {
-              .color = ColorProps::hex(0x5fbf2a).withAlpha(0.55F * strength),
-              .scale = 1.1F * ripple,
-            }
-          );
-
-          renderer_.drawGlowDisc(
-            center,
-            9,
-            Palette::neon_lime.withAlpha(0.22F * strength),
-            1.6F
-          );
-        }
-
-        const float neon = map.fluids().neonSeconds()[cell];
-        if(neon <= 0) continue;
-
-        const float         strength = ScalarMath::clamp(neon / 6, 0, 1);
-        const std::uint32_t seed = (static_cast<std::uint32_t>(x) * 73856093U)
-          ^ (static_cast<std::uint32_t>(y) * 19349663U);
-        const Vec2Props jitter  = Vec2Props::of(
-                                    ScalarMath::hashToUnit(seed) - 0.5F,
-                                    ScalarMath::hashToUnit(seed + 1) - 0.5F
-        )
-                                    .scale(9);
-        const float     shimmer = 0.8F
-          + (0.2F
-             * std::sin(
-               (real_seconds_ * 2.5F)
-               + (ScalarMath::hashToUnit(seed + 2) * 6.28F)
-             ));
-        const Vec2Props  blob = center.add(jitter);
-        const ColorProps tint = Palette::neon_magenta.mix(
-          Palette::neon_violet,
-          ScalarMath::hashToUnit(seed + 3) * 0.5F
-        );
 
         renderer_.drawSprite(
           sprites_.soft_circle,
-          blob,
+          center,
           SpriteDrawDto {
-            .color = tint.withAlpha(0.32F * strength),
-            .scale
-            = (1.5F + (ScalarMath::hashToUnit(seed + 4) * 0.5F)) * ripple,
+            .color = ColorProps::hex(0x5fbf2a).withAlpha(0.55F * strength),
+            .scale = 1.1F * ripple,
           }
         );
 
         renderer_.drawGlowDisc(
-          blob,
-          15,
-          tint.withAlpha(0.12F * strength * shimmer),
-          2.2F
+          center,
+          9,
+          Palette::neon_lime.withAlpha(0.22F * strength),
+          1.6F
+        );
+      }
+    }
+  }
+
+  void WorldPainter::paintNeonSplashes() const {
+    const TileFluidLayer &fluids = world_.map().fluids();
+
+    for(const NeonSplashProps &splash : world_.neonSplashes()) {
+      for(const NeonDropletProps &droplet : splash.droplets) {
+        if(!renderer_.isVisible(droplet.position, droplet.radius * 2)) continue;
+
+        const float strength = ScalarMath::clamp(
+          fluids.neonAt(droplet.position) / splash.lifetime_seconds,
+          0,
+          1
+        );
+        if(strength <= 0) continue;
+
+        const float phase = droplet.seed * ScalarMath::tau;
+        const float ripple
+          = 1 + (0.06F * std::sin((real_seconds_ * 3) + phase));
+        const float shimmer
+          = 0.8F + (0.2F * std::sin((real_seconds_ * 2.5F) + phase));
+        const float      scale = (droplet.radius / soft_circle_radius) * ripple;
+        const ColorProps neon  = Palette::neon_magenta;
+        const ColorProps hot
+          = neon.mix(ColorProps::white(), neon_core_white_mix);
+
+        renderer_.drawSprite(
+          sprites_.soft_circle,
+          droplet.position,
+          SpriteDrawDto {
+            .color = neon.withAlpha(neon_film_opacity * strength),
+            .scale = scale,
+          }
         );
 
-        if(ScalarMath::hashToUnit(seed + 5) > 0.7F)
-          renderer_.drawGlowDisc(
-            blob.add(Vec2Props::of(-2, -2)),
-            2.5F,
-            ColorProps::white().withAlpha(0.35F * strength * shimmer),
-            1.5F
-          );
+        renderer_.drawGlowSprite(
+          sprites_.soft_circle,
+          droplet.position,
+          neon.withAlpha(neon_glow_opacity * strength * shimmer),
+          SpriteDrawDto {.scale = scale}
+        );
+
+        renderer_.drawGlowSprite(
+          sprites_.soft_circle,
+          droplet.position,
+          hot.withAlpha(neon_core_opacity * strength * shimmer),
+          SpriteDrawDto {.scale = scale * 0.5F}
+        );
+
+        renderer_.drawGlowDisc(
+          droplet.position,
+          droplet.radius * 1.8F,
+          neon.withAlpha(neon_halo_opacity * strength * shimmer),
+          2.2F
+        );
       }
     }
   }
@@ -159,6 +168,8 @@ namespace wheel_of_fear {
   }
 
   void WorldPainter::paintDoorway(const DoorwayProps &doorway) const {
+    if(doorway.open_amount <= 0.0F) return;
+
     const Vec2Props center = doorway.center();
     const float rotation   = doorway.is_vertical ? ScalarMath::pi / 2.0F : 0.0F;
     const Vec2Props along
