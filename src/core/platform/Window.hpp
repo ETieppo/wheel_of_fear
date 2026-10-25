@@ -24,10 +24,13 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       void* metalLayer() const;
+
       [[nodiscard]]
       std::uint32_t pixelWidth() const;
+
       [[nodiscard]]
       std::uint32_t pixelHeight() const;
+
       [[nodiscard]]
       Vec2Props logicalSize() const;
 

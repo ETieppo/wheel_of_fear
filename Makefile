@@ -1,5 +1,5 @@
 TERMINAL ?= ghostty
-.PHONY: dev run test build _mount_build
+.PHONY: dev run test build
 
 dev:
 	cmake -S . -B build-hot -DCMAKE_BUILD_TYPE=Release -DWHEEL_OF_FEAR_HOT_RELOAD=ON
@@ -7,17 +7,12 @@ dev:
 	$(TERMINAL) -e ./watch.sh $$$$ & \
 	exec ./build-hot/wheel_of_fear
 
-run:
-	cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-	cmake --build build -j
+run: build
 	./build/wheel_of_fear
 
-test: _mount_build
+test: build
 	./build/wheel_of_fear_tests
 
-build: _mount_build
-	./build/wheel_of_fear
-
-_mount_build:
+build:
 	cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 	cmake --build build -j
