@@ -108,8 +108,9 @@ namespace wheel_of_fear {
       float sightRangeForMobs() const;
 
     private:
-      static constexpr float aura_radius   = 54;
-      static constexpr float aim_turn_rate = 30;
+      static constexpr float aura_radius        = 54;
+      static constexpr float aim_turn_rate      = 30;
+      static constexpr float player_glow_radius = 10;
 
       void turnTowardAim();
       void faceRepairTarget();

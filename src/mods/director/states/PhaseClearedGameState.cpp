@@ -1,6 +1,7 @@
 #include "mods/director/states/PhaseClearedGameState.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/director/CampaignConfig.hpp"
@@ -9,6 +10,21 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps cleared_title {
+      "SECTOR {:02} CLEARED",
+      "SETOR {:02} CONCLUÍDO",
+    };
+    constexpr LocalizedTextProps final_gate_subtitle {
+      "THE LAST GATE OPENS. DAYLIGHT AHEAD...",
+      "O ÚLTIMO PORTÃO SE ABRE. HÁ LUZ DO DIA À FRENTE...",
+    };
+    constexpr LocalizedTextProps descending_subtitle {
+      "DESCENDING DEEPER INTO THE GRID...",
+      "DESCENDO MAIS FUNDO NA REDE...",
+    };
+  } // namespace
+
   void PhaseClearedGameState::update(
     Director       &director,
     GameContextDto &context
@@ -31,9 +47,9 @@ namespace wheel_of_fear {
 
     CenteredCardWidget::draw(
       context.renderer,
-      std::format("SECTOR {:02} CLEARED", director.phase()),
-      is_final_phase ? "THE LAST GATE OPENS. DAYLIGHT AHEAD..."
-                     : "DESCENDING DEEPER INTO THE GRID...",
+      Localization::format(cleared_title, director.phase()),
+      is_final_phase ? Localization::text(final_gate_subtitle)
+                     : Localization::text(descending_subtitle),
       Palette::success,
       context.clock.realSeconds()
     );

@@ -12,7 +12,7 @@ namespace wheel_of_fear {
       const MobTraitsProps &traits = MobCatalog::traitsOf(kind);
       if(!traits.is_hostile) continue;
 
-      CAPTURE(traits.display_name);
+      CAPTURE(traits.display_name.english);
       CHECK(
         traits.speed
         * MobLocomotionComponent::frenzy_speed_multiplier

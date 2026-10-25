@@ -1,12 +1,13 @@
 #pragma once
 
+#include "core/math/ScalarMath.hpp"
 #include "mods/mobs/MobEntity.hpp"
 
 namespace wheel_of_fear {
   class ShadeMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name         = "Shade",
+        .display_name         = {"Shade", "Sombra"},
         .frozen_by            = LightFilterEnum::ultraviolet_only,
         .vocal_sound          = SoundEnum::whisper,
         .first_phase          = 4,
@@ -42,6 +43,7 @@ namespace wheel_of_fear {
       void draw(GameContextDto &context) const override;
 
     private:
+      static constexpr float sprite_facing_offset   = ScalarMath::tau / 2;
       static constexpr float strike_retreat_seconds = 1.6F;
       static constexpr float whisper_distance       = 70;
   };

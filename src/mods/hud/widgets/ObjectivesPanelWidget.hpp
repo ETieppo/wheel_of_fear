@@ -13,7 +13,8 @@ namespace wheel_of_fear {
       static void draw(
         Renderer              &renderer,
         std::uint32_t          phase,
-        const GeneratorSystem &generators
+        const GeneratorSystem &generators,
+        bool                   has_key
       );
   };
 } // namespace wheel_of_fear

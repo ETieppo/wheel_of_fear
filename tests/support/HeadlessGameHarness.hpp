@@ -49,6 +49,12 @@ namespace wheel_of_fear {
         for(int frame = 0; frame < frame_count; ++frame) runFrame();
       }
 
+      void advanceFramePressing(InputActionEnum action) {
+        simulation_.input().beginFrame();
+        simulation_.input().simulatePress(action);
+        simulation_.step(frame_seconds);
+      }
+
       [[nodiscard]]
       GameContextDto &context() {
         return simulation_.context();
@@ -108,6 +114,6 @@ namespace wheel_of_fear {
       }
 
       DemoModeEnvironmentGuard demo_mode_guard_;
-      GameSimulation           simulation_ {std::nullopt};
+      GameSimulation           simulation_ {UserDataFilesProps {}};
   };
 } // namespace wheel_of_fear

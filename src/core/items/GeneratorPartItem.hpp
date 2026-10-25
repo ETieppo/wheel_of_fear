@@ -14,9 +14,9 @@ namespace wheel_of_fear {
       static constexpr int part_carry_limit = 9;
 
       GeneratorPartItem(
-        ItemEnum         kind,
-        std::string_view display_name,
-        ColorProps       color
+        ItemEnum           kind,
+        LocalizedTextProps display_name,
+        ColorProps         color
       )
           : Item(
               kind,

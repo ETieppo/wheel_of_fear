@@ -1,6 +1,7 @@
 #include "mods/extra_lives/ExtraLifeSystem.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/RandomGenerator.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -11,6 +12,13 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps extra_life_message {
+      "EXTRA LIFE  ({}/{})",
+      "VIDA EXTRA  ({}/{})",
+    };
+  } // namespace
+
   void ExtraLifeSystem::generatePhase(
     WorldSystem  &world,
     std::uint64_t phase_seed,
@@ -57,8 +65,8 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::accent,
-      std::format(
-        "EXTRA LIFE  ({}/{})",
+      Localization::format(
+        extra_life_message,
         player.vitality().maxHealth(),
         VitalityComponent::highest_max_health
       )

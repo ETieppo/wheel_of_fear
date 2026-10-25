@@ -5,6 +5,7 @@
 #include "core/time/GameClock.hpp"
 #include "mods/director/Director.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
+#include "mods/letters/LetterSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 
@@ -21,6 +22,12 @@ namespace wheel_of_fear {
       director.enterState(GameStateEnum::paused);
       context.clock.setRunning(false);
 
+      return;
+    }
+
+    if(context.letters.consumeReadingRequest()) {
+      director.enterState(GameStateEnum::reading);
+      context.clock.setRunning(false);
       return;
     }
 

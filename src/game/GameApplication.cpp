@@ -5,13 +5,13 @@
 
 namespace wheel_of_fear {
   GameApplication::GameApplication(
-    Window                              &window,
-    std::optional<std::filesystem::path> progress_file_path
+    Window                   &window,
+    const UserDataFilesProps &user_data_files
   )
       : window_(window)
       , gpu_context_(window_)
       , gpu_renderer_(gpu_context_)
-      , simulation_(std::move(progress_file_path)) {
+      , simulation_(user_data_files) {
   }
 
   bool GameApplication::runFrame() {

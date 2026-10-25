@@ -1,6 +1,7 @@
 #include "mods/player/components/ThrowingArmComponent.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/items/ItemCatalog.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/player/components/InventoryComponent.hpp"
@@ -9,6 +10,13 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps empty_message {
+      "NO {} LEFT",
+      "SEM {}",
+    };
+  } // namespace
+
   void ThrowingArmComponent::tick(float delta_seconds) {
     cooldown_seconds_ = std::max(0.0F, cooldown_seconds_ - delta_seconds);
   }
@@ -26,7 +34,7 @@ namespace wheel_of_fear {
     if(!inventory.consume(item)) {
       context.hud.announce(
         Palette::muted_text,
-        std::format("NO {} LEFT", throwable.displayName())
+        Localization::format(empty_message, throwable.displayName())
       );
 
       return;

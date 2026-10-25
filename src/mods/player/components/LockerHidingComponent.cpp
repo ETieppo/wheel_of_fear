@@ -1,13 +1,22 @@
 #include "mods/player/components/LockerHidingComponent.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
+#include "core/text/Localization.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
+#include <string>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps leave_prompt {
+      "leave the locker",
+      "sair do armário",
+    };
+  } // namespace
+
   void LockerHidingComponent::reset() {
     hidden_locker_index_.reset();
     hide_event_locker_index_.reset();
@@ -84,7 +93,10 @@ namespace wheel_of_fear {
     Entity         &body
   ) {
     const float delta = context.clock.deltaSeconds();
-    context.hud.showPrompt(InputActionEnum::interact, "leave the locker");
+    context.hud.showPrompt(
+      InputActionEnum::interact,
+      std::string(Localization::text(leave_prompt))
+    );
 
     if(context.input.wasPressed(InputActionEnum::interact)) {
       leave(context, body);

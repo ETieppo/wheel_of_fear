@@ -1,6 +1,7 @@
 #include "mods/throwables/ThrowableSystem.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/items/ItemCatalog.hpp"
+#include "core/text/Localization.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/hud/HudSystem.hpp"
@@ -12,6 +13,13 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps picked_up_message {
+      "PICKED UP  {}  ({}/{})",
+      "PEGOU  {}  ({}/{})",
+    };
+  } // namespace
+
   ThrowableSystem::ThrowableSystem()  = default;
   ThrowableSystem::~ThrowableSystem() = default;
 
@@ -228,8 +236,8 @@ namespace wheel_of_fear {
 
       context.hud.announce(
         details.colorForPhase(context.world.phase()),
-        std::format(
-          "PICKED UP  {}  ({}/{})",
+        Localization::format(
+          picked_up_message,
           details.displayName(),
           player.inventory().count(item),
           details.carryLimit()

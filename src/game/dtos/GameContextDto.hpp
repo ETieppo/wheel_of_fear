@@ -19,6 +19,7 @@ namespace wheel_of_fear {
   class DistractionSystem;
   class CameraSystem;
   class ExtraLifeSystem;
+  class LetterSystem;
 
   struct GameContextDto {
       GameClock         &clock;
@@ -39,5 +40,6 @@ namespace wheel_of_fear {
       DistractionSystem &distractions;
       CameraSystem      &camera;
       ExtraLifeSystem   &extra_lives;
+      LetterSystem      &letters;
   };
 } // namespace wheel_of_fear

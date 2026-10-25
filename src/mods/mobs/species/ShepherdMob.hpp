@@ -6,7 +6,7 @@ namespace wheel_of_fear {
   class ShepherdMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name            = "Shepherd",
+        .display_name            = {"Shepherd", "Pastor"},
         .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::shepherd_step,
         .first_phase             = 3,

@@ -2,10 +2,30 @@
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps sector_title {
+      "SECTOR {:02}",
+      "SETOR {:02}",
+    };
+    constexpr LocalizedTextProps goal_text {
+      "Charge every generator. Their rooms light up and burn the dark. Then find the letter with the key and reach the exit.",
+      "Carregue todos os geradores. As salas acendem e queimam o escuro. Depois ache a carta com a chave e chegue à saída.",
+    };
+    constexpr LocalizedTextProps warning_text {
+      "They freeze in your beam. They hunt by sound. The rooms around you never stay the same.",
+      "Eles congelam no seu feixe. Caçam pelo som. As salas ao seu redor nunca ficam iguais.",
+    };
+    constexpr LocalizedTextProps skip_hint {
+      "ENTER  SKIP",
+      "ENTER  PULAR",
+    };
+  } // namespace
+
   void PhaseIntroScreen::draw(
     Renderer     &renderer,
     std::uint32_t phase,
@@ -46,7 +66,7 @@ namespace wheel_of_fear {
 
     UiPainter::drawGlitchTitle(
       renderer,
-      std::format("SECTOR {:02}", phase),
+      Localization::format(sector_title, phase),
       center_x,
       156,
       46,
@@ -56,8 +76,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "Charge every generator. Their rooms light up and burn the "
-      "dark. Then reach the exit.",
+      Localization::text(goal_text),
       center_x,
       222,
       16,
@@ -66,8 +85,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "They freeze in your beam. They hunt by sound. The rooms "
-      "around you never stay the same.",
+      Localization::text(warning_text),
       center_x,
       244,
       16,
@@ -76,7 +94,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "ENTER  SKIP",
+      Localization::text(skip_hint),
       center_x,
       140 + height - 22,
       12,

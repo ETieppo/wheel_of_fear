@@ -3,6 +3,7 @@
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/director/Director.hpp"
@@ -12,6 +13,17 @@
 #include "mods/mobs/MobSystem.hpp"
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps paused_title {
+      "PAUSED",
+      "PAUSADO",
+    };
+    constexpr LocalizedTextProps paused_hint {
+      "ESC  RESUME     R  RESTART SECTOR     M  MUTE",
+      "ESC  CONTINUAR     R  REINICIAR SETOR     M  MUDO",
+    };
+  } // namespace
+
   void PausedGameState::update(
     Director       &director,
     GameContextDto &context
@@ -52,8 +64,8 @@ namespace wheel_of_fear {
   ) const {
     CenteredCardWidget::draw(
       context.renderer,
-      "PAUSED",
-      "ESC  RESUME     R  RESTART SECTOR     M  MUTE",
+      Localization::text(paused_title),
+      Localization::text(paused_hint),
       Palette::panel_edge,
       context.clock.realSeconds()
     );

@@ -2,6 +2,7 @@
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/generators/SkillCheckMinigame.hpp"
 #include <cmath>
@@ -9,6 +10,18 @@
 
 namespace wheel_of_fear {
   namespace {
+    constexpr LocalizedTextProps perfect_label {
+      "PERFECT SYNC",
+      "SINCRONIA PERFEITA",
+    };
+    constexpr LocalizedTextProps synced_label {
+      "SYNCED",
+      "SINCRONIZADO",
+    };
+    constexpr LocalizedTextProps short_circuit_label {
+      "SHORT CIRCUIT",
+      "CURTO-CIRCUITO",
+    };
     constexpr Vec2Props ring_center {
       .x = RenderConfig::ui_width / 2,
       .y = (RenderConfig::ui_height / 2) + 70,
@@ -30,14 +43,16 @@ namespace wheel_of_fear {
 
     switch(check.lastResult()) {
       case SkillCheckResultEnum::perfect:
-        label = "PERFECT SYNC";
+        label = Localization::text(perfect_label);
         color = Palette::neon_cyan;
         break;
 
-      case SkillCheckResultEnum::good: label = "SYNCED"; break;
+      case SkillCheckResultEnum::good:
+        label = Localization::text(synced_label);
+        break;
 
       case SkillCheckResultEnum::failed:
-        label = "SHORT CIRCUIT";
+        label = Localization::text(short_circuit_label);
         color = Palette::danger;
         break;
 

@@ -3,6 +3,7 @@
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/camera/CameraSystem.hpp"
@@ -12,6 +13,7 @@
 #include "mods/extra_lives/ExtraLifeSystem.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/hud/HudSystem.hpp"
+#include "mods/letters/LetterSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
@@ -30,10 +32,15 @@ namespace wheel_of_fear {
       daylight_ambient {.r = 1.0F, .g = 0.97F, .b = 0.9F, .a = 1};
   } // namespace
 
-  Director::Director(std::optional<std::filesystem::path> progress_file_path)
-      : progress_(
-          demo_.isActive() ? std::nullopt : std::move(progress_file_path)
-        ) {
+  Director::Director(const UserDataFilesProps &user_data_files)
+      : progress_(demo_.isActive() ? std::nullopt : user_data_files.progress)
+      , settings_(user_data_files.settings) {
+    Localization::setLanguage(settings_.language());
+  }
+
+  void Director::toggleLanguage() {
+    Localization::toggleLanguage();
+    settings_.saveLanguage(Localization::language());
   }
 
   void Director::initialize(GameContextDto &context) {
@@ -91,6 +98,7 @@ namespace wheel_of_fear {
     seed_counter_ += phase_seed_step;
     world.generatePhase(phase, seed_counter_);
     context.generators.generatePhase(world);
+    context.letters.generatePhase(world, context.generators, seed_counter_);
     context.mobs.populatePhase(world);
     context.throwables.generatePhase(world);
     context.distractions.clear();
@@ -139,6 +147,7 @@ namespace wheel_of_fear {
     context.mobs.clear();
     context.throwables.clear();
     context.extra_lives.clear();
+    context.letters.clear();
     context.distractions.clear();
     context.noise.clear();
     context.effects.clear();
@@ -193,6 +202,7 @@ namespace wheel_of_fear {
       case GameStateEnum::phase_cleared: return phase_cleared_state_;
       case GameStateEnum::credits:       return credits_state_;
       case GameStateEnum::ending:        return ending_state_;
+      case GameStateEnum::reading:       return reading_state_;
     }
 
     return title_state_;
@@ -208,6 +218,7 @@ namespace wheel_of_fear {
       case GameStateEnum::phase_cleared: return phase_cleared_state_;
       case GameStateEnum::credits:       return credits_state_;
       case GameStateEnum::ending:        return ending_state_;
+      case GameStateEnum::reading:       return reading_state_;
     }
 
     return title_state_;

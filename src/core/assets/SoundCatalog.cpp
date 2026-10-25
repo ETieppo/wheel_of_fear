@@ -11,15 +11,15 @@ namespace wheel_of_fear {
       "audio/sfx/footstep_4.opus",
     };
     constexpr std::array<std::string_view, 4> crawler_skitter_files {
-      "generated/audio/crawler_skitter_0.opus",
-      "generated/audio/crawler_skitter_1.opus",
-      "generated/audio/crawler_skitter_2.opus",
-      "generated/audio/crawler_skitter_3.opus",
+      "audio/sfx/crawler_skitter_0.opus",
+      "audio/sfx/crawler_skitter_1.opus",
+      "audio/sfx/crawler_skitter_2.opus",
+      "audio/sfx/crawler_skitter_3.opus",
     };
     constexpr std::array<std::string_view, 3> crawler_chitter_files {
-      "generated/audio/crawler_chitter_0.opus",
-      "generated/audio/crawler_chitter_1.opus",
-      "generated/audio/crawler_chitter_2.opus",
+      "audio/sfx/crawler_chitter_0.opus",
+      "audio/sfx/crawler_chitter_1.opus",
+      "audio/sfx/crawler_chitter_2.opus",
     };
     constexpr std::array<std::string_view, 5> crumble_files {
       "audio/sfx/crumble_0.opus",
@@ -119,9 +119,9 @@ namespace wheel_of_fear {
       "audio/sfx/shepherd_call_0.opus",
     };
     constexpr std::array<std::string_view, 3> shepherd_step_files {
-      "generated/audio/shepherd_step_0.opus",
-      "generated/audio/shepherd_step_1.opus",
-      "generated/audio/shepherd_step_2.opus",
+      "audio/sfx/shepherd_step_0.opus",
+      "audio/sfx/shepherd_step_1.opus",
+      "audio/sfx/shepherd_step_2.opus",
     };
     constexpr std::array<std::string_view, 4> moth_flutter_files {
       "audio/sfx/moth_flutter_0.opus",
@@ -214,45 +214,45 @@ namespace wheel_of_fear {
       "audio/sfx/bloater_gurgle_5.opus",
     };
     constexpr std::array<std::string_view, 3> melter_slither_files {
-      "generated/audio/melter_slither_0.opus",
-      "generated/audio/melter_slither_1.opus",
-      "generated/audio/melter_slither_2.opus",
+      "audio/sfx/melter_slither_0.opus",
+      "audio/sfx/melter_slither_1.opus",
+      "audio/sfx/melter_slither_2.opus",
     };
     constexpr std::array<std::string_view, 3> mimic_clank_files {
-      "generated/audio/mimic_clank_0.opus",
-      "generated/audio/mimic_clank_1.opus",
-      "generated/audio/mimic_clank_2.opus",
+      "audio/sfx/mimic_clank_0.opus",
+      "audio/sfx/mimic_clank_1.opus",
+      "audio/sfx/mimic_clank_2.opus",
     };
     constexpr std::array<std::string_view, 2> blast_door_files {
-      "generated/audio/blast_door_0.opus",
-      "generated/audio/blast_door_1.opus",
+      "audio/sfx/blast_door_0.opus",
+      "audio/sfx/blast_door_1.opus",
     };
     constexpr std::array<std::string_view, 1> led_power_up_files {
-      "generated/audio/led_power_up_0.opus",
+      "audio/sfx/led_power_up_0.opus",
     };
     constexpr std::array<std::string_view, 1> qte_alert_files {
-      "generated/audio/qte_alert_0.opus",
+      "audio/sfx/qte_alert_0.opus",
     };
     constexpr std::array<std::string_view, 1> qte_success_files {
-      "generated/audio/qte_success_0.opus",
+      "audio/sfx/qte_success_0.opus",
     };
     constexpr std::array<std::string_view, 2> qte_fail_files {
-      "generated/audio/qte_fail_0.opus",
-      "generated/audio/qte_fail_1.opus",
+      "audio/sfx/qte_fail_0.opus",
+      "audio/sfx/qte_fail_1.opus",
     };
     constexpr std::array<std::string_view, 2> neon_burst_files {
-      "generated/audio/neon_burst_0.opus",
-      "generated/audio/neon_burst_1.opus",
+      "audio/sfx/neon_burst_0.opus",
+      "audio/sfx/neon_burst_1.opus",
     };
     constexpr std::array<std::string_view, 1> lure_beep_files {
-      "generated/audio/lure_beep_0.opus",
+      "audio/sfx/lure_beep_0.opus",
     };
     constexpr std::array<std::string_view, 1> battery_charge_files {
-      "generated/audio/battery_charge_0.opus",
+      "audio/sfx/battery_charge_0.opus",
     };
     constexpr std::array<std::string_view, 2> ui_glitch_files {
-      "generated/audio/ui_glitch_0.opus",
-      "generated/audio/ui_glitch_1.opus",
+      "audio/sfx/ui_glitch_0.opus",
+      "audio/sfx/ui_glitch_1.opus",
     };
   } // namespace
 

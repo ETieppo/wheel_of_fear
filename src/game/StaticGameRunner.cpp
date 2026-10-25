@@ -9,7 +9,10 @@ namespace wheel_of_fear {
   StaticGameRunner::StaticGameRunner(Window &window)
       : game_(
           window,
-          UserDataLocator::filePath(progress_file_name)
+          UserDataFilesProps {
+            .progress = UserDataLocator::filePath(progress_file_name),
+            .settings = UserDataLocator::filePath(settings_file_name),
+          }
         ) {
   }
 

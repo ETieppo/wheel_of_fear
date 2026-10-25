@@ -6,7 +6,7 @@ namespace wheel_of_fear {
   class WatcherMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name         = "Watcher",
+        .display_name         = {"Watcher", "Vigia"},
         .frozen_by            = std::nullopt,
         .vocal_sound          = SoundEnum::distant_scream,
         .first_phase          = 11,

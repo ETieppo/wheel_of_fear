@@ -9,7 +9,7 @@ namespace wheel_of_fear {
       static constexpr float lunge_speed = 90;
 
       static constexpr MobTraitsProps species_traits {
-        .display_name            = "Mimic",
+        .display_name            = {"Mimic", "Mímico"},
         .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::mimic_clank,
         .vocal_sound             = SoundEnum::jaws,

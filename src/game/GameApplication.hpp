@@ -3,6 +3,7 @@
 #include "core/platform/Window.hpp"
 #include "core/render/gpu/GpuContext.hpp"
 #include "core/render/gpu/GpuRenderer.hpp"
+#include "core/storage/UserDataFilesProps.hpp"
 #include "core/time/FrameTimer.hpp"
 #include "game/GameSimulation.hpp"
 #include "game/GameSnapshotProps.hpp"
@@ -13,8 +14,8 @@ namespace wheel_of_fear {
   class GameApplication {
     public:
       GameApplication(
-        Window                              &window,
-        std::optional<std::filesystem::path> progress_file_path
+        Window                   &window,
+        const UserDataFilesProps &user_data_files
       );
       GameApplication(const GameApplication &)             = delete;
       GameApplication &operator =(const GameApplication &) = delete;

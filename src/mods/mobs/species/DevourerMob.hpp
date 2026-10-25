@@ -7,7 +7,7 @@ namespace wheel_of_fear {
   class DevourerMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name        = "Devourer",
+        .display_name        = {"Devourer", "Devorador"},
         .frozen_by           = LightFilterEnum::any_light,
         .vocal_sound         = SoundEnum::jaws,
         .first_phase         = 12,

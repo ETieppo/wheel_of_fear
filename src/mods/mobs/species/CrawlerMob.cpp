@@ -21,7 +21,10 @@ namespace wheel_of_fear {
       context,
       sprites.crawler_walk[frame],
       sprites.crawler_walk_glow[frame],
-      MobLookDto {.glow_color = ColorProps::hex(0xff2a4a)}
+      MobLookDto {
+        .glow_color      = ColorProps::hex(0xff2a4a),
+        .rotation_offset = sprite_facing_offset,
+      }
     );
   }
 } // namespace wheel_of_fear

@@ -8,7 +8,10 @@ namespace wheel_of_fear {
       GearItem()
           : GeneratorPartItem(
               ItemEnum::gear,
-              "GEAR",
+              LocalizedTextProps {
+                "GEAR",
+                "ENGRENAGEM"
+              },
               ColorProps::hex(0xffb020)
             ) {
       }

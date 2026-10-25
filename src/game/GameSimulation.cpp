@@ -1,12 +1,11 @@
 #include "game/GameSimulation.hpp"
+#include "core/text/Localization.hpp"
 #include <utility>
 
 namespace wheel_of_fear {
-  GameSimulation::GameSimulation(
-    std::optional<std::filesystem::path> progress_file_path
-  )
+  GameSimulation::GameSimulation(const UserDataFilesProps &user_data_files)
       : art_(renderer_)
-      , director_(std::move(progress_file_path))
+      , director_(user_data_files)
       , context_ {
           .clock        = clock_,
           .input        = input_,
@@ -26,6 +25,7 @@ namespace wheel_of_fear {
           .distractions = distractions_,
           .camera       = camera_,
           .extra_lives  = extra_lives_,
+          .letters      = letters_,
         } {
     Director::initialize(context_);
   }
@@ -37,10 +37,14 @@ namespace wheel_of_fear {
   }
 
   GameSnapshotProps GameSimulation::snapshot() const {
-    return GameSnapshotProps {director_.snapshot()};
+    return GameSnapshotProps {
+      .director = director_.snapshot(),
+      .language = Localization::language(),
+    };
   }
 
   void GameSimulation::resume(const GameSnapshotProps &snapshot) {
+    Localization::setLanguage(snapshot.language);
     director_.resume(context_, snapshot.director);
   }
 
@@ -55,6 +59,7 @@ namespace wheel_of_fear {
     tracker_.update(context_);
     throwables_.update(context_);
     extra_lives_.update(context_);
+    letters_.update(context_);
     generators_.update(context_);
     distractions_.update(context_);
     mobs_.update(context_);
@@ -68,6 +73,7 @@ namespace wheel_of_fear {
     generators_.draw(context_);
     throwables_.draw(context_);
     extra_lives_.draw(context_);
+    letters_.draw(context_);
     mobs_.draw(context_);
     player_.draw(context_);
     effects_.draw(context_);

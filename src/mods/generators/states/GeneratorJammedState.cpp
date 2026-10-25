@@ -3,6 +3,7 @@
 #include "core/items/ItemCatalog.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -16,6 +17,25 @@
 #include <string_view>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps jammed_message {
+      "GENERATOR {} JAMMED  -  IT NEEDS A {}",
+      "GERADOR {} TRAVADO  -  PRECISA DE {}",
+    };
+    constexpr LocalizedTextProps needs_part_prompt {
+      "GENERATOR {} NEEDS A {}  -  FIND A FABRICATOR",
+      "GERADOR {} PRECISA DE {}  -  ENCONTRE UM FABRICADOR",
+    };
+    constexpr LocalizedTextProps insert_part_prompt {
+      "insert {} into generator {}",
+      "inserir {} no gerador {}",
+    };
+    constexpr LocalizedTextProps unjammed_message {
+      "GENERATOR {} UNJAMMED",
+      "GERADOR {} DESTRAVADO",
+    };
+  } // namespace
+
   ColorProps GeneratorJammedState::statusColor(
     [[maybe_unused]] const GeneratorEntity &generator
   ) const {
@@ -39,8 +59,8 @@ namespace wheel_of_fear {
     generator.playSound(context, SoundEnum::generator_request, 0.9F, 1);
     context.hud.announce(
       Palette::spark_yellow,
-      std::format(
-        "GENERATOR {} JAMMED  -  IT NEEDS A {}",
+      Localization::format(
+        jammed_message,
         generator.label(),
         ItemCatalog::of(required_item_).displayName()
       )
@@ -93,11 +113,7 @@ namespace wheel_of_fear {
     if(!inventory.has(required_item_)) {
       context.hud.showPrompt(
         std::nullopt,
-        std::format(
-          "GENERATOR {} NEEDS A {}  -  FIND A FABRICATOR",
-          generator.label(),
-          item_name
-        )
+        Localization::format(needs_part_prompt, generator.label(), item_name)
       );
 
       return;
@@ -105,7 +121,7 @@ namespace wheel_of_fear {
 
     context.hud.showPrompt(
       InputActionEnum::interact,
-      std::format("insert {} into generator {}", item_name, generator.label())
+      Localization::format(insert_part_prompt, item_name, generator.label())
     );
 
     if(!context.input.wasPressed(InputActionEnum::interact)) return;
@@ -116,7 +132,7 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::success,
-      std::format("GENERATOR {} UNJAMMED", generator.label())
+      Localization::format(unjammed_message, generator.label())
     );
   }
 

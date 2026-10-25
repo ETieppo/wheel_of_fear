@@ -1,6 +1,7 @@
 #include "mods/generators/states/GeneratorBrokenState.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/effects/EffectSystem.hpp"
@@ -14,6 +15,25 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps broke_down_message {
+      "GENERATOR {} BROKE DOWN  -  HOLD E TO REWIRE",
+      "GERADOR {} QUEBROU  -  SEGURE E PARA RELIGAR",
+    };
+    constexpr LocalizedTextProps rewire_prompt {
+      "hold to rewire generator {}",
+      "segure para religar o gerador {}",
+    };
+    constexpr LocalizedTextProps rewiring_prompt {
+      "REWIRING GENERATOR {}  {:.0f}%",
+      "RELIGANDO GERADOR {}  {:.0f}%",
+    };
+    constexpr LocalizedTextProps rewired_message {
+      "GENERATOR {} REWIRED",
+      "GERADOR {} RELIGADO",
+    };
+  } // namespace
+
   ColorProps GeneratorBrokenState::statusColor(
     [[maybe_unused]] const GeneratorEntity &generator
   ) const {
@@ -39,10 +59,7 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::danger,
-      std::format(
-        "GENERATOR {} BROKE DOWN  -  HOLD E TO REWIRE",
-        generator.label()
-      )
+      Localization::format(broke_down_message, generator.label())
     );
   }
 
@@ -63,7 +80,7 @@ namespace wheel_of_fear {
     if(!generator.isBeingRepaired()) {
       context.hud.showPrompt(
         InputActionEnum::interact,
-        std::format("hold to rewire generator {}", generator.label())
+        Localization::format(rewire_prompt, generator.label())
       );
 
       return;
@@ -145,8 +162,8 @@ namespace wheel_of_fear {
 
     context.hud.showPrompt(
       std::nullopt,
-      std::format(
-        "REWIRING GENERATOR {}  {:.0f}%",
+      Localization::format(
+        rewiring_prompt,
         generator.label(),
         wiring_progress_ / wiring_repair_seconds * 100
       )
@@ -158,7 +175,7 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::success,
-      std::format("GENERATOR {} REWIRED", generator.label())
+      Localization::format(rewired_message, generator.label())
     );
 
     generator.playSound(context, SoundEnum::part_pickup, 0.5F, 0.6F);

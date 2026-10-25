@@ -1,11 +1,23 @@
 #include "mods/hud/widgets/HidingOverlayWidget.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/player/components/LockerHidingComponent.hpp"
 #include <cmath>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps breath_label {
+      "BREATH",
+      "FÔLEGO",
+    };
+    constexpr LocalizedTextProps hold_breath_hint {
+      "HOLD SPACE  -  HOLD YOUR BREATH",
+      "SEGURE ESPAÇO  -  PRENDA A RESPIRAÇÃO",
+    };
+  } // namespace
+
   void HidingOverlayWidget::draw(
     Renderer                    &renderer,
     const LockerHidingComponent &hiding,
@@ -52,7 +64,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "BREATH",
+      Localization::text(breath_label),
       center_x - 116,
       height - 144,
       12,
@@ -80,7 +92,7 @@ namespace wheel_of_fear {
     const float pulse = 0.6F + (0.4F * std::sin(real_seconds * 2));
 
     renderer.drawText(
-      "HOLD SPACE  -  HOLD YOUR BREATH",
+      Localization::text(hold_breath_hint),
       center_x + 116,
       height - 144,
       12,

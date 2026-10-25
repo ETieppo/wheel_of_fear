@@ -2,6 +2,7 @@
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/effects/EffectSystem.hpp"
@@ -14,6 +15,25 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps charge_prompt {
+      "hold to charge generator {}",
+      "segure para carregar o gerador {}",
+    };
+    constexpr LocalizedTextProps charging_prompt {
+      "CHARGING GENERATOR {}  {:.0f}%",
+      "CARREGANDO GERADOR {}  {:.0f}%",
+    };
+    constexpr LocalizedTextProps losing_charge_message {
+      "GENERATOR {} IS LOSING CHARGE",
+      "GERADOR {} ESTÁ PERDENDO CARGA",
+    };
+    constexpr LocalizedTextProps short_circuit_message {
+      "SHORT CIRCUIT  -  GENERATOR {} LOST CHARGE",
+      "CURTO-CIRCUITO  -  GERADOR {} PERDEU CARGA",
+    };
+  } // namespace
+
   ColorProps
   GeneratorChargingState::statusColor(const GeneratorEntity &generator) const {
     return generator.state() == GeneratorStateEnum::offline
@@ -61,7 +81,7 @@ namespace wheel_of_fear {
     if(update.is_player_near && context.player.canBeTargeted())
       context.hud.showPrompt(
         InputActionEnum::interact,
-        std::format("hold to charge generator {}", generator.label())
+        Localization::format(charge_prompt, generator.label())
       );
   }
 
@@ -95,8 +115,8 @@ namespace wheel_of_fear {
 
     context.hud.showPrompt(
       std::nullopt,
-      std::format(
-        "CHARGING GENERATOR {}  {:.0f}%",
+      Localization::format(
+        charging_prompt,
         generator.label(),
         generator.progress() * 100
       )
@@ -154,7 +174,7 @@ namespace wheel_of_fear {
 
       context.hud.announce(
         Palette::spark_yellow,
-        std::format("GENERATOR {} IS LOSING CHARGE", generator.label())
+        Localization::format(losing_charge_message, generator.label())
       );
     }
 
@@ -251,10 +271,7 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::danger,
-      std::format(
-        "SHORT CIRCUIT  -  GENERATOR {} LOST CHARGE",
-        generator.label()
-      )
+      Localization::format(short_circuit_message, generator.label())
     );
   }
 } // namespace wheel_of_fear

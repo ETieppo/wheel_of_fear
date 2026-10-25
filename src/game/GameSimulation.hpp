@@ -4,6 +4,7 @@
 #include "core/input/InputController.hpp"
 #include "core/math/Vec2Props.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/storage/UserDataFilesProps.hpp"
 #include "core/time/GameClock.hpp"
 #include "game/GameSnapshotProps.hpp"
 #include "game/dtos/GameContextDto.hpp"
@@ -15,6 +16,7 @@
 #include "mods/extra_lives/ExtraLifeSystem.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/hud/HudSystem.hpp"
+#include "mods/letters/LetterSystem.hpp"
 #include "mods/lighting/LightingSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
@@ -28,9 +30,7 @@
 namespace wheel_of_fear {
   class GameSimulation {
     public:
-      explicit GameSimulation(
-        std::optional<std::filesystem::path> progress_file_path
-      );
+      explicit GameSimulation(const UserDataFilesProps &user_data_files);
       GameSimulation(const GameSimulation &)             = delete;
       GameSimulation &operator =(const GameSimulation &) = delete;
       void            resume(const GameSnapshotProps &snapshot);
@@ -81,6 +81,7 @@ namespace wheel_of_fear {
       DistractionSystem distractions_;
       CameraSystem      camera_;
       ExtraLifeSystem   extra_lives_;
+      LetterSystem      letters_;
       Director          director_;
       GameContextDto    context_;
   };

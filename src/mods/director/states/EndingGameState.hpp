@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/text/enums/LanguageEnum.hpp"
+#include "mods/credits/CreditEntryProps.hpp"
 #include "mods/credits/CreditLineProps.hpp"
 #include "mods/director/states/GameState.hpp"
 #include <vector>
@@ -33,7 +35,11 @@ namespace wheel_of_fear {
       [[nodiscard]]
       bool isRollFinished(float state_seconds) const;
 
-      std::vector<CreditLineProps> lines_;
-      float                        roll_height_ = 0;
+      void rebuildLinesIfLanguageChanged();
+
+      std::vector<CreditEntryProps> entries_;
+      std::vector<CreditLineProps>  lines_;
+      LanguageEnum                  lines_language_ = LanguageEnum::english;
+      float                         roll_height_    = 0;
   };
 } // namespace wheel_of_fear

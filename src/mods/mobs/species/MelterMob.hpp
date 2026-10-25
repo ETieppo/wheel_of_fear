@@ -7,7 +7,7 @@ namespace wheel_of_fear {
   class MelterMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name            = "Melter",
+        .display_name            = {"Melter", "Derretedor"},
         .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::melter_slither,
         .vocal_sound             = SoundEnum::acid_sizzle,

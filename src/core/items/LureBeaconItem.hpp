@@ -8,7 +8,10 @@ namespace wheel_of_fear {
       LureBeaconItem()
           : ThrowableItem(
               ItemEnum::lure_beacon,
-              "LURE BEACON",
+              LocalizedTextProps {
+                "LURE BEACON",
+                "SINALIZADOR"
+              },
               ColorProps::hex(0x7dff4a),
               4,
               1.1F

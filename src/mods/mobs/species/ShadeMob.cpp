@@ -22,8 +22,9 @@ namespace wheel_of_fear {
       sprites.shade_drift[frame],
       sprites.shade_drift_glow[frame],
       MobLookDto {
-        .glow_color    = ColorProps::hex(0xe8ecff),
-        .glow_strength = appearance().visibility(),
+        .glow_color      = ColorProps::hex(0xe8ecff),
+        .rotation_offset = sprite_facing_offset,
+        .glow_strength   = appearance().visibility(),
       }
     );
   }

@@ -6,7 +6,7 @@ namespace wheel_of_fear {
   class BloaterMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name            = "Bloater",
+        .display_name            = {"Bloater", "Inchado"},
         .frozen_by               = LightFilterEnum::any_light,
         .movement_sound          = SoundEnum::bloater_gurgle,
         .first_phase             = 2,

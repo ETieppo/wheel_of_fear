@@ -1,5 +1,6 @@
 #include "mods/mobs/species/MothMob.hpp"
 #include "core/audio/SoundPlayer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -9,8 +10,20 @@
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
 #include <cmath>
+#include <string>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps moth_chose_message {
+      "A LANTERN MOTH CHOSE YOU. ITS GLOW HOLDS THEM STILL.",
+      "UMA MARIPOSA-LANTERNA TE ESCOLHEU. SEU BRILHO OS MANTÉM PARADOS.",
+    };
+    constexpr LocalizedTextProps moth_left_message {
+      "THE LANTERN MOTH DRIFTS AWAY INTO THE DARK",
+      "A MARIPOSA-LANTERNA SE PERDE NO ESCURO",
+    };
+  } // namespace
+
   Vec2Props MothMob::flutter() const {
     return Vec2Props::of(
       std::sin(animationSeconds() * 2.3F) * 6,
@@ -88,7 +101,7 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::neon_amber,
-      "A LANTERN MOTH CHOSE YOU. ITS GLOW HOLDS THEM STILL."
+      std::string(Localization::text(moth_chose_message))
     );
   }
 
@@ -134,7 +147,7 @@ namespace wheel_of_fear {
     context.sound_player.play(SoundEnum::moth_flutter, 0.7F, 0, 0.8F);
     context.hud.announce(
       Palette::warm_light,
-      "THE LANTERN MOTH DRIFTS AWAY INTO THE DARK"
+      std::string(Localization::text(moth_left_message))
     );
   }
 

@@ -23,7 +23,6 @@ namespace wheel_of_fear {
 
       static PlayerPoseDto pick(
         const SpriteFrames &bodies,
-        const SpriteFrames &glows,
         std::size_t         frame
       );
   };

@@ -2,6 +2,7 @@
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/camera/CameraSystem.hpp"
@@ -9,6 +10,17 @@
 #include "mods/director/screens/CenteredCardWidget.hpp"
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps signal_lost_title {
+      "SIGNAL LOST",
+      "SINAL PERDIDO",
+    };
+    constexpr LocalizedTextProps game_over_hint {
+      "R  TRY AGAIN     ESC  TITLE SCREEN",
+      "R  TENTAR DE NOVO     ESC  TELA INICIAL",
+    };
+  } // namespace
+
   void GameOverGameState::update(
     Director       &director,
     GameContextDto &context
@@ -37,8 +49,8 @@ namespace wheel_of_fear {
   ) const {
     CenteredCardWidget::draw(
       context.renderer,
-      "SIGNAL LOST",
-      "R  TRY AGAIN     ESC  TITLE SCREEN",
+      Localization::text(signal_lost_title),
+      Localization::text(game_over_hint),
       Palette::danger,
       context.clock.realSeconds()
     );

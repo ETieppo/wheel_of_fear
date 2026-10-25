@@ -1,5 +1,6 @@
 #include "mods/director/screens/MenuButtonWidget.hpp"
 #include "core/render/UiPainter.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/hud/KeyLabelCatalog.hpp"
 
@@ -34,7 +35,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawDisplayText(
-      button.text,
+      Localization::text(button.text),
       bounds.x + 40,
       bounds.y + 7,
       16,

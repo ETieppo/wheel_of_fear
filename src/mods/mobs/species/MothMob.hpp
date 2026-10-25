@@ -9,7 +9,7 @@ namespace wheel_of_fear {
   class MothMob final: public MobEntity {
     public:
       static constexpr MobTraitsProps species_traits {
-        .display_name         = "Lantern Moth",
+        .display_name         = {"Lantern Moth", "Mariposa-Lanterna"},
         .frozen_by            = std::nullopt,
         .first_phase          = 1,
         .speed                = 0,

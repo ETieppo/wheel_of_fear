@@ -1,20 +1,62 @@
 #include "mods/hud/widgets/VitalsPanelWidget.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/UiPainter.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include <algorithm>
 #include <cmath>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps vitals_label {
+      "VITALS",
+      "VITAIS",
+    };
+    constexpr LocalizedTextProps cell_label {
+      "CELL",
+      "BATERIA",
+    };
+    constexpr LocalizedTextProps ultraviolet_label {
+      "ULTRAVIOLET",
+      "ULTRAVIOLETA",
+    };
+    constexpr LocalizedTextProps white_beam_label {
+      "WHITE BEAM",
+      "FEIXE BRANCO",
+    };
+    constexpr LocalizedTextProps light_off_label {
+      "LIGHT OFF",
+      "LUZ DESLIGADA",
+    };
+    constexpr LocalizedTextProps light_in_mouth_label {
+      "LIGHT IN MOUTH",
+      "LUZ NA BOCA",
+    };
+    constexpr LocalizedTextProps charging_label {
+      "CHARGING",
+      "CARREGANDO",
+    };
+    constexpr LocalizedTextProps low_cell_label {
+      "LOW CELL",
+      "BATERIA FRACA",
+    };
+  } // namespace
+
   void VitalsPanelWidget::draw(
     Renderer           &renderer,
     const PlayerEntity &player,
     float               real_seconds
   ) {
     UiPainter::drawPanel(renderer, 14, 14, 238, 86, Palette::panel_edge, 1);
-    renderer
-      .drawText("VITALS", 28, 20, 12, Palette::muted_text, TextAlignEnum::left);
+    renderer.drawText(
+      Localization::text(vitals_label),
+      28,
+      20,
+      12,
+      Palette::muted_text,
+      TextAlignEnum::left
+    );
 
     const int   health      = player.vitality().health();
     const int   max_health  = player.vitality().maxHealth();
@@ -46,8 +88,14 @@ namespace wheel_of_fear {
 
     const FlashlightComponent        &flashlight = player.flashlight();
     const FlashlightBatteryComponent &battery    = flashlight.battery();
-    renderer
-      .drawText("CELL", 28, 42, 12, Palette::muted_text, TextAlignEnum::left);
+    renderer.drawText(
+      Localization::text(cell_label),
+      28,
+      42,
+      12,
+      Palette::muted_text,
+      TextAlignEnum::left
+    );
 
     const bool  is_low = battery.level() < 0.2F;
     const float blink_alpha
@@ -72,10 +120,13 @@ namespace wheel_of_fear {
       }
     );
 
-    std::string_view mode_label
-      = flashlight.isUltraviolet() ? "ULTRAVIOLET" : "WHITE BEAM";
-    if(!flashlight.isEnabled()) mode_label = "LIGHT OFF";
-    if(player.isRepairing()) mode_label = "LIGHT IN MOUTH";
+    std::string_view mode_label = flashlight.isUltraviolet()
+      ? Localization::text(ultraviolet_label)
+      : Localization::text(white_beam_label);
+    if(!flashlight.isEnabled())
+      mode_label = Localization::text(light_off_label);
+    if(player.isRepairing())
+      mode_label = Localization::text(light_in_mouth_label);
 
     const ColorProps mode_color
       = flashlight.isUltraviolet() && flashlight.isEnabled()
@@ -87,7 +138,7 @@ namespace wheel_of_fear {
       const float charge_pulse = 0.5F + (0.5F * std::sin(real_seconds * 6));
 
       renderer.drawText(
-        "CHARGING",
+        Localization::text(charging_label),
         238,
         64,
         14,
@@ -96,7 +147,7 @@ namespace wheel_of_fear {
       );
     } else if(is_low) {
       renderer.drawText(
-        "LOW CELL",
+        Localization::text(low_cell_label),
         238,
         64,
         14,

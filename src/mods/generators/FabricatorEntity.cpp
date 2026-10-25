@@ -1,6 +1,7 @@
 #include "mods/generators/FabricatorEntity.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/items/ItemCatalog.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -15,6 +16,26 @@
 
 namespace wheel_of_fear {
   namespace {
+    constexpr LocalizedTextProps recharging_prompt {
+      "FABRICATOR RECHARGING  {:.0f}s",
+      "FABRICADOR RECARREGANDO  {:.0f}s",
+    };
+    constexpr LocalizedTextProps fabricate_prompt {
+      "hold to fabricate a {}",
+      "segure para fabricar {}",
+    };
+    constexpr LocalizedTextProps fabricating_prompt {
+      "FABRICATING {}  {:.0f}%",
+      "FABRICANDO {}  {:.0f}%",
+    };
+    constexpr LocalizedTextProps inventory_full_message {
+      "YOU CAN'T CARRY MORE {}",
+      "VOCÊ NÃO CONSEGUE CARREGAR MAIS {}",
+    };
+    constexpr LocalizedTextProps fabricated_message {
+      "FABRICATED  {}",
+      "FABRICADO  {}",
+    };
     constexpr float interaction_distance       = 18;
     constexpr float fabrication_seconds        = 2.6F;
     constexpr float cooldown_after_fabrication = 22;
@@ -61,7 +82,7 @@ namespace wheel_of_fear {
     if(!isReady()) {
       context.hud.showPrompt(
         std::nullopt,
-        std::format("FABRICATOR RECHARGING  {:.0f}s", cooldown_seconds_)
+        Localization::format(recharging_prompt, cooldown_seconds_)
       );
 
       return;
@@ -72,7 +93,7 @@ namespace wheel_of_fear {
 
       context.hud.showPrompt(
         InputActionEnum::interact,
-        std::format("hold to fabricate a {}", item_name)
+        Localization::format(fabricate_prompt, item_name)
       );
 
       return;
@@ -114,8 +135,8 @@ namespace wheel_of_fear {
 
     context.hud.showPrompt(
       std::nullopt,
-      std::format(
-        "FABRICATING {}  {:.0f}%",
+      Localization::format(
+        fabricating_prompt,
         item_name,
         work_progress_ / fabrication_seconds * 100
       )
@@ -131,7 +152,7 @@ namespace wheel_of_fear {
     if(!context.player.inventory().receive(produced_item_)) {
       context.hud.announce(
         Palette::muted_text,
-        std::format("YOU CAN'T CARRY MORE {}", item.displayName())
+        Localization::format(inventory_full_message, item.displayName())
       );
 
       return;
@@ -142,7 +163,7 @@ namespace wheel_of_fear {
     context.sound_player.play(SoundEnum::part_pickup, 0.8F, 0, 1);
     context.hud.announce(
       item.color(),
-      std::format("FABRICATED  {}", item.displayName())
+      Localization::format(fabricated_message, item.displayName())
     );
   }
 

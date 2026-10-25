@@ -10,14 +10,9 @@ namespace wheel_of_fear {
 
   PlayerPoseDto PlayerAnimator::pick(
     const SpriteFrames &bodies,
-    const SpriteFrames &glows,
     std::size_t         frame
   ) {
-    const std::size_t index = frame % bodies.size();
-    return PlayerPoseDto {
-      .body = bodies[index],
-      .glow = glows[index % glows.size()],
-    };
+    return PlayerPoseDto {.body = bodies[frame % bodies.size()]};
   }
 
   PlayerPoseDto PlayerAnimator::currentPose(
@@ -29,18 +24,10 @@ namespace wheel_of_fear {
   ) {
     switch(activity) {
       case PlayerActivityEnum::hugging:
-        return pick(
-          sprites.player_hug,
-          sprites.player_hug_glow,
-          frameAt(real_seconds * 12)
-        );
+        return pick(sprites.player_hug, frameAt(real_seconds * 12));
 
       case PlayerActivityEnum::repairing:
-        return pick(
-          sprites.player_repair,
-          sprites.player_repair_glow,
-          frameAt(real_seconds * 9)
-        );
+        return pick(sprites.player_repair, frameAt(real_seconds * 9));
 
       default: break;
     }
@@ -50,17 +37,9 @@ namespace wheel_of_fear {
         / stride_length
         * static_cast<float>(sprites.player_walk.size());
 
-      return pick(
-        sprites.player_walk,
-        sprites.player_walk_glow,
-        frameAt(frame)
-      );
+      return pick(sprites.player_walk, frameAt(frame));
     }
 
-    return pick(
-      sprites.player_idle,
-      sprites.player_idle_glow,
-      frameAt(real_seconds * 7)
-    );
+    return pick(sprites.player_idle, frameAt(real_seconds * 7));
   }
 } // namespace wheel_of_fear

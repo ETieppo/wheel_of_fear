@@ -2,6 +2,7 @@
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/director/screens/MenuButtonCatalog.hpp"
 #include "mods/director/screens/MenuButtonWidget.hpp"
@@ -13,6 +14,62 @@
 #include <utility>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr float controls_panel_width = 780;
+    constexpr float controls_key_column  = 250;
+    constexpr float controls_text_column = 236;
+
+    constexpr LocalizedTextProps tagline {
+      "SECTOR GRID OFFLINE  ||  RESTORE THE GENERATORS  ||  STAY IN THE LIGHT",
+      "REDE DO SETOR DESLIGADA  ||  RESTAURE OS GERADORES  ||  FIQUE NA LUZ",
+    };
+    constexpr LocalizedTextProps continue_prompt {
+      "PRESS ENTER TO CONTINUE SECTOR {:02}",
+      "APERTE ENTER PARA CONTINUAR O SETOR {:02}",
+    };
+    constexpr LocalizedTextProps new_run_hint {
+      "R  -  start a new run from sector 01",
+      "R  -  começar uma nova partida do setor 01",
+    };
+    constexpr LocalizedTextProps start_prompt {
+      "PRESS ENTER",
+      "APERTE ENTER",
+    };
+
+    constexpr std::array<std::pair<std::string_view, LocalizedTextProps>, 9>
+      controls {
+        {
+         {"WASD",
+           {"move  -  SHIFT runs, and runs loud",
+            "mover  -  SHIFT corre, e corre fazendo barulho"}},
+         {"MOUSE",
+           {"aim the flashlight  -  light pins them in place",
+            "mirar a lanterna  -  a luz os prende no lugar"}},
+         {"F",
+           {"white beam | ultraviolet | off",
+            "feixe branco | ultravioleta | desligada"}},
+         {"E",
+           {"hold to charge generators and fabricate  -  lockers and letters",
+            "segure para carregar geradores e fabricar  -  armários e cartas"}},
+         {"SPACE",
+           {"hit the sync window while charging  -  hold your breath when hidden",
+            "acerte a sincronia ao carregar  -  prenda o fôlego escondido"}},
+         {"RMB",
+           {"throw a lure beacon to pull them away",
+            "jogue um sinalizador para atraí-los para longe"}},
+         {"G",
+           {"throw a neon grenade  -  its liquid light burns them",
+            "jogue uma granada neon  -  a luz líquida os queima"}},
+         {"LMB",
+           {"hold to embrace a creature until it turns to plaster",
+            "segure para abraçar uma criatura até ela virar gesso"}},
+         {"TAB",
+           {"tech tracker  -  fills your view, kills your light",
+            "rastreador  -  ocupa sua visão, apaga sua luz"}},
+         },
+    };
+  } // namespace
+
   void TitleScreen::draw(
     Renderer                    &renderer,
     float                        real_seconds,
@@ -64,7 +121,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "SECTOR GRID OFFLINE  ||  RESTORE THE GENERATORS  ||  STAY IN THE LIGHT",
+      Localization::text(tagline),
       center_x,
       222,
       15,
@@ -72,30 +129,13 @@ namespace wheel_of_fear {
       TextAlignEnum::center
     );
 
-    constexpr std::array<std::pair<std::string_view, std::string_view>, 9>
-      controls {
-        {
-         {"WASD", "move  -  SHIFT runs, and runs loud"},
-         {"MOUSE", "aim the flashlight  -  light pins them in place"},
-         {"F", "white beam | ultraviolet | off"},
-         {"E", "hold to charge generators and fabricate  -  hide in lockers"},
-         {
-            "SPACE",
-            "hit the sync window while charging  -  hold your breath when hidden",
-          }, {"RMB", "throw a lure beacon to pull them away"},
-         {"G", "throw a neon grenade  -  its liquid light burns them"},
-         {"LMB", "hold to embrace a creature until it turns to plaster"},
-         {"TAB", "tech tracker  -  fills your view, kills your light"},
-         },
-    };
-
     constexpr float panel_top = 252;
 
     UiPainter::drawPanel(
       renderer,
-      center_x - 300,
+      center_x - (controls_panel_width / 2),
       panel_top,
-      600,
+      controls_panel_width,
       232,
       Palette::panel_edge,
       1
@@ -109,15 +149,15 @@ namespace wheel_of_fear {
       UiPainter::drawKeycap(
         renderer,
         key,
-        center_x - 160 - std::max(key_width, 20.8F),
+        center_x - controls_key_column - std::max(key_width, 20.8F),
         y,
         13,
         Palette::neon_cyan
       );
 
       renderer.drawText(
-        text,
-        center_x - 146,
+        Localization::text(text),
+        center_x - controls_text_column,
         y + 1,
         15,
         Palette::text,
@@ -129,7 +169,7 @@ namespace wheel_of_fear {
 
     if(saved_phase) {
       renderer.drawDisplayText(
-        std::format("PRESS ENTER TO CONTINUE SECTOR {:02}", *saved_phase),
+        Localization::format(continue_prompt, *saved_phase),
         center_x,
         500,
         22,
@@ -138,7 +178,7 @@ namespace wheel_of_fear {
       );
 
       renderer.drawText(
-        "R  -  start a new run from sector 01",
+        Localization::text(new_run_hint),
         center_x,
         528,
         15,
@@ -147,7 +187,7 @@ namespace wheel_of_fear {
       );
     } else {
       renderer.drawDisplayText(
-        "PRESS ENTER",
+        Localization::text(start_prompt),
         center_x,
         500,
         22,
@@ -164,6 +204,11 @@ namespace wheel_of_fear {
     MenuButtonWidget::draw(
       renderer,
       MenuButtonCatalog::title_quit,
+      mouse_in_ui
+    );
+    MenuButtonWidget::draw(
+      renderer,
+      MenuButtonCatalog::title_language,
       mouse_in_ui
     );
 

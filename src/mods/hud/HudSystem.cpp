@@ -2,6 +2,7 @@
 #include "core/input/InputController.hpp"
 #include "core/render/RenderConfig.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -14,6 +15,7 @@
 #include "mods/hud/widgets/ObjectivesPanelWidget.hpp"
 #include "mods/hud/widgets/SkillCheckDialWidget.hpp"
 #include "mods/hud/widgets/VitalsPanelWidget.hpp"
+#include "mods/letters/LetterSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/tracker/TrackerSystem.hpp"
@@ -50,7 +52,8 @@ namespace wheel_of_fear {
     ObjectivesPanelWidget::draw(
       renderer,
       context.world.phase(),
-      context.generators
+      context.generators,
+      context.letters.hasKey()
     );
 
     if(
@@ -58,7 +61,10 @@ namespace wheel_of_fear {
         context.camera.mouseWorldPosition(context.input)
       )
     )
-      MobInspectorWidget::draw(renderer, inspected_mob->traits().display_name);
+      MobInspectorWidget::draw(
+        renderer,
+        Localization::text(inspected_mob->traits().display_name)
+      );
 
     InventoryBarWidget::draw(
       renderer,

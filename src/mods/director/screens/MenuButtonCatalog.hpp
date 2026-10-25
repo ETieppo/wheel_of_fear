@@ -8,11 +8,12 @@ namespace wheel_of_fear {
     public:
       MenuButtonCatalog() = delete;
 
-      static constexpr float button_width      = 140;
-      static constexpr float button_height     = 32;
-      static constexpr float bottom_margin     = 52;
-      static constexpr float side_margin       = 24;
-      static constexpr float wide_button_width = 176;
+      static constexpr float button_width          = 140;
+      static constexpr float button_height         = 32;
+      static constexpr float bottom_margin         = 52;
+      static constexpr float side_margin           = 24;
+      static constexpr float language_button_width = 196;
+      static constexpr float wide_button_width     = 176;
 
       static constexpr MenuButtonProps title_credits {
         .bounds = {
@@ -22,7 +23,7 @@ namespace wheel_of_fear {
           .height = button_height,
         },
         .action = InputActionEnum::show_credits,
-        .text   = "CREDITS",
+        .text   = {"CREDITS", "CRÉDITOS"},
       };
 
       static constexpr MenuButtonProps title_quit {
@@ -33,7 +34,18 @@ namespace wheel_of_fear {
           .height = button_height,
         },
         .action = InputActionEnum::quit_game,
-        .text   = "QUIT",
+        .text   = {"QUIT", "SAIR"},
+      };
+
+      static constexpr MenuButtonProps title_language {
+        .bounds = {
+          .x      = side_margin,
+          .y      = side_margin,
+          .width  = language_button_width,
+          .height = button_height,
+        },
+        .action = InputActionEnum::toggle_language,
+        .text   = {"ENGLISH", "PORTUGUÊS"},
       };
 
       static constexpr MenuButtonProps paused_quit {
@@ -44,7 +56,7 @@ namespace wheel_of_fear {
           .height = button_height,
         },
         .action = InputActionEnum::quit_game,
-        .text   = "QUIT GAME",
+        .text   = {"QUIT GAME", "SAIR DO JOGO"},
       };
   };
 } // namespace wheel_of_fear

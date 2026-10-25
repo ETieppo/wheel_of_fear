@@ -12,7 +12,24 @@
 make run
 ```
 
-Assets are read from the repository's `assets/` folder. Set `ENGRENAGEM_DEMO` (`showcase`, `freeze`, `repair`, `locker`, `grenade`, ...) to run the scripted demo scenarios.
+Assets are read from the repository's `assets/` folder.
+
+## Lore
+
+The game has lore: every sector hides a letter. The texts live in `assets/letters/` (English and pt-BR).
+
+## Environment variables
+
+Use them only with `make dev`.
+
+| Variable | What it does |
+|---|---|
+| `ENGRENAGEM_DEMO` | Runs a scripted demo scenario: `play`, `deep`, `phase`, `ending`, `sectors`, `showcase`, `tracker`, `freeze`, `moth`, `locker`, `witness`, `repair`, `power`, `grenade`, `lure`, `doors`, `walk` |
+| `ENGRENAGEM_PHASE` | Sector to start in (1 to 12); only works with `ENGRENAGEM_DEMO=phase` |
+
+```sh
+ENGRENAGEM_DEMO=phase ENGRENAGEM_PHASE=10 make dev
+```
 
 ## Hot reload
 

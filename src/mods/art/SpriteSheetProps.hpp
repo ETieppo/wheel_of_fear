@@ -10,13 +10,9 @@ namespace wheel_of_fear {
 
   struct SpriteSheetProps {
       SpriteFrames                             player_walk;
-      SpriteFrames                             player_walk_glow;
       SpriteFrames                             player_idle;
-      SpriteFrames                             player_idle_glow;
       SpriteFrames                             player_hug;
-      SpriteFrames                             player_hug_glow;
       SpriteFrames                             player_repair;
-      SpriteFrames                             player_repair_glow;
       SpriteFrames                             crawler_walk;
       SpriteFrames                             crawler_walk_glow;
       SpriteFrames                             bloater_drift;
@@ -49,6 +45,7 @@ namespace wheel_of_fear {
       AtlasRegionProps                         blast_door_panel;
       AtlasRegionProps                         lure_beacon;
       AtlasRegionProps                         neon_grenade;
+      AtlasRegionProps                         letter;
       SpriteFrames                             spark;
       SpriteFrames                             light;
       AtlasRegionProps                         flare;

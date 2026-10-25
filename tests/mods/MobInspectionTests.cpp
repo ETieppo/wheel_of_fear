@@ -29,7 +29,7 @@ namespace wheel_of_fear {
       = mobs.visibleMobAt(position.add(Vec2Props::of(3, 0)));
 
     REQUIRE(inspected != nullptr);
-    CHECK(inspected->traits().display_name == "Crawler");
+    CHECK(inspected->traits().display_name.english == "Crawler");
     CHECK(mobs.visibleMobAt(Vec2Props::of(300, 300)) == nullptr);
   }
 } // namespace wheel_of_fear

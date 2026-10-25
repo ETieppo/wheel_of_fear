@@ -1,5 +1,6 @@
 #include "mods/director/demos/SectorsDemoScenario.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
+#include "mods/letters/LetterSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
@@ -34,6 +35,7 @@ namespace wheel_of_fear {
     if(!generators.areAllOnline()) {
       for(GeneratorEntity &generator : generators.all())
         generator.forceOnline(context);
+      context.letters.grantKey();
       return;
     }
 

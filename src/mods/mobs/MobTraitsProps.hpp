@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/audio/enums/SoundEnum.hpp"
+#include "core/text/LocalizedTextProps.hpp"
 #include "mods/lighting/enums/LightFilterEnum.hpp"
 #include <cstdint>
 #include <optional>
@@ -8,7 +9,7 @@
 
 namespace wheel_of_fear {
   struct MobTraitsProps {
-      std::string_view               display_name;
+      LocalizedTextProps             display_name;
       std::optional<LightFilterEnum> frozen_by;
       std::optional<SoundEnum>       movement_sound;
       std::optional<SoundEnum>       vocal_sound;

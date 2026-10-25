@@ -16,54 +16,49 @@ namespace wheel_of_fear {
         ) {
     using Catalog = SpriteCatalog;
 
-    sprites_.player_walk      = loadStrip(Catalog::generated_player_walk);
-    sprites_.player_walk_glow = loadStrip(Catalog::generated_player_walk_glow);
-    sprites_.player_idle      = loadStrip(Catalog::generated_player_idle);
-    sprites_.player_idle_glow = loadStrip(Catalog::generated_player_idle_glow);
-    sprites_.player_hug       = loadStrip(Catalog::generated_player_hug);
-    sprites_.player_hug_glow  = loadStrip(Catalog::generated_player_hug_glow);
-    sprites_.player_repair    = loadStrip(Catalog::generated_player_repair);
-    sprites_.player_repair_glow
-      = loadStrip(Catalog::generated_player_repair_glow);
-    sprites_.crawler_walk = loadStrip(Catalog::generated_crawler_walk);
+    sprites_.player_walk   = loadStrip(Catalog::player_move);
+    sprites_.player_idle   = loadStrip(Catalog::player_idle);
+    sprites_.player_hug    = loadStrip(Catalog::player_hug);
+    sprites_.player_repair = loadStrip(Catalog::player_idle);
+    sprites_.crawler_walk  = loadStrip(Catalog::crawler_walk);
     sprites_.crawler_walk_glow
-      = loadStrip(Catalog::generated_crawler_walk_glow);
-    sprites_.bloater_drift = loadStrip(Catalog::generated_bloater_drift);
+      = loadStrip(Catalog::crawler_walk);
+    sprites_.bloater_drift = loadStrip(Catalog::bloater_drift);
     sprites_.bloater_drift_glow
-      = loadStrip(Catalog::generated_bloater_drift_glow);
-    sprites_.melter_crawl = loadStrip(Catalog::generated_melter_crawl);
+      = loadStrip(Catalog::bloater_drift);
+    sprites_.melter_crawl = loadStrip(Catalog::melter_crawl);
     sprites_.melter_crawl_glow
-      = loadStrip(Catalog::generated_melter_crawl_glow);
-    sprites_.shepherd_walk = loadStrip(Catalog::generated_shepherd_walk);
+      = loadStrip(Catalog::melter_crawl);
+    sprites_.shepherd_walk = loadStrip(Catalog::zombie_move);
     sprites_.shepherd_walk_glow
-      = loadStrip(Catalog::generated_shepherd_walk_glow);
-    sprites_.shade_drift      = loadStrip(Catalog::generated_shade_drift);
+      = loadStrip(Catalog::zombie_move);
+    sprites_.shade_drift      = loadStrip(Catalog::shade_drift);
     sprites_.watcher_stare    = loadStrip(Catalog::eye_monster);
     sprites_.devourer_chew    = loadStrip(Catalog::teeth_monster);
-    sprites_.shade_drift_glow = loadStrip(Catalog::generated_shade_drift_glow);
-    sprites_.mimic_hunt       = loadStrip(Catalog::generated_mimic_hunt);
-    sprites_.mimic_hunt_glow  = loadStrip(Catalog::generated_mimic_hunt_glow);
-    sprites_.moth_flutter     = loadStrip(Catalog::generated_moth_flutter);
+    sprites_.shade_drift_glow = loadStrip(Catalog::shade_drift);
+    sprites_.mimic_hunt       = loadStrip(Catalog::mimic_hunt);
+    sprites_.mimic_hunt_glow  = loadStrip(Catalog::mimic_hunt);
+    sprites_.moth_flutter     = loadStrip(Catalog::moth_flutter);
     sprites_.moth_flutter_glow
-      = loadStrip(Catalog::generated_moth_flutter_glow);
-    sprites_.generator_base = loadSingle(Catalog::generated_generator_base);
+      = loadStrip(Catalog::moth_flutter);
+    sprites_.generator_base = loadSingle(Catalog::generator_base);
     sprites_.generator_glow
-      = loadSingle(Catalog::generated_generator_base_glow);
-    sprites_.generator_rotor = loadSingle(Catalog::generated_generator_rotor);
+      = loadSingle(Catalog::generator_base);
+    sprites_.generator_rotor = loadSingle(Catalog::generator_rotor);
     sprites_.generator_rotor_glow
-      = loadSingle(Catalog::generated_generator_rotor_glow);
-    sprites_.fabricator       = loadSingle(Catalog::generated_fabricator);
-    sprites_.fabricator_glow  = loadSingle(Catalog::generated_fabricator_glow);
-    sprites_.server_rack      = loadSingle(Catalog::generated_server_rack);
-    sprites_.server_rack_glow = loadSingle(Catalog::generated_server_rack_glow);
-    sprites_.terminal         = loadSingle(Catalog::generated_terminal);
-    sprites_.terminal_glow    = loadSingle(Catalog::generated_terminal_glow);
-    sprites_.exit_frame       = loadSingle(Catalog::generated_exit_frame);
-    sprites_.exit_frame_glow  = loadSingle(Catalog::generated_exit_frame_glow);
-    sprites_.blast_door_frame = loadSingle(Catalog::generated_blast_door_frame);
-    sprites_.blast_door_panel = loadSingle(Catalog::generated_blast_door_panel);
-    sprites_.lure_beacon      = loadSingle(Catalog::generated_lure_beacon);
-    sprites_.neon_grenade     = loadSingle(Catalog::generated_neon_grenade);
+      = loadSingle(Catalog::generator_rotor);
+    sprites_.fabricator       = loadSingle(Catalog::fabricator);
+    sprites_.fabricator_glow  = loadSingle(Catalog::fabricator);
+    sprites_.server_rack      = loadSingle(Catalog::server_rack);
+    sprites_.server_rack_glow = loadSingle(Catalog::server_rack);
+    sprites_.terminal         = loadSingle(Catalog::terminal);
+    sprites_.terminal_glow    = loadSingle(Catalog::terminal);
+    sprites_.exit_frame       = loadSingle(Catalog::exit_frame);
+    sprites_.exit_frame_glow  = loadSingle(Catalog::exit_frame);
+    sprites_.blast_door_frame = loadSingle(Catalog::blast_door_frame);
+    sprites_.blast_door_panel = loadSingle(Catalog::blast_door_panel);
+    sprites_.lure_beacon      = loadSingle(Catalog::lure_beacon);
+    sprites_.neon_grenade     = loadSingle(Catalog::neon_grenade);
     sprites_.spark            = loadParticleStrip(Catalog::particle_spark);
     sprites_.light            = loadParticleStrip(Catalog::particle_light);
     sprites_.flare        = loadParticleStrip(Catalog::particle_flare).front();
@@ -79,12 +74,13 @@ namespace wheel_of_fear {
     sprites_.locker_closed = loadSingle(Catalog::locker_closed);
     sprites_.locker_open   = loadSingle(Catalog::locker_open);
     sprites_.vent          = loadSingle(Catalog::vent);
+    sprites_.letter        = loadSingle(Catalog::letter);
     sprites_.item_icons    = {
       loadSingle(Catalog::icon_gear),
       loadSingle(Catalog::icon_fuse),
       loadSingle(Catalog::icon_valve),
-      loadSingle(Catalog::generated_icon_lure),
-      loadSingle(Catalog::generated_icon_grenade),
+      loadSingle(Catalog::icon_lure),
+      loadSingle(Catalog::icon_grenade),
     };
     sprites_.trees = {
       loadSingle(Catalog::tree_00),

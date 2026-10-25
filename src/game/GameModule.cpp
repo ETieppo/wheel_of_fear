@@ -8,7 +8,7 @@
 namespace wheel_of_fear {
   namespace {
     GameApplication* createGame(Window &window) {
-      return new GameApplication(window, std::nullopt);
+      return new GameApplication(window, UserDataFilesProps {});
     }
 
     void destroyGame(GameApplication* game) {

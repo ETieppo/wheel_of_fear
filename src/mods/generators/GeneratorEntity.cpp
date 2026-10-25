@@ -2,6 +2,7 @@
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -16,6 +17,13 @@
 #include <format>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps online_message {
+      "GENERATOR {} ONLINE  -  THE ROOM IS LIGHTING UP",
+      "GERADOR {} LIGADO  -  A SALA ESTÁ ACENDENDO",
+    };
+  } // namespace
+
   GeneratorEntity::GeneratorEntity(
     Vec2Props               position,
     std::size_t             room_index,
@@ -181,7 +189,7 @@ namespace wheel_of_fear {
 
     context.hud.announce(
       Palette::success,
-      std::format("GENERATOR {} ONLINE  -  THE ROOM IS LIGHTING UP", label_)
+      Localization::format(online_message, label_)
     );
 
     context.mobs.onGeneratorOnline(context);

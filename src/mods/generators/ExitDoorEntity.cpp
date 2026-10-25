@@ -1,6 +1,7 @@
 #include "mods/generators/ExitDoorEntity.hpp"
 #include "core/audio/SoundPlayer.hpp"
 #include "core/math/ScalarMath.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -11,9 +12,26 @@
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
 #include <format>
+#include <string>
 
 namespace wheel_of_fear {
   namespace {
+    constexpr LocalizedTextProps exit_open_message {
+      "ALL GENERATORS ONLINE  -  THE EXIT IS OPEN",
+      "TODOS OS GERADORES LIGADOS  -  A SAÍDA ESTÁ ABERTA",
+    };
+    constexpr LocalizedTextProps step_in_prompt {
+      "STEP INTO THE EXIT",
+      "ENTRE NA SAÍDA",
+    };
+    constexpr LocalizedTextProps key_missing_prompt {
+      "THE EXIT IS LOCKED  -  FIND THE LETTER WITH THE KEY",
+      "A SAÍDA ESTÁ TRANCADA  -  ENCONTRE A CARTA COM A CHAVE",
+    };
+    constexpr LocalizedTextProps sealed_prompt {
+      "EXIT SEALED  -  {}/{} GENERATORS ONLINE",
+      "SAÍDA LACRADA  -  {}/{} GERADORES LIGADOS",
+    };
     constexpr float      opening_speed      = 0.5F;
     constexpr float      slide_distance     = 15;
     constexpr float      entry_radius       = 14;
@@ -42,7 +60,7 @@ namespace wheel_of_fear {
     context.world.powerRoom(context.world.exitRoomIndex(), true);
     context.hud.announce(
       Palette::success,
-      "ALL GENERATORS ONLINE  -  THE EXIT IS OPEN"
+      std::string(Localization::text(exit_open_message))
     );
   }
 
@@ -68,14 +86,15 @@ namespace wheel_of_fear {
       light.casts_shadows = false;
       context.lighting.add(light);
 
-      if(player_distance < 44)
+      if(player_distance < 44 && online_count == generator_count)
         context.hud.showPrompt(
           std::nullopt,
-          std::format(
-            "EXIT SEALED  -  {}/{} GENERATORS ONLINE",
-            online_count,
-            generator_count
-          )
+          std::string(Localization::text(key_missing_prompt))
+        );
+      else if(player_distance < 44)
+        context.hud.showPrompt(
+          std::nullopt,
+          Localization::format(sealed_prompt, online_count, generator_count)
         );
 
       return;
@@ -106,7 +125,10 @@ namespace wheel_of_fear {
       has_player_exited_ = true;
 
     if(player_distance < 64)
-      context.hud.showPrompt(std::nullopt, "STEP INTO THE EXIT");
+      context.hud.showPrompt(
+        std::nullopt,
+        std::string(Localization::text(step_in_prompt))
+      );
   }
 
   void ExitDoorEntity::setFootprintBlocked(

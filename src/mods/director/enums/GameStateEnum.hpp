@@ -12,5 +12,6 @@ namespace wheel_of_fear {
     phase_cleared,
     credits,
     ending,
+    reading,
   };
 } // namespace wheel_of_fear

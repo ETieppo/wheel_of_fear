@@ -2,6 +2,8 @@
 
 #include "core/items/enums/ItemEnum.hpp"
 #include "core/math/ColorProps.hpp"
+#include "core/text/Localization.hpp"
+#include "core/text/LocalizedTextProps.hpp"
 #include <cstdint>
 #include <string_view>
 
@@ -17,7 +19,7 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       std::string_view displayName() const {
-        return display_name_;
+        return Localization::text(display_name_);
       }
 
       [[nodiscard]]
@@ -48,10 +50,10 @@ namespace wheel_of_fear {
 
     protected:
       Item(
-        ItemEnum         kind,
-        std::string_view display_name,
-        ColorProps       color,
-        int              carry_limit
+        ItemEnum           kind,
+        LocalizedTextProps display_name,
+        ColorProps         color,
+        int                carry_limit
       )
           : kind_(kind)
           , display_name_(display_name)
@@ -60,9 +62,9 @@ namespace wheel_of_fear {
       }
 
     private:
-      ItemEnum         kind_;
-      std::string_view display_name_;
-      ColorProps       color_;
-      int              carry_limit_;
+      ItemEnum           kind_;
+      LocalizedTextProps display_name_;
+      ColorProps         color_;
+      int                carry_limit_;
   };
 } // namespace wheel_of_fear

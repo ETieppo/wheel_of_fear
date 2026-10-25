@@ -2,6 +2,7 @@
 #include "core/audio/SoundPlayer.hpp"
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -11,8 +12,16 @@
 #include "mods/player/components/PlayerAnimator.hpp"
 #include "mods/tracker/TrackerSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
+#include <string>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps hide_prompt {
+      "hide in the locker",
+      "esconder no armário",
+    };
+  } // namespace
+
   PlayerEntity::PlayerEntity()
       : Entity(
           Vec2Props::of(
@@ -149,7 +158,10 @@ namespace wheel_of_fear {
       = LockerHidingComponent::nearestLocker(context.world, position());
     if(!locker_index) return;
 
-    context.hud.showPrompt(InputActionEnum::interact, "hide in the locker");
+    context.hud.showPrompt(
+      InputActionEnum::interact,
+      std::string(Localization::text(hide_prompt))
+    );
     if(!input.wasPressed(InputActionEnum::interact)) return;
 
     repair_target_.reset();
@@ -257,11 +269,11 @@ namespace wheel_of_fear {
     );
 
     if(!isDead())
-      renderer.drawGlowSprite(
-        pose.glow,
+      renderer.drawGlowDisc(
         position(),
-        Palette::neon_cyan.withAlpha(0.95F),
-        SpriteDrawDto {.rotation = rotation}
+        player_glow_radius,
+        Palette::neon_cyan.withAlpha(0.22F),
+        1.6F
       );
 
     flashlight_.drawBeam(renderer, sprites, grip());

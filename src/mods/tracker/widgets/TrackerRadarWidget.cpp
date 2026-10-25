@@ -1,6 +1,7 @@
 #include "mods/tracker/widgets/TrackerRadarWidget.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
+#include "core/text/Localization.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/art/ArtLibrary.hpp"
@@ -11,6 +12,25 @@
 #include <string>
 
 namespace wheel_of_fear {
+  namespace {
+    constexpr LocalizedTextProps tracker_title {
+      "TK-7 TECH TRACKER  \xC2\xB7  {} SIGNALS",
+      "RASTREADOR TK-7  \xC2\xB7  {} SINAIS",
+    };
+    constexpr LocalizedTextProps tracker_hint {
+      "[TAB] CLOSE  -  YOUR LIGHT IS DOWN WHILE THE SCREEN IS UP",
+      "[TAB] FECHAR  -  SUA LUZ FICA APAGADA COM A TELA ABERTA",
+    };
+    constexpr LocalizedTextProps unidentified_label {
+      "?  UNIDENTIFIED SIGNAL",
+      "?  SINAL NÃO IDENTIFICADO",
+    };
+    constexpr LocalizedTextProps exit_label {
+      "EXIT",
+      "SAÍDA",
+    };
+  } // namespace
+
   void TrackerRadarWidget::draw(
     GameContextDto       &context,
     const TrackerViewDto &view
@@ -163,7 +183,7 @@ namespace wheel_of_fear {
     const ColorProps green    = Palette::tracker_green;
 
     renderer.drawText(
-      std::format("TK-7 TECH TRACKER  \xC2\xB7  {} SIGNALS", signal_count),
+      Localization::format(tracker_title, signal_count),
       30,
       22,
       18,
@@ -172,7 +192,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "[TAB] CLOSE  -  YOUR LIGHT IS DOWN WHILE THE SCREEN IS UP",
+      Localization::text(tracker_hint),
       30,
       504,
       14,
@@ -181,7 +201,7 @@ namespace wheel_of_fear {
     );
 
     renderer.drawText(
-      "?  UNIDENTIFIED SIGNAL",
+      Localization::text(unidentified_label),
       RenderConfig::ui_width - 30,
       504,
       14,
@@ -313,7 +333,7 @@ namespace wheel_of_fear {
           0.25F
         );
         renderer.drawText(
-          "EXIT",
+          Localization::text(exit_label),
           point.x + 12,
           point.y - 14,
           15,

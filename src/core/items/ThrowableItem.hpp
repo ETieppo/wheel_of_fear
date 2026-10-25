@@ -17,11 +17,11 @@ namespace wheel_of_fear {
 
     protected:
       ThrowableItem(
-        ItemEnum         kind,
-        std::string_view display_name,
-        ColorProps       color,
-        int              carry_limit,
-        float            throw_pitch
+        ItemEnum           kind,
+        LocalizedTextProps display_name,
+        ColorProps         color,
+        int                carry_limit,
+        float              throw_pitch
       )
           : Item(
               kind,

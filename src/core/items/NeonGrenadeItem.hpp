@@ -10,7 +10,10 @@ namespace wheel_of_fear {
       NeonGrenadeItem()
           : ThrowableItem(
               ItemEnum::neon_grenade,
-              "NEON GRENADE",
+              LocalizedTextProps {
+                "NEON GRENADE",
+                "GRANADA NEON"
+              },
               Palette::grenade_neon_colors.front(),
               3,
               0.85F

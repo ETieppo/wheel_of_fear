@@ -3,6 +3,7 @@
 #include "core/input/InputController.hpp"
 #include "core/math/ScalarMath.hpp"
 #include "core/render/RenderConfig.hpp"
+#include "core/text/Localization.hpp"
 #include "core/time/GameClock.hpp"
 #include "mods/credits/CreditsCatalog.hpp"
 #include "mods/credits/CreditsRollBuilder.hpp"
@@ -13,14 +14,30 @@
 
 namespace wheel_of_fear {
   EndingGameState::EndingGameState()
-      : lines_(CreditsRollBuilder::build(CreditsCatalog::load()))
+      : entries_(CreditsCatalog::load())
+      , lines_(
+          CreditsRollBuilder::build(
+            entries_,
+            CreditsRollStyleEnum::ending
+          )
+        )
+      , lines_language_(Localization::language())
       , roll_height_(CreditsRollBuilder::totalHeight(lines_)) {
+  }
+
+  void EndingGameState::rebuildLinesIfLanguageChanged() {
+    if(lines_language_ == Localization::language()) return;
+
+    lines_ = CreditsRollBuilder::build(entries_, CreditsRollStyleEnum::ending);
+    lines_language_ = Localization::language();
+    roll_height_    = CreditsRollBuilder::totalHeight(lines_);
   }
 
   void EndingGameState::update(
     Director       &director,
     GameContextDto &context
   ) {
+    rebuildLinesIfLanguageChanged();
     context.clock.setRunning(true);
     context.hud.setVisible(false);
     context.player.flashlight().setEnabled(false);

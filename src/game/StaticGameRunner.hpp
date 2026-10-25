@@ -12,6 +12,7 @@ namespace wheel_of_fear {
 
     private:
       static constexpr std::string_view progress_file_name = "progress.sav";
+      static constexpr std::string_view settings_file_name = "settings.cfg";
 
       GameApplication game_;
   };

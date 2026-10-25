@@ -25,23 +25,24 @@ namespace wheel_of_fear {
       };
     }
 
-    constexpr std::array<GoldenMasterCaseProps, 16> golden_master_cases {
-      goldenCase("none", 4918380489932145272ULL),
-      goldenCase("play", 5210700163412478118ULL),
-      goldenCase("deep", 2524870939948402191ULL),
-      goldenCase("tracker", 1315644311588174912ULL),
-      goldenCase("sectors", 5288150336535492333ULL),
-      goldenCase("showcase", 2440873158419509755ULL),
-      goldenCase("freeze", 17125811141788460805ULL),
-      goldenCase("moth", 10186916260382730725ULL),
-      goldenCase("locker", 16907729882483859861ULL),
-      goldenCase("witness", 6652067478933736456ULL),
-      goldenCase("repair", 7926940296944293375ULL),
-      goldenCase("power", 4326322000128176400ULL),
-      goldenCase("grenade", 6586979219360108824ULL),
-      goldenCase("lure", 18297758343076773701ULL),
-      goldenCase("doors", 4586389178548821122ULL),
-      goldenCase("walk", 16523349908505656813ULL),
+    constexpr std::array<GoldenMasterCaseProps, 17> golden_master_cases {
+      goldenCase("none", 9671897175494544716ULL),
+      goldenCase("play", 16501620738589448063ULL),
+      goldenCase("deep", 2760354486160752501ULL),
+      goldenCase("tracker", 10363383495987562495ULL),
+      goldenCase("sectors", 70736726000219281ULL),
+      goldenCase("showcase", 10875246762754108044ULL),
+      goldenCase("freeze", 8938265978280193661ULL),
+      goldenCase("moth", 1232797427756347883ULL),
+      goldenCase("locker", 7514666287334400793ULL),
+      goldenCase("witness", 18142075704131835559ULL),
+      goldenCase("repair", 8770032242735356949ULL),
+      goldenCase("power", 5736469575518492680ULL),
+      goldenCase("grenade", 11496448755694345352ULL),
+      goldenCase("lure", 13511371594272437495ULL),
+      goldenCase("doors", 11539910087029074923ULL),
+      goldenCase("walk", 14316038490100979017ULL),
+      goldenCase("ending", 14560409433106449169ULL),
     };
 
     std::uint64_t fingerprintOf(std::string_view demo_mode) {

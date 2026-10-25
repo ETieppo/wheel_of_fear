@@ -25,6 +25,17 @@ namespace wheel_of_fear {
 
     if(
       MenuButtonWidget::wasActivated(
+        MenuButtonCatalog::title_language,
+        context.input
+      )
+    ) {
+      context.sound_player.play(SoundEnum::ui_glitch, 0.5F, 0, 1.2F);
+      director.toggleLanguage();
+      return;
+    }
+
+    if(
+      MenuButtonWidget::wasActivated(
         MenuButtonCatalog::title_quit,
         context.input
       )

@@ -2,6 +2,7 @@
 #include "core/render/RenderConfig.hpp"
 #include "core/render/Renderer.hpp"
 #include "core/time/GameClock.hpp"
+#include "mods/letters/LetterSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include <algorithm>
 #include <string_view>
@@ -178,7 +179,7 @@ namespace wheel_of_fear {
     }
 
     for(FabricatorEntity &fabricator : fabricators_) fabricator.update(context);
-    if(areAllOnline()) exit_door_.unlock(context);
+    if(areAllOnline() && context.letters.hasKey()) exit_door_.unlock(context);
 
     exit_door_.update(context, online_count, generators_.size());
   }

@@ -8,7 +8,10 @@ namespace wheel_of_fear {
       ValveItem()
           : GeneratorPartItem(
               ItemEnum::valve,
-              "VALVE",
+              LocalizedTextProps {
+                "VALVE",
+                "VÁLVULA"
+              },
               ColorProps::hex(0xff5a3a)
             ) {
       }

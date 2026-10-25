@@ -8,7 +8,10 @@ namespace wheel_of_fear {
       FuseItem()
           : GeneratorPartItem(
               ItemEnum::fuse,
-              "FUSE",
+              LocalizedTextProps {
+                "FUSE",
+                "FUSÍVEL"
+              },
               ColorProps::hex(0x18f0ff)
             ) {
       }

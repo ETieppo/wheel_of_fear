@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/storage/UserDataFilesProps.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/director/DemoScenarioRunner.hpp"
 #include "mods/director/DirectorSnapshotProps.hpp"
@@ -12,7 +13,9 @@
 #include "mods/director/states/PhaseClearedGameState.hpp"
 #include "mods/director/states/PhaseIntroGameState.hpp"
 #include "mods/director/states/PlayingGameState.hpp"
+#include "mods/director/states/ReadingGameState.hpp"
 #include "mods/director/states/TitleGameState.hpp"
+#include "mods/settings/SettingsStore.hpp"
 #include <cstdint>
 #include <filesystem>
 #include <optional>
@@ -23,9 +26,7 @@ namespace wheel_of_fear {
       static constexpr float intro_seconds           = 6;
       static constexpr float cleared_seconds         = 3;
       static constexpr float game_over_delay_seconds = 1.4F;
-      explicit Director(
-        std::optional<std::filesystem::path> progress_file_path
-      );
+      explicit Director(const UserDataFilesProps &user_data_files);
       static void initialize(GameContextDto &context);
       void        update(GameContextDto &context);
       void        draw(GameContextDto &context) const;
@@ -83,6 +84,8 @@ namespace wheel_of_fear {
         return progress_;
       }
 
+      void toggleLanguage();
+
       void startPhase(
         GameContextDto &context,
         std::uint32_t   phase
@@ -124,6 +127,7 @@ namespace wheel_of_fear {
       float         fade_amount_          = 1;
       DemoScenarioRunner    demo_;
       ProgressStore         progress_;
+      SettingsStore         settings_;
       TitleGameState        title_state_;
       PhaseIntroGameState   phase_intro_state_;
       PlayingGameState      playing_state_;
@@ -132,5 +136,6 @@ namespace wheel_of_fear {
       PhaseClearedGameState phase_cleared_state_;
       CreditsGameState      credits_state_;
       EndingGameState       ending_state_;
+      ReadingGameState      reading_state_;
   };
 } // namespace wheel_of_fear
