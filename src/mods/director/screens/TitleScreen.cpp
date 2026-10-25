@@ -3,6 +3,7 @@
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
+#include "mods/director/screens/CreditsButtonWidget.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -14,7 +15,8 @@ namespace wheel_of_fear {
   void TitleScreen::draw(
     Renderer                    &renderer,
     float                        real_seconds,
-    std::optional<std::uint32_t> saved_phase
+    std::optional<std::uint32_t> saved_phase,
+    bool                         is_credits_hovered
   ) {
     constexpr float center_x = RenderConfig::ui_width / 2;
 
@@ -56,7 +58,7 @@ namespace wheel_of_fear {
       center_x,
       166,
       40,
-      Palette::hud_magenta.withAlpha(flicker),
+      Palette::accent.withAlpha(flicker),
       TextAlignEnum::center
     );
 
@@ -130,7 +132,7 @@ namespace wheel_of_fear {
         center_x,
         500,
         22,
-        Palette::hud_magenta.withAlpha(pulse),
+        Palette::accent.withAlpha(pulse),
         TextAlignEnum::center
       );
 
@@ -148,10 +150,12 @@ namespace wheel_of_fear {
         center_x,
         500,
         22,
-        Palette::hud_magenta.withAlpha(pulse),
+        Palette::accent.withAlpha(pulse),
         TextAlignEnum::center
       );
     }
+
+    CreditsButtonWidget::draw(renderer, is_credits_hovered);
 
     UiPainter::drawScanlines(
       renderer,

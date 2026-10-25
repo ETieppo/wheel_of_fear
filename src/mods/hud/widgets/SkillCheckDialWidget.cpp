@@ -119,7 +119,7 @@ namespace wheel_of_fear {
       QuadKindEnum::solid,
       ring_center.add(needle_direction.scale(ring_radius * 0.6F)),
       Vec2Props::of(ring_radius * 0.9F, 3),
-      Palette::hud_magenta,
+      Palette::accent,
       needle_angle,
       0
     );

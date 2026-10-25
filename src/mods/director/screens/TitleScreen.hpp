@@ -12,7 +12,8 @@ namespace wheel_of_fear {
       static void draw(
         Renderer                    &renderer,
         float                        real_seconds,
-        std::optional<std::uint32_t> saved_phase
+        std::optional<std::uint32_t> saved_phase,
+        bool                         is_credits_hovered
       );
   };
 } // namespace wheel_of_fear

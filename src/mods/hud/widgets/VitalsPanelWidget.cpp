@@ -22,8 +22,8 @@ namespace wheel_of_fear {
       const float      pulse     = is_filled && health == 1
         ? 0.6F + (0.4F * std::sin(real_seconds * 9))
         : 1.0F;
-      const ColorProps color = is_filled ? Palette::hud_magenta.withAlpha(pulse)
-                                         : ColorProps::hex(0x2a1a2a);
+      const ColorProps color     = is_filled ? Palette::accent.withAlpha(pulse)
+                                             : ColorProps::hex(0x2a1a2a);
 
       renderer.drawUiShape(
         QuadKindEnum::solid,

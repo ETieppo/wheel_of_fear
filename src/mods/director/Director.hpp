@@ -5,6 +5,7 @@
 #include "mods/director/DirectorSnapshotProps.hpp"
 #include "mods/director/ProgressStore.hpp"
 #include "mods/director/enums/GameStateEnum.hpp"
+#include "mods/director/states/CreditsGameState.hpp"
 #include "mods/director/states/GameOverGameState.hpp"
 #include "mods/director/states/PausedGameState.hpp"
 #include "mods/director/states/PhaseClearedGameState.hpp"
@@ -124,5 +125,6 @@ namespace wheel_of_fear {
       PausedGameState               paused_state_;
       GameOverGameState             game_over_state_;
       PhaseClearedGameState         phase_cleared_state_;
+      CreditsGameState              credits_state_;
   };
 } // namespace wheel_of_fear

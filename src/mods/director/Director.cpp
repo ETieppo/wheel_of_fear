@@ -114,6 +114,7 @@ namespace wheel_of_fear {
       case GameStateEnum::paused:        return paused_state_;
       case GameStateEnum::game_over:     return game_over_state_;
       case GameStateEnum::phase_cleared: return phase_cleared_state_;
+      case GameStateEnum::credits:       return credits_state_;
     }
 
     return title_state_;
@@ -127,6 +128,7 @@ namespace wheel_of_fear {
       case GameStateEnum::paused:        return paused_state_;
       case GameStateEnum::game_over:     return game_over_state_;
       case GameStateEnum::phase_cleared: return phase_cleared_state_;
+      case GameStateEnum::credits:       return credits_state_;
     }
 
     return title_state_;

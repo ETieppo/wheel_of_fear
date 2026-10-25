@@ -10,5 +10,6 @@ namespace wheel_of_fear {
     paused,
     game_over,
     phase_cleared,
+    credits,
   };
 } // namespace wheel_of_fear

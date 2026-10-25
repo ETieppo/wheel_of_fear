@@ -21,7 +21,8 @@ namespace wheel_of_fear {
     back,
     restart,
     toggle_mute,
+    show_credits,
   };
 
-  inline constexpr std::size_t input_action_count = 16;
+  inline constexpr std::size_t input_action_count = 17;
 } // namespace wheel_of_fear

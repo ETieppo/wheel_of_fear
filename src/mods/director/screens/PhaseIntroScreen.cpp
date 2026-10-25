@@ -42,7 +42,7 @@ namespace wheel_of_fear {
       140 + height,
       RenderConfig::ui_width,
       1,
-      Palette::hud_magenta.withAlpha(alpha)
+      Palette::accent.withAlpha(alpha)
     );
 
     UiPainter::drawGlitchTitle(
@@ -82,7 +82,7 @@ namespace wheel_of_fear {
         center_x,
         280 + (static_cast<float>(index) * 24),
         15,
-        Palette::hud_magenta.withAlpha(alpha),
+        Palette::accent.withAlpha(alpha),
         TextAlignEnum::center
       );
     }

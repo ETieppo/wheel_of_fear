@@ -15,22 +15,14 @@ namespace wheel_of_fear {
     constexpr float width = 220;
     constexpr float left  = RenderConfig::ui_width - 14 - width;
 
-    UiPainter::drawPanel(
-      renderer,
-      left,
-      14,
-      width,
-      70,
-      Palette::hud_magenta,
-      1
-    );
+    UiPainter::drawPanel(renderer, left, 14, width, 70, Palette::accent, 1);
 
     renderer.drawText(
       std::format("SECTOR {:02}", phase),
       left + 16,
       19,
       15,
-      Palette::hud_magenta,
+      Palette::accent,
       TextAlignEnum::left
     );
 

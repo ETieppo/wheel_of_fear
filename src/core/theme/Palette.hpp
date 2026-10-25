@@ -35,7 +35,7 @@ namespace wheel_of_fear {
       static constexpr ColorProps panel             = ColorProps::hex(0x05060c);
       static constexpr ColorProps panel_deep        = ColorProps::hex(0x070a14);
       static constexpr ColorProps panel_edge        = ColorProps::hex(0x1fd8ff);
-      static constexpr ColorProps hud_magenta       = ColorProps::hex(0xff3fd0);
+      static constexpr ColorProps accent            = neon_amber;
       static constexpr ColorProps ink               = ColorProps::hex(0x0b0e18);
   };
 } // namespace wheel_of_fear

@@ -15,6 +15,7 @@ namespace wheel_of_fear {
       case InputActionEnum::back:              return "ESC";
       case InputActionEnum::restart:           return "R";
       case InputActionEnum::toggle_mute:       return "M";
+      case InputActionEnum::show_credits:      return "C";
       case InputActionEnum::move_up:           return "W";
       case InputActionEnum::move_down:         return "S";
       case InputActionEnum::move_left:         return "A";

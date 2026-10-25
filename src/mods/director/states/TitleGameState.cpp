@@ -6,6 +6,7 @@
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/camera/RoomFramer.hpp"
 #include "mods/director/Director.hpp"
+#include "mods/director/screens/CreditsButtonWidget.hpp"
 #include "mods/director/screens/TitleScreen.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
@@ -20,6 +21,12 @@ namespace wheel_of_fear {
     context.clock.setRunning(false);
     context.hud.setVisible(false);
     panCamera(director, context);
+
+    if(isCreditsRequested(context)) {
+      context.sound_player.play(SoundEnum::ui_glitch, 0.6F, 0, 1);
+      director.enterState(GameStateEnum::credits);
+      return;
+    }
 
     const bool is_new_run_requested = director.progress().saved().has_value()
       && context.input.wasPressed(InputActionEnum::restart);
@@ -53,8 +60,17 @@ namespace wheel_of_fear {
     TitleScreen::draw(
       context.renderer,
       context.clock.realSeconds(),
-      saved ? std::optional(saved->phase) : std::nullopt
+      saved ? std::optional(saved->phase) : std::nullopt,
+      CreditsButtonWidget::bounds.contains(context.input.mouseInUi())
     );
+  }
+
+  bool TitleGameState::isCreditsRequested(const GameContextDto &context) {
+    const InputController &input = context.input;
+
+    return input.wasPressed(InputActionEnum::show_credits)
+      || (input.wasPressed(InputActionEnum::hug)
+          && CreditsButtonWidget::bounds.contains(input.mouseInUi()));
   }
 
   void TitleGameState::panCamera(

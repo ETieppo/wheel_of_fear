@@ -144,7 +144,7 @@ namespace wheel_of_fear {
       x + split - jitter,
       y + 1,
       size,
-      Palette::neon_magenta.withAlpha(0.55F * color.a),
+      Palette::accent.withAlpha(0.55F * color.a),
       TextAlignEnum::center
     );
 
