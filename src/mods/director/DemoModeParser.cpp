@@ -1,12 +1,13 @@
 #include "mods/director/DemoModeParser.hpp"
 #include "core/text/TextNumberParser.hpp"
+#include "mods/director/CampaignConfig.hpp"
 #include <array>
 #include <cstdlib>
 #include <utility>
 
 namespace wheel_of_fear {
   DemoModeEnum DemoModeParser::parse(std::string_view name) {
-    constexpr std::array<std::pair<std::string_view, DemoModeEnum>, 17> modes {
+    constexpr std::array<std::pair<std::string_view, DemoModeEnum>, 18> modes {
       {
        {"none", DemoModeEnum::none},
        {"play", DemoModeEnum::play},
@@ -25,6 +26,7 @@ namespace wheel_of_fear {
        {"lure", DemoModeEnum::lure},
        {"doors", DemoModeEnum::doors},
        {"walk", DemoModeEnum::walk},
+       {"ending", DemoModeEnum::ending},
        },
     };
 
@@ -38,8 +40,8 @@ namespace wheel_of_fear {
   DemoModeParser::parsePhase(std::string_view text) {
     const std::optional<std::uint32_t> phase
       = TextNumberParser::parse<std::uint32_t>(text);
-    if(phase == 0U) return std::nullopt;
-    return phase;
+    if(!phase || *phase == 0) return std::nullopt;
+    return CampaignConfig::clampPhase(*phase);
   }
 
   DemoModeProps DemoModeParser::fromEnvironment() {

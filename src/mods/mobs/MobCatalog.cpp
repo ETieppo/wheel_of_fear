@@ -1,11 +1,13 @@
 #include "mods/mobs/MobCatalog.hpp"
 #include "mods/mobs/species/BloaterMob.hpp"
 #include "mods/mobs/species/CrawlerMob.hpp"
+#include "mods/mobs/species/DevourerMob.hpp"
 #include "mods/mobs/species/MelterMob.hpp"
 #include "mods/mobs/species/MimicMob.hpp"
 #include "mods/mobs/species/MothMob.hpp"
 #include "mods/mobs/species/ShadeMob.hpp"
 #include "mods/mobs/species/ShepherdMob.hpp"
+#include "mods/mobs/species/WatcherMob.hpp"
 
 namespace wheel_of_fear {
   const MobTraitsProps &MobCatalog::traitsOf(MobKindEnum kind) {
@@ -17,6 +19,8 @@ namespace wheel_of_fear {
       case MobKindEnum::shade:    return ShadeMob::species_traits;
       case MobKindEnum::mimic:    return MimicMob::species_traits;
       case MobKindEnum::moth:     return MothMob::species_traits;
+      case MobKindEnum::watcher:  return WatcherMob::species_traits;
+      case MobKindEnum::devourer: return DevourerMob::species_traits;
     }
 
     return CrawlerMob::species_traits;
@@ -32,9 +36,12 @@ namespace wheel_of_fear {
       case MobKindEnum::melter:  return std::make_unique<MelterMob>(position);
       case MobKindEnum::shepherd:
         return std::make_unique<ShepherdMob>(position);
-      case MobKindEnum::shade: return std::make_unique<ShadeMob>(position);
-      case MobKindEnum::mimic: return std::make_unique<MimicMob>(position);
-      case MobKindEnum::moth:  return std::make_unique<MothMob>(position);
+      case MobKindEnum::shade:   return std::make_unique<ShadeMob>(position);
+      case MobKindEnum::mimic:   return std::make_unique<MimicMob>(position);
+      case MobKindEnum::moth:    return std::make_unique<MothMob>(position);
+      case MobKindEnum::watcher: return std::make_unique<WatcherMob>(position);
+      case MobKindEnum::devourer:
+        return std::make_unique<DevourerMob>(position);
     }
 
     return std::make_unique<CrawlerMob>(position);

@@ -29,7 +29,13 @@ namespace wheel_of_fear {
   }
 
   void MobPerceptionComponent::listenForLure(const GameContextDto &context) {
-    if(!owner_.traits().is_hostile || owner_.isDisguised()) return;
+    const MobTraitsProps &mob_traits = owner_.traits();
+    if(
+      !mob_traits.is_hostile
+      || !mob_traits.is_lured_by_beacons
+      || owner_.isDisguised()
+    )
+      return;
 
     const auto heard = context.noise.loudestHeardAt(
       context.world.map(),

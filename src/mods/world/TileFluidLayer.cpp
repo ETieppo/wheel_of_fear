@@ -13,6 +13,14 @@ namespace wheel_of_fear {
     neon_seconds_[cell] = 0;
   }
 
+  void TileFluidLayer::drainNeon(
+    int x,
+    int y
+  ) {
+    if(!map_.contains(x, y)) return;
+    neon_seconds_[map_.cellIndex(x, y)] = 0;
+  }
+
   float TileFluidLayer::acidAt(Vec2Props point) const {
     const TileCoordinateProps tile = TileMapModel::tileAt(point);
     if(!map_.contains(tile.x, tile.y)) return 0;

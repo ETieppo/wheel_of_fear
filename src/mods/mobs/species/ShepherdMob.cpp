@@ -69,7 +69,8 @@ namespace wheel_of_fear {
 
     context.noise
       .emit(position(), call_radius * 0.5F, NoiseSourceEnum::shepherd_call);
-    context.mobs.answerShepherd(
+    context.mobs.answerCall(
+      MobKindEnum::shepherd,
       position(),
       context.player.position(),
       call_radius,

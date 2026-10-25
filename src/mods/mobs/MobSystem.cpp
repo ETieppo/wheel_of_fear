@@ -46,18 +46,19 @@ namespace wheel_of_fear {
     for(const auto &mob : mobs_) mob->onGeneratorOnline(context);
   }
 
-  void MobSystem::answerShepherd(
-    Vec2Props caller,
-    Vec2Props target,
-    float     radius,
-    float     frenzy_seconds
+  void MobSystem::answerCall(
+    MobKindEnum caller_kind,
+    Vec2Props   caller,
+    Vec2Props   target,
+    float       radius,
+    float       frenzy_seconds
   ) {
     for(const auto &mob : mobs_) {
       if(
         !mob->isAlive()
         || !mob->traits().is_hostile
         || mob->kind()
-        == MobKindEnum::shepherd
+        == caller_kind
         || mob->isDisguised()
       )
         continue;

@@ -15,11 +15,15 @@ namespace wheel_of_fear {
   ThrowableSystem::ThrowableSystem()  = default;
   ThrowableSystem::~ThrowableSystem() = default;
 
-  void ThrowableSystem::generatePhase(WorldSystem &world) {
+  void ThrowableSystem::clear() {
     projectiles_.clear();
     beacons_.clear();
     puddles_.clear();
     pickups_.clear();
+  }
+
+  void ThrowableSystem::generatePhase(WorldSystem &world) {
+    clear();
     grenade_color_
       = ItemCatalog::of(ItemEnum::neon_grenade).colorForPhase(world.phase());
 
@@ -62,6 +66,73 @@ namespace wheel_of_fear {
         && beacon.position().distance(position)
         < beacon_match_distance;
     });
+  }
+
+  std::optional<Vec2Props> ThrowableSystem::nearestTool(
+    Vec2Props from,
+    float     range
+  ) const {
+    std::optional<Vec2Props> nearest;
+    float                    nearest_distance = range;
+
+    const auto consider = [&](Vec2Props position) {
+      const float distance = position.distance(from);
+      if(distance > nearest_distance) return;
+      nearest          = position;
+      nearest_distance = distance;
+    };
+
+    for(const LureBeaconEntity &beacon : beacons_)
+      if(!beacon.isExpired()) consider(beacon.position());
+    for(const NeonPuddleHazard &puddle : puddles_)
+      if(!puddle.isDry()) consider(puddle.position());
+
+    return nearest;
+  }
+
+  bool ThrowableSystem::devourAt(
+    WorldSystem &world,
+    Vec2Props    position,
+    float        radius
+  ) {
+    const auto is_within = [position, radius](Vec2Props point) {
+      return point.distance(position) <= radius;
+    };
+
+    const std::size_t devoured_beacons
+      = std::erase_if(beacons_, [&](const LureBeaconEntity &beacon) {
+          return is_within(beacon.position());
+        });
+
+    std::size_t devoured_puddles = 0;
+
+    std::erase_if(puddles_, [&](const NeonPuddleHazard &puddle) {
+      if(!is_within(puddle.position())) return false;
+      drainPuddleNeon(world, puddle.position());
+      devoured_puddles += 1;
+      return true;
+    });
+
+    return devoured_beacons + devoured_puddles > 0;
+  }
+
+  void ThrowableSystem::drainPuddleNeon(
+    WorldSystem &world,
+    Vec2Props    puddle_position
+  ) {
+    const TileCoordinateProps center = TileMapModel::tileAt(puddle_position);
+    TileFluidLayer           &fluids = world.map().fluids();
+
+    for(
+      int y = center.y - puddle_drain_tiles; y <= center.y + puddle_drain_tiles;
+      ++y
+    )
+      for(
+        int x = center.x - puddle_drain_tiles;
+        x <= center.x + puddle_drain_tiles;
+        ++x
+      )
+        fluids.drainNeon(x, y);
   }
 
   void ThrowableSystem::update(GameContextDto &context) {

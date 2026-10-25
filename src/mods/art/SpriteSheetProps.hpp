@@ -31,6 +31,8 @@ namespace wheel_of_fear {
       SpriteFrames                             mimic_hunt_glow;
       SpriteFrames                             moth_flutter;
       SpriteFrames                             moth_flutter_glow;
+      SpriteFrames                             watcher_stare;
+      SpriteFrames                             devourer_chew;
       AtlasRegionProps                         generator_base;
       AtlasRegionProps                         generator_glow;
       AtlasRegionProps                         generator_rotor;
@@ -63,6 +65,7 @@ namespace wheel_of_fear {
       AtlasRegionProps                         locker_open;
       AtlasRegionProps                         vent;
       std::array<AtlasRegionProps, item_count> item_icons {};
+      std::array<AtlasRegionProps, 13>         trees {};
 
       [[nodiscard]]
       const AtlasRegionProps &itemIcon(ItemEnum item) const {

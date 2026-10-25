@@ -224,20 +224,7 @@ namespace wheel_of_fear {
 
     std::optional<GroundMaterialsDto> materials
       = renderer.takeGroundMaterials();
-
-    for(std::size_t index = 0; index < ground_texture_count; ++index) {
-      if(materials) {
-        resources->ground_materials[index] = factory_.uploadMipmappedTexture(
-          "ground material",
-          *materials->inBindingOrder()[index]
-        );
-      } else {
-        resources->ground_materials[index] = factory_.uploadMipmappedTexture(
-          "ground placeholder",
-          placeholderImage()
-        );
-      }
-    }
+    uploadGroundMaterials(*resources, materials);
 
     const auto quad_bind_group = [&](
                                    std::string_view label,
@@ -293,6 +280,34 @@ namespace wheel_of_fear {
     );
 
     persistent_ = std::move(resources);
+  }
+
+  void GpuRenderer::uploadGroundMaterials(
+    PersistentGpuResourcesProps       &resources,
+    std::optional<GroundMaterialsDto> &materials
+  ) {
+    for(std::size_t index = 0; index < ground_texture_count; ++index) {
+      if(materials) {
+        resources.ground_materials[index] = factory_.uploadMipmappedTexture(
+          "ground material",
+          *materials->inBindingOrder()[index]
+        );
+      } else {
+        resources.ground_materials[index] = factory_.uploadMipmappedTexture(
+          "ground placeholder",
+          placeholderImage()
+        );
+      }
+    }
+  }
+
+  void GpuRenderer::refreshGroundMaterials(Renderer &renderer) {
+    std::optional<GroundMaterialsDto> materials
+      = renderer.takeGroundMaterials();
+    if(!materials) return;
+
+    uploadGroundMaterials(*persistent_, materials);
+    targets_.reset();
   }
 
   void GpuRenderer::ensureSizedTargets(
@@ -555,6 +570,7 @@ namespace wheel_of_fear {
     WGPUTextureView target
   ) {
     if(!persistent_) createPersistentResources(renderer);
+    refreshGroundMaterials(renderer);
     ensureSizedTargets(context_.surfaceWidth(), context_.surfaceHeight());
     uploadFrame(renderer);
 

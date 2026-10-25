@@ -10,6 +10,7 @@
 #include "mods/throwables/PickupEntity.hpp"
 #include "mods/throwables/projectiles/Projectile.hpp"
 #include <memory>
+#include <optional>
 #include <vector>
 
 namespace wheel_of_fear {
@@ -19,6 +20,7 @@ namespace wheel_of_fear {
       ~ThrowableSystem();
 
       void generatePhase(WorldSystem &world);
+      void clear();
 
       void launch(
         ItemEnum  item,
@@ -52,6 +54,18 @@ namespace wheel_of_fear {
       bool isBeaconActiveAt(Vec2Props position) const;
 
       [[nodiscard]]
+      std::optional<Vec2Props> nearestTool(
+        Vec2Props from,
+        float     range
+      ) const;
+
+      bool devourAt(
+        WorldSystem &world,
+        Vec2Props    position,
+        float        radius
+      );
+
+      [[nodiscard]]
       std::size_t puddleCount() const {
         return puddles_.size();
       }
@@ -59,6 +73,12 @@ namespace wheel_of_fear {
     private:
       static constexpr float maximum_throw_distance = 190;
       static constexpr float beacon_match_distance  = 1;
+      static constexpr int   puddle_drain_tiles     = 6;
+
+      static void drainPuddleNeon(
+        WorldSystem &world,
+        Vec2Props    puddle_position
+      );
 
       void emitLights(GameContextDto &context) const;
 

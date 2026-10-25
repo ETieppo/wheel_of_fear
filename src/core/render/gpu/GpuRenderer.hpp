@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <memory>
+#include <optional>
 
 namespace wheel_of_fear {
   class GpuRenderer {
@@ -23,6 +24,12 @@ namespace wheel_of_fear {
     private:
       void createPersistentResources(Renderer &renderer);
       void uploadFrame(Renderer &renderer);
+      void refreshGroundMaterials(Renderer &renderer);
+
+      void uploadGroundMaterials(
+        PersistentGpuResourcesProps       &resources,
+        std::optional<GroundMaterialsDto> &materials
+      );
 
       void ensureSizedTargets(
         std::uint32_t screen_width,

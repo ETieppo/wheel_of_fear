@@ -38,6 +38,8 @@ namespace wheel_of_fear {
     sprites_.shepherd_walk_glow
       = loadStrip(Catalog::generated_shepherd_walk_glow);
     sprites_.shade_drift      = loadStrip(Catalog::generated_shade_drift);
+    sprites_.watcher_stare    = loadStrip(Catalog::eye_monster);
+    sprites_.devourer_chew    = loadStrip(Catalog::teeth_monster);
     sprites_.shade_drift_glow = loadStrip(Catalog::generated_shade_drift_glow);
     sprites_.mimic_hunt       = loadStrip(Catalog::generated_mimic_hunt);
     sprites_.mimic_hunt_glow  = loadStrip(Catalog::generated_mimic_hunt_glow);
@@ -84,20 +86,52 @@ namespace wheel_of_fear {
       loadSingle(Catalog::generated_icon_lure),
       loadSingle(Catalog::generated_icon_grenade),
     };
+    sprites_.trees = {
+      loadSingle(Catalog::tree_00),
+      loadSingle(Catalog::tree_01),
+      loadSingle(Catalog::tree_02),
+      loadSingle(Catalog::tree_03),
+      loadSingle(Catalog::tree_04),
+      loadSingle(Catalog::tree_05),
+      loadSingle(Catalog::tree_06),
+      loadSingle(Catalog::tree_07),
+      loadSingle(Catalog::tree_08),
+      loadSingle(Catalog::tree_09),
+      loadSingle(Catalog::tree_10),
+      loadSingle(Catalog::tree_11),
+      loadSingle(Catalog::tree_12),
+    };
     renderer_.atlas().markDirty();
-    loadGroundMaterials();
+    useFacilityGround();
   }
 
-  void ArtLibrary::loadGroundMaterials() {
+  void ArtLibrary::useFacilityGround() {
+    renderer_.setGroundMaterials(decodeGroundMaterials(
+      TextureCatalog::floor_color,
+      TextureCatalog::floor_normal
+    ));
+  }
+
+  void ArtLibrary::useOutdoorGround() {
+    renderer_.setGroundMaterials(decodeGroundMaterials(
+      TextureCatalog::grass_color,
+      TextureCatalog::grass_normal
+    ));
+  }
+
+  GroundMaterialsDto ArtLibrary::decodeGroundMaterials(
+    std::string_view floor_color_path,
+    std::string_view floor_normal_path
+  ) {
     GroundMaterialsDto materials;
 
     materials.floor_color = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::floor_color),
+      AssetLocator::assetPath(floor_color_path),
       false
     );
 
     materials.floor_normal = ImageDecoder::decodeRgba(
-      AssetLocator::assetPath(TextureCatalog::floor_normal),
+      AssetLocator::assetPath(floor_normal_path),
       false
     );
 
@@ -121,7 +155,7 @@ namespace wheel_of_fear {
       false
     );
 
-    renderer_.setGroundMaterials(std::move(materials));
+    return materials;
   }
 
   AtlasRegionProps ArtLibrary::loadSingle(const SpriteStripProps &strip) {

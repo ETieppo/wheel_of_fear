@@ -3,6 +3,7 @@
 #include "core/render/Renderer.hpp"
 #include "core/theme/Palette.hpp"
 #include "core/time/GameClock.hpp"
+#include "mods/director/CampaignConfig.hpp"
 #include "mods/director/Director.hpp"
 #include "mods/director/screens/CenteredCardWidget.hpp"
 #include <format>
@@ -26,10 +27,13 @@ namespace wheel_of_fear {
     const Director &director,
     GameContextDto &context
   ) const {
+    const bool is_final_phase = director.phase() >= CampaignConfig::final_phase;
+
     CenteredCardWidget::draw(
       context.renderer,
       std::format("SECTOR {:02} CLEARED", director.phase()),
-      "DESCENDING DEEPER INTO THE GRID...",
+      is_final_phase ? "THE LAST GATE OPENS. DAYLIGHT AHEAD..."
+                     : "DESCENDING DEEPER INTO THE GRID...",
       Palette::success,
       context.clock.realSeconds()
     );

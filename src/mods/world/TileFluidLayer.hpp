@@ -44,6 +44,10 @@ namespace wheel_of_fear {
         int   y,
         float seconds
       );
+      void drainNeon(
+        int x,
+        int y
+      );
       void evaporate(float seconds);
 
     private:

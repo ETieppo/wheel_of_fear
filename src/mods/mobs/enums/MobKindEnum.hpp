@@ -13,9 +13,11 @@ namespace wheel_of_fear {
     shade,
     mimic,
     moth,
+    watcher,
+    devourer,
   };
 
-  inline constexpr std::array<MobKindEnum, 7> all_mob_kinds {
+  inline constexpr std::array<MobKindEnum, 9> all_mob_kinds {
     MobKindEnum::crawler,
     MobKindEnum::bloater,
     MobKindEnum::melter,
@@ -23,6 +25,8 @@ namespace wheel_of_fear {
     MobKindEnum::shade,
     MobKindEnum::mimic,
     MobKindEnum::moth,
+    MobKindEnum::watcher,
+    MobKindEnum::devourer,
   };
 
   constexpr std::string_view nameOf(MobKindEnum value) {
@@ -34,6 +38,8 @@ namespace wheel_of_fear {
       case MobKindEnum::shade:    return "shade";
       case MobKindEnum::mimic:    return "mimic";
       case MobKindEnum::moth:     return "moth";
+      case MobKindEnum::watcher:  return "watcher";
+      case MobKindEnum::devourer: return "devourer";
     }
 
     return "";

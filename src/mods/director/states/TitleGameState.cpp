@@ -55,6 +55,11 @@ namespace wheel_of_fear {
     context.sound_player.play(SoundEnum::ui_glitch, 0.8F, 0, 1);
     if(is_new_run_requested) director.progress().clear();
 
+    if(director.demo().startsAtEnding()) {
+      director.startEnding(context);
+      return;
+    }
+
     if(const auto &saved = director.progress().saved()) {
       director.resume(context, *saved);
       return;

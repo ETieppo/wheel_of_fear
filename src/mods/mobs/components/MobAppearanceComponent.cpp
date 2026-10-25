@@ -36,8 +36,29 @@ namespace wheel_of_fear {
     const AtlasRegionProps &glow,
     const MobLookDto       &look
   ) const {
+    if(!drawBody(context, body, look)) return;
+    if(owner_.condition().petrifyAmount() > 0.5F) return;
+
+    context.renderer.drawGlowSprite(
+      glow,
+      owner_.position(),
+      look.glow_color.withAlpha(
+        glowLevel() * look.glow_strength * std::max(presence(), 0.35F)
+      ),
+      SpriteDrawDto {
+        .rotation = owner_.heading() + look.rotation_offset,
+        .scale    = look.scale,
+      }
+    );
+  }
+
+  bool MobAppearanceComponent::drawBody(
+    GameContextDto         &context,
+    const AtlasRegionProps &body,
+    const MobLookDto       &look
+  ) const {
     const float presence_amount = presence();
-    if(presence_amount <= 0.01F) return;
+    if(presence_amount <= 0.01F) return false;
     const MobConditionComponent &condition = owner_.condition();
 
     Renderer        &renderer      = context.renderer;
@@ -65,16 +86,7 @@ namespace wheel_of_fear {
       }
     );
 
-    if(condition.petrifyAmount() > 0.5F) return;
-
-    renderer.drawGlowSprite(
-      glow,
-      draw_position,
-      look.glow_color.withAlpha(
-        glowLevel() * look.glow_strength * std::max(presence_amount, 0.35F)
-      ),
-      SpriteDrawDto {.rotation = rotation, .scale = look.scale}
-    );
+    return true;
   }
 
   float MobAppearanceComponent::glowLevel() const {

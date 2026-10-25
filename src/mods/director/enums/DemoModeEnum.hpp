@@ -21,5 +21,6 @@ namespace wheel_of_fear {
     lure,
     doors,
     walk,
+    ending,
   };
 } // namespace wheel_of_fear

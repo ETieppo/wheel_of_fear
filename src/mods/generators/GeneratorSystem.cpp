@@ -11,9 +11,16 @@ namespace wheel_of_fear {
     constexpr std::string_view generator_labels = "ABCDEFGHIJ";
   }
 
+  void GeneratorSystem::clear() {
+    generators_.clear();
+    fabricators_.clear();
+    is_active_ = false;
+  }
+
   void GeneratorSystem::generatePhase(WorldSystem &world) {
     generators_.clear();
     fabricators_.clear();
+    is_active_ = true;
     exit_door_.reset(world.map(), world.exitPosition());
     std::vector<bool> occupied_rooms(world.map().rooms().size(), false);
 
@@ -159,7 +166,7 @@ namespace wheel_of_fear {
   }
 
   void GeneratorSystem::update(GameContextDto &context) {
-    if(!context.clock.isRunning()) return;
+    if(!is_active_ || !context.clock.isRunning()) return;
     const float seconds_to_charge = 16.0F
       + (2.5F * static_cast<float>(std::min(context.world.phase(), 6U)));
 
@@ -177,7 +184,7 @@ namespace wheel_of_fear {
   }
 
   void GeneratorSystem::draw(GameContextDto &context) const {
-    if(context.world.map().width() == 0) return;
+    if(!is_active_ || context.world.map().width() == 0) return;
     Renderer &renderer = context.renderer;
 
     for(const FabricatorEntity &fabricator : fabricators_)

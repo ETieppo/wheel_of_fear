@@ -11,5 +11,6 @@ namespace wheel_of_fear {
     game_over,
     phase_cleared,
     credits,
+    ending,
   };
 } // namespace wheel_of_fear

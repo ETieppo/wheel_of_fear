@@ -1,5 +1,6 @@
 #include "mods/director/demos/DemoScenarioFactory.hpp"
 #include "mods/director/demos/DoorsDemoScenario.hpp"
+#include "mods/director/demos/EndingDemoScenario.hpp"
 #include "mods/director/demos/FreezeDemoScenario.hpp"
 #include "mods/director/demos/GrenadeDemoScenario.hpp"
 #include "mods/director/demos/LockerDemoScenario.hpp"
@@ -42,9 +43,10 @@ namespace wheel_of_fear {
       case DemoModeEnum::power: return std::make_unique<PowerDemoScenario>();
       case DemoModeEnum::grenade:
         return std::make_unique<GrenadeDemoScenario>();
-      case DemoModeEnum::lure:  return std::make_unique<LureDemoScenario>();
-      case DemoModeEnum::doors: return std::make_unique<DoorsDemoScenario>();
-      case DemoModeEnum::walk:  return std::make_unique<WalkDemoScenario>();
+      case DemoModeEnum::lure:   return std::make_unique<LureDemoScenario>();
+      case DemoModeEnum::doors:  return std::make_unique<DoorsDemoScenario>();
+      case DemoModeEnum::walk:   return std::make_unique<WalkDemoScenario>();
+      case DemoModeEnum::ending: return std::make_unique<EndingDemoScenario>();
     }
 
     return nullptr;

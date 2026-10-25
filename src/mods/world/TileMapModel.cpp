@@ -22,6 +22,8 @@ namespace wheel_of_fear {
     shadow_casters_.assign(cell_count, 0);
     fluids_.reset(cell_count);
     room_indices_.assign(cell_count, -1);
+    rooms_.clear();
+    doorways_.clear();
   }
 
   void TileMapModel::carveFloor(

@@ -30,6 +30,7 @@ namespace wheel_of_fear {
       bool                           passes_through_walls    = false;
       float                          spawn_weight            = 0;
       bool                           has_body_collision      = false;
+      bool                           is_lured_by_beacons     = true;
 
       [[nodiscard]]
       constexpr bool canSee() const {

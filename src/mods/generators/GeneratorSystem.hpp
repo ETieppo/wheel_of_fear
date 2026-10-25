@@ -12,6 +12,7 @@ namespace wheel_of_fear {
   class GeneratorSystem {
     public:
       void generatePhase(WorldSystem &world);
+      void clear();
 
       void update(GameContextDto &context);
 
@@ -45,7 +46,7 @@ namespace wheel_of_fear {
 
       [[nodiscard]]
       bool hasPlayerExited() const {
-        return exit_door_.hasPlayerExited();
+        return is_active_ && exit_door_.hasPlayerExited();
       }
 
       [[nodiscard]]
@@ -70,5 +71,6 @@ namespace wheel_of_fear {
       std::vector<GeneratorEntity>  generators_;
       std::vector<FabricatorEntity> fabricators_;
       ExitDoorEntity                exit_door_;
+      bool                          is_active_ = false;
   };
 } // namespace wheel_of_fear

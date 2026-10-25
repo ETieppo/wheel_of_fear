@@ -17,6 +17,11 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      bool startsAtEnding() const {
+        return scenario_ && scenario_->startsAtEnding();
+      }
+
+      [[nodiscard]]
       std::uint32_t startingPhase() const {
         return scenario_ ? scenario_->startingPhase() : 1;
       }

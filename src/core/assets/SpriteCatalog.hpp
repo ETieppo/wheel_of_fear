@@ -245,6 +245,98 @@ namespace wheel_of_fear {
         .frame_height    = 192,
         .pixels_per_unit = 8,
       };
+      static constexpr float            tree_pixels_per_unit = 3;
+      static constexpr SpriteStripProps tree_00 {
+        .path            = "sprites/trees/tree_00.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_01 {
+        .path            = "sprites/trees/tree_01.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_02 {
+        .path            = "sprites/trees/tree_02.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_03 {
+        .path            = "sprites/trees/tree_03.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_04 {
+        .path            = "sprites/trees/tree_04.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_05 {
+        .path            = "sprites/trees/tree_05.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_06 {
+        .path            = "sprites/trees/tree_06.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_07 {
+        .path            = "sprites/trees/tree_07.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_08 {
+        .path            = "sprites/trees/tree_08.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_09 {
+        .path            = "sprites/trees/tree_09.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_10 {
+        .path            = "sprites/trees/tree_10.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_11 {
+        .path            = "sprites/trees/tree_11.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
+      static constexpr SpriteStripProps tree_12 {
+        .path            = "sprites/trees/tree_12.png",
+        .frame_count     = 1,
+        .frame_width     = 192,
+        .frame_height    = 192,
+        .pixels_per_unit = tree_pixels_per_unit,
+      };
       static constexpr SpriteStripProps vent {
         .path            = "sprites/vent.png",
         .frame_count     = 1,

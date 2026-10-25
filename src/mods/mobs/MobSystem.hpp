@@ -63,11 +63,12 @@ namespace wheel_of_fear {
 
       void onGeneratorOnline(GameContextDto &context);
 
-      void answerShepherd(
-        Vec2Props caller,
-        Vec2Props target,
-        float     radius,
-        float     frenzy_seconds
+      void answerCall(
+        MobKindEnum caller_kind,
+        Vec2Props   caller,
+        Vec2Props   target,
+        float       radius,
+        float       frenzy_seconds
       );
 
       void update(GameContextDto &context);

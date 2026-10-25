@@ -16,6 +16,10 @@ namespace wheel_of_fear {
         bool          can_grant_life
       );
 
+      void clear() {
+        pickup_.reset();
+      }
+
       void update(GameContextDto &context);
       void draw(GameContextDto &context) const;
 

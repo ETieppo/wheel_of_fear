@@ -45,6 +45,11 @@ namespace wheel_of_fear {
         const std::vector<std::size_t> &distant_rooms
       );
 
+      void ensureDebuts(
+        WorldSystem                    &world,
+        const std::vector<std::size_t> &distant_rooms
+      );
+
       void spawnMimics(
         WorldSystem                    &world,
         const std::vector<std::size_t> &distant_rooms

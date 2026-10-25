@@ -5,6 +5,7 @@
 #include "mods/world/scenery/PipesScenery.hpp"
 #include "mods/world/scenery/ServerRackScenery.hpp"
 #include "mods/world/scenery/TerminalScenery.hpp"
+#include "mods/world/scenery/TreeScenery.hpp"
 
 namespace wheel_of_fear {
   std::unique_ptr<Scenery> SceneryFactory::create(
@@ -29,6 +30,9 @@ namespace wheel_of_fear {
 
       case SceneryKindEnum::terminal:
         return std::make_unique<TerminalScenery>(placement);
+
+      case SceneryKindEnum::tree:
+        return std::make_unique<TreeScenery>(placement);
     }
 
     return std::make_unique<BarrelScenery>(placement);

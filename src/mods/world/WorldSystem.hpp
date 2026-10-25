@@ -25,6 +25,13 @@ namespace wheel_of_fear {
       void update(GameContextDto &context);
       void draw(GameContextDto &context) const;
 
+      void generateOutdoors(std::uint64_t seed);
+
+      [[nodiscard]]
+      bool isOutdoors() const {
+        return is_outdoors_;
+      }
+
       void generatePhase(
         std::uint32_t phase,
         std::uint64_t seed
@@ -182,6 +189,12 @@ namespace wheel_of_fear {
       void shake(float amount);
 
     private:
+      static constexpr int outdoor_width        = 64;
+      static constexpr int outdoor_height       = 44;
+      static constexpr int outdoor_start_margin = 5;
+
+      void clearPhaseState();
+
       static constexpr float navigation_refresh_seconds = 0.25F;
       static constexpr float door_shift_noise_radius    = 360;
       static constexpr float door_shift_volume          = 0.55F;
@@ -217,6 +230,7 @@ namespace wheel_of_fear {
       std::vector<Vec2Props>                vents_;
       std::vector<ScorchMarkProps>          scorch_marks_;
       std::vector<NeonSplashProps>          neon_splashes_;
+      bool                                  is_outdoors_     = false;
       std::size_t                           exit_room_index_ = 0;
   };
 } // namespace wheel_of_fear

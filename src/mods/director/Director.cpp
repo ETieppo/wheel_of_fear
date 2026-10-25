@@ -4,7 +4,9 @@
 #include "core/math/ScalarMath.hpp"
 #include "core/render/Renderer.hpp"
 #include "core/time/GameClock.hpp"
+#include "mods/art/ArtLibrary.hpp"
 #include "mods/camera/CameraSystem.hpp"
+#include "mods/director/CampaignConfig.hpp"
 #include "mods/distractions/DistractionSystem.hpp"
 #include "mods/effects/EffectSystem.hpp"
 #include "mods/extra_lives/ExtraLifeSystem.hpp"
@@ -24,6 +26,8 @@ namespace wheel_of_fear {
       ambient_darkness {.r = 0.010F, .g = 0.011F, .b = 0.020F, .a = 1};
     constexpr ColorProps
       title_ambient {.r = 0.05F, .g = 0.055F, .b = 0.09F, .a = 1};
+    constexpr ColorProps
+      daylight_ambient {.r = 1.0F, .g = 0.97F, .b = 0.9F, .a = 1};
   } // namespace
 
   Director::Director(std::optional<std::filesystem::path> progress_file_path)
@@ -47,7 +51,7 @@ namespace wheel_of_fear {
 
   DirectorSnapshotProps Director::snapshot() const {
     return DirectorSnapshotProps {
-      .is_in_phase       = state_ != GameStateEnum::title,
+      .is_in_phase       = isInPhase(),
       .phase             = phase_,
       .phase_seed        = seed_counter_,
       .player_max_health = committed_max_health_,
@@ -62,6 +66,15 @@ namespace wheel_of_fear {
     seed_counter_         = snapshot.phase_seed - phase_seed_step;
     committed_max_health_ = snapshot.player_max_health;
     startPhase(context, snapshot.phase);
+  }
+
+  bool Director::isInPhase() const {
+    return state_
+      != GameStateEnum::title
+      && state_
+      != GameStateEnum::credits
+      && state_
+      != GameStateEnum::ending;
   }
 
   void Director::enterState(GameStateEnum state) {
@@ -89,6 +102,7 @@ namespace wheel_of_fear {
     );
     context.player.vitality().setMaxHealth(committed_max_health_);
     context.player.respawn(world.playerStart());
+    context.player.flashlight().setEnabled(true);
     context.effects.clear();
     context.tracker.close();
     context.hud.clearMessages();
@@ -109,8 +123,49 @@ namespace wheel_of_fear {
 
   void Director::advanceToNextPhase(GameContextDto &context) {
     committed_max_health_ = context.player.vitality().maxHealth();
+
+    if(phase_ >= CampaignConfig::final_phase) {
+      progress_.clear();
+      startEnding(context);
+      return;
+    }
+
     startPhase(context, phase_ + 1);
     saveProgress();
+  }
+
+  void Director::clearPhaseSystems(GameContextDto &context) {
+    context.generators.clear();
+    context.mobs.clear();
+    context.throwables.clear();
+    context.extra_lives.clear();
+    context.distractions.clear();
+    context.noise.clear();
+    context.effects.clear();
+    context.tracker.close();
+    context.hud.clearMessages();
+  }
+
+  void Director::startEnding(GameContextDto &context) {
+    WorldSystem &world = context.world;
+    seed_counter_ += phase_seed_step;
+    world.generateOutdoors(seed_counter_);
+    context.art.useOutdoorGround();
+    clearPhaseSystems(context);
+    context.player.respawn(world.playerStart());
+    context.player.flashlight().setEnabled(false);
+    context.camera.snapToPlayer(world, context.player);
+    death_seconds_ = 0;
+    demo_.restart();
+    enterState(GameStateEnum::ending);
+  }
+
+  void Director::returnToTitle(GameContextDto &context) {
+    initialize(context);
+    context.art.useFacilityGround();
+    clearPhaseSystems(context);
+    context.player.flashlight().setEnabled(true);
+    enterState(GameStateEnum::title);
   }
 
   void Director::saveProgress() {
@@ -137,6 +192,7 @@ namespace wheel_of_fear {
       case GameStateEnum::game_over:     return game_over_state_;
       case GameStateEnum::phase_cleared: return phase_cleared_state_;
       case GameStateEnum::credits:       return credits_state_;
+      case GameStateEnum::ending:        return ending_state_;
     }
 
     return title_state_;
@@ -151,6 +207,7 @@ namespace wheel_of_fear {
       case GameStateEnum::game_over:     return game_over_state_;
       case GameStateEnum::phase_cleared: return phase_cleared_state_;
       case GameStateEnum::credits:       return credits_state_;
+      case GameStateEnum::ending:        return ending_state_;
     }
 
     return title_state_;
@@ -181,10 +238,13 @@ namespace wheel_of_fear {
       : 0.0F;
     const float danger
       = context.clock.isRunning() ? context.mobs.danger().level() : 0.0F;
-    const bool is_in_play = state_ != GameStateEnum::title;
+    const bool is_in_play  = state_ != GameStateEnum::title;
+    const bool is_outdoors = context.world.isOutdoors();
 
     context.renderer.setPostProcess(
-      is_in_play ? ambient_darkness : title_ambient,
+      is_outdoors    ? daylight_ambient
+        : is_in_play ? ambient_darkness
+                     : title_ambient,
       {
         danger,
         player.vitality().hurtFlash(),
@@ -196,7 +256,11 @@ namespace wheel_of_fear {
 
     context.renderer.setViewer(
       player.position(),
-      is_in_play && !player.isHidden() && context.world.map().width() > 0
+      is_in_play
+        && !is_outdoors
+        && !player.isHidden()
+        && context.world.map().width()
+        > 0
     );
   }
 

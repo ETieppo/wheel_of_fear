@@ -14,6 +14,10 @@ namespace wheel_of_fear {
         = "textures/floor_color.png";
       static constexpr std::string_view floor_normal
         = "textures/floor_normal.png";
+      static constexpr std::string_view grass_color
+        = "textures/grass_color.png";
+      static constexpr std::string_view grass_normal
+        = "textures/grass_normal.png";
       static constexpr std::string_view wall_color = "textures/wall_color.png";
       static constexpr std::string_view wall_normal
         = "textures/wall_normal.png";

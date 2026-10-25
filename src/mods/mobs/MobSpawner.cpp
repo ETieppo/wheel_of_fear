@@ -18,6 +18,7 @@ namespace wheel_of_fear {
     const std::vector<std::size_t> distant_rooms = distantRoomsFromStart(world);
 
     spawnHostiles(world, distant_rooms);
+    ensureDebuts(world, distant_rooms);
     spawnMimics(world, distant_rooms);
     spawnMoth(world);
   }
@@ -104,6 +105,30 @@ namespace wheel_of_fear {
         = rooms[distant_rooms[random.index(distant_rooms.size())]];
 
       spawn(*kind, world.map().randomFloorInRoom(random, room));
+    }
+  }
+
+  void MobSpawner::ensureDebuts(
+    WorldSystem                    &world,
+    const std::vector<std::size_t> &distant_rooms
+  ) {
+    RandomGenerator &random = world.random();
+    const auto      &rooms  = world.map().rooms();
+
+    for(const MobKindEnum kind : all_mob_kinds) {
+      const MobTraitsProps &traits = MobCatalog::traitsOf(kind);
+      if(traits.first_phase != world.phase() || !traits.is_hostile) continue;
+      if(traits.spawn_weight <= 0) continue;
+
+      const bool has_debuted
+        = std::ranges::any_of(mobs_, [kind](const auto &mob) {
+            return mob->kind() == kind;
+          });
+      if(has_debuted) continue;
+
+      const RoomProps &room
+        = rooms[distant_rooms[random.index(distant_rooms.size())]];
+      spawn(kind, world.map().randomFloorInRoom(random, room));
     }
   }
 

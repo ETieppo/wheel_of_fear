@@ -10,5 +10,6 @@ namespace wheel_of_fear {
     junction_box,
     server_rack,
     terminal,
+    tree,
   };
 } // namespace wheel_of_fear

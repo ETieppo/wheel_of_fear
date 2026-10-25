@@ -6,6 +6,7 @@
 #include "mods/director/ProgressStore.hpp"
 #include "mods/director/enums/GameStateEnum.hpp"
 #include "mods/director/states/CreditsGameState.hpp"
+#include "mods/director/states/EndingGameState.hpp"
 #include "mods/director/states/GameOverGameState.hpp"
 #include "mods/director/states/PausedGameState.hpp"
 #include "mods/director/states/PhaseClearedGameState.hpp"
@@ -93,12 +94,18 @@ namespace wheel_of_fear {
       );
 
       void advanceToNextPhase(GameContextDto &context);
+      void startEnding(GameContextDto &context);
+      void returnToTitle(GameContextDto &context);
 
     private:
       static constexpr std::uint64_t title_seed      = 0x7171;
       static constexpr std::uint64_t phase_seed_step = 0x9E3779B97F4A7C15ULL;
 
       void saveProgress();
+      void clearPhaseSystems(GameContextDto &context);
+
+      [[nodiscard]]
+      bool isInPhase() const;
       void updateFade(float real_delta_seconds);
       void configurePostProcess(GameContextDto &context) const;
 
@@ -124,5 +131,6 @@ namespace wheel_of_fear {
       GameOverGameState     game_over_state_;
       PhaseClearedGameState phase_cleared_state_;
       CreditsGameState      credits_state_;
+      EndingGameState       ending_state_;
   };
 } // namespace wheel_of_fear

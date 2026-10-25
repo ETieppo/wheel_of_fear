@@ -11,5 +11,6 @@ namespace wheel_of_fear {
       std::size_t room_index   = 0;
       ColorProps  color        = ColorProps::white();
       float       flicker_seed = 0;
+      std::size_t variant      = 0;
   };
 } // namespace wheel_of_fear

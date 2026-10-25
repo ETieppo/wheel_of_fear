@@ -9,6 +9,7 @@
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include "mods/world/OutdoorFurnisher.hpp"
 #include "mods/world/RoomLightingPlanner.hpp"
 #include "mods/world/TileMapGenerator.hpp"
 #include "mods/world/WorldFurnisher.hpp"
@@ -51,16 +52,7 @@ namespace wheel_of_fear {
     const auto grid = gridSizeForPhase(phase);
 
     TileMapGenerator(map_, random_).generate(grid[0], grid[1]);
-    navigation_.invalidate();
-    maze_shifter_.reset();
-    scenery_.clear();
-    lockers_.clear();
-    vents_.clear();
-    scorch_marks_.clear();
-    neon_splashes_.clear();
-    power_.clear();
-    elapsed_seconds_ = 0;
-    camera_shake_    = 0;
+    clearPhaseState();
     chooseLandmarks();
 
     WorldFurnisher furnisher(*this);
@@ -90,6 +82,52 @@ namespace wheel_of_fear {
     }
 
     navigation_.refreshTowardPlayer(map_, player_start_);
+  }
+
+  void WorldSystem::generateOutdoors(std::uint64_t seed) {
+    random_ = RandomGenerator(seed);
+    map_.reset(outdoor_width, outdoor_height);
+
+    const RoomProps clearing {
+      .left   = 1,
+      .top    = 1,
+      .width  = outdoor_width - 2,
+      .height = outdoor_height - 2,
+    };
+
+    for(int y = clearing.top; y < clearing.top + clearing.height; ++y)
+      for(int x = clearing.left; x < clearing.left + clearing.width; ++x)
+        map_.carveFloor(x, y, 0);
+
+    map_.setRooms({clearing});
+    map_.markChanged();
+    clearPhaseState();
+    is_outdoors_      = true;
+    start_room_index_ = 0;
+    exit_room_index_  = 0;
+    player_start_     = TileMapModel::tileCenter(
+      clearing.centerTileX(),
+      clearing.top + clearing.height - outdoor_start_margin
+    );
+    exit_position_
+      = TileMapModel::tileCenter(clearing.centerTileX(), clearing.top);
+    OutdoorFurnisher(*this).plantTrees(clearing);
+    map_.markChanged();
+    navigation_.refreshTowardPlayer(map_, player_start_);
+  }
+
+  void WorldSystem::clearPhaseState() {
+    navigation_.invalidate();
+    maze_shifter_.reset();
+    scenery_.clear();
+    lockers_.clear();
+    vents_.clear();
+    scorch_marks_.clear();
+    neon_splashes_.clear();
+    power_.clear();
+    elapsed_seconds_ = 0;
+    camera_shake_    = 0;
+    is_outdoors_     = false;
   }
 
   LedGradientProps WorldSystem::pickLedGradient() {
@@ -256,7 +294,7 @@ namespace wheel_of_fear {
 
     const std::vector<Vec2Props> occupants = collectOccupants(context);
     MazeShifter::animateDoorways(map_, delta, occupants);
-    shiftMaze(context, occupants);
+    if(!is_outdoors_) shiftMaze(context, occupants);
 
     for(const auto &item : scenery_) item->update(delta);
     for(LockerEntity &locker : lockers_) locker.update(delta);

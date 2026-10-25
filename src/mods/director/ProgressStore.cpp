@@ -1,5 +1,6 @@
 #include "mods/director/ProgressStore.hpp"
 #include "core/text/TextNumberParser.hpp"
+#include "mods/director/CampaignConfig.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <format>
@@ -54,7 +55,7 @@ namespace wheel_of_fear {
 
     return DirectorSnapshotProps {
       .is_in_phase       = true,
-      .phase             = *phase,
+      .phase             = CampaignConfig::clampPhase(*phase),
       .phase_seed        = *phase_seed,
       .player_max_health = std::clamp(
         static_cast<std::int32_t>(

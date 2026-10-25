@@ -18,6 +18,11 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      Vec2Props position() const {
+        return position_;
+      }
+
+      [[nodiscard]]
       bool isDry() const {
         return remaining_seconds_ <= 0;
       }

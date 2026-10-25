@@ -15,6 +15,7 @@ Every asset in this folder is free to use. Assets under CC-BY require the attrib
 | eye_monster | Tentacle creature author (OpenGameArt) | CC0 | https://opengameart.org/content/top-down-tentacle-creature |
 | floor | ambientCG | CC0 | https://ambientcg.com/view?id=MetalPlates006 |
 | grate | ambientCG | CC0 | https://ambientcg.com/view?id=Grate001 |
+| grass | ambientCG | CC0 | https://ambientcg.com/view?id=Grass001 |
 | heartbeat | OpenGameArt | CC0 | https://opengameart.org/content/heartbeat-sounds |
 | horror | Little Robot Sound Factory | CC-BY 3.0 | https://opengameart.org/content/horror-sound-effects-library |
 | impact | Kenney | CC0 | https://kenney.nl/assets/impact-sounds |
@@ -30,6 +31,7 @@ Every asset in this folder is free to use. Assets under CC-BY require the attrib
 | teeth_monster | Tentacle creature author (OpenGameArt) | CC0 | https://opengameart.org/content/top-down-tentacle-creature |
 | tension_music | Dark Sci-Fi Audio Pack author | CC0 | https://opengameart.org/content/dark-sci-fi-audio-pack |
 | title_music | Dark Sci-Fi Audio Pack author | CC0 | https://opengameart.org/content/dark-sci-fi-audio-pack |
+| trees | Prime_8 | CC0 | https://opengameart.org/content/trees-top-down-fake-shadow |
 | whistles | OpenGameArt whistles author | CC-BY 3.0 | https://opengameart.org/content/whistles |
 | zombie | Riley Gombart | CC0 | https://opengameart.org/content/animated-top-down-zombie |
 

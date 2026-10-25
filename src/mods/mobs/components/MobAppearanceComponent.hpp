@@ -46,6 +46,12 @@ namespace wheel_of_fear {
         const MobLookDto       &look
       ) const;
 
+      bool drawBody(
+        GameContextDto         &context,
+        const AtlasRegionProps &body,
+        const MobLookDto       &look
+      ) const;
+
     private:
       static constexpr float visibility_gain = 2.4F;
 

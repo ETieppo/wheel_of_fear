@@ -22,6 +22,11 @@ namespace wheel_of_fear {
         return 1;
       }
 
+      [[nodiscard]]
+      virtual bool startsAtEnding() const {
+        return false;
+      }
+
       void restart() {
         step_ = 0;
       }
