@@ -87,6 +87,8 @@ namespace wheel_of_fear {
     PlayerEntity       &player,
     const TileMapModel &map
   ) {
+    if(mob.brain().intent() == MobIntentEnum::lured) return;
+
     const float spacing  = bodyRadius(mob) + player.collisionHalfSize();
     const float distance = mob.position().distance(player.position());
     if(distance >= spacing) return;

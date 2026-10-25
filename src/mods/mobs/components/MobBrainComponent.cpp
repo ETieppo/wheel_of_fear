@@ -28,7 +28,9 @@ namespace wheel_of_fear {
     pursueIntent(context);
 
     if(
-      strike_cooldown_
+      intent_
+      != MobIntentEnum::lured
+      && strike_cooldown_
       <= 0
       && owner_.perception()
            .touchesPlayer(context, owner_.traits().strike_reach)
@@ -83,6 +85,19 @@ namespace wheel_of_fear {
         changeIntent(MobIntentEnum::retreating, owner_.position());
       return;
     }
+
+    if(memory.lure_position) {
+      if(
+        intent_
+        != MobIntentEnum::lured
+        || destination_.distance(*memory.lure_position)
+        > 1
+      )
+        changeIntent(MobIntentEnum::lured, *memory.lure_position);
+      return;
+    }
+
+    if(intent_ == MobIntentEnum::lured) startSearching(destination_);
 
     if(perception.canSeePlayerNow()) {
       if(
@@ -151,6 +166,7 @@ namespace wheel_of_fear {
       case MobIntentEnum::retreating:    fleeFromPlayer(context); break;
       case MobIntentEnum::lurking:       lurk(context); break;
       case MobIntentEnum::calling:       break;
+      case MobIntentEnum::lured:         followLure(context); break;
     }
 
     trackProgress(context);
@@ -162,6 +178,8 @@ namespace wheel_of_fear {
       == MobIntentEnum::lurking
       || intent_
       == MobIntentEnum::calling
+      || intent_
+      == MobIntentEnum::lured
       || linger_seconds_
       > 0
     ) {
@@ -380,6 +398,21 @@ namespace wheel_of_fear {
 
     if(intent_seconds_ > lurk_give_up_seconds && !can_see_player)
       startSearching(owner_.position());
+  }
+
+  void MobBrainComponent::followLure(GameContextDto &context) {
+    if(owner_.distanceTo(destination_) <= lure_gather_distance) {
+      lookAround(context);
+      return;
+    }
+
+    MobLocomotionComponent &locomotion   = owner_.locomotion();
+    const bool              is_reachable = locomotion.navigateTo(
+      context,
+      destination_,
+      locomotion.currentSpeed() * investigate_speed_factor
+    );
+    if(!is_reachable) lookAround(context);
   }
 
   void MobBrainComponent::lookAround(GameContextDto &context) {

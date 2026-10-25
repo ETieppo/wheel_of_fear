@@ -4,6 +4,7 @@
 #include "mods/mobs/MobEntity.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
 
 namespace wheel_of_fear {
@@ -15,6 +16,7 @@ namespace wheel_of_fear {
     memory_.seconds_since_seen += delta;
     memory_.seconds_since_noise += delta;
     can_see_player_ = false;
+    releaseExpiredLure(context);
 
     if(!can_notice || owner_.isBusy()) return;
     if(canSeePlayer(context)) {
@@ -23,6 +25,28 @@ namespace wheel_of_fear {
     }
 
     listen(context);
+    listenForLure(context);
+  }
+
+  void MobPerceptionComponent::listenForLure(const GameContextDto &context) {
+    if(!owner_.traits().is_hostile || owner_.isDisguised()) return;
+
+    const auto heard = context.noise.loudestHeardAt(
+      context.world.map(),
+      owner_.position(),
+      owner_.traits().hearing_factor,
+      NoiseSourceEnum::lure_beacon
+    );
+    if(heard) memory_.lure_position = heard->event.position;
+  }
+
+  void
+  MobPerceptionComponent::releaseExpiredLure(const GameContextDto &context) {
+    if(
+      memory_.lure_position
+      && !context.throwables.isBeaconActiveAt(*memory_.lure_position)
+    )
+      memory_.lure_position.reset();
   }
 
   void MobPerceptionComponent::listen(GameContextDto &context) {

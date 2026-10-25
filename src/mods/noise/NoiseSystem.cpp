@@ -40,9 +40,28 @@ namespace wheel_of_fear {
     Vec2Props           listener,
     float               hearing_factor
   ) const {
+    return loudestMatching(map, listener, hearing_factor, std::nullopt);
+  }
+
+  std::optional<HeardNoiseDto> NoiseSystem::loudestHeardAt(
+    const TileMapModel &map,
+    Vec2Props           listener,
+    float               hearing_factor,
+    NoiseSourceEnum     source
+  ) const {
+    return loudestMatching(map, listener, hearing_factor, source);
+  }
+
+  std::optional<HeardNoiseDto> NoiseSystem::loudestMatching(
+    const TileMapModel            &map,
+    Vec2Props                      listener,
+    float                          hearing_factor,
+    std::optional<NoiseSourceEnum> source
+  ) const {
     std::optional<HeardNoiseDto> loudest;
 
     for(const NoiseEventProps &event : events_) {
+      if(source && event.source != *source) continue;
       const float distance = event.position.distance(listener);
       float       radius   = event.radius * hearing_factor;
 

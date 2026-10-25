@@ -14,6 +14,11 @@ namespace wheel_of_fear {
     if(!canAct()) return;
     const Vec2Props player_position = context.player.position();
 
+    if(perception().isLured()) {
+      brain().hunt(context);
+      return;
+    }
+
     if(brain().intent() == MobIntentEnum::calling) {
       faceToward(player_position);
 

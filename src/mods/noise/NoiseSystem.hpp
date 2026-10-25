@@ -39,10 +39,26 @@ namespace wheel_of_fear {
         float               hearing_factor
       ) const;
 
+      [[nodiscard]]
+      std::optional<HeardNoiseDto> loudestHeardAt(
+        const TileMapModel &map,
+        Vec2Props           listener,
+        float               hearing_factor,
+        NoiseSourceEnum     source
+      ) const;
+
     private:
       static constexpr std::size_t capacity               = 128;
       static constexpr float       lifetime_seconds       = 0.35F;
       static constexpr float       occluded_radius_factor = 0.7F;
       std::vector<NoiseEventProps> events_;
+
+      [[nodiscard]]
+      std::optional<HeardNoiseDto> loudestMatching(
+        const TileMapModel            &map,
+        Vec2Props                      listener,
+        float                          hearing_factor,
+        std::optional<NoiseSourceEnum> source
+      ) const;
   };
 } // namespace wheel_of_fear

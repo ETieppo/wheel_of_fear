@@ -80,6 +80,7 @@ namespace wheel_of_fear {
       static constexpr float stuck_timeout_seconds    = 3.5F;
       static constexpr float lurk_give_up_seconds     = 6;
       static constexpr float direct_chase_distance    = 72;
+      static constexpr float lure_gather_distance     = 20;
 
       void chooseIntent(GameContextDto &context);
 
@@ -98,6 +99,8 @@ namespace wheel_of_fear {
       void chase(GameContextDto &context);
 
       void lurk(GameContextDto &context);
+
+      void followLure(GameContextDto &context);
 
       void lookAround(GameContextDto &context);
 

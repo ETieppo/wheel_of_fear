@@ -56,6 +56,14 @@ namespace wheel_of_fear {
     }
   }
 
+  bool ThrowableSystem::isBeaconActiveAt(Vec2Props position) const {
+    return std::ranges::any_of(beacons_, [position](const auto &beacon) {
+      return !beacon.isExpired()
+        && beacon.position().distance(position)
+        < beacon_match_distance;
+    });
+  }
+
   void ThrowableSystem::update(GameContextDto &context) {
     emitLights(context);
     if(!context.clock.isRunning()) return;

@@ -12,6 +12,7 @@ namespace wheel_of_fear {
     retreating,
     lurking,
     calling,
+    lured,
   };
 
   constexpr std::string_view nameOf(MobIntentEnum intent) {
@@ -23,6 +24,7 @@ namespace wheel_of_fear {
       case MobIntentEnum::retreating:    return "retreating";
       case MobIntentEnum::lurking:       return "lurking";
       case MobIntentEnum::calling:       return "calling";
+      case MobIntentEnum::lured:         return "lured";
     }
 
     return "";

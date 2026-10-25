@@ -49,12 +49,16 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      bool isBeaconActiveAt(Vec2Props position) const;
+
+      [[nodiscard]]
       std::size_t puddleCount() const {
         return puddles_.size();
       }
 
     private:
       static constexpr float maximum_throw_distance = 190;
+      static constexpr float beacon_match_distance  = 1;
 
       void emitLights(GameContextDto &context) const;
 

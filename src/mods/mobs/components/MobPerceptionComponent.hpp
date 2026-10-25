@@ -32,6 +32,11 @@ namespace wheel_of_fear {
         memory_.known_locker_index.reset();
       }
 
+      [[nodiscard]]
+      bool isLured() const {
+        return memory_.lure_position.has_value();
+      }
+
       void rememberPlayerAt(Vec2Props player_position) {
         memory_.last_seen_player   = player_position;
         memory_.seconds_since_seen = 0;
@@ -66,6 +71,8 @@ namespace wheel_of_fear {
       bool canSeePlayer(const GameContextDto &context) const;
 
       void listen(GameContextDto &context);
+      void listenForLure(const GameContextDto &context);
+      void releaseExpiredLure(const GameContextDto &context);
 
       MobEntity     &owner_;
       MobMemoryProps memory_ {};
