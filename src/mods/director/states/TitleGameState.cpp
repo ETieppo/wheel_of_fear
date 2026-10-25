@@ -44,7 +44,7 @@ namespace wheel_of_fear {
       return;
     }
 
-    director.startPhase(context, director.demo().startingPhase());
+    director.startNewRun(context, director.demo().startingPhase());
   }
 
   void TitleGameState::mixMusic(GameContextDto &context) const {

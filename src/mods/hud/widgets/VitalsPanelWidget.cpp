@@ -3,6 +3,7 @@
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include <algorithm>
 #include <cmath>
 
 namespace wheel_of_fear {
@@ -15,9 +16,14 @@ namespace wheel_of_fear {
     renderer
       .drawText("VITALS", 28, 20, 12, Palette::muted_text, TextAlignEnum::left);
 
-    const int health = player.vitality().health();
+    const int   health      = player.vitality().health();
+    const int   max_health  = player.vitality().maxHealth();
+    const float pip_spacing = std::min(
+      health_pip_spacing,
+      health_pip_track_width / static_cast<float>(max_health)
+    );
 
-    for(int slot = 0; slot < VitalityComponent::max_health; ++slot) {
+    for(int slot = 0; slot < max_health; ++slot) {
       const bool       is_filled = slot < health;
       const float      pulse     = is_filled && health == 1
         ? 0.6F + (0.4F * std::sin(real_seconds * 9))
@@ -27,8 +33,11 @@ namespace wheel_of_fear {
 
       renderer.drawUiShape(
         QuadKindEnum::solid,
-        Vec2Props::of(94 + (static_cast<float>(slot) * 30), 28),
-        Vec2Props::of(24, 9),
+        Vec2Props::of(
+          health_pip_left + (static_cast<float>(slot) * pip_spacing),
+          28
+        ),
+        Vec2Props::of(pip_spacing - health_pip_gap, 9),
         color,
         -0.18F,
         0

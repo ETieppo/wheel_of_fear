@@ -23,6 +23,8 @@ namespace wheel_of_fear {
     private:
       static constexpr std::string_view phase_key      = "phase";
       static constexpr std::string_view phase_seed_key = "phase_seed";
+      static constexpr std::string_view player_max_health_key
+        = "player_max_health";
 
       static std::optional<DirectorSnapshotProps> parse(std::string_view text);
       static std::string serialize(const DirectorSnapshotProps &snapshot);

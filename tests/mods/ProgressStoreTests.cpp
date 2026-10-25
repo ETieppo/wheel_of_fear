@@ -14,9 +14,10 @@ namespace wheel_of_fear {
     }
 
     constexpr DirectorSnapshotProps sector_three {
-      .is_in_phase = true,
-      .phase       = 3,
-      .phase_seed  = 0xABCDEF0123456789ULL,
+      .is_in_phase       = true,
+      .phase             = 3,
+      .phase_seed        = 0xABCDEF0123456789ULL,
+      .player_max_health = 6,
     };
   } // namespace
 
@@ -29,6 +30,7 @@ namespace wheel_of_fear {
     REQUIRE(reloaded.saved().has_value());
     CHECK(reloaded.saved()->phase == sector_three.phase);
     CHECK(reloaded.saved()->phase_seed == sector_three.phase_seed);
+    CHECK(reloaded.saved()->player_max_health == 6);
     std::filesystem::remove(path);
   }
 
@@ -47,6 +49,33 @@ namespace wheel_of_fear {
     TextFileStorage {path}.write("phase=abc\nphase_seed=12\n");
 
     CHECK_FALSE(ProgressStore {path}.saved().has_value());
+    std::filesystem::remove(path);
+  }
+
+  TEST_CASE("progress store loads saves written before extra lives existed") {
+    const std::filesystem::path path = freshProgressPath();
+    TextFileStorage {path}.write("phase=4\nphase_seed=99\n");
+
+    const ProgressStore reloaded {path};
+
+    REQUIRE(reloaded.saved().has_value());
+    CHECK(reloaded.saved()->phase == 4);
+    CHECK(
+      reloaded.saved()->player_max_health == VitalityComponent::base_max_health
+    );
+    std::filesystem::remove(path);
+  }
+
+  TEST_CASE("progress store clamps a tampered maximum health") {
+    const std::filesystem::path path = freshProgressPath();
+    TextFileStorage {path}.write(
+      "phase=2\nphase_seed=5\nplayer_max_health=99\n"
+    );
+
+    CHECK(
+      ProgressStore {path}.saved()->player_max_health
+      == VitalityComponent::highest_max_health
+    );
     std::filesystem::remove(path);
   }
 

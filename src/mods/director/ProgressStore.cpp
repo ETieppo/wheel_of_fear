@@ -1,5 +1,6 @@
 #include "mods/director/ProgressStore.hpp"
 #include "core/text/TextNumberParser.hpp"
+#include <algorithm>
 #include <cstdint>
 #include <format>
 #include <utility>
@@ -27,6 +28,7 @@ namespace wheel_of_fear {
   ProgressStore::parse(std::string_view text) {
     std::optional<std::uint32_t> phase;
     std::optional<std::uint64_t> phase_seed;
+    std::optional<std::uint32_t> player_max_health;
 
     while(!text.empty()) {
       const std::size_t      line_end = text.find('\n');
@@ -44,24 +46,35 @@ namespace wheel_of_fear {
         phase = TextNumberParser::parse<std::uint32_t>(value);
       if(key == phase_seed_key)
         phase_seed = TextNumberParser::parse<std::uint64_t>(value);
+      if(key == player_max_health_key)
+        player_max_health = TextNumberParser::parse<std::uint32_t>(value);
     }
 
     if(!phase || *phase == 0 || !phase_seed) return std::nullopt;
 
     return DirectorSnapshotProps {
-      .is_in_phase = true,
-      .phase       = *phase,
-      .phase_seed  = *phase_seed,
+      .is_in_phase       = true,
+      .phase             = *phase,
+      .phase_seed        = *phase_seed,
+      .player_max_health = std::clamp(
+        static_cast<std::int32_t>(
+          player_max_health.value_or(VitalityComponent::base_max_health)
+        ),
+        VitalityComponent::base_max_health,
+        VitalityComponent::highest_max_health
+      ),
     };
   }
 
   std::string ProgressStore::serialize(const DirectorSnapshotProps &snapshot) {
     return std::format(
-      "{}={}\n{}={}\n",
+      "{}={}\n{}={}\n{}={}\n",
       phase_key,
       snapshot.phase,
       phase_seed_key,
-      snapshot.phase_seed
+      snapshot.phase_seed,
+      player_max_health_key,
+      snapshot.player_max_health
     );
   }
 } // namespace wheel_of_fear

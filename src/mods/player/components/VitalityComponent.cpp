@@ -3,10 +3,22 @@
 
 namespace wheel_of_fear {
   void VitalityComponent::restore() {
-    health_               = max_health;
+    health_               = max_health_;
     invulnerable_seconds_ = spawn_invulnerability_seconds;
     hurt_flash_           = 0;
     is_dead_              = false;
+  }
+
+  void VitalityComponent::setMaxHealth(int max_health) {
+    max_health_ = std::clamp(max_health, base_max_health, highest_max_health);
+    health_     = std::min(health_, max_health_);
+  }
+
+  bool VitalityComponent::grantExtraLife() {
+    if(max_health_ >= highest_max_health || is_dead_) return false;
+    max_health_ += 1;
+    health_ += 1;
+    return true;
   }
 
   void VitalityComponent::tick(float delta_seconds) {

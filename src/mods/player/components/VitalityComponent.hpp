@@ -3,14 +3,22 @@
 namespace wheel_of_fear {
   class VitalityComponent {
     public:
-      static constexpr int max_health = 3;
+      static constexpr int base_max_health    = 3;
+      static constexpr int highest_max_health = 8;
 
       void restore();
+      void setMaxHealth(int max_health);
+      bool grantExtraLife();
       bool absorbHit();
 
       [[nodiscard]]
       int health() const {
         return health_;
+      }
+
+      [[nodiscard]]
+      int maxHealth() const {
+        return max_health_;
       }
 
       [[nodiscard]]
@@ -42,7 +50,8 @@ namespace wheel_of_fear {
       static constexpr float spawn_invulnerability_seconds = 1.5F;
       static constexpr float hit_invulnerability_seconds   = 1.4F;
 
-      int   health_               = max_health;
+      int   max_health_           = base_max_health;
+      int   health_               = base_max_health;
       float invulnerable_seconds_ = spawn_invulnerability_seconds;
       float hurt_flash_           = 0;
       bool  is_dead_              = false;

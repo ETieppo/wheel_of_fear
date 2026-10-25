@@ -12,6 +12,7 @@
 #include "mods/director/Director.hpp"
 #include "mods/distractions/DistractionSystem.hpp"
 #include "mods/effects/EffectSystem.hpp"
+#include "mods/extra_lives/ExtraLifeSystem.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/lighting/LightingSystem.hpp"
@@ -79,6 +80,7 @@ namespace wheel_of_fear {
       ThrowableSystem   throwables_;
       DistractionSystem distractions_;
       CameraSystem      camera_;
+      ExtraLifeSystem   extra_lives_;
       Director          director_;
       GameContextDto    context_;
   };

@@ -18,6 +18,7 @@ namespace wheel_of_fear {
   class ThrowableSystem;
   class DistractionSystem;
   class CameraSystem;
+  class ExtraLifeSystem;
 
   struct GameContextDto {
       GameClock         &clock;
@@ -37,5 +38,6 @@ namespace wheel_of_fear {
       ThrowableSystem   &throwables;
       DistractionSystem &distractions;
       CameraSystem      &camera;
+      ExtraLifeSystem   &extra_lives;
   };
 } // namespace wheel_of_fear

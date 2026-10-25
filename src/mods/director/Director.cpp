@@ -7,6 +7,7 @@
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/distractions/DistractionSystem.hpp"
 #include "mods/effects/EffectSystem.hpp"
+#include "mods/extra_lives/ExtraLifeSystem.hpp"
 #include "mods/generators/GeneratorSystem.hpp"
 #include "mods/hud/HudSystem.hpp"
 #include "mods/mobs/MobSystem.hpp"
@@ -46,9 +47,10 @@ namespace wheel_of_fear {
 
   DirectorSnapshotProps Director::snapshot() const {
     return DirectorSnapshotProps {
-      .is_in_phase = state_ != GameStateEnum::title,
-      .phase       = phase_,
-      .phase_seed  = seed_counter_,
+      .is_in_phase       = state_ != GameStateEnum::title,
+      .phase             = phase_,
+      .phase_seed        = seed_counter_,
+      .player_max_health = committed_max_health_,
     };
   }
 
@@ -57,7 +59,8 @@ namespace wheel_of_fear {
     const DirectorSnapshotProps &snapshot
   ) {
     if(!snapshot.is_in_phase) return;
-    seed_counter_ = snapshot.phase_seed - phase_seed_step;
+    seed_counter_         = snapshot.phase_seed - phase_seed_step;
+    committed_max_health_ = snapshot.player_max_health;
     startPhase(context, snapshot.phase);
   }
 
@@ -79,6 +82,12 @@ namespace wheel_of_fear {
     context.throwables.generatePhase(world);
     context.distractions.clear();
     context.noise.clear();
+    context.extra_lives.generatePhase(
+      world,
+      seed_counter_,
+      committed_max_health_ < VitalityComponent::highest_max_health
+    );
+    context.player.vitality().setMaxHealth(committed_max_health_);
     context.player.respawn(world.playerStart());
     context.effects.clear();
     context.tracker.close();
@@ -89,6 +98,20 @@ namespace wheel_of_fear {
     demo_.restart();
     enterState(GameStateEnum::phase_intro);
     context.sound_player.play(SoundEnum::phase_start, 0.9F, 0, 1);
+  }
+
+  void Director::startNewRun(
+    GameContextDto &context,
+    std::uint32_t   phase
+  ) {
+    committed_max_health_ = VitalityComponent::base_max_health;
+    startPhase(context, phase);
+  }
+
+  void Director::advanceToNextPhase(GameContextDto &context) {
+    committed_max_health_ = context.player.vitality().maxHealth();
+    startPhase(context, phase_ + 1);
+    saveProgress();
   }
 
   void Director::saveProgress() {

@@ -95,12 +95,18 @@ namespace wheel_of_fear {
         std::uint32_t   phase
       );
 
-      void saveProgress();
+      void startNewRun(
+        GameContextDto &context,
+        std::uint32_t   phase
+      );
+
+      void advanceToNextPhase(GameContextDto &context);
 
     private:
       static constexpr std::uint64_t title_seed      = 0x7171;
       static constexpr std::uint64_t phase_seed_step = 0x9E3779B97F4A7C15ULL;
 
+      void saveProgress();
       void updateFade(float real_delta_seconds);
       void configurePostProcess(GameContextDto &context) const;
 
@@ -110,10 +116,11 @@ namespace wheel_of_fear {
       [[nodiscard]]
       GameState &currentState();
 
-      GameStateEnum                 state_         = GameStateEnum::title;
-      float                         state_seconds_ = 0;
-      std::uint32_t                 phase_         = 1;
-      std::uint64_t                 seed_counter_  = 0x5EED;
+      GameStateEnum state_                = GameStateEnum::title;
+      float         state_seconds_        = 0;
+      std::uint32_t phase_                = 1;
+      std::uint64_t seed_counter_         = 0x5EED;
+      int           committed_max_health_ = VitalityComponent::base_max_health;
       std::vector<std::string_view> intro_lines_;
       float                         death_seconds_ = 0;
       float                         fade_amount_   = 1;

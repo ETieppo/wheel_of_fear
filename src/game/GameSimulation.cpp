@@ -25,6 +25,7 @@ namespace wheel_of_fear {
           .throwables   = throwables_,
           .distractions = distractions_,
           .camera       = camera_,
+          .extra_lives  = extra_lives_,
         } {
     Director::initialize(context_);
   }
@@ -53,6 +54,7 @@ namespace wheel_of_fear {
     camera_.update(context_);
     tracker_.update(context_);
     throwables_.update(context_);
+    extra_lives_.update(context_);
     generators_.update(context_);
     distractions_.update(context_);
     mobs_.update(context_);
@@ -65,6 +67,7 @@ namespace wheel_of_fear {
     world_.draw(context_);
     generators_.draw(context_);
     throwables_.draw(context_);
+    extra_lives_.draw(context_);
     mobs_.draw(context_);
     player_.draw(context_);
     effects_.draw(context_);
