@@ -38,6 +38,7 @@ namespace wheel_of_fear {
       case SDLK_R:      return InputActionEnum::restart;
       case SDLK_M:      return InputActionEnum::toggle_mute;
       case SDLK_C:      return InputActionEnum::show_credits;
+      case SDLK_X:      return InputActionEnum::quit_game;
       default:          return std::nullopt;
     }
   }

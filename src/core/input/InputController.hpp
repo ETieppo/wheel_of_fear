@@ -23,6 +23,10 @@ namespace wheel_of_fear {
         return is_quit_requested_;
       }
 
+      void requestQuit() {
+        is_quit_requested_ = true;
+      }
+
       [[nodiscard]]
       Vec2Props movementDirection() const;
 

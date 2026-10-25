@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/math/Vec2Props.hpp"
 #include "core/render/Renderer.hpp"
 #include <cstdint>
 #include <optional>
@@ -13,7 +14,7 @@ namespace wheel_of_fear {
         Renderer                    &renderer,
         float                        real_seconds,
         std::optional<std::uint32_t> saved_phase,
-        bool                         is_credits_hovered
+        Vec2Props                    mouse_in_ui
       );
   };
 } // namespace wheel_of_fear

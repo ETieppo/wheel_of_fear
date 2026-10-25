@@ -3,7 +3,8 @@
 #include "core/render/RenderConfig.hpp"
 #include "core/render/UiPainter.hpp"
 #include "core/theme/Palette.hpp"
-#include "mods/director/screens/CreditsButtonWidget.hpp"
+#include "mods/director/screens/MenuButtonCatalog.hpp"
+#include "mods/director/screens/MenuButtonWidget.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -16,7 +17,7 @@ namespace wheel_of_fear {
     Renderer                    &renderer,
     float                        real_seconds,
     std::optional<std::uint32_t> saved_phase,
-    bool                         is_credits_hovered
+    Vec2Props                    mouse_in_ui
   ) {
     constexpr float center_x = RenderConfig::ui_width / 2;
 
@@ -155,7 +156,16 @@ namespace wheel_of_fear {
       );
     }
 
-    CreditsButtonWidget::draw(renderer, is_credits_hovered);
+    MenuButtonWidget::draw(
+      renderer,
+      MenuButtonCatalog::title_credits,
+      mouse_in_ui
+    );
+    MenuButtonWidget::draw(
+      renderer,
+      MenuButtonCatalog::title_quit,
+      mouse_in_ui
+    );
 
     UiPainter::drawScanlines(
       renderer,

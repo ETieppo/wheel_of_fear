@@ -18,8 +18,6 @@ namespace wheel_of_fear {
       ) const override;
 
     private:
-      static bool isCreditsRequested(const GameContextDto &context);
-
       static void panCamera(
         const Director &director,
         GameContextDto &context

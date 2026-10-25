@@ -7,6 +7,8 @@
 #include "core/time/GameClock.hpp"
 #include "mods/director/Director.hpp"
 #include "mods/director/screens/CenteredCardWidget.hpp"
+#include "mods/director/screens/MenuButtonCatalog.hpp"
+#include "mods/director/screens/MenuButtonWidget.hpp"
 #include "mods/mobs/MobSystem.hpp"
 
 namespace wheel_of_fear {
@@ -26,6 +28,14 @@ namespace wheel_of_fear {
 
     if(context.input.wasPressed(InputActionEnum::restart))
       director.startPhase(context, director.phase());
+
+    if(
+      MenuButtonWidget::wasActivated(
+        MenuButtonCatalog::paused_quit,
+        context.input
+      )
+    )
+      context.input.requestQuit();
   }
 
   void PausedGameState::mixMusic(GameContextDto &context) const {
@@ -46,6 +56,12 @@ namespace wheel_of_fear {
       "ESC  RESUME     R  RESTART SECTOR     M  MUTE",
       Palette::panel_edge,
       context.clock.realSeconds()
+    );
+
+    MenuButtonWidget::draw(
+      context.renderer,
+      MenuButtonCatalog::paused_quit,
+      context.input.mouseInUi()
     );
   }
 } // namespace wheel_of_fear
