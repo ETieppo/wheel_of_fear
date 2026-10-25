@@ -16,7 +16,8 @@ namespace wheel_of_fear {
   ) const {
     LightProps  glow;
     LightProps  flash;
-    const float fade = ScalarMath::clamp(remaining_seconds_ / 8, 0, 1);
+    const float fade
+      = ScalarMath::clamp(remaining_seconds_ / lifetime_seconds, 0, 1);
     const float shimmer
       = 0.85F + (0.15F * std::sin((real_seconds * 4) + position_.x));
 

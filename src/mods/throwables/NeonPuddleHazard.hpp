@@ -6,7 +6,7 @@
 namespace wheel_of_fear {
   class NeonPuddleHazard {
     public:
-      static constexpr float lifetime_seconds = 60;
+      static constexpr float lifetime_seconds = 90;
 
       explicit NeonPuddleHazard(Vec2Props position)
           : position_(position) {

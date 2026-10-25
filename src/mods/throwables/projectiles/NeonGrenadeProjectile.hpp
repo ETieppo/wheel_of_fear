@@ -3,8 +3,6 @@
 #include "mods/throwables/projectiles/Projectile.hpp"
 
 namespace wheel_of_fear {
-  class WorldSystem;
-
   class NeonGrenadeProjectile final: public Projectile {
     public:
       NeonGrenadeProjectile(
@@ -33,15 +31,8 @@ namespace wheel_of_fear {
       void drawTrail(Renderer &renderer) const override;
 
     private:
-      static constexpr float       noise_radius   = 520;
-      static constexpr float       kill_radius    = 36;
-      static constexpr float       spread_tiles   = 3.3F;
-      static constexpr std::size_t flood_capacity = 96;
-
-      static void floodNeon(
-        WorldSystem &world,
-        Vec2Props    origin,
-        float        lifetime_seconds
-      );
+      static constexpr float noise_radius = 520;
+      static constexpr float kill_radius  = 36;
+      static constexpr float spread_tiles = 4;
   };
 } // namespace wheel_of_fear

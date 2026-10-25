@@ -7,11 +7,10 @@
 #include "mods/mobs/MobSystem.hpp"
 #include "mods/noise/NoiseSystem.hpp"
 #include "mods/player/PlayerEntity.hpp"
+#include "mods/throwables/NeonPaintSpiller.hpp"
 #include "mods/throwables/NeonPuddleHazard.hpp"
 #include "mods/throwables/ThrowableSystem.hpp"
 #include "mods/world/WorldSystem.hpp"
-#include <array>
-#include <vector>
 
 namespace wheel_of_fear {
   void NeonGrenadeProjectile::land(
@@ -40,53 +39,15 @@ namespace wheel_of_fear {
     );
 
     context.mobs.explosions().destroyInBlast(context, landing, kill_radius);
-    floodNeon(world, landing, NeonPuddleHazard::lifetime_seconds);
+    world.addNeonSplash(
+      NeonPaintSpiller::spill(
+        world,
+        landing,
+        spread_tiles * RenderConfig::tile_size,
+        NeonPuddleHazard::lifetime_seconds
+      )
+    );
     context.throwables.spillPuddle(landing);
-  }
-
-  void NeonGrenadeProjectile::floodNeon(
-    WorldSystem &world,
-    Vec2Props    origin,
-    float        lifetime_seconds
-  ) {
-    constexpr std::array<TileCoordinateProps, 4> steps {
-      {
-       {.x = 1, .y = 0},
-       {.x = -1, .y = 0},
-       {.x = 0, .y = 1},
-       {.x = 0, .y = -1},
-       },
-    };
-
-    TileMapModel                    &map    = world.map();
-    RandomGenerator                 &random = world.random();
-    const TileCoordinateProps        start  = TileMapModel::tileAt(origin);
-    std::vector<TileCoordinateProps> queue {start};
-
-    map.fluids()
-      .spillNeon(start.x, start.y, lifetime_seconds + random.range(0, 6));
-
-    for(std::size_t head = 0; head < queue.size(); ++head) {
-      const TileCoordinateProps current = queue[head];
-
-      for(const TileCoordinateProps &step : steps) {
-        const int x = current.x + step.x;
-        const int y = current.y + step.y;
-        if(map.isWall(x, y) || map.fluids().neonAtTile(x, y) > 0) continue;
-
-        const Vec2Props offset = TileMapModel::tileCenter(x, y).sub(
-          TileMapModel::tileCenter(start.x, start.y)
-        );
-
-        const float reach = spread_tiles
-          * RenderConfig::tile_size
-          * (0.75F + (0.35F * random.unit()));
-        if(offset.length() > reach || queue.size() >= flood_capacity) continue;
-
-        map.fluids().spillNeon(x, y, lifetime_seconds + random.range(-4, 6));
-        queue.push_back({.x = x, .y = y});
-      }
-    }
   }
 
   void NeonGrenadeProjectile::drawTrail(Renderer &renderer) const {
