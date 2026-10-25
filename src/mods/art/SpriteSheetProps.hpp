@@ -62,7 +62,6 @@ namespace wheel_of_fear {
       AtlasRegionProps                         locker_closed;
       AtlasRegionProps                         locker_open;
       AtlasRegionProps                         vent;
-      std::array<AtlasRegionProps, 3>          neon_signs {};
       std::array<AtlasRegionProps, item_count> item_icons {};
 
       [[nodiscard]]

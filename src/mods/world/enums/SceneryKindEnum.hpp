@@ -10,8 +10,5 @@ namespace wheel_of_fear {
     junction_box,
     server_rack,
     terminal,
-    neon_sign_arrow,
-    neon_sign_eye,
-    neon_sign_bars,
   };
 } // namespace wheel_of_fear

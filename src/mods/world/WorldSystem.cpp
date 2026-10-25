@@ -84,7 +84,6 @@ namespace wheel_of_fear {
 
       furnisher.placeLockers(room, room_index);
       furnisher.furnishRoom(room, room_index, gradient.start_color);
-      furnisher.placeNeonSigns(room, room_index);
 
       if(room_index != start_room_index_)
         addVent(map_.randomFloorInRoom(random_, room));

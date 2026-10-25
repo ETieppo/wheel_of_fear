@@ -25,11 +25,6 @@ namespace wheel_of_fear {
         std::size_t      room_index
       );
 
-      void placeNeonSigns(
-        const RoomProps &room,
-        std::size_t      room_index
-      );
-
     private:
       void furnishServerFarm(
         const RoomProps &room,

@@ -1,9 +1,7 @@
 #include "mods/world/WorldFurnisher.hpp"
-#include "core/theme/Palette.hpp"
 #include "mods/world/TileMapConnectivityAnalyzer.hpp"
 #include "mods/world/WorldSystem.hpp"
 #include "mods/world/scenery/SceneryFactory.hpp"
-#include <array>
 #include <cstdlib>
 #include <memory>
 
@@ -243,44 +241,6 @@ namespace wheel_of_fear {
       );
 
       placed += 1;
-    }
-  }
-
-  void WorldFurnisher::placeNeonSigns(
-    const RoomProps &room,
-    std::size_t      room_index
-  ) {
-    constexpr std::array<SceneryKindEnum, 3> kinds {
-      SceneryKindEnum::neon_sign_arrow,
-      SceneryKindEnum::neon_sign_eye,
-      SceneryKindEnum::neon_sign_bars,
-    };
-
-    RandomGenerator  &random     = world_.random();
-    const std::size_t sign_count = random.index(2) + 1;
-
-    for(std::size_t sign = 0; sign < sign_count; ++sign) {
-      const int x
-        = random.intInclusive(room.left + 3, room.left + room.width - 4);
-      const TileMapModel &map             = world_.map();
-      const bool          is_on_room_face = map.roomIndexAtTile(x, room.top)
-        == room_index
-        && !map.isWall(x, room.top)
-        && map.isWall(x, room.top - 1);
-
-      if(!is_on_room_face || world_.isNearLandmark(x, room.top)) continue;
-      SceneryPlacementDto placement;
-      placement.position
-        = TileMapModel::tileCenter(x, room.top).sub(Vec2Props::of(0, 12));
-
-      const SceneryKindEnum kind = kinds[random.index(kinds.size())];
-      placement.mirrored         = random.chance(0.5F);
-      placement.room_index       = room_index;
-      placement.color
-        = Palette::room_neon_colors[random
-                                      .index(Palette::room_neon_colors.size())];
-      placement.flicker_seed = random.unit();
-      world_.addScenery(SceneryFactory::create(kind, placement));
     }
   }
 } // namespace wheel_of_fear

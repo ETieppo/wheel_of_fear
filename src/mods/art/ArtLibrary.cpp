@@ -77,12 +77,7 @@ namespace wheel_of_fear {
     sprites_.locker_closed = loadSingle(Catalog::locker_closed);
     sprites_.locker_open   = loadSingle(Catalog::locker_open);
     sprites_.vent          = loadSingle(Catalog::vent);
-    sprites_.neon_signs    = {
-      loadSingle(Catalog::neon_sign_0),
-      loadSingle(Catalog::neon_sign_1),
-      loadSingle(Catalog::neon_sign_2),
-    };
-    sprites_.item_icons = {
+    sprites_.item_icons    = {
       loadSingle(Catalog::icon_gear),
       loadSingle(Catalog::icon_fuse),
       loadSingle(Catalog::icon_valve),

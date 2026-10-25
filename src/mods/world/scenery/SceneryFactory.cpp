@@ -2,7 +2,6 @@
 #include "mods/world/scenery/BarrelScenery.hpp"
 #include "mods/world/scenery/CrateScenery.hpp"
 #include "mods/world/scenery/JunctionBoxScenery.hpp"
-#include "mods/world/scenery/NeonSignScenery.hpp"
 #include "mods/world/scenery/PipesScenery.hpp"
 #include "mods/world/scenery/ServerRackScenery.hpp"
 #include "mods/world/scenery/TerminalScenery.hpp"
@@ -30,15 +29,6 @@ namespace wheel_of_fear {
 
       case SceneryKindEnum::terminal:
         return std::make_unique<TerminalScenery>(placement);
-
-      case SceneryKindEnum::neon_sign_arrow:
-        return std::make_unique<NeonSignScenery>(placement, 0);
-
-      case SceneryKindEnum::neon_sign_eye:
-        return std::make_unique<NeonSignScenery>(placement, 1);
-
-      case SceneryKindEnum::neon_sign_bars:
-        return std::make_unique<NeonSignScenery>(placement, 2);
     }
 
     return std::make_unique<BarrelScenery>(placement);

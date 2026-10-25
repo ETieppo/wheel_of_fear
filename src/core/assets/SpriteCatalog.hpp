@@ -126,27 +126,6 @@ namespace wheel_of_fear {
         .frame_height    = 176,
         .pixels_per_unit = 8,
       };
-      static constexpr SpriteStripProps neon_sign_0 {
-        .path            = "sprites/neon_sign_0.png",
-        .frame_count     = 1,
-        .frame_width     = 128,
-        .frame_height    = 80,
-        .pixels_per_unit = 8,
-      };
-      static constexpr SpriteStripProps neon_sign_1 {
-        .path            = "sprites/neon_sign_1.png",
-        .frame_count     = 1,
-        .frame_width     = 128,
-        .frame_height    = 80,
-        .pixels_per_unit = 8,
-      };
-      static constexpr SpriteStripProps neon_sign_2 {
-        .path            = "sprites/neon_sign_2.png",
-        .frame_count     = 1,
-        .frame_width     = 128,
-        .frame_height    = 80,
-        .pixels_per_unit = 8,
-      };
       static constexpr SpriteStripProps neon_tube_core {
         .path            = "sprites/neon_tube_core.png",
         .frame_count     = 1,
