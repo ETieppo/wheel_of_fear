@@ -4,7 +4,6 @@
 #include "mods/camera/RoomFramer.hpp"
 #include "mods/player/PlayerEntity.hpp"
 #include "mods/world/WorldSystem.hpp"
-#include <algorithm>
 
 namespace wheel_of_fear {
   Vec2Props CameraSystem::viewOrigin() const {
@@ -20,9 +19,8 @@ namespace wheel_of_fear {
     const WorldSystem  &world,
     const PlayerEntity &player
   ) {
-    room_index_         = world.map().roomIndexAt(player.position());
-    transition_seconds_ = 0;
-    focus_ = framedTarget(room_index_, world, player.position(), Vec2Props {});
+    room_index_          = world.map().roomIndexAt(player.position());
+    focus_               = player.position();
     is_following_player_ = true;
   }
 
@@ -46,52 +44,12 @@ namespace wheel_of_fear {
                       .scale(shake * shake * shake_amplitude);
 
     if(!is_following_player_ || world.map().width() == 0) return;
-    const float         delta  = context.clock.realDeltaSeconds();
+
     const PlayerEntity &player = context.player;
 
-    if(const auto current_room = world.map().roomIndexAt(player.position())) {
-      if(!room_index_ || *room_index_ != *current_room) {
-        room_index_         = current_room;
-        transition_seconds_ = room_transition_seconds;
-      }
-    }
+    if(const auto current_room = world.map().roomIndexAt(player.position()))
+      room_index_ = current_room;
 
-    transition_seconds_ = std::max(0.0F, transition_seconds_ - delta);
-    const Vec2Props offset
-      = player.isHidden() ? Vec2Props {} : mouseOffset(context.input);
-    const Vec2Props target
-      = framedTarget(room_index_, world, player.position(), offset);
-    const float rate
-      = transition_seconds_ > 0 ? room_transition_rate : follow_rate;
-    focus_ = focus_.lerp(target, ScalarMath::clamp(delta * rate, 0, 1));
-  }
-
-  Vec2Props CameraSystem::mouseOffset(const InputController &input) {
-    const Vec2Props from_center
-      = input.mouseInView().sub(RoomFramer::half_view);
-
-    return Vec2Props::of(
-      ScalarMath::clamp(
-        from_center.x * mouse_influence.x,
-        -maximum_mouse_offset.x,
-        maximum_mouse_offset.x
-      ),
-      ScalarMath::clamp(
-        from_center.y * mouse_influence.y,
-        -maximum_mouse_offset.y,
-        maximum_mouse_offset.y
-      )
-    );
-  }
-
-  Vec2Props CameraSystem::framedTarget(
-    std::optional<std::size_t> room_index,
-    const WorldSystem         &world,
-    Vec2Props                  anchor,
-    Vec2Props                  offset
-  ) {
-    const Vec2Props desired = anchor.add(offset);
-    if(!room_index || *room_index >= world.map().rooms().size()) return desired;
-    return RoomFramer::clampToRoom(world.map().rooms()[*room_index], desired);
+    focus_ = player.position();
   }
 } // namespace wheel_of_fear

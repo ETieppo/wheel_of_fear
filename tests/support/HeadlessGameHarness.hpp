@@ -54,6 +54,11 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      Renderer &renderer() {
+        return simulation_.renderer();
+      }
+
+      [[nodiscard]]
       const FrameProps &frame() const {
         return simulation_.renderer().frame();
       }

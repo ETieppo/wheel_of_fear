@@ -26,11 +26,6 @@ namespace wheel_of_fear {
         return room_index_;
       }
 
-      [[nodiscard]]
-      float transitionSeconds() const {
-        return transition_seconds_;
-      }
-
       void stopFollowing() {
         is_following_player_ = false;
       }
@@ -59,25 +54,11 @@ namespace wheel_of_fear {
       void update(GameContextDto &context);
 
     private:
-      static constexpr Vec2Props mouse_influence {.x = 0.42F, .y = 0.42F};
-      static constexpr Vec2Props maximum_mouse_offset {.x = 78, .y = 46};
-      static constexpr float     follow_rate             = 6;
-      static constexpr float     room_transition_rate    = 3.2F;
-      static constexpr float     room_transition_seconds = 0.7F;
-      static constexpr float     shake_amplitude         = 9;
-
-      static Vec2Props mouseOffset(const InputController &input);
-      static Vec2Props framedTarget(
-        std::optional<std::size_t> room_index,
-        const WorldSystem         &world,
-        Vec2Props                  anchor,
-        Vec2Props                  offset
-      );
+      static constexpr float shake_amplitude = 9;
 
       Vec2Props                  focus_ {};
       Vec2Props                  shake_offset_ {};
       std::optional<std::size_t> room_index_;
-      float                      transition_seconds_  = 0;
       bool                       is_following_player_ = false;
   };
 } // namespace wheel_of_fear

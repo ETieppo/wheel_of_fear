@@ -78,11 +78,10 @@ namespace wheel_of_fear {
 
     logLine(
       std::format(
-        "walk: player_room={} camera_room={} transition={:.2f} "
+        "walk: player_room={} camera_room={} "
         "camera_offset=({:.0f},{:.0f}) reached={}",
         optionalIndex(world.map().roomIndexAt(player.position())),
         optionalIndex(camera.roomIndex()),
-        camera.transitionSeconds(),
         camera.focus().x - player.position().x,
         camera.focus().y - player.position().y,
         step() == 1
