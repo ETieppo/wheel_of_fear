@@ -98,5 +98,5 @@ The launcher keeps only the SDL window. On each reload the GPU device, audio, ar
 - `src/core`: engine pieces shared by every feature (math, entity, items, input, render, audio, assets, platform)
 - `src/mods`: one vertical slice per gameplay feature (world, player, flashlight, mobs, generators, ...)
 - `src/game`: the `Game` loop that wires the slices together
-- Assets are read from the repository's `assets/` folder.
+- `assets/` and `src/core/render/shaders/` are embedded into the executable at build time, so editing an asset needs a rebuild.
 

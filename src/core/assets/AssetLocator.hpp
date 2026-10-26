@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -18,9 +19,7 @@ namespace wheel_of_fear {
       static std::string readText(const std::filesystem::path &path);
 
     private:
-      static std::filesystem::path resolveDirectory(
-        std::string_view bundled_name,
-        std::string_view development_directory
-      );
+      static std::span<const std::uint8_t>
+      embeddedBytes(const std::filesystem::path &path);
   };
 } // namespace wheel_of_fear

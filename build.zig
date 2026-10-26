@@ -23,6 +23,13 @@ const cpp_flags = [_][]const u8{
     "-ffp-contract=off",
 };
 
+const embedded_asset_cpp_flags = cpp_flags ++ [_][]const u8{"-Wno-c23-extensions"};
+
+const embedded_asset_roots = [_]EmbeddedAssetRootProps{
+    .{ .source_directory = asset_directory, .embedded_directory = "assets" },
+    .{ .source_directory = shader_directory, .embedded_directory = "shaders" },
+};
+
 const opus_source_lists = [_]OpusSourceListProps{
     .{ .file_name = "celt_sources.mk", .variable_name = "CELT_SOURCES" },
     .{ .file_name = "silk_sources.mk", .variable_name = "SILK_SOURCES" },
@@ -72,6 +79,11 @@ const ThirdPartyLibrariesProps = struct {
     wgpu: ?*std.Build.Dependency,
 };
 
+const EmbeddedAssetRootProps = struct {
+    source_directory: []const u8,
+    embedded_directory: []const u8,
+};
+
 const OpusSourceListProps = struct {
     file_name: []const u8,
     variable_name: []const u8,
@@ -90,7 +102,6 @@ pub fn build(b: *std.Build) !void {
     const game_module = try createCppModule(context, &executable_sources);
     const game_executable = addLinkedExecutable(context, "wheel_of_fear", game_module, engine_library, third_party_libraries);
     b.installArtifact(game_executable);
-    installRuntimeData(b);
 
     const run_game = b.addRunArtifact(game_executable);
     run_game.step.dependOn(b.getInstallStep());
@@ -101,6 +112,8 @@ pub fn build(b: *std.Build) !void {
     const test_module = try createCppModule(context, try collectCppSources(b, test_source_directory));
     test_module.addIncludePath(b.dependency("doctest", .{}).path(""));
     test_module.addIncludePath(b.path(test_source_directory));
+    test_module.addCMacro("WHEEL_OF_FEAR_ASSET_DIRECTORY", try quotedPathFromRoot(b, asset_directory));
+    test_module.addCMacro("WHEEL_OF_FEAR_SHADER_DIRECTORY", try quotedPathFromRoot(b, shader_directory));
     const test_executable = addLinkedExecutable(context, "wheel_of_fear_tests", test_module, engine_library, third_party_libraries);
 
     const run_tests = b.addRunArtifact(test_executable);
@@ -143,6 +156,7 @@ fn addEngineLibrary(
 
     const engine_module = try createCppModule(context, engine_sources.items);
     linkThirdPartyLibraries(engine_module, third_party_libraries);
+    try addEmbeddedAssets(b, engine_module);
 
     return b.addLibrary(.{
         .name = "wheel_of_fear_engine",
@@ -163,8 +177,6 @@ fn createCppModule(context: BuildContextProps, sources: []const []const u8) !*st
 
     module.addCSourceFiles(.{ .files = sources, .flags = &cpp_flags });
     module.addIncludePath(b.path("src"));
-    module.addCMacro("WHEEL_OF_FEAR_ASSET_DIRECTORY", try quotedPathFromRoot(b, asset_directory));
-    module.addCMacro("WHEEL_OF_FEAR_SHADER_DIRECTORY", try quotedPathFromRoot(b, shader_directory));
 
     return module;
 }
@@ -177,8 +189,20 @@ fn quotedPathFromRoot(b: *std.Build, relative_path: []const u8) ![]const u8 {
 }
 
 fn collectCppSources(b: *std.Build, relative_directory: []const u8) ![]const []const u8 {
-    const io = b.graph.io;
     var sources: std.ArrayList([]const u8) = .empty;
+
+    for (try collectRelativeFiles(b, relative_directory)) |relative_file| {
+        if (!std.mem.endsWith(u8, relative_file, ".cpp")) continue;
+
+        try sources.append(b.allocator, b.fmt("{s}/{s}", .{ relative_directory, relative_file }));
+    }
+
+    return sources.items;
+}
+
+fn collectRelativeFiles(b: *std.Build, relative_directory: []const u8) ![]const []const u8 {
+    const io = b.graph.io;
+    var files: std.ArrayList([]const u8) = .empty;
 
     var directory = try b.root.openDir(io, relative_directory, .{ .iterate = true });
     defer directory.close(io);
@@ -187,14 +211,14 @@ fn collectCppSources(b: *std.Build, relative_directory: []const u8) ![]const []c
     defer walker.deinit();
 
     while (try walker.next(io)) |entry| {
-        if (entry.kind != .file or !std.mem.endsWith(u8, entry.basename, ".cpp")) continue;
+        if (entry.kind != .file) continue;
 
-        try sources.append(b.allocator, b.pathJoin(&.{ relative_directory, entry.path }));
+        try files.append(b.allocator, try std.mem.replaceOwned(u8, b.allocator, entry.path, "\\", "/"));
     }
 
-    std.mem.sort([]const u8, sources.items, {}, isPathLessThan);
+    std.mem.sort([]const u8, files.items, {}, isPathLessThan);
 
-    return sources.items;
+    return files.items;
 }
 
 fn isPathLessThan(_: void, left: []const u8, right: []const u8) bool {
@@ -324,15 +348,57 @@ fn wgpuDependencyName(target: std.Target) ![]const u8 {
     };
 }
 
-fn installRuntimeData(b: *std.Build) void {
-    b.installDirectory(.{
-        .source_dir = b.path(asset_directory),
-        .install_dir = .bin,
-        .install_subdir = "assets",
-    });
-    b.installDirectory(.{
-        .source_dir = b.path(shader_directory),
-        .install_dir = .bin,
-        .install_subdir = "shaders",
-    });
+fn addEmbeddedAssets(b: *std.Build, module: *std.Build.Module) !void {
+    const generated_files = b.addWriteFiles();
+    var embedded_paths: std.ArrayList([]const u8) = .empty;
+
+    for (embedded_asset_roots) |root| {
+        _ = generated_files.addCopyDirectory(b.path(root.source_directory), root.embedded_directory, .{});
+
+        for (try collectRelativeFiles(b, root.source_directory)) |relative_file| {
+            try embedded_paths.append(b.allocator, b.fmt("{s}/{s}", .{ root.embedded_directory, relative_file }));
+        }
+    }
+
+    std.mem.sort([]const u8, embedded_paths.items, {}, isPathLessThan);
+
+    const generated_source = generated_files.add(
+        "EmbeddedAssetEntries.cpp",
+        try renderEmbeddedAssetSource(b, embedded_paths.items),
+    );
+    module.addCSourceFile(.{ .file = generated_source, .flags = &embedded_asset_cpp_flags });
+}
+
+fn renderEmbeddedAssetSource(b: *std.Build, embedded_paths: []const []const u8) ![]const u8 {
+    var array_definitions: std.ArrayList(u8) = .empty;
+    var catalog_entries: std.ArrayList(u8) = .empty;
+
+    for (embedded_paths, 0..) |embedded_path, asset_index| {
+        try array_definitions.appendSlice(b.allocator, b.fmt(
+            "    const std::uint8_t embedded_asset_{d}[] = {{\n#embed \"{s}\"\n    }};\n",
+            .{ asset_index, embedded_path },
+        ));
+        try catalog_entries.appendSlice(b.allocator, b.fmt(
+            "      {{.path = \"{s}\", .bytes = embedded_asset_{d}}},\n",
+            .{ embedded_path, asset_index },
+        ));
+    }
+
+    return b.fmt(
+        \\#include "core/assets/EmbeddedAssetCatalog.hpp"
+        \\#include <array>
+        \\
+        \\namespace wheel_of_fear {{
+        \\  namespace {{
+        \\{s}
+        \\    const std::array<EmbeddedAssetProps, {d}> embedded_assets {{{{
+        \\{s}    }}}};
+        \\  }}
+        \\
+        \\  std::span<const EmbeddedAssetProps> EmbeddedAssetCatalog::entries() {{
+        \\    return embedded_assets;
+        \\  }}
+        \\}}
+        \\
+    , .{ array_definitions.items, embedded_paths.len, catalog_entries.items });
 }

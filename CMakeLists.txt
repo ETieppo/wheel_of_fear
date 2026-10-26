@@ -13,6 +13,7 @@ endif()
 
 include(FetchContent)
 include(cmake/WgpuNative.cmake)
+include(cmake/EmbeddedAssets.cmake)
 
 find_package(SDL3 REQUIRED CONFIG)
 find_package(Freetype REQUIRED)
@@ -68,9 +69,9 @@ list(APPEND WHEEL_OF_FEAR_SOURCES
 
 add_library(wheel_of_fear_engine OBJECT ${WHEEL_OF_FEAR_SOURCES})
 target_include_directories(wheel_of_fear_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_compile_definitions(wheel_of_fear_engine PUBLIC
-    WHEEL_OF_FEAR_ASSET_DIRECTORY="${WHEEL_OF_FEAR_ASSET_DIRECTORY}"
-    WHEEL_OF_FEAR_SHADER_DIRECTORY="${WHEEL_OF_FEAR_SHADER_DIRECTORY}"
+wheel_of_fear_add_embedded_assets(wheel_of_fear_engine
+    "${WHEEL_OF_FEAR_ASSET_DIRECTORY}"
+    "${WHEEL_OF_FEAR_SHADER_DIRECTORY}"
 )
 target_link_libraries(wheel_of_fear_engine PUBLIC
     SDL3::SDL3
@@ -133,6 +134,10 @@ file(GLOB_RECURSE WHEEL_OF_FEAR_TEST_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_S
 add_executable(wheel_of_fear_tests ${WHEEL_OF_FEAR_TEST_SOURCES})
 target_link_libraries(wheel_of_fear_tests PRIVATE wheel_of_fear_engine doctest_header)
 target_include_directories(wheel_of_fear_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+target_compile_definitions(wheel_of_fear_tests PRIVATE
+    WHEEL_OF_FEAR_ASSET_DIRECTORY="${WHEEL_OF_FEAR_ASSET_DIRECTORY}"
+    WHEEL_OF_FEAR_SHADER_DIRECTORY="${WHEEL_OF_FEAR_SHADER_DIRECTORY}"
+)
 
 enable_testing()
 add_test(NAME wheel_of_fear_tests COMMAND wheel_of_fear_tests)
