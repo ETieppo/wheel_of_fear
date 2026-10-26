@@ -20,6 +20,7 @@ const cpp_flags = [_][]const u8{
     "-Wpedantic",
     "-Wshadow",
     "-Wno-missing-field-initializers",
+    "-ffp-contract=off",
 };
 
 const opus_source_lists = [_]OpusSourceListProps{
@@ -93,6 +94,7 @@ pub fn build(b: *std.Build) !void {
 
     const run_game = b.addRunArtifact(game_executable);
     run_game.step.dependOn(b.getInstallStep());
+    run_game.addPassthruArgs();
     const run_step = b.step("run", "Build and run the game");
     run_step.dependOn(&run_game.step);
 
@@ -101,8 +103,10 @@ pub fn build(b: *std.Build) !void {
     test_module.addIncludePath(b.path(test_source_directory));
     const test_executable = addLinkedExecutable(context, "wheel_of_fear_tests", test_module, engine_library, third_party_libraries);
 
+    const run_tests = b.addRunArtifact(test_executable);
+    run_tests.addPassthruArgs();
     const test_step = b.step("test", "Build and run the doctest suite");
-    test_step.dependOn(&b.addRunArtifact(test_executable).step);
+    test_step.dependOn(&run_tests.step);
 }
 
 fn addLinkedExecutable(

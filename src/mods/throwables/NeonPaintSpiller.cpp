@@ -176,13 +176,13 @@ namespace wheel_of_fear {
     for(std::size_t index = 0; index < spray_count; ++index) {
       const float distance
         = reach * random.range(spray_minimum_reach, spray_maximum_reach);
+      const float angle  = random.range(0, ScalarMath::tau);
+      const float radius = random.range(1, 3.2F);
 
       droplets.push_back(droplet(
         random,
-        origin.add(
-          Vec2Props::fromAngle(random.range(0, ScalarMath::tau)).scale(distance)
-        ),
-        random.range(1, 3.2F)
+        origin.add(Vec2Props::fromAngle(angle).scale(distance)),
+        radius
       ));
     }
   }

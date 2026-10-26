@@ -125,8 +125,7 @@ namespace wheel_of_fear {
       state.velocity          = random.direction()
                                   .scale(random.range(30, 150))
                                   .add(Vec2Props::of(0, -20));
-      state.color
-        = random.chance(0.7F) ? color : Palette::neon_cyan;
+      state.color = random.chance(0.7F) ? color : Palette::neon_cyan;
 
       spawn<NeonDropParticle>(state);
     }
@@ -144,8 +143,10 @@ namespace wheel_of_fear {
     state.lifetime_seconds  = random.range(0.4F, 0.8F);
     state.remaining_seconds = state.lifetime_seconds;
     state.position          = origin;
-    state.velocity
-      = Vec2Props::of(random.range(-10, 10), random.range(-30, -10));
+
+    const float horizontal_speed = random.range(-10, 10);
+    const float vertical_speed   = random.range(-30, -10);
+    state.velocity = Vec2Props::of(horizontal_speed, vertical_speed);
 
     state.color = ColorProps::hex(0x9be860);
     spawn<AcidDropParticle>(state);

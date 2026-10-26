@@ -80,6 +80,9 @@ target_link_libraries(wheel_of_fear_engine PUBLIC
     stb_image
 )
 wheel_of_fear_enable_warnings(wheel_of_fear_engine)
+if(NOT MSVC)
+    target_compile_options(wheel_of_fear_engine PUBLIC -ffp-contract=off)
+endif()
 
 if(WHEEL_OF_FEAR_HOT_RELOAD)
     set(WHEEL_OF_FEAR_GAME_MODULE_STAMP_PATH "${CMAKE_CURRENT_BINARY_DIR}/wheel_of_fear_game.stamp")

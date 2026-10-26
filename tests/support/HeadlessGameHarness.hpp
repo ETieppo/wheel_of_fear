@@ -1,11 +1,15 @@
 #pragma once
 
 #include "game/GameSimulation.hpp"
+#include <array>
+#include <bit>
+#include <cmath>
 #include <cstdint>
 #include <cstdlib>
 #include <optional>
 #include <span>
 #include <string>
+#include <type_traits>
 
 namespace wheel_of_fear {
   class DemoModeEnvironmentGuard {
@@ -73,6 +77,7 @@ namespace wheel_of_fear {
     private:
       static constexpr std::uint64_t fnv_offset_basis = 0xCBF29CE484222325ULL;
       static constexpr std::uint64_t fnv_prime        = 0x100000001B3ULL;
+      static constexpr float fingerprint_float_resolution = 1.0F / 64.0F;
 
       static std::uint64_t mixBytes(
         std::uint64_t              hash,
@@ -86,11 +91,34 @@ namespace wheel_of_fear {
         return hash;
       }
 
-      template<typename ValueType> static std::uint64_t mixSpan(
-        std::uint64_t              hash,
-        std::span<const ValueType> values
+      static std::uint64_t mixQuantizedFloat(
+        std::uint64_t hash,
+        float         value
       ) {
-        return mixBytes(hash, std::as_bytes(values));
+        const auto quantized = static_cast<std::int64_t>(
+          std::lround(value / fingerprint_float_resolution)
+        );
+
+        return mixBytes(hash, std::as_bytes(std::span(&quantized, 1)));
+      }
+
+      template<typename FloatRecordType> static std::uint64_t mixFloatRecords(
+        std::uint64_t                    hash,
+        std::span<const FloatRecordType> records
+      ) {
+        static_assert(std::is_trivially_copyable_v<FloatRecordType>);
+        static_assert(sizeof(FloatRecordType) % sizeof(float) == 0);
+        constexpr std::size_t float_count
+          = sizeof(FloatRecordType) / sizeof(float);
+
+        for(const FloatRecordType &record : records) {
+          const auto fields
+            = std::bit_cast<std::array<float, float_count>>(record);
+
+          for(const float field : fields) hash = mixQuantizedFloat(hash, field);
+        }
+
+        return hash;
       }
 
       void runFrame() {
@@ -102,13 +130,15 @@ namespace wheel_of_fear {
       std::uint64_t mixFrame(std::uint64_t hash) const {
         const FrameProps &current = frame();
 
-        hash = mixSpan(hash, current.world.used());
-        hash = mixSpan(hash, current.glow.used());
-        hash = mixSpan(hash, current.ui.used());
-        hash
-          = mixSpan(hash, std::span(current.lights).first(current.light_count));
-        hash = mixBytes(hash, std::as_bytes(std::span(&current.post, 1)));
-        hash = mixSpan(hash, std::span(current.map_texels));
+        hash = mixFloatRecords(hash, current.world.used());
+        hash = mixFloatRecords(hash, current.glow.used());
+        hash = mixFloatRecords(hash, current.ui.used());
+        hash = mixFloatRecords(
+          hash,
+          std::span(current.lights).first(current.light_count)
+        );
+        hash = mixFloatRecords(hash, std::span(&current.post, 1));
+        hash = mixBytes(hash, std::as_bytes(std::span(current.map_texels)));
 
         return hash;
       }
