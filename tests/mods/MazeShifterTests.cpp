@@ -52,4 +52,38 @@ namespace wheel_of_fear {
         CHECK(before[index] == doorway.is_open);
     }
   }
+
+  TEST_CASE("a closed doorway next to the position opens and becomes passable") {
+    RandomGenerator random(42);
+    TileMapModel    map;
+    TileMapGenerator(map, random).generate(4, 4);
+
+    DoorwayProps *closed_doorway = nullptr;
+    for(DoorwayProps &doorway : map.doorways())
+      if(!doorway.is_open) closed_doorway = &doorway;
+
+    REQUIRE(closed_doorway != nullptr);
+    REQUIRE(map.isWall(closed_doorway->first_x, closed_doorway->first_y));
+
+    MazeShifter::openDoorwaysNear(map, closed_doorway->center());
+    MazeShifter::animateDoorways(map, 2, {});
+
+    CHECK(closed_doorway->is_open);
+    CHECK_FALSE(map.isWall(closed_doorway->first_x, closed_doorway->first_y));
+  }
+
+  TEST_CASE("doorways far from the position stay closed") {
+    RandomGenerator random(42);
+    TileMapModel    map;
+    TileMapGenerator(map, random).generate(4, 4);
+    std::vector<bool> before;
+
+    for(const DoorwayProps &doorway : map.doorways())
+      before.push_back(doorway.is_open);
+
+    MazeShifter::openDoorwaysNear(map, Vec2Props::of(-10000, -10000));
+
+    for(std::size_t index = 0; index < map.doorways().size(); ++index)
+      CHECK(before[index] == map.doorways()[index].is_open);
+  }
 } // namespace wheel_of_fear

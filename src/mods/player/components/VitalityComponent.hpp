@@ -32,6 +32,11 @@ namespace wheel_of_fear {
       }
 
       [[nodiscard]]
+      bool isGodMode() const {
+        return is_god_mode_;
+      }
+
+      [[nodiscard]]
       float hurtFlash() const {
         return hurt_flash_;
       }
@@ -46,6 +51,10 @@ namespace wheel_of_fear {
         invulnerable_seconds_ = seconds;
       }
 
+      void setGodMode(bool is_god_mode) {
+        is_god_mode_ = is_god_mode;
+      }
+
     private:
       static constexpr float spawn_invulnerability_seconds = 1.5F;
       static constexpr float hit_invulnerability_seconds   = 1.4F;
@@ -55,5 +64,6 @@ namespace wheel_of_fear {
       float invulnerable_seconds_ = spawn_invulnerability_seconds;
       float hurt_flash_           = 0;
       bool  is_dead_              = false;
+      bool  is_god_mode_          = false;
   };
 } // namespace wheel_of_fear

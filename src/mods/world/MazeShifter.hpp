@@ -20,6 +20,11 @@ namespace wheel_of_fear {
         std::span<const Vec2Props> occupants
       );
 
+      static void openDoorwaysNear(
+        TileMapModel &map,
+        Vec2Props     position
+      );
+
       bool advance(
         TileMapModel              &map,
         RandomGenerator           &random,

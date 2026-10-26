@@ -16,10 +16,6 @@ namespace wheel_of_fear {
       "Charge every generator. Their rooms light up and burn the dark. Then find the letter with the key and reach the exit.",
       "Carregue todos os geradores. As salas acendem e queimam o escuro. Depois ache a carta com a chave e chegue à saída.",
     };
-    constexpr LocalizedTextProps warning_text {
-      "They freeze in your beam. They hunt by sound. The rooms around you never stay the same.",
-      "Eles congelam no seu feixe. Caçam pelo som. As salas ao seu redor nunca ficam iguais.",
-    };
     constexpr LocalizedTextProps skip_hint {
       "ENTER  SKIP",
       "ENTER  PULAR",
@@ -78,18 +74,9 @@ namespace wheel_of_fear {
     renderer.drawText(
       Localization::text(goal_text),
       center_x,
-      222,
+      230,
       16,
       Palette::text.withAlpha(alpha),
-      TextAlignEnum::center
-    );
-
-    renderer.drawText(
-      Localization::text(warning_text),
-      center_x,
-      244,
-      16,
-      Palette::muted_text.withAlpha(alpha),
       TextAlignEnum::center
     );
 

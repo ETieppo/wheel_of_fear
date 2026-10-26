@@ -3,6 +3,7 @@
 #include "core/storage/UserDataFilesProps.hpp"
 #include "game/dtos/GameContextDto.hpp"
 #include "mods/director/DemoScenarioRunner.hpp"
+#include "mods/director/DeveloperOptionsProps.hpp"
 #include "mods/director/DirectorSnapshotProps.hpp"
 #include "mods/director/ProgressStore.hpp"
 #include "mods/director/enums/GameStateEnum.hpp"
@@ -125,6 +126,7 @@ namespace wheel_of_fear {
       int           committed_max_health_ = VitalityComponent::base_max_health;
       float         death_seconds_        = 0;
       float         fade_amount_          = 1;
+      DeveloperOptionsProps developer_options_;
       DemoScenarioRunner    demo_;
       ProgressStore         progress_;
       SettingsStore         settings_;

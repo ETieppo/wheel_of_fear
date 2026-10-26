@@ -29,7 +29,7 @@ namespace wheel_of_fear {
   }
 
   bool VitalityComponent::absorbHit() {
-    if(invulnerable_seconds_ > 0 || is_dead_) return false;
+    if(is_god_mode_ || invulnerable_seconds_ > 0 || is_dead_) return false;
     health_ -= 1;
     invulnerable_seconds_ = hit_invulnerability_seconds;
     hurt_flash_           = 1;

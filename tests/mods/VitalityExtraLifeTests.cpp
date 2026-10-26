@@ -36,4 +36,35 @@ namespace wheel_of_fear {
     vitality.setMaxHealth(0);
     CHECK(vitality.maxHealth() == VitalityComponent::base_max_health);
   }
+
+  TEST_CASE("god mode ignores every hit") {
+    VitalityComponent vitality;
+    vitality.setGodMode(true);
+
+    for(int hit = 0; hit < 10; ++hit) {
+      vitality.dropGuard();
+      CHECK_FALSE(vitality.absorbHit());
+    }
+
+    CHECK(vitality.health() == VitalityComponent::base_max_health);
+    CHECK_FALSE(vitality.isDead());
+  }
+
+  TEST_CASE("god mode survives a respawn") {
+    VitalityComponent vitality;
+    vitality.setGodMode(true);
+    vitality.restore();
+    vitality.dropGuard();
+
+    CHECK(vitality.isGodMode());
+    CHECK_FALSE(vitality.absorbHit());
+  }
+
+  TEST_CASE("without god mode an unguarded hit costs health") {
+    VitalityComponent vitality;
+    vitality.dropGuard();
+
+    CHECK(vitality.absorbHit());
+    CHECK(vitality.health() == VitalityComponent::base_max_health - 1);
+  }
 } // namespace wheel_of_fear

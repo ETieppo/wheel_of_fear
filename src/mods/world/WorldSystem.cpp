@@ -293,6 +293,9 @@ namespace wheel_of_fear {
     removeDryNeonSplashes();
 
     const std::vector<Vec2Props> occupants = collectOccupants(context);
+    if(context.player.vitality().isGodMode())
+      MazeShifter::openDoorwaysNear(map_, context.player.position());
+
     MazeShifter::animateDoorways(map_, delta, occupants);
     if(!is_outdoors_) shiftMaze(context, occupants);
 

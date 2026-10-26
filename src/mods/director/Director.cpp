@@ -8,6 +8,7 @@
 #include "mods/art/ArtLibrary.hpp"
 #include "mods/camera/CameraSystem.hpp"
 #include "mods/director/CampaignConfig.hpp"
+#include "mods/director/DeveloperOptionsParser.hpp"
 #include "mods/distractions/DistractionSystem.hpp"
 #include "mods/effects/EffectSystem.hpp"
 #include "mods/extra_lives/ExtraLifeSystem.hpp"
@@ -33,9 +34,12 @@ namespace wheel_of_fear {
   } // namespace
 
   Director::Director(const UserDataFilesProps &user_data_files)
-      : progress_(demo_.isActive() ? std::nullopt : user_data_files.progress)
+      : developer_options_(DeveloperOptionsParser::fromEnvironment())
+      , progress_(demo_.isActive() ? std::nullopt : user_data_files.progress)
       , settings_(user_data_files.settings) {
-    Localization::setLanguage(settings_.language());
+    Localization::setLanguage(
+      developer_options_.language.value_or(settings_.language())
+    );
   }
 
   void Director::toggleLanguage() {
@@ -109,6 +113,7 @@ namespace wheel_of_fear {
       committed_max_health_ < VitalityComponent::highest_max_health
     );
     context.player.vitality().setMaxHealth(committed_max_health_);
+    context.player.vitality().setGodMode(developer_options_.is_god_mode);
     context.player.respawn(world.playerStart());
     context.player.flashlight().setEnabled(true);
     context.effects.clear();

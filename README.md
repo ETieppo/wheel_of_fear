@@ -26,9 +26,12 @@ Use them only with `make dev`.
 |---|---|
 | `ENGRENAGEM_DEMO` | Runs a scripted demo scenario: `play`, `deep`, `phase`, `ending`, `sectors`, `showcase`, `tracker`, `freeze`, `moth`, `locker`, `witness`, `repair`, `power`, `grenade`, `lure`, `doors`, `walk` |
 | `ENGRENAGEM_PHASE` | Sector to start in (1 to 12); only works with `ENGRENAGEM_DEMO=phase` |
+| `ENGRENAGEM_GOD` | God mode: the player ignores every hit (`1`/`true`/`yes`/`on` or `0`/`false`/`no`/`off`) |
+| `ENGRENAGEM_LANG` | Starting language (`en` or `pt-BR`), overriding the saved setting without persisting it |
 
 ```sh
 ENGRENAGEM_DEMO=phase ENGRENAGEM_PHASE=10 make dev
+ENGRENAGEM_GOD=true ENGRENAGEM_LANG=pt-BR make dev
 ```
 
 ## Hot reload

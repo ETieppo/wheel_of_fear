@@ -14,6 +14,7 @@ namespace wheel_of_fear {
     constexpr float       door_travel_per_second       = 0.9F;
     constexpr float       recent_change_seconds        = 10;
     constexpr float       occupant_clearance           = 10;
+    constexpr float       nearby_opening_reach         = 40;
     constexpr int         neighborhood_grid_distance   = 1;
     constexpr std::size_t candidate_capacity           = 64;
 
@@ -61,6 +62,19 @@ namespace wheel_of_fear {
       const bool should_be_passable = next >= 0.5F;
       if(should_be_passable != tiles_are_passable)
         map.setDoorwayTiles(doorway, should_be_passable);
+    }
+  }
+
+  void MazeShifter::openDoorwaysNear(
+    TileMapModel &map,
+    Vec2Props     position
+  ) {
+    for(DoorwayProps &doorway : map.doorways()) {
+      if(doorway.is_open) continue;
+      if(doorway.center().distance(position) > nearby_opening_reach) continue;
+
+      doorway.is_open              = true;
+      doorway.seconds_since_change = 0;
     }
   }
 

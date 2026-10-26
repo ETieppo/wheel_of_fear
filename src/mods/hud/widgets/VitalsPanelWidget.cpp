@@ -11,7 +11,7 @@ namespace wheel_of_fear {
   namespace {
     constexpr LocalizedTextProps vitals_label {
       "VITALS",
-      "VITAIS",
+      "VIDA",
     };
     constexpr LocalizedTextProps cell_label {
       "CELL",
