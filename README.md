@@ -12,7 +12,33 @@
 make run
 ```
 
-Assets are read from the repository's `assets/` folder.
+#### Or with zig 0.17
+
+```
+zig build run
+```
+
+#### to build optimized version
+
+```bash
+zig build --release
+```
+
+#### Cross compiled
+
+```bash
+zig build test
+zig build --release
+zig build --release -Dtarget=x86_64-windows-gnu
+zig build --release -Dtarget=x86_64-linux-gnu.2.31
+zig build --release -Dtarget=aarch64-linux-gnu.2.31
+```
+
+##### MacOS need an Mac hardware
+
+```bash
+ zig build --release
+```
 
 ## Lore
 
@@ -26,7 +52,7 @@ Use them only with `make dev`.
 |---|---|
 | `ENGRENAGEM_DEMO` | Runs a scripted demo scenario: `play`, `deep`, `phase`, `ending`, `sectors`, `showcase`, `tracker`, `freeze`, `moth`, `locker`, `witness`, `repair`, `power`, `grenade`, `lure`, `doors`, `walk` |
 | `ENGRENAGEM_PHASE` | Sector to start in (1 to 12); only works with `ENGRENAGEM_DEMO=phase` |
-| `ENGRENAGEM_GOD` | God mode: the player ignores every hit (`1`/`true`/`yes`/`on` or `0`/`false`/`no`/`off`) |
+| `ENGRENAGEM_GOD` | God mode: the player ignores every hit (`1`/`true`/`yes`/`on` or `0`/`false`/`no`/`off`), doors opens when close to it|
 | `ENGRENAGEM_LANG` | Starting language (`en` or `pt-BR`), overriding the saved setting without persisting it |
 
 ```sh
@@ -72,3 +98,5 @@ The launcher keeps only the SDL window. On each reload the GPU device, audio, ar
 - `src/core`: engine pieces shared by every feature (math, entity, items, input, render, audio, assets, platform)
 - `src/mods`: one vertical slice per gameplay feature (world, player, flashlight, mobs, generators, ...)
 - `src/game`: the `Game` loop that wires the slices together
+- Assets are read from the repository's `assets/` folder.
+
