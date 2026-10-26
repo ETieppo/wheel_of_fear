@@ -1,5 +1,9 @@
 # Wheel of Fear (C++)
 
+Just another small game created for game jam
+
+> I used ai at this project to generate some part of this code
+
 ## Requirements
 
 - CMake 3.24+ and a C++23 compiler
