@@ -1,3 +1,6 @@
 .cache/
 build/
 build-hot/
+.zig-cache/
+zig-out/
+zig-pkg/

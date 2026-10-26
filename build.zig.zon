@@ -1,0 +1,60 @@
+.{
+    .name = .wheel_of_fear,
+    .version = "0.1.0",
+    .fingerprint = 0x4d1d238f5668137d,
+    .minimum_zig_version = "0.17.0",
+    .dependencies = .{
+        .sdl = .{
+            .url = "git+https://github.com/castholm/SDL?ref=v0.6.0+3.4.18#dbcb19aa3583c318556ecae3ecbeb29b102d37c5",
+            .hash = "sdl-0.6.0+3.4.18-SDL--p-gqAGWpnfTLlhs0dgjDtc4P4_CHeNLGY_SX_Fv",
+        },
+        .freetype = .{
+            .url = "git+https://github.com/allyourcodebase/freetype?ref=main#884fd2235e6ae1ec4306eda30b3259f20930ed2e",
+            .hash = "freetype-2.14.3-C3-WdXSKAAB-kHs4qgRoeoFnRkNQn6M_SSlUGZ6ywgBQ",
+        },
+        .stb = .{
+            .url = "https://github.com/nothings/stb/archive/003501f6d7a8668ce8b6d875e34dd97ad0d5d5b5.tar.gz",
+            .hash = "N-V-__8AAO9ETgDfL4wpGK8nkgl4_31egkgaxiDeQ9pS54gj",
+        },
+        .doctest = .{
+            .url = "https://github.com/doctest/doctest/archive/refs/tags/v2.4.11.tar.gz",
+            .hash = "N-V-__8AABcPNwCWhh21eTJPJzrU7bIhc2EOyRawnmXYXcZE",
+        },
+        .wgpu_linux_x86_64 = .{
+            .url = "https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu-linux-x86_64-release.zip",
+            .lazy = true,
+            .hash = "N-V-__8AAAVLrgM9jWFLs7n4rHyodpjIYxtBBE1No8nK0pRz",
+        },
+        .wgpu_linux_aarch64 = .{
+            .url = "https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu-linux-aarch64-release.zip",
+            .lazy = true,
+            .hash = "N-V-__8AACvXrAO11f5LA-Qfgm2C0XyWNhS_0N30HTL-Y5pQ",
+        },
+        .wgpu_windows_x86_64_gnu = .{
+            .url = "https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu-windows-x86_64-gnu-release.zip",
+            .lazy = true,
+            .hash = "N-V-__8AAIV6GgPzrhI9UgYVJuTvVgZIm4n3bPc6dMAOpPYl",
+        },
+        .wgpu_macos_aarch64 = .{
+            .url = "https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu-macos-aarch64-release.zip",
+            .lazy = true,
+            .hash = "N-V-__8AAAUNfQJBPHGd3KMhFvl4WLpzHDx9rFkwSf2rFVhr",
+        },
+        .wgpu_macos_x86_64 = .{
+            .url = "https://github.com/gfx-rs/wgpu-native/releases/download/v29.0.1.1/wgpu-macos-x86_64-release.zip",
+            .lazy = true,
+            .hash = "N-V-__8AAFWheQIu8DV1xiTixrDsCJ0xr7-Ssy-XhEIkgx5u",
+        },
+        .opus = .{
+            .url = "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz",
+            .hash = "N-V-__8AAAmivwH7RvCrZo25NNu0lx2Sw-ogZhmqGXvorlHg",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "assets",
+        "tests",
+    },
+}
